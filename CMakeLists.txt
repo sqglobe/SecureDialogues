@@ -39,24 +39,14 @@ SET(CMAKE_CXX_STANDARD 17)
 SET(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 
-set(MCRYPTO_INCLUDE_DIR ${PROJECT_SOURCE_DIR})
+set(MCRYPTO_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/submodules)
 
 ENABLE_TESTING()
 
-if(NOT EXISTS ${PROJECT_SOURCE_DIR}/cryptopp)
-    message("cryptopp dir not exists. Make dirrectory")
-    execute_process(
-        COMMAND bash cryptopp.sh
-        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-        )
-else()
-    message("cryptopp dir exists")
-endif()
+include_directories(${PROJECT_SOURCE_DIR}/submodules/spdlog/include)
 
-include_directories(${PROJECT_SOURCE_DIR}/spdlog/include)
-
-add_subdirectory(crossguid)
-add_subdirectory(cryptopp)
+add_subdirectory(submodules/crossguid)
+add_subdirectory(submodules/cryptopp)
 
 add_subdirectory( messages )
 add_subdirectory( gui )
