@@ -46,7 +46,7 @@ ENABLE_TESTING()
 if(NOT EXISTS ${PROJECT_SOURCE_DIR}/submodules/cryptopp)
     message("cryptopp dir not exists. Make dirrectory")
     execute_process(
-        COMMAND bash cryptopp.sh
+        COMMAND bash ../cryptopp.sh
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/submodules
         )
 else()
