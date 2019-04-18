@@ -1,0 +1,46 @@
+# В качестве базового образа используем ubuntu:latest
+FROM centos:centos7
+
+RUN yum install -y epel-release centos-release-scl
+
+RUN  yum install -y make ninja-build devtoolset-7-gcc-c++ wget
+
+RUN yum install -y git qt5-qtbase-devel plantuml libuuid-devel asio-devel 
+
+RUN mkdir /opt/cmake \
+ && wget -P / https://github.com/Kitware/CMake/releases/download/v3.13.4/cmake-3.13.4-Linux-x86_64.sh \
+ && sh /cmake-3.13.4-Linux-x86_64.sh --prefix=/opt/cmake --skip-license \
+ && ln -s /opt/cmake/bin/cmake /usr/local/bin/cmake
+
+RUN mkdir /3rdparty \
+ && wget -P /3rdparty https://netcologne.dl.sourceforge.net/project/boost/boost/1.58.0/boost_1_58_0.tar.gz \
+ && cd /3rdparty \
+ && tar -xzf boost_1_58_0.tar.gz
+ 
+RUN yum install -y bzip2-devel zlib-devel libicu-devel python-devel
+
+RUN cd /3rdparty/boost_1_58_0 \
+ && scl enable devtoolset-7 "./bootstrap.sh --prefix=/usr/local --with-toolset=gcc && ./b2 install"
+
+
+  
+RUN mkdir /repo && \
+    cd /repo && \
+    git clone https://github.com/Microsoft/cpprestsdk.git casablanca && \
+    cd casablanca && \
+    git checkout v2.10.12 && \
+    git submodule update --init && \
+    mkdir build.relese 
+
+RUN  cd /repo/casablanca/build.relese && scl enable devtoolset-7 "cmake -G Ninja .. -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DBUILD_TESTS=OFF -DBUILD_SAMPLES=OFF -DBoost_USE_STATIC_LIBS=ON  && \
+    ninja-build && \
+    ninja-build install" 
+
+# Установим рабочую директорию нашего приложения
+WORKDIR /app/build
+
+RUN echo 1
+
+# Установим точку входа 
+ENTRYPOINT  scl enable devtoolset-7 "cmake -DBUILD_TESTING=OFF -DCMAKE_PREFIX_PATH=/usr/lib/x86_64-linux-gnu /app/src && cmake --build ." && cp bin/SecureDialogues /app/res/SecureDialogues-centos7-x86_64
+

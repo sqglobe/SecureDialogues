@@ -1,0 +1,7 @@
+@startuml
+[gui] --> [messages]
+[gui] --> [encryption]
+[messages] --> [encryption]
+[main] --> [gui]
+[main] --> [messages]
+@enduml

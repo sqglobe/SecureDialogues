@@ -1,0 +1,16 @@
+@startuml
+
+class ContactWidget
+class BaseSettingsDialog
+class DialogWidgetGasket
+
+BaseSettingsDialog o-- ContactWidget
+BaseSettingsDialog *-- ContactModel
+ContactModel --|> ChangeWatcher
+ContactContainer o-- ChangeWatcher
+ContactGasket *-- DialogWidgetGasket
+DialogWidgetGasket o-- ContactContainer
+DialogWidgetGasket o-- ContactWidget
+
+ContactGasket ..> BaseSettingsDialog
+@enduml

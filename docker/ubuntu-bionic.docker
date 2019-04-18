@@ -1,0 +1,36 @@
+# В качестве базового образа используем ubuntu:latest
+FROM ubuntu:bionic
+
+RUN  apt-get update \
+  && apt-get install -y make gcc g++ cmake ninja-build
+  
+RUN apt-get install -y git qtdeclarative5-dev plantuml libboost-all-dev ruby plantuml uuid-dev libasio-dev \
+  && gem install prawn --version 2.1.0 \
+  && gem install addressable --version 2.4.0 \
+  && gem install prawn-svg --version 0.26.0 \
+  && gem install prawn-templates --version 0.0.4 \
+  && gem install asciidoctor-pdf --pre \
+  && gem install rouge \
+  && gem install pygments.rb \
+  && gem install coderay
+  
+RUN mkdir /repo && \
+    cd /repo && \
+    git clone https://github.com/Microsoft/cpprestsdk.git casablanca && \
+    cd casablanca && \
+    git checkout v2.10.12 && \
+    git submodule update --init && \
+    mkdir build.relese  && \
+    cd build.relese && \
+    cmake -G Ninja .. -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DBUILD_TESTS=OFF -DBUILD_SAMPLES=OFF -DBoost_USE_STATIC_LIBS=ON && \
+    ninja && \
+    ninja install
+
+# Установим рабочую директорию нашего приложения
+WORKDIR /app/build
+
+# Установим точку входа 
+ENTRYPOINT cmake -DBUILD_TESTING=OFF -DCMAKE_PREFIX_PATH=/usr/lib/x86_64-linux-gnu /app/src \
+        && cmake --build . \
+        && cp documents/architecture.pdf documents/user-guid.pdf /app/res \
+        && cp bin/SecureDialogues /app/res/SecureDialogues-ubuntu-18.04-x86_64

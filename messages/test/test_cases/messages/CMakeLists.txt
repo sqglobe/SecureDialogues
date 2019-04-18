@@ -1,0 +1,32 @@
+project(messages)
+
+add_executable(DialogMessageCreationFromsourceTest dialogmessagecreationfromsourcetest.cpp)
+add_test(NAME DialogMessageCreationFromsourceTest COMMAND DialogMessageCreationFromsourceTest)
+target_link_libraries(DialogMessageCreationFromsourceTest PRIVATE ${MY_TEST_LIBS} )
+
+
+add_executable(TestChannelSendRecieveTest testchannelsendrecievetest.cpp)
+add_test(NAME TestChannelSendRecieveTest COMMAND TestChannelSendRecieveTest)
+target_link_libraries(TestChannelSendRecieveTest PRIVATE ${MY_TEST_LIBS} )
+
+add_executable(TestDialogActionHandler testdialogactionhandler.cpp)
+add_test(NAME TestDialogActionHandler COMMAND TestDialogActionHandler)
+target_link_libraries(TestDialogActionHandler PRIVATE ${MY_TEST_LIBS} )
+
+
+add_executable(TestDialogTest testdialogtest.cpp)
+add_test(NAME TestDialogTest COMMAND TestDialogTest)
+target_link_libraries(TestDialogTest PRIVATE ${MY_TEST_LIBS} )
+
+add_executable(TestMessageActionHandlerRecieveMessage testmessageactionhandlerrecievemessage.cpp)
+add_test(NAME TestMessageActionHandlerRecieveMessage COMMAND TestMessageActionHandlerRecieveMessage)
+target_link_libraries(TestMessageActionHandlerRecieveMessage PRIVATE ${MY_TEST_LIBS} )
+
+
+add_executable(TestMessageDispatchTest testmessagedispatchtest.cpp)
+add_test(NAME TestMessageDispatchTest COMMAND TestMessageDispatchTest)
+target_link_libraries(TestMessageDispatchTest PRIVATE ${MY_TEST_LIBS} )
+
+add_executable(TestSignVerification testsignverification.cpp)
+add_test(NAME TestSignVerification COMMAND TestSignVerification)
+target_link_libraries(TestSignVerification PRIVATE ${MY_TEST_LIBS} )

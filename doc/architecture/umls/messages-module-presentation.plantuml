@@ -1,0 +1,9 @@
+@startuml
+
+[communication] --> [adapters]
+[communication] --> [crypto]
+[communication] --> [containers]
+[builders] --> [containers]
+[containers] --> [primitives]
+
+@enduml

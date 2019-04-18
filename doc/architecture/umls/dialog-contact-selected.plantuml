@@ -1,0 +1,10 @@
+@startuml
+
+QListView --> BaseSettingsDialog : clicked(index)
+BaseSettingsDialog --> ContactWidget : actionDisable()
+BaseSettingsDialog --> ContactGasket : actionViewAt(inxed.row)
+ContactGasket --> DialogWidgetGasket : viewAt(pos)
+DialogWidgetGasket --> ContactContainer : at(pos)
+ContactContainer --> DialogWidgetGasket : contact
+DialogWidgetGasket --> ContactWidget: setElement(contact)
+@enduml

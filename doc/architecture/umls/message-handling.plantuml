@@ -1,0 +1,20 @@
+@startuml
+"Remote peer" -> Adapter : Recieved text message
+Adapter -> Channel : Recieved text message
+Channel -> MessageDespatcher : Recieved DialogMessage
+MessageDespatcher --> Channel : Send ack
+Channel --> Adapter : Send text message
+Adapter --> "Remote peer" : Send text message
+
+MessageDespatcher -> CryptoSystem : isSignatureOk(DialogMessage)
+CryptoSystem --> MessageDespatcher : true
+
+MessageDespatcher -> "AbstractMessageHandler[1]" : isItYouAction
+"AbstractMessageHandler[1]" --> MessageDespatcher : false
+
+MessageDespatcher -> "AbstractMessageHandler[2]" : isItYouAction
+"AbstractMessageHandler[2]" --> MessageDespatcher : true
+
+MessageDespatcher -> "AbstractMessageHandler[2]" : handle(DialogMessage)
+
+@enduml

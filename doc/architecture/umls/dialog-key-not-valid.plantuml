@@ -1,0 +1,6 @@
+@startuml
+A --> B : <latex>S_A(CREATE\_DIALOG)</latex>
+B --> A : <latex>S_B(VERIFY\_KEY, E_A(T), E_A(R))</latex>
+A --> B : <latex>S_A(KEY\_VERIFICATION, T(R))</latex>
+B --> A : <latex>S_B(CLOSE\_DIALOG)</latex>
+@enduml
