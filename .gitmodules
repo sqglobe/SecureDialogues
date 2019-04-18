@@ -4,3 +4,6 @@
 [submodule "submodules/spdlog"]
 	path = submodules/spdlog
 	url = https://github.com/gabime/spdlog.git
+[submodule "submodules/cryptopp"]
+	path = submodules/cryptopp
+	url = https://github.com/weidai11/cryptopp.git
