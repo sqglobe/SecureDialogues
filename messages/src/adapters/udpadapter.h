@@ -5,7 +5,6 @@
 
 #include <memory>
 
-
 #include <asio/ip/udp.hpp>
 
 class UdpAdapter : public AbstractChannelAdapter {

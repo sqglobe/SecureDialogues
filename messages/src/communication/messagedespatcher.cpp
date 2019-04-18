@@ -16,8 +16,8 @@
 
 #include "spdlog/spdlog.h"
 
-#include <iostream>
 #include <spdlog/sinks/stdout_color_sinks.h>
+#include <iostream>
 
 std::shared_ptr<spdlog::logger> MessageDespatcher::LOGGER =
     spdlog::stdout_color_mt("message-despatcher");

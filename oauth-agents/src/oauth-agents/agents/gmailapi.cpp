@@ -134,8 +134,8 @@ void GmailApi::sendMessage(const std::string& to,
 
   request.set_body(messBody);
 
-  auto task =
-      client.request(request).then([&builder](web::http::http_response response) {
+  auto task = client.request(request).then(
+      [&builder](web::http::http_response response) {
         if (web::http::status_codes::OK != response.status_code()) {
           throw HttpFailException(
               response.status_code(),
@@ -181,7 +181,8 @@ std::string GmailApi::loadMessages(
             }
             return response.extract_json();
           })
-          .then([this, &authHeaderName, &authToken, loadedMessages, &lastPageToken](web::json::value val) {
+          .then([this, &authHeaderName, &authToken, loadedMessages,
+                 &lastPageToken](web::json::value val) {
             try {
               if (!val.has_field("messages"))
                 return std::string();

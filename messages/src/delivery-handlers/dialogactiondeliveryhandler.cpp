@@ -5,8 +5,8 @@
 
 #include "interfaces/abstractusernotifier.h"
 
-#include "spdlog/spdlog.h"
 #include <spdlog/sinks/stdout_color_sinks.h>
+#include "spdlog/spdlog.h"
 
 static std::shared_ptr<spdlog::logger> LOGGER =
     spdlog::stdout_color_mt("dialog-action-delivery-handler");

@@ -49,7 +49,7 @@ ConnectionSaveStrategy::container::element ConnectionSaveStrategy::from_str(
       obj.setConnection(GmailConnaection{cols[2], cols[3]});
       break;
     }
-    case ConnectionType::VK:{
+    case ConnectionType::VK: {
       obj.setConnection(VkConnection{cols[2], cols[3]});
       break;
     }

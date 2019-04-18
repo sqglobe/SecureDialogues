@@ -11,8 +11,8 @@
 
 #include "containers/usermessage.h"
 
-#include "spdlog/spdlog.h"
 #include <spdlog/sinks/stdout_color_sinks.h>
+#include "spdlog/spdlog.h"
 
 std::shared_ptr<spdlog::logger> MessageActionHandler::LOGGER =
     spdlog::stdout_color_mt("message-action-handler");

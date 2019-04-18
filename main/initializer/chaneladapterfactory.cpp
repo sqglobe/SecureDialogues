@@ -1,13 +1,12 @@
 #include "chaneladapterfactory.h"
 #include <thread>
 
-#include "adapters/udpadapter.h"
 #include "adapters/oauthadapter.h"
+#include "adapters/udpadapter.h"
 
 #include "interfaces/abstractchanneladapter.h"
 #include "interfaces/abstractusernotifier.h"
 #include "primitives/connectionholder.h"
-
 
 class FakeChannelAdapter : public AbstractChannelAdapter {
  public:

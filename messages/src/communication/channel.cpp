@@ -8,9 +8,9 @@
 #include <assert.h>
 #include <thread>
 
+#include <spdlog/sinks/stdout_color_sinks.h>
 #include <iostream>
 #include "spdlog/spdlog.h"
-#include <spdlog/sinks/stdout_color_sinks.h>
 
 std::shared_ptr<spdlog::logger> Channel::LOGGER =
     spdlog::stdout_color_mt("channel");

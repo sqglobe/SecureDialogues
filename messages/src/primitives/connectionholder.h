@@ -13,9 +13,9 @@ struct GmailConnaection {
   std::string accessToken;
 };
 
-struct VkConnection{
-    std::string userId;
-    std::string accessToken;
+struct VkConnection {
+  std::string userId;
+  std::string accessToken;
 };
 
 template <typename T>

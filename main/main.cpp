@@ -1,10 +1,10 @@
+#include <spdlog/sinks/stdout_color_sinks.h>
 #include <QApplication>
 #include <QDir>
 #include <QMessageBox>
 #include "mainwindow.h"
 #include "passask.h"
 #include "spdlog/spdlog.h"
-#include <spdlog/sinks/stdout_color_sinks.h>
 
 static const std::string FILE_DIGEST = "conf/pass.digest";
 

@@ -3,8 +3,8 @@
 
 #include <cryptopp/osrng.h>
 #include <cryptopp/rsa.h>
-#include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
+#include <spdlog/spdlog.h>
 
 std::shared_ptr<spdlog::logger> AsymetricalKeyGenerator::LOGGER =
     spdlog::stdout_color_mt("asymetrical-key-generator");
