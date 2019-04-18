@@ -1,3 +1,6 @@
 [submodule "submodules/crossguid"]
 	path = submodules/crossguid
 	url = https://github.com/graeme-hill/crossguid.git
+[submodule "submodules/spdlog"]
+	path = submodules/spdlog
+	url = https://github.com/gabime/spdlog.git
