@@ -1,5 +1,7 @@
 project(oauth-agents)
 
+include(${TOP_DIR}/secrets.txt)
+
 set(SOURCES 
   oauth-agents/agents/gmailoauth.cpp
   oauth-agents/agents/vkoauth.cpp
