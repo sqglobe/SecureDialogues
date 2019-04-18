@@ -43,6 +43,16 @@ set(MCRYPTO_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/submodules)
 
 ENABLE_TESTING()
 
+if(NOT EXISTS ${PROJECT_SOURCE_DIR}/submodules/cryptopp)
+    message("cryptopp dir not exists. Make dirrectory")
+    execute_process(
+        COMMAND bash cryptopp.sh
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/submodules
+        )
+else()
+    message("cryptopp dir exists")
+endif()
+
 include_directories(${PROJECT_SOURCE_DIR}/submodules/spdlog/include)
 
 add_subdirectory(submodules/crossguid)
