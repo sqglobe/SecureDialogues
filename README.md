@@ -23,7 +23,7 @@
 Дополнительная информация находится в [wik проекта](https://github.com/sqglobe/SecureDialogues/wiki/Главная).
 Документация проекта - в парке **doc**
 
-## Сборка
+## Зависимости
 
 Для выполнения сборки необходимы:
 
@@ -49,31 +49,7 @@
 * [asciidoctor-pdf](https://asciidoctor.org/docs/asciidoctor-pdf)
 * [plantuml](http://plantuml.com/)
 
-Команда для инициализации зависимостей:
-
-```
-git submodule init
-git submodule update
-```
-
-Чтобы собрать проект без тестов, необходимо выполнить в папке с проектом
-```
-cmake -DBUILD_TESTING=OFF .
-make
-```
-
-По умолчанию проект собирается с тестами.
-
-Для запуска тестов достаточно выполнить команды:
-
-```
-make
-make test
-```
-
-Во время сборки, будет склонирована актуальная версия библиотеки **CryptoPP** в папку с проектом и выполнена ее статическая линковка.
-
-Бинарный файл находится в папке **bin** в дирректории сборки, а текущая документация в папке **documents** в дирректории сборки.
+Более подробно про процесс сборки на [wiki](https://github.com/sqglobe/SecureDialogues/wiki/%D0%A1%D0%B1%D0%BE%D1%80%D0%BA%D0%B0-%D0%BF%D1%80%D0%B8%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%B8%D1%8).
 
 ## Форматирование кода
 
@@ -105,16 +81,7 @@ docker build -t <image-name> --file docker/<docker file> .
 * **image-name** имя образа
 * **docker file** docker-файл, который используется для сборки под конкретную платформу.
 
-Например, для создания образа **ubuntu** **bionic** достаточно выполнить команду:
-
-```
-docker build -t secure-dialogues-ubuntu-bionic --file docker/ubuntu-bionic .
-```
-
-Среда сборки ожидает, что папка с исходными кодами смонтирована в /app/src, а папка, 
-куда выгружаются бинарные файлы и собранная документация в, смонтирована в /app/res.
-
-Исходя из изложенного, проект собирается командой:
+Проект собирается командой:
 
 ```
 docker run  --mount type=bind,source=<result folder>,target=/app/res --mount type=bind,source=<sources>,target=/app/src <image-name>
@@ -122,7 +89,7 @@ docker run  --mount type=bind,source=<result folder>,target=/app/res --mount typ
 
 Где:
 
-* **result folder** папка, в которую будут скопированы бинарные файлы и документация. Дирректория должна существовать.
+* **result folder** папка, в которую будут скопированы бинарные файлы и документация. Директория должна существовать.
 * **sources** путь к исходникам
 * **image-name** ранее созданный docker-образ
 
@@ -132,11 +99,7 @@ docker run  --mount type=bind,source=<result folder>,target=/app/res --mount typ
 docker run  --mount type=bind,source=/tmp/github/res,target=/app/res --mount type=bind,source=/tmp/github/SecureDialogues,target=/app/src secure-dialogues-ubuntu-bionic
 ```
 
-Добавлен make-файл **docker/Makefile** для сборки с помощью **docker** приложения под платформы:
-
-* **ubuntu 18.04** 
-* **ubuntu 16.04**
-* **centos 7**
+Более подробно на [wiki](https://github.com/sqglobe/SecureDialogues/wiki/docker)
 
 ## Запуск приложения в Docker
 

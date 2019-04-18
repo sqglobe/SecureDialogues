@@ -1,8 +1,9 @@
 *.pro.user
 build-*/
 *.txt.user
-cryptopp/*
+submodules/cryptopp/*
 docker/releases
 CMakeLists.txt.user.4.8-pre1
 docker/conf/
 docker/img/
+secrets.txt

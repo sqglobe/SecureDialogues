@@ -6,12 +6,8 @@
 #include "oauth-agents/agents/vkapi.h"
 #include "oauth-agents/agents/vkoauth.h"
 
-const std::string CLIENT_ID =
-    "522405214285-sb5ertr4rb1i1ig5eev1t31tr9voi7sq.apps.googleusercontent.com";
-const std::string CLIENT_SECRET = "WD51Gz38n1LK3rDQZ5zxFD0t";
 const std::string REDIRECT_URL = "urn:ietf:wg:oauth:2.0:oob";
 
-const std::string VK_CLIENT_ID = "6920247";
 const std::string VK_REDIRECT_URI = "https://oauth.vk.com/blank.html";
 
 class GmailOauthFactory : public OauthFactory {
@@ -21,12 +17,13 @@ class GmailOauthFactory : public OauthFactory {
     return std::make_unique<GmailApi>(clientId);
   }
   virtual std::unique_ptr<OAuthAgent> makeOauthAgent() const override {
-    return std::make_unique<GmailOauth>(CLIENT_ID, CLIENT_SECRET, REDIRECT_URL);
+    return std::make_unique<GmailOauth>(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET,
+                                        REDIRECT_URL);
   }
   virtual std::unique_ptr<OAuthAgent> makeOauthAgent(
       const std::string& refreshToken) const override {
-    return std::make_unique<GmailOauth>(CLIENT_ID, CLIENT_SECRET, REDIRECT_URL,
-                                        refreshToken);
+    return std::make_unique<GmailOauth>(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET,
+                                        REDIRECT_URL, refreshToken);
   }
 };
 
