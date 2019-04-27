@@ -58,6 +58,7 @@ include_directories(${PROJECT_SOURCE_DIR}/submodules/spdlog/include)
 
 add_subdirectory(submodules/crossguid)
 add_subdirectory(submodules/cryptopp)
+add_subdirectory(submodules/nlohmann_json)
 
 add_subdirectory( messages )
 add_subdirectory( gui )
@@ -66,6 +67,7 @@ add_subdirectory(encryption)
 add_subdirectory(utils)
 add_subdirectory(oauth-agents)
 add_subdirectory(doc)
+add_subdirectory(curl-wrapper)
 
 
 

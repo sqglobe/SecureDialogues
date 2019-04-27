@@ -7,6 +7,7 @@
 class UriBuilder {
  public:
   explicit UriBuilder(const std::string& path);
+  UriBuilder();
   UriBuilder(const UriBuilder& other);
   UriBuilder& operator=(const UriBuilder& other);
   ~UriBuilder();

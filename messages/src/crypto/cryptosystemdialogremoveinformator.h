@@ -13,7 +13,7 @@ class CryptoSystemImpl;
 class CryptoSystemDialogRemoveInformator
     : public ChangeWatcher<DialogManager::const_element> {
  public:
-  CryptoSystemDialogRemoveInformator(
+  explicit CryptoSystemDialogRemoveInformator(
       const std::shared_ptr<CryptoSystemImpl>& system);
 
  public:

@@ -19,7 +19,7 @@ class ConnectionHolder;
 class ChannelsListModel : public QAbstractListModel,
                           public ChangeWatcher<ConnectionHolder> {
  public:
-  ChannelsListModel(const std::vector<ConnectionHolder>& elements);
+  explicit ChannelsListModel(const std::vector<ConnectionHolder>& elements);
 
  public:
   int rowCount(const QModelIndex& = QModelIndex()) const override;

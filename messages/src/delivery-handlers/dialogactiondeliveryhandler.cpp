@@ -8,6 +8,8 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include "spdlog/spdlog.h"
 
+#undef ERROR
+
 static std::shared_ptr<spdlog::logger> LOGGER =
     spdlog::stdout_color_mt("dialog-action-delivery-handler");
 

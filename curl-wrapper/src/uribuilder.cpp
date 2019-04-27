@@ -19,6 +19,8 @@ UriBuilder::UriBuilder(const std::string& path) :
   }
 }
 
+UriBuilder::UriBuilder() : mCurl(curl_easy_init()) {}
+
 UriBuilder::UriBuilder(const UriBuilder& other) :
     mPath(other.mPath), mQuery(other.mQuery), mCurl(curl_easy_init()) {
   if (!mCurl) {

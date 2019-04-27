@@ -1,6 +1,8 @@
 #include "gmailoauth.h"
 
-#include <cpprest/http_client.h>
+#include <nlohmann/json.hpp>
+#include "httprequest.h"
+#include "uribuilder.h"
 
 #include "oauth-agents/exceptions/httpfailexception.h"
 
@@ -19,83 +21,51 @@ GmailOauth::GmailOauth(const std::string& clientId,
 }
 
 std::string GmailOauth::getUserUrl() const {
-  using namespace web;
-
-  uri_builder builder("https://accounts.google.com/o/oauth2/v2/auth");
-  builder.append_query("client_id", mClientId)
-      .append_query("redirect_uri", mRedirectUri)
-      .append_query("scope",
-                    "https://www.googleapis.com/auth/gmail.send "
-                    "https://www.googleapis.com/auth/gmail.readonly")
-      .append_query("response_type", "code")
-      .append_query("access_type", "offline");
-  return builder.to_string();
+  UriBuilder builder("https://accounts.google.com/o/oauth2/v2/auth");
+  builder.appendQuery("client_id", mClientId)
+      .appendQuery("redirect_uri", mRedirectUri)
+      .appendQuery("scope",
+                   "https://www.googleapis.com/auth/gmail.send "
+                   "https://www.googleapis.com/auth/gmail.readonly")
+      .appendQuery("response_type", "code")
+      .appendQuery("access_type", "offline");
+  return builder.getUri();
 }
 
 void GmailOauth::loadAccessToken(const std::string& userCode) {
-  using namespace web::http::client;  // HTTP client features
-  http_client client(U("https://www.googleapis.com/oauth2/v4/token"));
-  web::uri_builder builder;
-  builder.append_query("code", userCode)
-      .append_query("client_id", mClientId)
-      .append_query("client_secret", mClientSecret)
-      .append_query("redirect_uri", mRedirectUri)
-      .append_query("grant_type", "authorization_code");
-
-  auto task = client
-                  .request(web::http::methods::POST, "", builder.query(),
-                           "application/x-www-form-urlencoded")
-                  .then([](web::http::http_response response) {
-                    if (web::http::status_codes::OK != response.status_code()) {
-                      throw HttpFailException(
-                          response.status_code(),
-                          "https://www.googleapis.com/oauth2/v4/token",
-                          response.extract_string().get());
-                    }
-                    return response.extract_json();
-                  })
-                  .then([this](web::json::value val) {
-                    mAccessToken = val.at("access_token").as_string();
-                    mRefreshToken = val.at("refresh_token").as_string();
-                    mTokenType = val.at("token_type").as_string();
-                    mExpiresAt =
-                        std::chrono::system_clock::now() +
-                        std::chrono::seconds(val.at("expires_in").as_integer());
-                  });
-  task.wait();
+  UriBuilder builder;
+  builder.appendQuery("code", userCode)
+      .appendQuery("client_id", mClientId)
+      .appendQuery("client_secret", mClientSecret)
+      .appendQuery("redirect_uri", mRedirectUri)
+      .appendQuery("grant_type", "authorization_code");
+  HttpRequest request;
+  auto res = request.post(
+      "https://www.googleapis.com/oauth2/v4/token", builder.getQuery(),
+      {{"Content-Type", "application/x-www-form-urlencoded"}});
+  auto body = nlohmann::json::parse(res);
+  this->mAccessToken = body.at("access_token");
+  this->mRefreshToken = body.at("refresh_token");
+  this->mTokenType = body.at("token_type");
+  this->mExpiresAt = std::chrono::system_clock::now() +
+                     std::chrono::seconds(body.at("expires_in"));
 }
 
 void GmailOauth::refreshAccessToken() {
-  using namespace web;
-  using namespace web::http::client;  // HTTP client features
-
-  http_client client("https://www.googleapis.com/oauth2/v4/token");
-  uri_builder builder;
-  builder.append_query("refresh_token", mRefreshToken)
-      .append_query("client_id", mClientId)
-      .append_query("client_secret", mClientSecret)
-      .append_query("grant_type", "refresh_token");
-  auto task = client
-                  .request(web::http::methods::POST, "", builder.query(),
-                           "application/x-www-form-urlencoded")
-                  .then([&builder](web::http::http_response response) {
-                    if (web::http::status_codes::OK != response.status_code()) {
-                      throw HttpFailException(
-                          response.status_code(),
-                          "https://www.googleapis.com/oauth2/v4/token  " +
-                              builder.query(),
-                          response.to_string());
-                    }
-                    return response.extract_json();
-                  })
-                  .then([this](web::json::value val) {
-                    mAccessToken = val.at("access_token").as_string();
-                    mExpiresAt =
-                        std::chrono::system_clock::now() +
-                        std::chrono::seconds(val.at("expires_in").as_integer());
-                    mTokenType = val.at("token_type").as_string();
-                  });
-  task.wait();
+  UriBuilder builder;
+  builder.appendQuery("refresh_token", mRefreshToken)
+      .appendQuery("client_id", mClientId)
+      .appendQuery("client_secret", mClientSecret)
+      .appendQuery("grant_type", "refresh_token");
+  HttpRequest request;
+  auto response = request.post(
+      "https://www.googleapis.com/oauth2/v4/token", builder.getQuery(),
+      {{"Content-Type", "application/x-www-form-urlencoded"}});
+  auto body = nlohmann::json::parse(response);
+  mAccessToken = body.at("access_token");
+  mExpiresAt = std::chrono::system_clock::now() +
+               std::chrono::seconds(body.at("expires_in"));
+  mTokenType = body.at("token_type");
 }
 
 std::pair<std::string, std::string> GmailOauth::getAuthParam() const {

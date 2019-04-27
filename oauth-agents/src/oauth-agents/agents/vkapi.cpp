@@ -1,8 +1,15 @@
 #include "vkapi.h"
 
-#include <cpprest/http_client.h>
+#include <nlohmann/json.hpp>
+#include <random>
+#include "httprequest.h"
 #include "oauth-agents/exceptions/httpfailexception.h"
 #include "oauth-agents/utils/base64.h"
+#include "uribuilder.h"
+
+#include <nlohmann/json.hpp>
+#include "httprequest.h"
+#include "uribuilder.h"
 
 #include <limits>
 #include <tuple>
@@ -65,132 +72,79 @@ VkApi::VkApi(const std::string& userId) : mUserId(userId) {}
 std::list<std::pair<std::string, std::string> > VkApi::getMessages(
     const std::string& authHeaderName,
     const std::string& authToken) {
-  using namespace web::http::client;  // HTTP client features
   if (mServer.empty()) {
     std::tie(mServer, mKey, mLastNumber) =
         getLongPollServer(authHeaderName, authToken);
   }
-  http_client client(U("https://" + mServer));
-  web::uri_builder builder;
-  builder.append_query("act", "a_check")
-      .append_query("key", mKey)
-      .append_query("ts", std::to_string(mLastNumber))
-      .append_query("wait", "25")
-      .append_query("version", "3");
-  web::http::http_request request(web::http::methods::GET);
-  request.set_request_uri(builder.to_string());
-  auto task =
-      client.request(request)
-          .then([&builder](web::http::http_response response) {
-            if (web::http::status_codes::OK != response.status_code()) {
-              throw HttpFailException(
-                  response.status_code(),
-                  "https://api.vk.com/method" + builder.to_string(),
-                  response.extract_string().get());
-            }
-            return response.extract_json();
-          })
-          .then([this, &authHeaderName, &authToken](web::json::value val) {
-            if (val.has_field("failed")) {
-              auto failed = val.at("failed").as_integer();
-              if (failed == 1) {
-                mLastNumber = val.at("ts").as_integer();
-              } else {
-                std::tie(mServer, mKey, mLastNumber) =
-                    getLongPollServer(authHeaderName, authToken);
-              }
-              return std::list<std::pair<std::string, std::string> >();
-            }
-            mLastNumber = val.as_object().at("ts").as_integer();
-            auto updates = val.at("updates").as_array();
-            std::list<std::pair<std::string, std::string> > messages;
-            LOGGER->debug("Recieved values: {0}", val.serialize());
-            for (auto up : updates) {
-              LOGGER->debug("update element: {0}", up.serialize());
-              if (auto element = up.as_array();
-                  element.size() >= ELEMENTS_COUNT &&
-                  element.at(TYPE).as_integer() == 4) {
-                auto [flags, peer, text] =
-                    std::tuple(element.at(FLAGS).as_integer(),
-                               element.at(PEER).as_integer(),
-                               element.at(TEXT).as_string());
-                if (!(flags & OUTBOX)) {
-                  messages.push_back(std::pair(std::to_string(peer), text));
-                }
-              }
-            }
-            return messages;
-          });
-  return task.get();
+
+  UriBuilder builder("https://" + mServer);
+  builder.appendQuery("act", "a_check")
+      .appendQuery("key", mKey)
+      .appendQuery("ts", std::to_string(mLastNumber))
+      .appendQuery("wait", "25")
+      .appendQuery("version", "3");
+  auto response = HttpRequest().get(builder.getUri());
+  auto body = nlohmann::json::parse(response);
+  if (body.contains("failed")) {
+    if (auto failed = body.at("failed"); failed == 1) {
+      mLastNumber = body.at("ts");
+    } else {
+      std::tie(mServer, mKey, mLastNumber) =
+          getLongPollServer(authHeaderName, authToken);
+    }
+    return std::list<std::pair<std::string, std::string> >();
+  }
+  mLastNumber = body.at("ts");
+  auto updates = body.at("updates");
+  std::list<std::pair<std::string, std::string> > messages;
+  for (auto element : updates) {
+    if (element.size() >= ELEMENTS_COUNT && element.at(TYPE) == 4) {
+      auto [flags, peer, text] =
+          std::tuple(static_cast<int>(element.at(FLAGS)),
+                     static_cast<int>(element.at(PEER)), element.at(TEXT));
+      if (!(flags & OUTBOX)) {
+        messages.push_back(std::pair(std::to_string(peer), text));
+      }
+    }
+  }
+  return messages;
 }
 
 void VkApi::sendMessage(const std::string& to,
                         const std::string& body,
                         const std::string& authHeaderName,
                         const std::string& authToken) {
-  using namespace web::http::client;  // HTTP client features
-  http_client client(U("https://api.vk.com/method/messages.send"));
-  web::uri_builder builder;
-  builder.append_query("v", "5.92")
-      .append_query("user_id", to)
-      .append_query("peer_id", to)
-      .append_query("message", body)
-      .append_query(authHeaderName, authToken)
-      .append_query("random_id", getRaindomId());
-  web::http::http_request request(web::http::methods::POST);
-  request.headers().add("Content-type", "application/x-www-form-urlencoded");
-  request.set_body(builder.query());
-  LOGGER->debug("Send message to vk: {0}", builder.query());
-  client.request(request)
-      .then([](web::http::http_response response) {
-        if (web::http::status_codes::OK != response.status_code()) {
-          throw HttpFailException(response.status_code(),
-                                  "https://api.vk.com/method/messages.send",
-                                  response.extract_string().get());
-        }
-        return response.extract_json();
-      })
-      .then([&to](web::json::value val) {
-        if (val.has_field("error")) {
-          std::string errorMessage = "Не удалось отправить сообщение ";
-          errorMessage.append(to)
-              .append(". Причина: ")
-              .append(getErrorDescription(
-                  val.at("error").at("error_code").as_integer()));
-          throw std::runtime_error(errorMessage);
-        }
-      })
-      .wait();
+  UriBuilder builder;
+  builder.appendQuery("v", "5.92")
+      .appendQuery("user_id", to)
+      .appendQuery("peer_id", to)
+      .appendQuery("message", body)
+      .appendQuery(authHeaderName, authToken)
+      .appendQuery("random_id", getRaindomId());
+  auto response = HttpRequest().post(
+      "https://api.vk.com/method/messages.send", builder.getQuery(),
+      {{"Content-type", "application/x-www-form-urlencoded"}});
+
+  auto json = nlohmann::json::parse(response);
+  if (json.contains("error")) {
+    std::string errorMessage = "Не удалось отправить сообщение ";
+    errorMessage.append(to)
+        .append(". Причина: ")
+        .append(getErrorDescription(json.at("error").at("error_code")));
+    throw std::runtime_error(errorMessage);
+  }
 }
 
 std::tuple<std::string, std::string, int> VkApi::getLongPollServer(
     const std::string& authHeaderName,
     const std::string& authToken) {
-  using namespace web::http::client;  // HTTP client features
-  web::uri_builder builder;
-  builder.append_path("messages.getLongPollServer")
-      .append_query("v", "5.92")
-      .append_query(authHeaderName, authToken)
-      .append_query("lp_version", "3");
-
-  http_client client(U("https://api.vk.com/method/"));
-  web::http::http_request request(web::http::methods::GET);
-  request.set_request_uri(builder.to_string());
-  auto task = client.request(request)
-                  .then([&builder](web::http::http_response response) {
-                    if (web::http::status_codes::OK != response.status_code()) {
-                      throw HttpFailException(
-                          response.status_code(),
-                          "https://api.vk.com/method" + builder.to_string(),
-                          response.extract_string().get());
-                    }
-                    return response.extract_json();
-                  })
-                  .then([](web::json::value val) {
-                    auto data = val.at("response");
-                    return std::make_tuple(data.at("server").as_string(),
-                                           data.at("key").as_string(),
-                                           data.at("ts").as_integer());
-                  });
-  return task.get();
+  UriBuilder builder("https://api.vk.com/method/");
+  builder.appendPath("messages.getLongPollServer")
+      .appendQuery("v", "5.92")
+      .appendQuery(authHeaderName, authToken)
+      .appendQuery("lp_version", "3");
+  auto response = HttpRequest().get(builder.getUri());
+  auto json = nlohmann::json::parse(response);
+  auto data = json.at("response");
+  return std::make_tuple(data.at("server"), data.at("key"), data.at("ts"));
 }

@@ -16,7 +16,7 @@ class DialogInfo {
   std::chrono::system_clock::time_point mLastUpdated;
 
  public:
-  DialogInfo(const std::shared_ptr<const Dialog>& elem);
+  explicit DialogInfo(const std::shared_ptr<const Dialog>& elem);
   DialogInfo& operator=(const DialogInfo& info);
   DialogInfo& operator=(const std::shared_ptr<const Dialog>& info);
   DialogInfo();

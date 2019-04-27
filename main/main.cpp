@@ -8,6 +8,12 @@
 
 static const std::string FILE_DIGEST = "conf/pass.digest";
 
+#ifdef WINDOWS_SECURE_DIALOGUES
+#include <QtPlugin>
+Q_IMPORT_PLUGIN(QWindowsIntegrationPlugin)
+Q_IMPORT_PLUGIN(QICOPlugin)
+#endif
+
 int main(int argc, char* argv[]) {
   spdlog::set_level(spdlog::level::debug);  // Set global log level to info
   auto console = spdlog::stdout_color_mt("main");
