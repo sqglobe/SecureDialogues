@@ -1,0 +1,55 @@
+# В качестве базового образа используем ubuntu:latest
+FROM ubuntu:bionic
+
+RUN  apt-get update \
+  && apt-get install -y git make
+
+RUN apt-get install -y \
+    autoconf \
+    automake \
+    autopoint \
+    bash \
+    bison \
+    bzip2 \
+    flex \
+    g++ \
+    g++-multilib \
+    gettext \
+    git \
+    gperf \
+    intltool \
+    libc6-dev-i386 \
+    libgdk-pixbuf2.0-dev \
+    libltdl-dev \
+    libssl-dev \
+    libtool-bin \
+    libxml-parser-perl \
+    lzip \
+    make \
+    openssl \
+    p7zip-full \
+    patch \
+    perl \
+    pkg-config \
+    python \
+    ruby \
+    sed \
+    unzip \
+    wget 
+
+RUN mkdir /cross && cd /cross && git clone https://github.com/mxe/mxe.git && cd mxe && git checkout build-2019-03-04
+
+WORKDIR /cross/mxe
+
+ADD curl.mk /cross/mxe/src
+
+
+RUN make MXE_TARGETS=i686-w64-mingw32.static MXE_PLUGIN_DIRS=plugins/gcc7 gcc  curl openssl boost qt5 BUILD_STATIC=ON 
+
+ENV PATH="/cross/mxe/usr/bin:${PATH}"
+
+WORKDIR /app/build
+
+ENTRYPOINT i686-w64-mingw32.static-cmake -DBUILD_TESTING=OFF -DJSON_BuildTests=OFF -DJSON_Install=OFF -DXG_TESTS=OFF /app/src \
+        && i686-w64-mingw32.static-cmake --build . \
+        && cp bin/SecureDialogues.exe /app/res/SecureDialogues-windows-i686.exe

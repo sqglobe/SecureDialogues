@@ -9,7 +9,7 @@ CONF_DIR=$(CURR_DIR)/conf
 IMG_DIR=$(CURR_DIR)/img/
 EXECUTABLE_FOR_DOCKER=SecureDialogues-ubuntu-18.04-x86_64
 
-DOCKERS=centos7 ubuntu-bionic ubuntu-xenial
+DOCKERS=centos7 ubuntu-bionic ubuntu-xenial windows
 
 $(shell   mkdir -p $(IMG_DIR))
 $(shell   mkdir -p $(RELEASE_DIR))
