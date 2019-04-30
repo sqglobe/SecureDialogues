@@ -32,7 +32,7 @@ set(HEADERS
 
 )
 
-
+INCLUDE_DIRECTORIES(${CURL_INCLUDE_DIR})
 add_library(oauth-agents STATIC ${SOURCES} ${HEADERS})
 
 target_include_directories(oauth-agents PUBLIC  ${CMAKE_CURRENT_SOURCE_DIR})
