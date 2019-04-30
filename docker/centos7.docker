@@ -27,6 +27,6 @@ WORKDIR /app/build
 
 # Установим точку входа 
 ENTRYPOINT  scl enable devtoolset-7 \
-      "cmake -DBUILD_TESTING=OFF -DJSON_BuildTests=OFF -DJSON_Install=OFF -DXG_TESTS=OFF /app/src && cmake --build ." && \
+      "cmake -DBUILD_TESTING=OFF -DJSON_BuildTests=OFF -DJSON_Install=OFF -DXG_TESTS=OFF /app/src && make -j4 JOBS=4" && \
       cp bin/SecureDialogues /app/res/SecureDialogues-centos7-x86_64
 
