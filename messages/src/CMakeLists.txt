@@ -1,7 +1,7 @@
 project(messages)
 
 find_package (Threads)
-find_package(Boost COMPONENTS system REQUIRED)
+find_package(Boost  REQUIRED system)
 
 set(SOURCES 
 primitives/dialogmessage.cpp

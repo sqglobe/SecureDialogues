@@ -57,7 +57,7 @@ set(GUI_MODULE_HEADERS
 )
 
 
-add_library(gui ${GUI_MODULE_SOURCES} ${GUI_MODULE_HEADERS})
+add_library(gui STATIC ${GUI_MODULE_SOURCES} ${GUI_MODULE_HEADERS})
 
 target_include_directories(gui PUBLIC  ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries( gui messages ${Qt5Widgets_LIBRARIES} )

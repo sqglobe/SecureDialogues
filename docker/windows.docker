@@ -44,12 +44,21 @@ WORKDIR /cross/mxe
 ADD curl.mk /cross/mxe/src
 
 
-RUN make MXE_TARGETS=i686-w64-mingw32.static MXE_PLUGIN_DIRS=plugins/gcc7 gcc  curl openssl boost qt5 BUILD_STATIC=ON 
+RUN make MXE_TARGETS=i686-w64-mingw32.shared MXE_PLUGIN_DIRS=plugins/gcc7 qtbase -j4 JOBS=4
+RUN make MXE_TARGETS=i686-w64-mingw32.static MXE_PLUGIN_DIRS=plugins/gcc7 curl openssl boost BUILD_STATIC=ON  -j4 JOBS=4
+RUN make MXE_TARGETS=i686-w64-mingw32.shared MXE_PLUGIN_DIRS=plugins/gcc7 gcc harfbuzz pthreads zlib libpng pcre2 -j4 JOBS=4
 
 ENV PATH="/cross/mxe/usr/bin:${PATH}"
 
 WORKDIR /app/build
 
-ENTRYPOINT i686-w64-mingw32.static-cmake -DBUILD_TESTING=OFF -DJSON_BuildTests=OFF -DJSON_Install=OFF -DXG_TESTS=OFF /app/src \
-        && i686-w64-mingw32.static-cmake --build . \
+ENTRYPOINT i686-w64-mingw32.shared-cmake \
+     -DBUILD_TESTING=OFF \
+     -DJSON_BuildTests=OFF \
+     -DJSON_Install=OFF \
+     -DXG_TESTS=OFF \
+     -DCURL_LIBRARY=/cross/mxe/usr/i686-w64-mingw32.static/lib \
+     -DCURL_INCLUDE_DIR=/cross/mxe/usr/i686-w64-mingw32.static/include \
+     /app/src \
+        && make -j4 JOBS=4 \
         && cp bin/SecureDialogues.exe /app/res/SecureDialogues-windows-i686.exe
