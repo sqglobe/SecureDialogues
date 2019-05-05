@@ -25,6 +25,7 @@ define $(PKG)_BUILD
         --without-libidn2 \
         --enable-sspi \
         --enable-ipv6 \
+        --enable-static \
         --without-libssh2 \
         LIBS=`'$(TARGET)-pkg-config' pthreads --libs`
     $(MAKE) -C '$(1)' -j '$(JOBS)' install $(MXE_DISABLE_DOCS)

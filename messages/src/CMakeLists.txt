@@ -93,5 +93,5 @@ adapters/oauthadapter.h
 add_library(messages STATIC ${SOURCES} ${HEADERS})
 
 target_include_directories(messages PUBLIC   ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries( messages cryptopp-static xg encryption oauth-agents ${CMAKE_THREAD_LIBS_INIT} ${Boost_SYSTEM_LIBRARY})
+target_link_libraries( messages ${PROJ_CRYPTOPP_LIB} xg encryption oauth-agents ${CMAKE_THREAD_LIBS_INIT} ${Boost_SYSTEM_LIBRARY})
 

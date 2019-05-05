@@ -37,28 +37,27 @@ RUN apt-get install -y \
     unzip \
     wget 
 
-RUN mkdir /cross && cd /cross && git clone https://github.com/mxe/mxe.git && cd mxe && git checkout build-2019-03-04
+RUN mkdir /cross && cd /cross && git clone https://github.com/mxe/mxe.git
 
 WORKDIR /cross/mxe
 
 ADD curl.mk /cross/mxe/src
+RUN make MXE_TARGETS=i686-w64-mingw32.shared.posix MXE_PLUGIN_DIRS=plugins/gcc7 gcc 
+RUN make MXE_TARGETS=i686-w64-mingw32.shared.posix MXE_PLUGIN_DIRS=plugins/gcc7 qtbase -j4 JOBS=4
+RUN make MXE_TARGETS=i686-w64-mingw32.shared.posix MXE_PLUGIN_DIRS=plugins/gcc7 boost -j4 JOBS=4
+RUN make MXE_TARGETS=i686-w64-mingw32.shared.posix MXE_PLUGIN_DIRS=plugins/gcc7 curl openssl -j4 JOBS=4
+RUN make MXE_TARGETS=i686-w64-mingw32.shared.posix MXE_PLUGIN_DIRS=plugins/gcc7 pthreads
 
-
-RUN make MXE_TARGETS=i686-w64-mingw32.shared MXE_PLUGIN_DIRS=plugins/gcc7 qtbase -j4 JOBS=4
-RUN make MXE_TARGETS=i686-w64-mingw32.static MXE_PLUGIN_DIRS=plugins/gcc7 curl openssl boost BUILD_STATIC=ON  -j4 JOBS=4
-RUN make MXE_TARGETS=i686-w64-mingw32.shared MXE_PLUGIN_DIRS=plugins/gcc7 gcc harfbuzz pthreads zlib libpng pcre2 -j4 JOBS=4
 
 ENV PATH="/cross/mxe/usr/bin:${PATH}"
 
 WORKDIR /app/build
 
-ENTRYPOINT i686-w64-mingw32.shared-cmake \
+ENTRYPOINT i686-w64-mingw32.shared.posix-cmake \
      -DBUILD_TESTING=OFF \
      -DJSON_BuildTests=OFF \
      -DJSON_Install=OFF \
      -DXG_TESTS=OFF \
-     -DCURL_LIBRARY=/cross/mxe/usr/i686-w64-mingw32.static/lib \
-     -DCURL_INCLUDE_DIR=/cross/mxe/usr/i686-w64-mingw32.static/include \
      /app/src \
         && make -j4 JOBS=4 \
         && cp bin/SecureDialogues.exe /app/res/SecureDialogues-windows-i686.exe
