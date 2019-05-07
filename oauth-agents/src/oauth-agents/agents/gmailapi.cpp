@@ -19,7 +19,7 @@
 
 const int MAX_SECONDS_OLD = 120;
 
-bool isMessageOld(long messageTime) {
+bool isMessageOld(long long messageTime) {
   auto timePt =
       std::chrono::system_clock::now() - std::chrono::seconds(MAX_SECONDS_OLD);
   return messageTime < std::chrono::duration_cast<std::chrono::milliseconds>(
@@ -45,7 +45,9 @@ std::pair<std::string, std::string> getMail(const std::string& id,
         std::find_if(headers.cbegin(), headers.cend(), [](const auto& val) {
           return val.contains("name") && val.at("name") == "From";
         });
-    if (!isMessageOld(body.at("internalDate")) && it != headers.cend()) {
+    if (!isMessageOld(
+            std::stoll(static_cast<std::string>(body.at("internalDate")))) &&
+        it != headers.cend()) {
       std::smatch sm;  // same as std::match_results<string::const_iterator>
                        // sm;
       std::string val = it->at("value");
@@ -61,8 +63,7 @@ std::pair<std::string, std::string> getMail(const std::string& id,
       return std::pair<std::string, std::string>(toMail, body);
     }
   } catch (std::exception& ex) {
-    std::cout << "Catch exception " << ex.what() << " when load user mail "
-              << std::endl;
+    std::cout << "Catch exception " << ex.what() << std::endl;
   }
   return std::pair<std::string, std::string>("", "");
 }
@@ -136,7 +137,7 @@ std::string GmailApi::loadMessages(
       breaked = true;
       break;
     } else {
-      loadedMessages->push_back(
+      loadedMessages->push_front(
           getMail(id, authHeaderName, authToken, mUserMail));
     }
   }

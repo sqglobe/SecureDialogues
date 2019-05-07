@@ -41,23 +41,58 @@ RUN mkdir /cross && cd /cross && git clone https://github.com/mxe/mxe.git
 
 WORKDIR /cross/mxe
 
-ADD curl.mk /cross/mxe/src
-RUN make MXE_TARGETS=i686-w64-mingw32.shared.posix MXE_PLUGIN_DIRS=plugins/gcc7 gcc 
-RUN make MXE_TARGETS=i686-w64-mingw32.shared.posix MXE_PLUGIN_DIRS=plugins/gcc7 qtbase -j4 JOBS=4
-RUN make MXE_TARGETS=i686-w64-mingw32.shared.posix MXE_PLUGIN_DIRS=plugins/gcc7 boost -j4 JOBS=4
-RUN make MXE_TARGETS=i686-w64-mingw32.shared.posix MXE_PLUGIN_DIRS=plugins/gcc7 curl openssl -j4 JOBS=4
-RUN make MXE_TARGETS=i686-w64-mingw32.shared.posix MXE_PLUGIN_DIRS=plugins/gcc7 pthreads
-
+RUN make MXE_TARGETS=i686-w64-mingw32.shared MXE_PLUGIN_DIRS=plugins/gcc7 gcc qtbase boost -j4 JOBS=4
 
 ENV PATH="/cross/mxe/usr/bin:${PATH}"
 
+WORKDIR /submodules
+RUN git clone https://github.com/curl/curl.git
+WORKDIR /submodules/curl-build
+
+RUN i686-w64-mingw32.shared-cmake \
+       -DBUILD_TESTING=OFF \
+       -DHTTP_ONLY=ON \
+       -DUSE_OPENSSL=ON \
+       -DBUILD_CURL_EXE=OFF \
+       -DCURL_STATICLIB=ON \
+       -DBUILD_SHARED_LIBS=OFF \
+       -DUSE_LIBSSH2=OFF \
+      /submodules/curl && make && make install
+      
+
 WORKDIR /app/build
 
-ENTRYPOINT i686-w64-mingw32.shared.posix-cmake \
+ENTRYPOINT i686-w64-mingw32.shared-cmake \
      -DBUILD_TESTING=OFF \
      -DJSON_BuildTests=OFF \
      -DJSON_Install=OFF \
      -DXG_TESTS=OFF \
+     -DBUILD_STATIC=ON \
+     -DBUILD_SHARED_LIBS=OFF \
      /app/src \
-        && make -j4 JOBS=4 \
-        && cp bin/SecureDialogues.exe /app/res/SecureDialogues-windows-i686.exe
+  && make -j4 JOBS=4 \
+  && mkdir -p /app/res/SecureDialogues-windows-i686 /app/res/SecureDialogues-windows-i686/platforms/ /app/res/SecureDialogues-windows-i686/styles \
+  && cp bin/SecureDialogues.exe /app/res/SecureDialogues-windows-i686/SecureDialogues-windows-i686.exe \
+  && cp /cross/mxe/usr/i686-w64-mingw32.shared/bin/libboost_system-mt.dll \
+   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libwinpthread-1.dll \
+   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libgcc_s_sjlj-1.dll \
+   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libstdc++-6.dll \
+   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libcrypto-1_1.dll \
+   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libssl-1_1.dll \
+   /cross/mxe/usr/i686-w64-mingw32.shared/bin/zlib1.dll \
+   /cross/mxe/usr/i686-w64-mingw32.shared/qt5/bin/Qt5Core.dll \
+   /cross/mxe/usr/i686-w64-mingw32.shared/qt5/bin/Qt5Gui.dll \
+   /cross/mxe/usr/i686-w64-mingw32.shared/qt5/bin/Qt5Widgets.dll \
+   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libpcre2-16-0.dll \
+   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libharfbuzz-0.dll \
+   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libpng16-16.dll \
+   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libfreetype-6.dll \
+   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libglib-2.0-0.dll \
+   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libbz2.dll \
+   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libintl-8.dll \
+   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libiconv-2.dll \
+   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libpcre-1.dll \
+   /app/res/SecureDialogues-windows-i686 \
+  && cp /cross/mxe/usr/i686-w64-mingw32.shared/qt5/plugins/platforms/qwindows.dll /app/res/SecureDialogues-windows-i686/platforms/ \
+  && cp /cross/mxe/usr/i686-w64-mingw32.shared/qt5/plugins/styles/qwindowsvistastyle.dll /app/res/SecureDialogues-windows-i686/styles 
+        

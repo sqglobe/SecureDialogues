@@ -41,18 +41,8 @@ set(ENCRYPTION_HEADERS
 
 )
 
-set(PROJ_CRYPTOPP_LIB "cryptopp-static")
-
-if(BUILD_STATIC)
-  set(PROJ_CRYPTOPP_LIB "cryptopp-static")
-else()
-  set(PROJ_CRYPTOPP_LIB "cryptopp-shared")
-endif(BUILD_STATIC)
 
 add_library(encryption STATIC ${ENCRYPTION_SOURCES} ${ENCRYPTION_HEADERS})
 
-message("source diid" ${PROJECT_SOURCE_DIR})
-message("used cryptopp:" ${PROJ_CRYPTOPP_LIB})
-
 target_include_directories(encryption PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${MCRYPTO_INCLUDE_DIR})
-target_link_libraries( encryption ${PROJ_CRYPTOPP_LIB} utils)
+target_link_libraries( encryption cryptopp-static utils)
