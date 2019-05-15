@@ -1,4 +1,4 @@
-#ifndef ASYMETRICALKEYSAVER_H
+#ifndef ASYMETRICALKEYSERIALIZER_H
 #define ASYMETRICALKEYSERIALIZER_H
 #include "utils/interfaces/objectdeserializer.h"
 #include "utils/interfaces/objectserializer.h"
@@ -10,4 +10,4 @@ class AsymetricalKeySerializer : public ObjectDeserializer<AsymetricalKeyStore>,
   virtual ~AsymetricalKeySerializer() = default;
 };
 
-#endif  // ASYMETRICALKEYSAVER_H
+#endif  // ASYMETRICALKEYSERIALIZER_H
