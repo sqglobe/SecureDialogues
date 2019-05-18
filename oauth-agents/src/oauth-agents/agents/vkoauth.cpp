@@ -1,5 +1,6 @@
 #include "vkoauth.h"
-#include <cpprest/http_client.h>
+
+#include "uribuilder.h"
 
 VkOauth::VkOauth(const std::string& clientId, const std::string& redirectUri) :
     mClientId(clientId), mRedirectUri(redirectUri) {}
@@ -12,16 +13,15 @@ VkOauth::VkOauth(const std::string& clientId,
 }
 
 std::string VkOauth::getUserUrl() const {
-  using namespace web;
+  UriBuilder builder("https://oauth.vk.com/authorize");
 
-  uri_builder builder("https://oauth.vk.com/authorize");
-  builder.append_query("client_id", mClientId)
-      .append_query("redirect_uri", mRedirectUri)
-      .append_query("scope", "69632")
-      .append_query("display", "page")
-      .append_query("response_type", "token")
-      .append_query("v", "5.92");
-  return builder.to_string();
+  builder.appendQuery("client_id", mClientId)
+      .appendQuery("redirect_uri", mRedirectUri)
+      .appendQuery("scope", "69632")
+      .appendQuery("display", "page")
+      .appendQuery("response_type", "token")
+      .appendQuery("v", "5.92");
+  return builder.getUri();
 }
 
 void VkOauth::loadAccessToken(const std::string& userCode) {

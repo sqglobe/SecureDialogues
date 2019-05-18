@@ -19,7 +19,7 @@
   class ModelClass : public QAbstractListModel,                                \
                      public ChangeWatcher<ContainerClass::const_element> {     \
    public:                                                                     \
-    ModelClass(const std::shared_ptr<ContainerClass>& cont);                   \
+    explicit ModelClass(const std::shared_ptr<ContainerClass>& cont);          \
     ContainerClass::const_element getAt(const QModelIndex& pos) const;         \
                                                                                \
    public:                                                                     \

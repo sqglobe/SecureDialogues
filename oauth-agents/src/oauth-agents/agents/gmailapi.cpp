@@ -1,9 +1,8 @@
 #include "gmailapi.h"
-
-#include <cpprest/http_client.h>
 #include "oauth-agents/exceptions/httpfailexception.h"
 
 #include <algorithm>
+#include <iostream>
 #include <iterator>
 
 #include <regex>
@@ -14,83 +13,59 @@
 #include <sstream>
 #include "oauth-agents/utils/base64.h"
 
+#include <nlohmann/json.hpp>
+#include "httprequest.h"
+#include "uribuilder.h"
+
 const int MAX_SECONDS_OLD = 120;
 
-bool isMessageOld(const web::json::value& val) {
+bool isMessageOld(long long messageTime) {
   auto timePt =
       std::chrono::system_clock::now() - std::chrono::seconds(MAX_SECONDS_OLD);
-  auto messageTime = std::stol(val.at(U("internalDate")).as_string());
   return messageTime < std::chrono::duration_cast<std::chrono::milliseconds>(
                            timePt.time_since_epoch())
                            .count();
 }
 
-pplx::task<std::pair<std::string, std::string>> getMail(
-    const std::string& id,
-    const std::string& authHeaderName,
-    const std::string& authToken,
-    const std::string& mail) {
-  using namespace web::http::client;  // HTTP client features
-  web::uri_builder builder;
-  builder.append_path(mail).append_path("messages").append_path(id);
+std::pair<std::string, std::string> getMail(const std::string& id,
+                                            const std::string& authHeaderName,
+                                            const std::string& authToken,
+                                            const std::string& mail) {
+  UriBuilder builder("https://www.googleapis.com/gmail/v1/users");
+  builder.appendPath(mail).appendPath("messages").appendPath(id);
 
-  http_client client(U("https://www.googleapis.com/gmail/v1/users"));
-  web::http::http_request request(web::http::methods::GET);
-  request.set_request_uri(builder.to_string());
-  request.headers().add(authHeaderName, authToken);
+  HttpRequest request;
+  auto response = request.get(builder.getUri(), {{authHeaderName, authToken}});
+  try {
+    auto body = nlohmann::json::parse(response);
 
-  auto task =
-      client.request(request)
-          .then([&builder](web::http::http_response response) {
-            if (web::http::status_codes::OK != response.status_code()) {
-              throw HttpFailException(
-                  response.status_code(),
-                  "https://www.googleapis.com/gmail/v1/users" +
-                      builder.to_string(),
-                  response.extract_string().get());
-            }
-            return response.extract_json();
-          })
-          .then([&mail](web::json::value val) {
-            try {
-              auto playload = val.at("payload");
-              auto headers = playload.at(U("headers")).as_array();
-              auto it =
-                  std::find_if(headers.cbegin(), headers.cend(),
-                               [](const web::json::value& val) {
-                                 return val.has_field("name") &&
-                                        val.at("name").as_string() == "From";
-                               });
-              if (!isMessageOld(val) && it != headers.cend()) {
-                std::smatch
-                    sm;  // same as std::match_results<string::const_iterator>
-                         // sm;
-                std::string toMail =
-                    std::regex_search(it->at("value").as_string(), sm,
-                                      std::regex("<([^>]+)>")) &&
-                            sm.size() > 0
-                        ? sm[1]
-                        : it->at("value").as_string();
-                std::string body =
-                    playload.at("body").at("size").as_integer() == 0 ||
-                            playload.at("mimeType").as_string() !=
-                                "text/plain" ||
-                            mail == toMail
-                        ? ""
-                        : base64_decode(playload.at("body")
-                                            .as_object()
-                                            .at("data")
-                                            .as_string());
-                return std::pair<std::string, std::string>(toMail, body);
-              }
-
-            } catch (std::exception& ex) {
-              std::cout << "Catch exception " << ex.what()
-                        << " when load user mail " << std::endl;
-            }
-            return std::pair<std::string, std::string>("", "");
-          });
-  return task;
+    auto playload = body.at("payload");
+    auto headers = playload.at("headers");
+    auto it =
+        std::find_if(headers.cbegin(), headers.cend(), [](const auto& val) {
+          return val.contains("name") && val.at("name") == "From";
+        });
+    if (!isMessageOld(
+            std::stoll(static_cast<std::string>(body.at("internalDate")))) &&
+        it != headers.cend()) {
+      std::smatch sm;  // same as std::match_results<string::const_iterator>
+                       // sm;
+      std::string val = it->at("value");
+      std::string toMail =
+          std::regex_search(val, sm, std::regex("<([^>]+)>")) && sm.size() > 0
+              ? sm[1]
+              : std::string(it->at("value"));
+      std::string body = playload.at("body").at("size") == 0 ||
+                                 playload.at("mimeType") != "text/plain" ||
+                                 mail == toMail
+                             ? ""
+                             : base64_decode(playload.at("body").at("data"));
+      return std::pair<std::string, std::string>(toMail, body);
+    }
+  } catch (std::exception& ex) {
+    std::cout << "Catch exception " << ex.what() << std::endl;
+  }
+  return std::pair<std::string, std::string>("", "");
 }
 
 std::string getTimeFilter() {
@@ -117,35 +92,18 @@ void GmailApi::sendMessage(const std::string& to,
 
   auto messBody = ss.str();
 
-  using namespace web::http::client;  // HTTP client features
-  web::uri_builder builder;
-  builder.append_path(mUserMail)
-      .append_path("messages")
-      .append_path("send")
-      .append_query("uploadType", "media");
+  UriBuilder builder("https://www.googleapis.com/upload/gmail/v1/users");
+  builder.appendPath(mUserMail)
+      .appendPath("messages")
+      .appendPath("send")
+      .appendQuery("uploadType", "media");
 
-  http_client client(U("https://www.googleapis.com/upload/gmail/v1/users"));
-
-  web::http::http_request request(web::http::methods::POST);
-  request.set_request_uri(builder.to_string());
-  request.headers().add(authHeaderName, authToken);
-  request.headers().add("Content-Type", "message/rfc822");
-  request.headers().add("Content-Length", messBody.size());
-
-  request.set_body(messBody);
-
-  auto task = client.request(request).then(
-      [&builder](web::http::http_response response) {
-        if (web::http::status_codes::OK != response.status_code()) {
-          throw HttpFailException(
-              response.status_code(),
-              " https://www.googleapis.com/upload/gmail/v1/users" +
-                  builder.to_string(),
-              response.extract_string().get());
-        }
-        return response.extract_json();
-      });
-  task.wait();
+  HttpRequest request;
+  auto response =
+      request.post(builder.getUri(), messBody,
+                   {{"Content-Type", "message/rfc822"},
+                    {authHeaderName, authToken},
+                    {"Content-Length", std::to_string(messBody.size())}});
 }
 
 std::string GmailApi::loadMessages(
@@ -153,82 +111,43 @@ std::string GmailApi::loadMessages(
     const std::string& authToken,
     const std::string& lastPageToken,
     std::list<std::pair<std::string, std::string>>* loadedMessages) const {
-  using namespace web::http::client;  // HTTP client features
-  web::uri_builder builder;
-  builder.append_path(mUserMail).append_path("messages");
-  builder.append_query("labelIds[0]", "INBOX");
+  UriBuilder builder("https://www.googleapis.com/gmail/v1/users");
+  builder.appendPath(mUserMail)
+      .appendPath("messages")
+      .appendQuery("labelIds[0]", "INBOX");
 
   if (!lastPageToken.empty()) {
-    builder.append_query("pageToken", lastPageToken);
+    builder.appendQuery("pageToken", lastPageToken);
   }
 
-  builder.append_query("q", getTimeFilter() + " " + "subject:(message-sender)");
+  builder.appendQuery("q", getTimeFilter() + " " + "subject:(message-sender)");
+  auto response =
+      HttpRequest().get(builder.getUri(), {{authHeaderName, authToken}});
+  auto body = nlohmann::json::parse(response);
+  if (!body.contains("messages"))
+    return std::string();
+  auto messages = body.at("messages");
+  auto size = mLastMessage.empty()
+                  ? std::min(static_cast<std::size_t>(INIT_LOAD_MESSAGES),
+                             messages.size())
+                  : messages.size();
+  bool breaked = false;
+  for (std::size_t i = 0; i < size; i++) {
+    if (auto id = messages.at(i).at("id"); id == mLastMessage) {
+      breaked = true;
+      break;
+    } else {
+      loadedMessages->push_front(
+          getMail(id, authHeaderName, authToken, mUserMail));
+    }
+  }
+  auto first = messages.size() > 0 ? messages.at(0).at("id") : "";
+  if (!breaked && !mLastMessage.empty()) {
+    auto pageToken = body.at("nextPageToken");
+    loadMessages(authHeaderName, authToken, pageToken, loadedMessages);
+  }
 
-  http_client client(U("https://www.googleapis.com/gmail/v1/users"));
-  web::http::http_request request(web::http::methods::GET);
-  request.set_request_uri(builder.to_string());
-  request.headers().add(authHeaderName, authToken);
-
-  auto task =
-      client.request(request)
-          .then([&builder](web::http::http_response response) {
-            if (web::http::status_codes::OK != response.status_code()) {
-              throw HttpFailException(
-                  response.status_code(),
-                  "https://www.googleapis.com/gmail/v1/users" +
-                      builder.to_string(),
-                  response.extract_string().get());
-            }
-            return response.extract_json();
-          })
-          .then([this, &authHeaderName, &authToken, loadedMessages,
-                 &lastPageToken](web::json::value val) {
-            try {
-              if (!val.has_field("messages"))
-                return std::string();
-
-              auto messages = val.at("messages").as_array();
-
-              auto size =
-                  mLastMessage.empty()
-                      ? std::min(static_cast<std::size_t>(INIT_LOAD_MESSAGES),
-                                 messages.size())
-                      : messages.size();
-
-              std::list<pplx::task<std::pair<std::string, std::string>>> tasks;
-
-              for (std::size_t i = 0; i < size; i++) {
-                if (messages.at(i).at("id").as_string() == mLastMessage)
-                  break;
-                tasks.push_back(getMail(messages.at(i).at("id").as_string(),
-                                        authHeaderName, authToken, mUserMail));
-              }
-
-              std::transform(
-                  tasks.begin(), tasks.end(),
-                  std::front_inserter(*loadedMessages),
-                  [](const pplx::task<std::pair<std::string, std::string>>&
-                         task) { return task.get(); });
-
-              auto first = messages.size() > 0
-                               ? messages.at(0).at("id").as_string()
-                               : "";
-
-              if (tasks.size() == messages.size() && !mLastMessage.empty()) {
-                auto pageToken = val.at("nextPageToken").as_string();
-                loadMessages(authHeaderName, authToken, pageToken,
-                             loadedMessages);
-              }
-
-              return first;
-            } catch (std::exception& e) {
-              std::cout << "catch exception " << e.what()
-                        << "when load messages in " << lastPageToken
-                        << std::endl;
-              throw e;
-            }
-          });
-  return task.get();
+  return first;
 }
 
 std::list<std::pair<std::string, std::string>> GmailApi::getMessages(

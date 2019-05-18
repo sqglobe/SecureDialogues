@@ -9,7 +9,8 @@ class logger;
 }
 class AsymetricalKeyGenerator {
  public:
-  AsymetricalKeyGenerator(const std::shared_ptr<AsymetricalKeyStore>& key);
+  explicit AsymetricalKeyGenerator(
+      const std::shared_ptr<AsymetricalKeyStore>& key);
 
  public:
   bool generate();

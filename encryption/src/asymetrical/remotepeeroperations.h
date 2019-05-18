@@ -13,7 +13,7 @@
  */
 class RemotePeerOperations : public Encryptor, public SignatureChecker {
  public:
-  RemotePeerOperations(const CryptoPP::RSA::PublicKey& key);
+  explicit RemotePeerOperations(const CryptoPP::RSA::PublicKey& key);
 
  public:
   virtual std::string encrypt(const std::string& sourc) const override;

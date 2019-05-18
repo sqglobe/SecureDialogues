@@ -17,6 +17,14 @@ struct KeyTraits;
 template <>
 struct KeyTraits<CryptoPP::RSA::PublicKey> {
   static const std::string FILE_EXTENSION;
+  static void decode(CryptoPP::RSA::PublicKey& key,
+                     CryptoPP::BufferedTransformation& bt) {
+    key.BERDecodePublicKey(bt, false /*optParams*/, bt.MaxRetrievable());
+  }
+  static void encode(const CryptoPP::RSA::PublicKey& key,
+                     CryptoPP::BufferedTransformation& bt) {
+    key.DEREncodePublicKey(bt);
+  }
 };
 
 const std::string KeyTraits<CryptoPP::RSA::PublicKey>::FILE_EXTENSION = "PUB";
@@ -24,6 +32,14 @@ const std::string KeyTraits<CryptoPP::RSA::PublicKey>::FILE_EXTENSION = "PUB";
 template <>
 struct KeyTraits<CryptoPP::RSA::PrivateKey> {
   static const std::string FILE_EXTENSION;
+  static void decode(CryptoPP::RSA::PrivateKey& key,
+                     CryptoPP::BufferedTransformation& bt) {
+    key.BERDecodePrivateKey(bt, false /*optParams*/, bt.MaxRetrievable());
+  }
+  static void encode(const CryptoPP::RSA::PrivateKey& key,
+                     CryptoPP::BufferedTransformation& bt) {
+    key.DEREncodePrivateKey(bt);
+  }
 };
 
 const std::string KeyTraits<CryptoPP::RSA::PrivateKey>::FILE_EXTENSION = "PRV";
@@ -48,11 +64,15 @@ void KeyLoader<Key>::saveKey(
     noexcept(false) {
   auto filename = fileTemplate + "." + KeyTraits<Key>::FILE_EXTENSION;
   std::stringstream ss;
-  CryptoPP::Base64Encoder encoder(new CryptoPP::FileSink(ss), true, 100);
-  key.DEREncode(encoder);
 
+  CryptoPP::ByteQueue queue;
+  KeyTraits<Key>::encode(key, queue);
+
+  CryptoPP::FileSink file(ss);
+  queue.CopyTo(file);
+  auto encrypted = cipher->encrypt(ss.str());
   std::fstream outFile(filename, std::ios_base::out);
-  outFile << cipher->encrypt(ss.str()) << std::flush;
+  outFile << encrypted << std::flush;
 }
 
 template <typename Key>
@@ -66,17 +86,16 @@ Key KeyLoader<Key>::loadKey(
 
   std::string str((std::istreambuf_iterator<char>(outFile)),
                   std::istreambuf_iterator<char>());
-
   std::stringstream ss;
 
   ss << cipher->decrypt(str);
 
-  CryptoPP::FileSource file(ss, true /*pumpAll*/,
-                            new CryptoPP::Base64Decoder());
-  CryptoPP::AutoSeededRandomPool rng;
-  if (key.BERDecode(file); !key.Validate(rng, 3)) {
-    throw std::runtime_error("RSA key not valid!");
-  }
+  CryptoPP::ByteQueue queue;
+  CryptoPP::FileSource file(ss, true /*pumpAll*/);
+  file.TransferTo(queue);
+  queue.MessageEnd();
+
+  KeyTraits<Key>::decode(key, queue);
   return key;
 }
 
@@ -94,6 +113,7 @@ void FileAsyncKeySerializer::serialize(
 
   auto priv = store.getPrivateKey();
   auto privKeyLoader = KeyLoader<CryptoPP::RSA::PrivateKey>();
+
   privKeyLoader.saveKey(mFileTemplate, priv, mCipher);
 }
 

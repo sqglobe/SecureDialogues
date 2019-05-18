@@ -10,7 +10,8 @@ class MessageContainer;
 class SystemMessageGenerator
     : public ChangeWatcher<std::shared_ptr<const Dialog>> {
  public:
-  SystemMessageGenerator(const std::shared_ptr<MessageContainer>& container);
+  explicit SystemMessageGenerator(
+      const std::shared_ptr<MessageContainer>& container);
 
  public:
   virtual void added(const element& obj) override {}

@@ -27,7 +27,8 @@ class AbstractChannelAdapter {
    * @param notifier класс, который может использоваться для уведомления
    * пользователя о происшедших проблемах
    */
-  AbstractChannelAdapter(const std::shared_ptr<AbstractUserNotifier>& notifier);
+  explicit AbstractChannelAdapter(
+      const std::shared_ptr<AbstractUserNotifier>& notifier);
   virtual ~AbstractChannelAdapter() = default;
 
  public:

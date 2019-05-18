@@ -5,7 +5,7 @@
 
 class GmailApi : public ApiAgent {
  public:
-  GmailApi(const std::string& mail);
+  explicit GmailApi(const std::string& mail);
 
  public:
   virtual std::list<std::pair<std::string, std::string> > getMessages(

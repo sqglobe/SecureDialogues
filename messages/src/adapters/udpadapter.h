@@ -5,7 +5,7 @@
 
 #include <memory>
 
-#include <asio/ip/udp.hpp>
+#include <boost/asio/ip/udp.hpp>
 
 class UdpAdapter : public AbstractChannelAdapter {
  public:
@@ -19,7 +19,7 @@ class UdpAdapter : public AbstractChannelAdapter {
   virtual bool isConnected() const noexcept;
 
  private:
-  std::unique_ptr<asio::ip::udp::socket> mSocket;
+  std::unique_ptr<boost::asio::ip::udp::socket> mSocket;
 };
 
 #endif  // UDPADAPTER_H

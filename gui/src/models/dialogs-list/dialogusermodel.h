@@ -20,7 +20,7 @@ class DialogUserModel : public QAbstractListModel,
   Q_OBJECT
 
  public:
-  DialogUserModel(const std::shared_ptr<DialogManager>& dialogs);
+  explicit DialogUserModel(const std::shared_ptr<DialogManager>& dialogs);
 
  public:
   virtual int rowCount(const QModelIndex& = QModelIndex()) const override;

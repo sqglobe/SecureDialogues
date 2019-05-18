@@ -6,7 +6,7 @@
 
 class VkApi : public ApiAgent {
  public:
-  VkApi(const std::string& userId);
+  explicit VkApi(const std::string& userId);
 
  public:
   virtual std::list<std::pair<std::string, std::string> > getMessages(

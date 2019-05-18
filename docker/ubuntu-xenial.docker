@@ -15,7 +15,7 @@ RUN mkdir /opt/cmake \
  && sh /cmake-3.13.4-Linux-x86_64.sh --prefix=/opt/cmake --skip-license \
  && ln -s /opt/cmake/bin/cmake /usr/local/bin/cmake
   
-RUN  apt-get install -y git qtdeclarative5-dev plantuml libboost-all-dev ruby plantuml uuid-dev libasio-dev \
+RUN  apt-get install -y git qtdeclarative5-dev plantuml libboost-all-dev ruby plantuml uuid-dev libcurl4-openssl-dev libssl-dev\
   && gem install prawn --version 2.1.0 \
   && gem install addressable --version 2.4.0 \
   && gem install prawn-svg --version 0.26.0 \
@@ -25,23 +25,11 @@ RUN  apt-get install -y git qtdeclarative5-dev plantuml libboost-all-dev ruby pl
   && gem install pygments.rb \
   && gem install coderay 
 
-RUN mkdir /repo && \
-    cd /repo && \
-    git clone https://github.com/Microsoft/cpprestsdk.git casablanca && \
-    cd casablanca && \
-    git checkout v2.10.12 && \
-    git submodule update --init && \
-    mkdir build.relese  && \
-    cd build.relese && \
-    cmake -G Ninja .. -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DBUILD_TESTS=OFF -DBUILD_SAMPLES=OFF -DBoost_USE_STATIC_LIBS=ON && \
-    ninja && \
-    ninja install
-
 # Установим рабочую директорию нашего приложения
 WORKDIR /app/build
 
 # Установим точку входа 
-ENTRYPOINT cmake -DBUILD_TESTING=OFF /app/src \
-        && cmake --build . \
+ENTRYPOINT cmake -DBUILD_TESTING=OFF  -DJSON_BuildTests=OFF -DJSON_Install=OFF -DXG_TESTS=OFF /app/src \
+        && make -j4 JOBS=4 \
         && cp documents/architecture.pdf documents/user-guid.pdf /app/res \
         && cp bin/SecureDialogues /app/res/SecureDialogues-ubuntu-16.04-x86_64

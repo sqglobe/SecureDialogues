@@ -13,7 +13,7 @@
  */
 class LocalPeerOperations : public Decryptor, public Signer {
  public:
-  LocalPeerOperations(const CryptoPP::RSA::PrivateKey& key);
+  explicit LocalPeerOperations(const CryptoPP::RSA::PrivateKey& key);
 
  public:
   virtual std::string decrypt(const std::string& data) const override;

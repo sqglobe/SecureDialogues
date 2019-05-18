@@ -14,6 +14,8 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include "spdlog/spdlog.h"
 
+#undef ERROR
+
 std::shared_ptr<spdlog::logger> MessageActionHandler::LOGGER =
     spdlog::stdout_color_mt("message-action-handler");
 

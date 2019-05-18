@@ -44,7 +44,5 @@ set(ENCRYPTION_HEADERS
 
 add_library(encryption STATIC ${ENCRYPTION_SOURCES} ${ENCRYPTION_HEADERS})
 
-message("source diid" ${PROJECT_SOURCE_DIR})
-
 target_include_directories(encryption PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${MCRYPTO_INCLUDE_DIR})
 target_link_libraries( encryption cryptopp-static utils)

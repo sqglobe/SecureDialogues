@@ -12,6 +12,8 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include "interfaces/cryptosystem.h"
 
+#undef ERROR
+
 std::shared_ptr<spdlog::logger> DialogActionHandler::LOGGER =
     spdlog::stdout_color_mt("dialog-action-handler");
 
