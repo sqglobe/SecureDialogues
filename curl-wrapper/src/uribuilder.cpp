@@ -1,5 +1,9 @@
 #include "uribuilder.h"
+#include <memory>
 #include "curlexceptions.h"
+
+using CurlHandler = std::unique_ptr<CURL, void (*)(CURL*)>;
+static CurlHandler CURL_HANDLER(curl_easy_init(), curl_easy_cleanup);
 
 void appendEscape(const std::string& param, std::string& out, CURL* curl) {
   if (char* output =
@@ -12,46 +16,28 @@ void appendEscape(const std::string& param, std::string& out, CURL* curl) {
   }
 }
 
-UriBuilder::UriBuilder(const std::string& path) :
-    mPath(path), mCurl(curl_easy_init()) {
-  if (!mCurl) {
-    throw CurlInitError("Failed init curl in UriBuilder");
-  }
-}
+UriBuilder::UriBuilder(const std::string& path) : mPath(path) {}
 
-UriBuilder::UriBuilder() : mCurl(curl_easy_init()) {}
-
-UriBuilder::UriBuilder(const UriBuilder& other) :
-    mPath(other.mPath), mQuery(other.mQuery), mCurl(curl_easy_init()) {
-  if (!mCurl) {
-    throw CurlInitError("Failed init curl in UriBuilder");
-  }
-}
-
-UriBuilder& UriBuilder::operator=(const UriBuilder& other) {
-  this->mPath = other.mPath;
-  this->mQuery = other.mQuery;
-  return *this;
-}
-
-UriBuilder::~UriBuilder() {
-  if (mCurl) {
-    curl_easy_cleanup(mCurl);
-  }
-}
+UriBuilder::UriBuilder() {}
 
 UriBuilder& UriBuilder::appendPath(const std::string& path) {
+  if (!CURL_HANDLER) {
+    throw CurlInitError("Failed init curl in UriBuilder");
+  }
   mPath.append("/");
-  appendEscape(path, mPath, mCurl);
+  appendEscape(path, mPath, CURL_HANDLER.get());
   return *this;
 }
 
 UriBuilder& UriBuilder::appendQuery(const std::string& name,
                                     const std::string& value) {
+  if (!CURL_HANDLER) {
+    throw CurlInitError("Failed init curl in UriBuilder");
+  }
   std::string query;
-  appendEscape(name, query, mCurl);
+  appendEscape(name, query, CURL_HANDLER.get());
   query.append("=");
-  appendEscape(value, query, mCurl);
+  appendEscape(value, query, CURL_HANDLER.get());
   if (!mQuery.empty())
     mQuery.append("&");
   mQuery.append(query);

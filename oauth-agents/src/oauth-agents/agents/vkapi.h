@@ -2,6 +2,7 @@
 #define VKAPI_H
 
 #include <tuple>
+#include "httprequest.h"
 #include "oauth-agents/interfaces/apiagent.h"
 
 class VkApi : public ApiAgent {
@@ -20,7 +21,7 @@ class VkApi : public ApiAgent {
       const std::string& authToken) noexcept(false) override;
 
  private:
-  static std::tuple<std::string, std::string, int> getLongPollServer(
+  std::tuple<std::string, std::string, int> getLongPollServer(
       const std::string& authHeaderName,
       const std::string& authToken);
 
@@ -29,6 +30,7 @@ class VkApi : public ApiAgent {
   std::string mKey;
   std::string mServer;
   int mLastNumber;
+  HttpRequest mRequest;
 };
 
 #endif  // VKAPI_H

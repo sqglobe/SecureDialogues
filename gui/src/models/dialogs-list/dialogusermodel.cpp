@@ -31,13 +31,12 @@ QVariant DialogUserModel::data(const QModelIndex& index, int role) const {
 
 void DialogUserModel::added(const ChangeWatcher::element& obj) {
   auto newPos = static_cast<int>(mDialogsInfo.size());
-  auto info = DialogInfo(obj);
   beginInsertRows(QModelIndex(), newPos, newPos);
-  mDialogsInfo.push_back(info);
+  mDialogsInfo.emplace_back(obj);
   endInsertRows();
 
   if (rowCount() == 1) {
-    updateActiveDialog(info);
+    updateActiveDialog(DialogInfo(obj));
   }
 }
 

@@ -4,6 +4,8 @@
 #include "oauth-agents/interfaces/oauthagent.h"
 
 #include <chrono>
+#include <mutex>
+#include "httprequest.h"
 
 class GmailOauth : public OAuthAgent {
  public:
@@ -36,6 +38,8 @@ class GmailOauth : public OAuthAgent {
   std::string mTokenType;
 
   std::chrono::system_clock::time_point mExpiresAt;
+  HttpRequest mRequest;
+  mutable std::mutex mMutex;
 };
 
 #endif  // GMAILOAUTH_H

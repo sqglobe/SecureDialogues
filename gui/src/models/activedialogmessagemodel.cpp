@@ -26,7 +26,7 @@ QVariant ActiveDialogMessageModel::data(const QModelIndex& index,
                                         int role) const {
   using size_type = std::vector<std::shared_ptr<const UserMessage> >::size_type;
   std::lock_guard<std::recursive_mutex> guard(mMutex);
-  if (index.row() < 0 || index.row() >= rowCount()) {
+  if (index.row() < 0 || index.row() >= static_cast<int>(mRows.size())) {
     return QVariant();
   } else if (Qt::DisplayRole == role) {
     QString item(
@@ -64,7 +64,8 @@ void ActiveDialogMessageModel::messageAdded(
     const std::shared_ptr<const UserMessage>& message) {
   std::lock_guard<std::recursive_mutex> guard(mMutex);
   if (mActiveDialog == dialogId) {
-    beginInsertRows(QModelIndex(), rowCount(), rowCount());
+    beginInsertRows(QModelIndex(), static_cast<int>(mRows.size()),
+                    static_cast<int>(mRows.size()));
     mRows.push_back(message);
     endInsertRows();
   }
@@ -82,7 +83,8 @@ void ActiveDialogMessageModel::activeDialogChanged(
 void ActiveDialogMessageModel::peekMessage(
     const std::shared_ptr<const UserMessage>& message) {
   std::lock_guard<std::recursive_mutex> guard(mMutex);
-  beginInsertRows(QModelIndex(), rowCount(), rowCount());
+  beginInsertRows(QModelIndex(), static_cast<int>(mRows.size()),
+                  static_cast<int>(mRows.size()));
   mRows.push_back(message);
   endInsertRows();
 }

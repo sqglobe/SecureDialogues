@@ -15,7 +15,12 @@ include_directories(${Qt5Widgets_INCLUDES})
 add_definitions(${Qt5Widgets_DEFINITIONS})
 
 
-
 add_executable(SecureDialogues main.cpp mainwindow.cpp initializer/chaneladapterfactory.cpp initializer/coreinitializer.cpp initializer/guiinitializer.cpp passask.cpp)
 target_link_libraries(SecureDialogues ${Qt5Widgets_LIBRARIES} ${Qt5Core_LIBRARIES}  ${Qt5Gui_LIBRARIES}   gui  )
+
+if(MSVC)
+  target_compile_options(SecureDialogues PRIVATE /W4 /WX)
+else()
+  target_compile_options(SecureDialogues PRIVATE -Wall -Wextra -pedantic -Werror)
+endif()
 

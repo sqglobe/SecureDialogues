@@ -27,8 +27,8 @@ bool DialogSortModel::lessThan(const QModelIndex& source_left,
     return QSortFilterProxyModel::lessThan(source_left, source_right);
   }
 
-  auto left = qvariant_cast<DialogInfo>(left_data);
-  auto right = qvariant_cast<DialogInfo>(right_data);
+  const auto& left = qvariant_cast<DialogInfo>(left_data);
+  const auto& right = qvariant_cast<DialogInfo>(right_data);
 
   auto leftRating = getRating(left.status());
   auto rightRating = getRating(right.status());

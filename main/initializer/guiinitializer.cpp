@@ -68,7 +68,7 @@ GuiInitializer::GuiInitializer(
 void GuiInitializer::initMessageWrapper(
     const std::shared_ptr<CoreInitializer>& coreInit,
     MainWindow* parent,
-    const std::shared_ptr<AbstractUserNotifier>& userNotifier) {
+    const std::shared_ptr<AbstractUserNotifier>&) {
   // TODO Add actions to wrapers like send message, send dialog control command
   auto messageWraper =
       new MessageHandlerWrapper(coreInit->getMessageActionHandler(), parent);

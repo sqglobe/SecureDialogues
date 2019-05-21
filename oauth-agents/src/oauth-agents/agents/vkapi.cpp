@@ -2,13 +2,11 @@
 
 #include <nlohmann/json.hpp>
 #include <random>
-#include "httprequest.h"
 #include "oauth-agents/exceptions/httpfailexception.h"
 #include "oauth-agents/utils/base64.h"
 #include "uribuilder.h"
 
 #include <nlohmann/json.hpp>
-#include "httprequest.h"
 #include "uribuilder.h"
 
 #include <limits>
@@ -83,7 +81,7 @@ std::list<std::pair<std::string, std::string> > VkApi::getMessages(
       .appendQuery("ts", std::to_string(mLastNumber))
       .appendQuery("wait", "25")
       .appendQuery("version", "3");
-  auto response = HttpRequest().get(builder.getUri());
+  auto response = mRequest.get(builder.getUri());
   auto body = nlohmann::json::parse(response);
   if (body.contains("failed")) {
     if (auto failed = body.at("failed"); failed == 1) {
@@ -121,7 +119,7 @@ void VkApi::sendMessage(const std::string& to,
       .appendQuery("message", body)
       .appendQuery(authHeaderName, authToken)
       .appendQuery("random_id", getRaindomId());
-  auto response = HttpRequest().post(
+  auto response = mRequest.post(
       "https://api.vk.com/method/messages.send", builder.getQuery(),
       {{"Content-type", "application/x-www-form-urlencoded"}});
 
@@ -143,7 +141,7 @@ std::tuple<std::string, std::string, int> VkApi::getLongPollServer(
       .appendQuery("v", "5.92")
       .appendQuery(authHeaderName, authToken)
       .appendQuery("lp_version", "3");
-  auto response = HttpRequest().get(builder.getUri());
+  auto response = mRequest.get(builder.getUri());
   auto json = nlohmann::json::parse(response);
   auto data = json.at("response");
   return std::make_tuple(data.at("server"), data.at("key"), data.at("ts"));

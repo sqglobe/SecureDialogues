@@ -14,7 +14,6 @@
 #include "oauth-agents/utils/base64.h"
 
 #include <nlohmann/json.hpp>
-#include "httprequest.h"
 #include "uribuilder.h"
 
 const int MAX_SECONDS_OLD = 120;
@@ -27,15 +26,14 @@ bool isMessageOld(long long messageTime) {
                            .count();
 }
 
-std::pair<std::string, std::string> getMail(const std::string& id,
-                                            const std::string& authHeaderName,
-                                            const std::string& authToken,
-                                            const std::string& mail) {
+std::pair<std::string, std::string> GmailApi::getMail(
+    const std::string& id,
+    const std::string& authHeaderName,
+    const std::string& authToken,
+    const std::string& mail) const noexcept(false) {
   UriBuilder builder("https://www.googleapis.com/gmail/v1/users");
   builder.appendPath(mail).appendPath("messages").appendPath(id);
-
-  HttpRequest request;
-  auto response = request.get(builder.getUri(), {{authHeaderName, authToken}});
+  auto response = mRequest.get(builder.getUri(), {{authHeaderName, authToken}});
   try {
     auto body = nlohmann::json::parse(response);
 
@@ -98,12 +96,11 @@ void GmailApi::sendMessage(const std::string& to,
       .appendPath("send")
       .appendQuery("uploadType", "media");
 
-  HttpRequest request;
   auto response =
-      request.post(builder.getUri(), messBody,
-                   {{"Content-Type", "message/rfc822"},
-                    {authHeaderName, authToken},
-                    {"Content-Length", std::to_string(messBody.size())}});
+      mRequest.post(builder.getUri(), messBody,
+                    {{"Content-Type", "message/rfc822"},
+                     {authHeaderName, authToken},
+                     {"Content-Length", std::to_string(messBody.size())}});
 }
 
 std::string GmailApi::loadMessages(
@@ -121,8 +118,7 @@ std::string GmailApi::loadMessages(
   }
 
   builder.appendQuery("q", getTimeFilter() + " " + "subject:(message-sender)");
-  auto response =
-      HttpRequest().get(builder.getUri(), {{authHeaderName, authToken}});
+  auto response = mRequest.get(builder.getUri(), {{authHeaderName, authToken}});
   auto body = nlohmann::json::parse(response);
   if (!body.contains("messages"))
     return std::string();

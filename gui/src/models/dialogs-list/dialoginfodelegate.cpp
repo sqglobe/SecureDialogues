@@ -25,7 +25,7 @@ void DialogInfoDelegate::paint(QPainter* painter,
     return;
   }
 
-  auto info = qvariant_cast<DialogInfo>(index.data());
+  const auto& info = qvariant_cast<DialogInfo>(index.data());
 
   painter->fillRect(option.rect, getColor(info.status()));
 
@@ -68,7 +68,7 @@ QSize DialogInfoDelegate::sizeHint(const QStyleOptionViewItem& option,
     return QStyledItemDelegate::sizeHint(option, index);
   }
 
-  auto info = qvariant_cast<DialogInfo>(index.data());
+  const auto& info = qvariant_cast<DialogInfo>(index.data());
 
   if (info.unreadMessages() == 0) {
     auto mainTextWidth = option.fontMetrics.width(

@@ -1,7 +1,6 @@
 #include "gmailoauth.h"
 
 #include <nlohmann/json.hpp>
-#include "httprequest.h"
 #include "uribuilder.h"
 
 #include "oauth-agents/exceptions/httpfailexception.h"
@@ -39,8 +38,7 @@ void GmailOauth::loadAccessToken(const std::string& userCode) {
       .appendQuery("client_secret", mClientSecret)
       .appendQuery("redirect_uri", mRedirectUri)
       .appendQuery("grant_type", "authorization_code");
-  HttpRequest request;
-  auto res = request.post(
+  auto res = mRequest.post(
       "https://www.googleapis.com/oauth2/v4/token", builder.getQuery(),
       {{"Content-Type", "application/x-www-form-urlencoded"}});
   auto body = nlohmann::json::parse(res);
@@ -52,13 +50,13 @@ void GmailOauth::loadAccessToken(const std::string& userCode) {
 }
 
 void GmailOauth::refreshAccessToken() {
+  [[maybe_unused]] std::lock_guard<std::mutex> guard(mMutex);
   UriBuilder builder;
   builder.appendQuery("refresh_token", mRefreshToken)
       .appendQuery("client_id", mClientId)
       .appendQuery("client_secret", mClientSecret)
       .appendQuery("grant_type", "refresh_token");
-  HttpRequest request;
-  auto response = request.post(
+  auto response = mRequest.post(
       "https://www.googleapis.com/oauth2/v4/token", builder.getQuery(),
       {{"Content-Type", "application/x-www-form-urlencoded"}});
   auto body = nlohmann::json::parse(response);
@@ -69,14 +67,17 @@ void GmailOauth::refreshAccessToken() {
 }
 
 std::pair<std::string, std::string> GmailOauth::getAuthParam() const {
+  [[maybe_unused]] std::lock_guard<std::mutex> guard(mMutex);
   return std::make_pair<std::string, std::string>(
       "Authorization", mTokenType + " " + mAccessToken);
 }
 
 bool GmailOauth::isExpired() const {
+  [[maybe_unused]] std::lock_guard<std::mutex> guard(mMutex);
   return std::chrono::system_clock::now() >= mExpiresAt;
 }
 
 std::string GmailOauth::getRefreshToken() const {
+  [[maybe_unused]] std::lock_guard<std::mutex> guard(mMutex);
   return mRefreshToken;
 }
