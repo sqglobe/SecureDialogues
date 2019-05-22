@@ -10,6 +10,7 @@ class AbstractUserAsk;
 class BaseSettingsDialog;
 class DialogCreation;
 class DialogUserViewWrapper;
+class QThread;
 
 class GuiInitializer {
  public:
@@ -22,11 +23,13 @@ class GuiInitializer {
   void initMessageWrapper(
       const std::shared_ptr<CoreInitializer>& coreInit,
       MainWindow* parent,
-      const std::shared_ptr<AbstractUserNotifier>& userNotifier);
+      const std::shared_ptr<AbstractUserNotifier>& userNotifier,
+      QThread* messageThread);
   void initDialogWrapper(
       const std::shared_ptr<CoreInitializer>& coreInit,
       MainWindow* parent,
-      const std::shared_ptr<AbstractUserNotifier>& userNotifier);
+      const std::shared_ptr<AbstractUserNotifier>& userNotifier,
+      QThread* messageThread);
 
  private:
   std::shared_ptr<BaseSettingsDialog> mChannelSettingsDialog;

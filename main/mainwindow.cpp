@@ -47,5 +47,6 @@ void MainWindow::on_goodDialogSelected(std::string) {
 
 void MainWindow::closeEvent(QCloseEvent* event) {
   mCore->saveFiles();
+  emit closed();
   QMainWindow::closeEvent(event);
 }

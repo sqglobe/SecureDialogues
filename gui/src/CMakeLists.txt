@@ -1,8 +1,6 @@
 project(gui)
 
-find_package(Qt5Core REQUIRED)
-find_package(Qt5Gui REQUIRED)
-find_package(Qt5Widgets REQUIRED)
+find_package(Qt5 COMPONENTS REQUIRED Core Gui Widgets)
 find_package (Threads)
 
 set(GUI_MODULE_SOURCES
@@ -15,7 +13,6 @@ set(GUI_MODULE_SOURCES
     dialogs/contactgasket.cpp
     dialogs/connectioninfogasket.cpp
     models/dialogs-list/dialogusermodel.cpp
-    models/activedialogmessagemodel.cpp
     wrappers/messagehandlerwrapper.cpp
     wrappers/dialogactionhandlerwrapper.cpp
     dialogs/userinformator.cpp
@@ -26,6 +23,8 @@ set(GUI_MODULE_SOURCES
     models/dialogs-list/dialoginfo.cpp
     models/dialogs-list/dialoginfodelegate.cpp
     models/dialogs-list/dialogsortmodel.cpp
+    models/active-dialog-messages/usermessagemodeldelegate.cpp
+    models/active-dialog-messages/activedialogmessagemodel.cpp
 )
 
 set(GUI_MODULE_HEADERS
@@ -43,7 +42,6 @@ set(GUI_MODULE_HEADERS
     dialogs/contactgasket.h
     dialogs/connectioninfogasket.h
     models/dialogs-list/dialogusermodel.h
-    models/activedialogmessagemodel.h
     wrappers/messagehandlerwrapper.h
     wrappers/dialogactionhandlerwrapper.h
     dialogs/userinformator.h
@@ -54,10 +52,41 @@ set(GUI_MODULE_HEADERS
     models/dialogs-list/dialoginfo.h
     models/dialogs-list/dialoginfodelegate.h
     models/dialogs-list/dialogsortmodel.h
+    models/active-dialog-messages/usermessagemodeldelegate.h
+    models/active-dialog-messages/activedialogmessagemodel.h
 )
 
+set(GUI_UI
+    basesettingsdialog.ui
+    widgets/contactwidget.ui
+    widgets/connectioninfowidget.ui
+    dialogs/dialogcreation.ui
+)
 
-add_library(gui STATIC ${GUI_MODULE_SOURCES} ${GUI_MODULE_HEADERS})
+set(
+  GUI_MOC
+  wrappers/messagehandlerwrapper.h
+  wrappers/dialogactionhandlerwrapper.h
+  wrappers/dialoguserviewwrapper.h
+  basesettingsdialog.h
+  widgets/dialogactionmenu.h
+  widgets/connectioninfowidget.h
+  widgets/contactwidget.h
+  widgets/publickeyobject.h
+  models/dialogs-list/dialogusermodel.h
+  models/dialogs-list/dialoginfodelegate.h
+  dialogs/connectioninfogasket.h
+  dialogs/dialogcreation.h
+  dialogs/userinformator.h
+  dialogs/contactgasket.h
+)
+
+qt5_wrap_cpp(WRAP_MOC_GUI ${GUI_MOC})
+
+qt5_wrap_ui(UI_WRAP ${GUI_UI})
+
+
+add_library(gui STATIC ${GUI_MODULE_SOURCES} ${GUI_MODULE_HEADERS} ${UI_WRAP} ${WRAP_MOC_GUI})
 
 target_include_directories(gui PUBLIC  ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries( gui messages ${Qt5Widgets_LIBRARIES} )
+target_link_libraries( gui messages Qt5::Core Qt5::Gui  Qt5::Widgets )

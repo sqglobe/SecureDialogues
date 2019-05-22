@@ -106,6 +106,8 @@ CoreInitializer::CoreInitializer(
       "AbstractUserNotifier::Severity");
   qRegisterMetaType<QVector<int>>("QVector<int>");
   qRegisterMetaType<std::string>("std::string");
+  qRegisterMetaType<std::shared_ptr<const Contact>>(
+      "std::shared_ptr<const Contact>");
 
   mAsymetricalKeyStore = loadKeys(FILE_KEY, mPassCipher);
 

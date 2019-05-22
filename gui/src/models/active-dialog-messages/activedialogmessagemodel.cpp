@@ -1,19 +1,7 @@
 #include "activedialogmessagemodel.h"
-
 #include <QColor>
 #include "containers/usermessage.h"
-
-char leading_symbol(UserMessage::Type type) {
-  using T = UserMessage::Type;
-  switch (type) {
-    case T::IN:
-      return '>';
-    case T::OUT:
-      return '<';
-    default:
-      return '\0';
-  }
-}
+Q_DECLARE_METATYPE(std::shared_ptr<const UserMessage>);
 
 ActiveDialogMessageModel::ActiveDialogMessageModel() {}
 
@@ -24,39 +12,18 @@ int ActiveDialogMessageModel::rowCount(const QModelIndex&) const {
 
 QVariant ActiveDialogMessageModel::data(const QModelIndex& index,
                                         int role) const {
-  using size_type = std::vector<std::shared_ptr<const UserMessage> >::size_type;
   std::lock_guard<std::recursive_mutex> guard(mMutex);
   if (index.row() < 0 || index.row() >= static_cast<int>(mRows.size())) {
     return QVariant();
-  } else if (Qt::DisplayRole == role) {
-    QString item(
-        leading_symbol(mRows.at(static_cast<size_type>(index.row()))->type()));
-    item.append(" ").append(
-        mRows.at(static_cast<size_type>(index.row()))->content().c_str());
-    return item;
-  } else if (Qt::ForegroundRole == role) {
-    switch (mRows.at(static_cast<size_type>(index.row()))->status()) {
-      case UserMessage::Status::DELIVERIED:
-        return QColor(Qt::black);
-      case UserMessage::Status::NOT_DELIVERIED:
-        return QColor(Qt::red);
-      case UserMessage::Status::WAIT_DELIVERY:
-        return QColor(Qt::gray);
-      case UserMessage::Status::ERROR:
-        return QColor(Qt::darkRed);
-    }
-  } else if (Qt::TextAlignmentRole == role) {
-    using T = UserMessage::Type;
-    switch (mRows.at(static_cast<size_type>(index.row()))->type()) {
-      case T::IN:
-        return Qt::AlignLeft;
-      case T::OUT:
-        return Qt::AlignRight;
-      case T::SYSTEM:
-        return Qt::AlignCenter;
-    }
+  } else if (role == Qt::DisplayRole) {
+    auto p = static_cast<std::size_t>(index.row());
+    return QVariant::fromValue(mRows[p]);
   }
   return QVariant();
+}
+
+Qt::ItemFlags ActiveDialogMessageModel::flags(const QModelIndex&) const {
+  return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
 }
 
 void ActiveDialogMessageModel::messageAdded(

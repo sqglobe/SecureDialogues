@@ -15,12 +15,14 @@
 
 #include <QAction>
 #include <QPushButton>
+#include <QThread>
 
 #include "wrappers/dialogactionhandlerwrapper.h"
 #include "wrappers/messagehandlerwrapper.h"
 
 #include <QListView>
-#include "models/activedialogmessagemodel.h"
+#include "models/active-dialog-messages/activedialogmessagemodel.h"
+#include "models/active-dialog-messages/usermessagemodeldelegate.h"
 #include "models/dialogs-list/dialoginfodelegate.h"
 #include "models/dialogs-list/dialogusermodel.h"
 #include "widgets/dialogactionmenu.h"
@@ -56,22 +58,35 @@ GuiInitializer::GuiInitializer(
                    &QAction::triggered, pubObject,
                    &PublicKeyObject::showCurrentPublicKey);
 
-  initMessageWrapper(coreInit, parent, userNotifier);
-  initDialogWrapper(coreInit, parent, userNotifier);
+  QThread* messageWorkThread = new QThread(parent);
+
+  initMessageWrapper(coreInit, parent, userNotifier, messageWorkThread);
+  initDialogWrapper(coreInit, parent, userNotifier, messageWorkThread);
+
+  QObject::connect(parent, &MainWindow::closed, messageWorkThread,
+                   &QThread::quit);
+
+  messageWorkThread->start();
 
   auto messageModel = std::make_shared<ActiveDialogMessageModel>();
+
   coreInit->getMessageContainer()->registerHandler(messageModel);
 
   parent->findChild<QListView*>("activeMessages")->setModel(messageModel.get());
+  auto activeMessageDelaget = new UserMessageModelDelegate(parent);
+  parent->findChild<QListView*>("activeMessages")
+      ->setItemDelegate(activeMessageDelaget);
 }
 
 void GuiInitializer::initMessageWrapper(
     const std::shared_ptr<CoreInitializer>& coreInit,
     MainWindow* parent,
-    const std::shared_ptr<AbstractUserNotifier>&) {
+    const std::shared_ptr<AbstractUserNotifier>&,
+    QThread* messageThread) {
   // TODO Add actions to wrapers like send message, send dialog control command
   auto messageWraper =
-      new MessageHandlerWrapper(coreInit->getMessageActionHandler(), parent);
+      new MessageHandlerWrapper(coreInit->getMessageActionHandler());
+
   auto dialogUserModel =
       std::make_shared<DialogUserModel>(coreInit->getDialogManager());
   coreInit->getDialogManager()->registerWatcher(dialogUserModel);
@@ -83,6 +98,7 @@ void GuiInitializer::initMessageWrapper(
 
   mDialogUserViewWrapper = std::unique_ptr<DialogUserViewWrapper>(
       new DialogUserViewWrapper(dialogsView, dialogUserModel));
+  messageWraper->moveToThread(messageThread);
 
   QObject::connect(dialogUserModel.get(),
                    &DialogUserModel::newDialogWasSelected, messageWraper,
@@ -108,10 +124,12 @@ void GuiInitializer::initMessageWrapper(
 void GuiInitializer::initDialogWrapper(
     const std::shared_ptr<CoreInitializer>& coreInit,
     MainWindow* parent,
-    const std::shared_ptr<AbstractUserNotifier>& userNotifier) {
+    const std::shared_ptr<AbstractUserNotifier>& userNotifier,
+    QThread* messageThread) {
   // TODO Add actions to wrapers like send message, send dialog control command
-  auto dialogWraper = new DialogActionHandlerWrapper(
-      coreInit->getDialogActionHandler(), parent);
+  auto dialogWraper =
+      new DialogActionHandlerWrapper(coreInit->getDialogActionHandler());
+  dialogWraper->moveToThread(messageThread);
 
   auto dialogMenu = new DialogActionMenu(userNotifier, parent);
 

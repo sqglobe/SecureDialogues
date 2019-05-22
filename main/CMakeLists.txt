@@ -1,8 +1,6 @@
 project(main)
 
-find_package(Qt5Core REQUIRED)
-find_package(Qt5Gui REQUIRED)
-find_package(Qt5Widgets REQUIRED)
+find_package(Qt5 COMPONENTS REQUIRED Core Gui Widgets)
 
 
 # We need add -DQT_WIDGETS_LIB when using QtWidgets in Qt 5.
@@ -14,9 +12,29 @@ include_directories(${Qt5Widgets_INCLUDES})
 # We need add -DQT_WIDGETS_LIB when using QtWidgets in Qt 5.
 add_definitions(${Qt5Widgets_DEFINITIONS})
 
+set(MAIN_UI
+    mainwindow.ui
+)
 
-add_executable(SecureDialogues main.cpp mainwindow.cpp initializer/chaneladapterfactory.cpp initializer/coreinitializer.cpp initializer/guiinitializer.cpp passask.cpp)
-target_link_libraries(SecureDialogues ${Qt5Widgets_LIBRARIES} ${Qt5Core_LIBRARIES}  ${Qt5Gui_LIBRARIES}   gui  )
+set(MAIN_SOURCE
+    main.cpp
+    mainwindow.cpp
+    initializer/chaneladapterfactory.cpp
+    initializer/coreinitializer.cpp
+    initializer/guiinitializer.cpp
+    passask.cpp
+)
+
+set(MAIN_MOC
+    mainwindow.h
+    )
+
+qt5_wrap_ui(UI_WRAP ${MAIN_UI})
+qt5_wrap_cpp(MOC_WRAP ${MAIN_MOC})
+
+
+add_executable(SecureDialogues ${UI_WRAP} ${MAIN_SOURCE} ${MOC_WRAP})
+target_link_libraries(SecureDialogues Qt5::Core Qt5::Gui  Qt5::Widgets gui  )
 
 if(MSVC)
   target_compile_options(SecureDialogues PRIVATE /W4 /WX)

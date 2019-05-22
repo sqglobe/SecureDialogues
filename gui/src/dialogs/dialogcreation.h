@@ -29,7 +29,7 @@ class DialogCreation : public QDialog {
   void on_buttonBox_rejected();
 
  signals:
-  void createNewDialog(std::shared_ptr<const Contact>& contact);
+  void createNewDialog(std::shared_ptr<const Contact> contact);
 
  private:
   Ui::DialogCreation* ui;

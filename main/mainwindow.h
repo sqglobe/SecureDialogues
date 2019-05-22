@@ -34,6 +34,7 @@ class MainWindow : public QMainWindow {
  signals:
 
   void sendMessage(std::string message);
+  void closed();
 
  private:
   Ui::MainWindow* ui;
