@@ -42,3 +42,6 @@ else()
   target_compile_options(SecureDialogues PRIVATE -Wall -Wextra -pedantic -Werror)
 endif()
 
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+  set_property(TARGET SecureDialogues PROPERTY WIN32_EXECUTABLE true)
+endif()
