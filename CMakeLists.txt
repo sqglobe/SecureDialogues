@@ -57,6 +57,7 @@ else()
 endif()
 
 include_directories(${PROJECT_SOURCE_DIR}/submodules/spdlog/include)
+include_directories(${PROJECT_SOURCE_DIR}/submodules/eventpp/include)
 
 add_subdirectory(submodules/crossguid)
 add_subdirectory(submodules/cryptopp)

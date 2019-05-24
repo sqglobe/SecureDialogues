@@ -1,47 +1,67 @@
 #include "oauthadapter.h"
 #include "oauth-agents/utils/factories.h"
 
+#include <assert.h>
+#include <thread>
+#include "exception/disconectedexception.h"
+#include "exception/notauthorizedexception.h"
+#include "oauth-agents/exceptions/oauth-exceptions.h"
 #include "oauth-agents/utils/base64.h"
 #include "primitives/connectionholder.h"
 
-#include <assert.h>
-#include <thread>
+#include "curlexceptions.h"
 
 void OauthAdapter::send(const std::string& message, const std::string& adress) {
-  if (mOauthAgent->isExpired()) {
-    mOauthAgent->refreshAccessToken();
+  try {
+    if (mOauthAgent->isExpired()) {
+      mOauthAgent->refreshAccessToken();
+    }
+
+    auto [headerName, token] = mOauthAgent->getAuthParam();
+
+    auto encoded =
+        base64_encode(reinterpret_cast<const unsigned char*>(message.c_str()),
+                      static_cast<unsigned int>(message.size()));
+
+    mApiAgent->sendMessage(adress, encoded, headerName, token);
+  } catch (const AuthFailException& ex) {
+    throw NotAuthorizedException(ex.what());
+  } catch (const HttpError& error) {
+    throw DisconectedException(error.what());
+  } catch (const CurlHttpSendError& ex) {
+    throw DisconectedException(ex.what());
   }
-
-  auto [headerName, token] = mOauthAgent->getAuthParam();
-
-  auto encoded =
-      base64_encode(reinterpret_cast<const unsigned char*>(message.c_str()),
-                    static_cast<unsigned int>(message.size()));
-
-  mApiAgent->sendMessage(adress, encoded, headerName, token);
 }
 
 std::pair<std::string, std::string> OauthAdapter::receive() {
-  if (mOauthAgent->isExpired()) {
-    mOauthAgent->refreshAccessToken();
+  try {
+    if (mOauthAgent->isExpired()) {
+      mOauthAgent->refreshAccessToken();
+    }
+
+    if (mMessages.empty()) {
+      auto [headerName, token] = mOauthAgent->getAuthParam();
+      auto list = mApiAgent->getMessages(headerName, token);
+      mMessages.insert(mMessages.cend(), list.begin(), list.end());
+    }
+
+    if (!mMessages.empty()) {
+      auto mess = mMessages.front();
+      mess.second = base64_decode(mess.second);
+      mMessages.pop_front();
+      return mess;
+    }
+
+    std::this_thread::sleep_for(std::chrono::seconds(10));
+
+    return std::pair<std::string, std::string>("", "");
+  } catch (const AuthFailException& ex) {
+    throw NotAuthorizedException(ex.what());
+  } catch (const HttpError& error) {
+    throw DisconectedException(error.what());
+  } catch (const CurlHttpSendError& ex) {
+    throw DisconectedException(ex.what());
   }
-
-  if (mMessages.empty()) {
-    auto [headerName, token] = mOauthAgent->getAuthParam();
-    auto list = mApiAgent->getMessages(headerName, token);
-    mMessages.insert(mMessages.cend(), list.begin(), list.end());
-  }
-
-  if (!mMessages.empty()) {
-    auto mess = mMessages.front();
-    mess.second = base64_decode(mess.second);
-    mMessages.pop_front();
-    return mess;
-  }
-
-  std::this_thread::sleep_for(std::chrono::seconds(10));
-
-  return std::pair<std::string, std::string>("", "");
 }
 
 bool OauthAdapter::connect(const ConnectionHolder& conn) {
@@ -65,8 +85,4 @@ bool OauthAdapter::connect(const ConnectionHolder& conn) {
           "Undefined connection type: " +
           std::to_string(static_cast<int>(conn.getType())));
   }
-}
-
-bool OauthAdapter::isConnected() const noexcept {
-  return true;
 }

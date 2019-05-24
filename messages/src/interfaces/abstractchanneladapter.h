@@ -60,7 +60,6 @@ class AbstractChannelAdapter {
    * @return true - если подключение прошло успешно, false в противном случае
    */
   virtual bool connect(const ConnectionHolder& conn) = 0;
-  virtual bool isConnected() const noexcept = 0;
 
  protected:
   /**
@@ -73,9 +72,5 @@ class AbstractChannelAdapter {
  private:
   std::shared_ptr<AbstractUserNotifier> mNotifier;
 };
-
-inline bool AbstractChannelAdapter::isConnected() const noexcept {
-  return true;
-}
 
 #endif  // ABSTRACTCHANNELADAPTER_H

@@ -130,7 +130,8 @@ CoreInitializer::CoreInitializer(
       mMessageDispatcher,
       std::function<std::unique_ptr<AbstractChannelAdapter>(
           const ConnectionHolder&)>(ChanelAdapterFactory(notifier)),
-      std::make_shared<MessageMarshaller>());
+      std::make_shared<MessageMarshaller>(),
+      std::make_shared<Channel::EventQueue>());
   mConnectionInfoContainer->registerWatcher(connWatcher);
   mContactContainer->registerWatcher(
       std::make_shared<CryptoSystemContactUpdateInformator>(mCryptoSystem));

@@ -26,10 +26,6 @@ class FakeChannelAdapter : public AbstractChannelAdapter {
   }
   virtual bool connect(const ConnectionHolder&) override { return true; }
 
-  virtual bool isConnected() const noexcept override {
-    return this->AbstractChannelAdapter::isConnected();
-  }
-
  private:
   std::string mMessage;
   bool isFirst{true};

@@ -22,6 +22,7 @@ set(MAIN_SOURCE
     initializer/chaneladapterfactory.cpp
     initializer/coreinitializer.cpp
     initializer/guiinitializer.cpp
+    initializer/eventqueueholder.cpp
     passask.cpp
 )
 
@@ -39,7 +40,7 @@ target_link_libraries(SecureDialogues Qt5::Core Qt5::Gui  Qt5::Widgets gui  )
 if(MSVC)
   target_compile_options(SecureDialogues PRIVATE /W4 /WX)
 else()
-  target_compile_options(SecureDialogues PRIVATE -Wall -Wextra -pedantic -Werror)
+  target_compile_options(SecureDialogues PRIVATE -Wall -Wextra -pedantic)
 endif()
 
 if(CMAKE_BUILD_TYPE STREQUAL "Release")

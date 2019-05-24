@@ -16,7 +16,6 @@ class OauthAdapter : public AbstractChannelAdapter {
                     const std::string& adress) noexcept(false);
   virtual std::pair<std::string, std::string> receive() noexcept(false);
   virtual bool connect(const ConnectionHolder& conn);
-  virtual bool isConnected() const noexcept;
 
  private:
   std::unique_ptr<OAuthAgent> mOauthAgent;

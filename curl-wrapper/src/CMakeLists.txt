@@ -17,11 +17,13 @@ set(HEADERS
   uribuilder.h
   httprequest.h
   curlexceptions.h
+  httpcode.h
 )
 
 set(SOURCES
   uribuilder.cpp
   httprequest.cpp
+  httpcode.cpp
 )
 
 

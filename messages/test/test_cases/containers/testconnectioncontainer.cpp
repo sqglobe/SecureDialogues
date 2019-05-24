@@ -50,18 +50,13 @@ class FakeCalledRecieveAdapter : public AbstractChannelAdapter {
   ~FakeCalledRecieveAdapter() override { mDestructorCall = true; }
 
  public:
-  virtual void send([[maybe_unused]] const std::string& message,
-                    [[maybe_unused]] const std::string& adress) override {}
+  virtual void send(const std::string&, const std::string&) override {}
   virtual std::pair<std::string, std::string> receive() override {
     mRecieveCall = true;
     std::this_thread::sleep_for(std::chrono::seconds(1));
     return std::pair<std::string, std::string>("", "");
   }
-  virtual bool connect([[maybe_unused]] const ConnectionHolder& conn) override {
-    return true;
-  }
-
-  virtual bool isConnected() const noexcept override { return true; }
+  virtual bool connect(const ConnectionHolder&) override { return true; }
 
  private:
   std::atomic<bool>& mRecieveCall;
@@ -70,13 +65,13 @@ class FakeCalledRecieveAdapter : public AbstractChannelAdapter {
 
 class FakeConnInfoWatcher : public ChangeWatcher<ConnectionHolder> {
  public:
-  virtual void added([[maybe_unused]] const element& obj) override {
+  virtual void added(const element&) override {
     mMethodCalled = "addedElement";
   }
-  virtual void changed([[maybe_unused]] const element& obj) override {
+  virtual void changed(const element&) override {
     mMethodCalled = "updatedElement";
   }
-  virtual void removed([[maybe_unused]] const element& obj) override {
+  virtual void removed(const element&) override {
     mMethodCalled = "removedElement";
   }
 
@@ -101,7 +96,8 @@ void TestConnectionContainer::testAddConnectionInfo() {
       messageDispatcher,
       std::function<std::unique_ptr<AbstractChannelAdapter>(
           const ConnectionHolder&)>(fakeFactory),
-      std::make_shared<MessageMarshaller>());
+      std::make_shared<MessageMarshaller>(),
+      std::make_shared<Channel::EventQueue>());
   ConnectionInfoContainer connCont;
   connCont.registerWatcher(connectWatcher);
 
@@ -136,7 +132,8 @@ void TestConnectionContainer::testUpdateConnectionInfo() {
       messageDispatcher,
       std::function<std::unique_ptr<AbstractChannelAdapter>(
           const ConnectionHolder&)>(fakeFactory),
-      std::make_shared<MessageMarshaller>());
+      std::make_shared<MessageMarshaller>(),
+      std::make_shared<Channel::EventQueue>());
   ConnectionInfoContainer connCont;
   connCont.registerWatcher(connectWatcher);
   auto watcher = std::make_shared<FakeConnInfoWatcher>();
@@ -170,7 +167,8 @@ void TestConnectionContainer::testUpdateConnectionInfoAtPos() {
       messageDispatcher,
       std::function<std::unique_ptr<AbstractChannelAdapter>(
           const ConnectionHolder&)>(fakeFactory),
-      std::make_shared<MessageMarshaller>());
+      std::make_shared<MessageMarshaller>(),
+      std::make_shared<Channel::EventQueue>());
   ConnectionInfoContainer connCont;
   connCont.registerWatcher(connectWatcher);
   auto watcher = std::make_shared<FakeConnInfoWatcher>();
@@ -204,7 +202,8 @@ void TestConnectionContainer::testRemoveAtChannelName() {
       messageDispatcher,
       std::function<std::unique_ptr<AbstractChannelAdapter>(
           const ConnectionHolder&)>(fakeFactory),
-      std::make_shared<MessageMarshaller>());
+      std::make_shared<MessageMarshaller>(),
+      std::make_shared<Channel::EventQueue>());
   ConnectionInfoContainer connCont;
   connCont.registerWatcher(connectWatcher);
   auto watcher = std::make_shared<FakeConnInfoWatcher>();
@@ -235,7 +234,8 @@ void TestConnectionContainer::testRemoveAtPosition() {
       messageDispatcher,
       std::function<std::unique_ptr<AbstractChannelAdapter>(
           const ConnectionHolder&)>(fakeFactory),
-      std::make_shared<MessageMarshaller>());
+      std::make_shared<MessageMarshaller>(),
+      std::make_shared<Channel::EventQueue>());
   ConnectionInfoContainer connCont;
   connCont.registerWatcher(connectWatcher);
   connCont.add(

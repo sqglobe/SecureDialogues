@@ -2,7 +2,6 @@
 
 #include <nlohmann/json.hpp>
 #include <random>
-#include "oauth-agents/exceptions/httpfailexception.h"
 #include "oauth-agents/utils/base64.h"
 #include "uribuilder.h"
 
@@ -14,6 +13,10 @@
 
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include "spdlog/spdlog.h"
+
+#include "oauth-agents/exceptions/oauth-exceptions.h"
+
+#include "httpcode.h"
 
 // https://vk.com/dev/using_longpoll
 
@@ -81,7 +84,12 @@ std::list<std::pair<std::string, std::string> > VkApi::getMessages(
       .appendQuery("ts", std::to_string(mLastNumber))
       .appendQuery("wait", "25")
       .appendQuery("version", "3");
-  auto response = mRequest.get(builder.getUri());
+  auto [resp_code, response] = mRequest.get(builder.getUri());
+
+  if (resp_code != HttpCode::OK) {
+    throw HttpError(resp_code);
+  }
+
   auto body = nlohmann::json::parse(response);
   if (body.contains("failed")) {
     if (auto failed = body.at("failed"); failed == 1) {
@@ -92,6 +100,7 @@ std::list<std::pair<std::string, std::string> > VkApi::getMessages(
     }
     return std::list<std::pair<std::string, std::string> >();
   }
+
   mLastNumber = body.at("ts");
   auto updates = body.at("updates");
   std::list<std::pair<std::string, std::string> > messages;
@@ -119,9 +128,14 @@ void VkApi::sendMessage(const std::string& to,
       .appendQuery("message", body)
       .appendQuery(authHeaderName, authToken)
       .appendQuery("random_id", getRaindomId());
-  auto response = mRequest.post(
+
+  auto [resp_code, response] = mRequest.post(
       "https://api.vk.com/method/messages.send", builder.getQuery(),
       {{"Content-type", "application/x-www-form-urlencoded"}});
+
+  if (resp_code != HttpCode::OK) {
+    throw HttpError(resp_code);
+  }
 
   auto json = nlohmann::json::parse(response);
   if (json.contains("error")) {
@@ -129,7 +143,10 @@ void VkApi::sendMessage(const std::string& to,
     errorMessage.append(to)
         .append(". Причина: ")
         .append(getErrorDescription(json.at("error").at("error_code")));
-    throw std::runtime_error(errorMessage);
+    if (json.at("error").at("error_code") == 5) {
+      throw AuthFailException(errorMessage);
+    }
+    throw ApiCallError(errorMessage);
   }
 }
 
@@ -141,8 +158,22 @@ std::tuple<std::string, std::string, int> VkApi::getLongPollServer(
       .appendQuery("v", "5.92")
       .appendQuery(authHeaderName, authToken)
       .appendQuery("lp_version", "3");
-  auto response = mRequest.get(builder.getUri());
+  auto [resp_code, response] = mRequest.get(builder.getUri());
+  if (resp_code != HttpCode::OK) {
+    throw HttpError(resp_code);
+  }
   auto json = nlohmann::json::parse(response);
   auto data = json.at("response");
+
+  if (json.contains("error")) {
+    std::string errorMessage = "Ошибка взаимодействия с VK. ";
+    errorMessage.append("Причина: ")
+        .append(getErrorDescription(json.at("error").at("error_code")));
+    if (json.at("error").at("error_code") == 5) {
+      throw AuthFailException(errorMessage);
+    }
+    throw ApiCallError(errorMessage);
+  }
+
   return std::make_tuple(data.at("server"), data.at("key"), data.at("ts"));
 }

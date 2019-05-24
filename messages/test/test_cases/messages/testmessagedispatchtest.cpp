@@ -51,7 +51,8 @@ void TestMessageDispatchTest::testDispatchMessageForActionMessage() {
 
   Channel channel(
       std::unique_ptr<AbstractChannelAdapter>(new FakeChannelAdapter(check)),
-      dsp, std::make_shared<MessageMarshaller>(), "test");
+      dsp, std::make_shared<MessageMarshaller>(), "test",
+      std::make_shared<Channel::EventQueue>());
   dsp->add(std::unique_ptr<FakeMessageHandler>(
       new FakeMessageHandler(DialogMessage::Action::MESSAGE, outMessage)));
   dsp->add(std::unique_ptr<FakeMessageHandler>(new FakeMessageHandler(
@@ -59,7 +60,8 @@ void TestMessageDispatchTest::testDispatchMessageForActionMessage() {
   dsp->add(std::make_shared<Channel>(std::unique_ptr<AbstractChannelAdapter>(
                                          new FakeChannelAdapter(check)),
                                      dsp, std::make_shared<MessageMarshaller>(),
-                                     "test"),
+                                     "test",
+                                     std::make_shared<Channel::EventQueue>()),
            "test");
   std::this_thread::sleep_for(std::chrono::seconds(1));
 

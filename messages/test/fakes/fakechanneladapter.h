@@ -11,8 +11,7 @@ class FakeChannelAdapter : public AbstractChannelAdapter {
       AbstractChannelAdapter(std::shared_ptr<FakeNotifier>(new FakeNotifier)) {
     mMessage = message;
   }
-  virtual void send([[maybe_unused]] const std::string& message,
-                    [[maybe_unused]] const std::string& adress) override {}
+  virtual void send(const std::string&, const std::string&) override {}
   virtual std::pair<std::string, std::string> receive() override {
     if (isFirst) {
       isFirst = false;
@@ -22,11 +21,7 @@ class FakeChannelAdapter : public AbstractChannelAdapter {
 
     return std::make_pair("test", mMessage);
   }
-  virtual bool connect([[maybe_unused]] const ConnectionHolder& conn) override {
-    return true;
-  }
-
-  virtual bool isConnected() const noexcept override { return true; }
+  virtual bool connect(const ConnectionHolder&) override { return true; }
 
  private:
   std::string mMessage;

@@ -5,6 +5,8 @@
 #include <memory>
 #include <mutex>
 
+#include "eventpp/eventqueue.h"
+
 class DialogMessage;
 class AbstractChannelAdapter;
 class AbstractMessageDespatcher;
@@ -27,6 +29,16 @@ class logger;
 class Channel : public std::enable_shared_from_this<Channel> {
  public:
   /**
+   * @brief Статус подключения канала
+   */
+  enum class ChannelStatus { CONNECTED, FAILED_CONNECT, AUTHORIZATION_FAILED };
+
+  using EventQueue = eventpp::EventQueue<
+      Channel::ChannelStatus,
+      void(Channel::ChannelStatus, const std::string&, const std::string&)>;
+
+ public:
+  /**
    * @brief Конструктор класса
    * @param adater - адаптер для взаимодействия со средой передачи сообщений,
    * обеспечивает методы для отправки и получения сообщений
@@ -36,7 +48,8 @@ class Channel : public std::enable_shared_from_this<Channel> {
   Channel(std::unique_ptr<AbstractChannelAdapter>&& adater,
           const std::shared_ptr<AbstractMessageDespatcher>& handler,
           const std::shared_ptr<AbstractMessageMarshaller>& marshaller,
-          const std::string& name);
+          const std::string& name,
+          const std::shared_ptr<EventQueue>& eventQueue);
 
   /**
    * @brief Конструктор класса
@@ -50,8 +63,13 @@ class Channel : public std::enable_shared_from_this<Channel> {
   Channel(AbstractChannelAdapter* adapter,
           const std::shared_ptr<AbstractMessageDespatcher>& handler,
           const std::shared_ptr<AbstractMessageMarshaller>& marshaller,
-          const std::string& name);
+          const std::string& name,
+          const std::shared_ptr<EventQueue>& eventQueue);
   ~Channel();
+
+ public:
+  Channel(const Channel&) = delete;
+  Channel& operator=(const Channel&) = delete;
 
  public:
   /**
@@ -75,14 +93,12 @@ class Channel : public std::enable_shared_from_this<Channel> {
   void startCycle();
 
  private:
-  void checkConnectionProcess(const std::weak_ptr<Channel>& channel);
-
- private:
   std::unique_ptr<AbstractChannelAdapter> mAdapter;
   std::weak_ptr<AbstractMessageDespatcher> mHandler;
   std::atomic_bool mIsEnds{false};
   std::shared_ptr<AbstractMessageMarshaller> mMarshaller;
   std::string mName;
+  std::shared_ptr<EventQueue> mEventQueue;
   static std::shared_ptr<spdlog::logger> LOGGER;
 };
 

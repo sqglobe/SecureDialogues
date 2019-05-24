@@ -34,7 +34,8 @@ void TestChannelSendRecieveTest::testReceieveMessage() {
 
   auto channel = std::make_shared<Channel>(
       std::unique_ptr<AbstractChannelAdapter>(new FakeChannelAdapter(check)),
-      dsp, std::make_shared<MessageMarshaller>(), "test");
+      dsp, std::make_shared<MessageMarshaller>(), "test",
+      std::make_shared<Channel::EventQueue>());
   channel->startCycle();
   std::this_thread::sleep_for(std::chrono::seconds(1));
 

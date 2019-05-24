@@ -3,6 +3,7 @@
 
 #include <functional>
 #include <memory>
+#include "communication/channel.h"
 #include "interfaces/changewatcher.h"
 #include "primitives/connectionholder.h"
 
@@ -20,7 +21,8 @@ class ConnectContainerWatcher : public ChangeWatcher<ConnectionHolder> {
       const std::shared_ptr<MessageDespatcher>& dispatcher,
       const std::function<std::unique_ptr<AbstractChannelAdapter>(
           const ConnectionHolder&)>& fabric,
-      const std::shared_ptr<AbstractMessageMarshaller>& marshaller);
+      const std::shared_ptr<AbstractMessageMarshaller>& marshaller,
+      const std::shared_ptr<Channel::EventQueue>& eventQueue);
 
  public:
   virtual void added(const ConnectionHolder& obj) override;
@@ -33,5 +35,6 @@ class ConnectContainerWatcher : public ChangeWatcher<ConnectionHolder> {
       const ConnectionHolder&)>
       mFabric;
   std::shared_ptr<AbstractMessageMarshaller> mMarshaller;
+  std::shared_ptr<Channel::EventQueue> mEventQueue;
 };
 #endif  // CONNECTCONTAINERWATCHER_H

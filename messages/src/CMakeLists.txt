@@ -87,6 +87,8 @@ crypto/cryptosystemcontactupdateinformator.h
 crypto/cryptosystemdialogremoveinformator.h
 constants.h
 adapters/oauthadapter.h
+exception/notauthorizedexception.h
+exception/disconectedexception.h
 )
 
 
