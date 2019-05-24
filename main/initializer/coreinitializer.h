@@ -22,11 +22,13 @@ class Decryptor;
 
 class Encryptor;
 class SymetricalCipher;
+class EventQueueHolder;
 
 class CoreInitializer {
  public:
   CoreInitializer(const std::shared_ptr<AbstractUserNotifier>& notifier,
-                  const std::string& pass);
+                  const std::string& pass,
+                  const EventQueueHolder& eventHolder);
   ~CoreInitializer();
 
   // getters for core objects

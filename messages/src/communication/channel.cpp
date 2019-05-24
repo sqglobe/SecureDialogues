@@ -44,13 +44,18 @@ Channel::~Channel() {
 
 void Channel::messsageCycle(std::weak_ptr<Channel>&& shared) {
   std::weak_ptr<Channel> weak(shared);
-  bool isDisconected{false};
+  bool isDisconected{true};
   while (!mIsEnds) {
     auto th = weak.lock();
     if (!th || !th->mAdapter)
       break;
     try {
       auto msg = th->mAdapter->receive();
+
+      if (isDisconected) {
+        isDisconected = false;
+        th->mEventQueue->enqueue(ChannelStatus::CONNECTED, th->mName, "");
+      }
 
       if (msg.first.empty() || msg.second.empty())
         continue;
@@ -67,8 +72,6 @@ void Channel::messsageCycle(std::weak_ptr<Channel>&& shared) {
           }
         }
       }
-      if (isDisconected)
-        isDisconected = false;
 
     } catch (const DisconectedException& ex) {
       th->mEventQueue->enqueue(ChannelStatus::FAILED_CONNECT, th->mName,

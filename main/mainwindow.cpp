@@ -15,7 +15,8 @@ MainWindow::MainWindow(const std::string& pass, QWidget* parent) :
     mUserInformator(std::make_shared<UserInformator>(this)) {
   ui->setupUi(this);
 
-  mCore = std::make_shared<CoreInitializer>(mUserInformator, pass);
+  mCore =
+      std::make_shared<CoreInitializer>(mUserInformator, pass, mEventHolder);
 
   mGui = std::make_shared<GuiInitializer>(this, mCore, mUserInformator,
                                           mUserInformator);

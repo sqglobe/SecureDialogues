@@ -21,7 +21,7 @@ class DialogCreation : public QDialog {
 
  public:
   explicit DialogCreation(const std::shared_ptr<ContactModel>& model,
-                          QWidget* parent = 0);
+                          QWidget* parent = nullptr);
   ~DialogCreation();
 
  private slots:

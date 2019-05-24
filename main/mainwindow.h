@@ -4,6 +4,8 @@
 #include <QMainWindow>
 #include <memory>
 
+#include "initializer/eventqueueholder.h"
+
 class GuiInitializer;
 class CoreInitializer;
 
@@ -43,6 +45,7 @@ class MainWindow : public QMainWindow {
 
   std::shared_ptr<CoreInitializer> mCore;
   std::shared_ptr<GuiInitializer> mGui;
+  EventQueueHolder mEventHolder;
 };
 
 #endif  // MAINWINDOW_H

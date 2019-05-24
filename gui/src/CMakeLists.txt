@@ -6,6 +6,7 @@ find_package (Threads)
 set(GUI_MODULE_SOURCES
     basesettingsdialog.cpp
     widgets/contactwidget.cpp
+    models/connectioninfomodel.cpp
     widgets/connectioninfowidget.cpp
     widgets/widgetsutils.cpp
     models/channelslistmodel.cpp
@@ -79,6 +80,7 @@ set(
   dialogs/dialogcreation.h
   dialogs/userinformator.h
   dialogs/contactgasket.h
+  models/connectioninfomodel.h
 )
 
 qt5_wrap_cpp(WRAP_MOC_GUI ${GUI_MOC})

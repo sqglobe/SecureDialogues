@@ -77,6 +77,34 @@ void ConnectionInfoWidget::setElement(const ConnectionHolder& info) {
   mInfo.reset(new ConnectionHolder(info));
 
   activatedConnectionType(static_cast<int>(info.getType()));
+
+  auto connStatus = findChild<QLabel*>("statusText");
+  auto lastMessage = findChild<QLabel*>("lastMessage");
+  switch (info.getStatus()) {
+    case Channel::ChannelStatus::UNDEFINED: {
+      connStatus->setText("Подключение не подтверждено");
+      lastMessage->setText("");
+      lastMessage->hide();
+      break;
+    }
+    case Channel::ChannelStatus::CONNECTED: {
+      connStatus->setText("Подключение выплнено успешно");
+      lastMessage->setText("");
+      lastMessage->hide();
+      break;
+    }
+    case Channel::ChannelStatus::FAILED_CONNECT: {
+      connStatus->setText("Подключение не успешно");
+      lastMessage->setText(info.getMessage().c_str());
+      lastMessage->show();
+      break;
+    }
+    case Channel::ChannelStatus::AUTHORIZATION_FAILED: {
+      connStatus->setText("Необходимо выполнить авторизацию");
+      lastMessage->setText(info.getMessage().c_str());
+      lastMessage->show();
+    }
+  }
 }
 
 ConnectionHolder ConnectionInfoWidget::getElement() noexcept(false) {

@@ -31,6 +31,14 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="font">
+        <font>
+         <pointsize>13</pointsize>
+        </font>
+       </property>
+       <property name="spacing">
+        <number>0</number>
+       </property>
       </widget>
      </item>
     </layout>

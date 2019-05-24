@@ -7,6 +7,7 @@
 #include <mutex>
 #include <vector>
 
+#include "communication/channel.h"
 #include "interfaces/changewatcher.h"
 
 class ConnectionHolder;
@@ -18,6 +19,12 @@ class ConnectionHolder;
  */
 class ChannelsListModel : public QAbstractListModel,
                           public ChangeWatcher<ConnectionHolder> {
+  struct ListItem {
+    QString name;
+    QString message;
+    Channel::ChannelStatus status;
+  };
+
  public:
   explicit ChannelsListModel(const std::vector<ConnectionHolder>& elements);
 
@@ -28,11 +35,11 @@ class ChannelsListModel : public QAbstractListModel,
 
  public:
   virtual void added(const element& obj) override;
-  virtual void changed(const element&) override;
+  virtual void changed(const element& obj) override;
   virtual void removed(const element& obj) override;
 
  private:
-  QVector<QString> mChannelNames;
+  QVector<ListItem> mChannelNames;
   mutable std::recursive_mutex mMutex;
 };
 

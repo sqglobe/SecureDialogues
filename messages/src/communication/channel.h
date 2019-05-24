@@ -31,7 +31,12 @@ class Channel : public std::enable_shared_from_this<Channel> {
   /**
    * @brief Статус подключения канала
    */
-  enum class ChannelStatus { CONNECTED, FAILED_CONNECT, AUTHORIZATION_FAILED };
+  enum class ChannelStatus {
+    UNDEFINED,
+    CONNECTED,
+    FAILED_CONNECT,
+    AUTHORIZATION_FAILED
+  };
 
   using EventQueue = eventpp::EventQueue<
       Channel::ChannelStatus,

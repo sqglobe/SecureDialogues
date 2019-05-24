@@ -37,6 +37,8 @@
 #include "interfaces/symetricalcipher.h"
 #include "symetrical/symetricalsystemfactories.h"
 
+#include "eventqueueholder.h"
+
 template <typename Container>
 void saveToFile(const std::string& name,
                 Container& container,
@@ -96,7 +98,8 @@ void saveKeys(const std::string& fileTempl,
 
 CoreInitializer::CoreInitializer(
     const std::shared_ptr<AbstractUserNotifier>& notifier,
-    const std::string& pass) :
+    const std::string& pass,
+    const EventQueueHolder& eventHolder) :
     mConnectionInfoContainer(std::make_shared<ConnectionInfoContainer>()),
     mContactContainer(std::make_shared<ContactContainer>()),
     mDialogManager(std::make_shared<DialogManager>()),
@@ -126,12 +129,25 @@ CoreInitializer::CoreInitializer(
   mMessageDispatcher->add(mMessageActionHandler);
   mMessageDispatcher->add(mDialogActionHandler);
 
+  auto channelEventListener = [connContainer = mConnectionInfoContainer](
+                                  Channel::ChannelStatus newStatus,
+                                  const std::string& channelName,
+                                  const std::string& message) {
+    connContainer->updateConnectionStatus(newStatus, channelName, message);
+  };
+
+  eventHolder.channelEventQueue()->appendListener(
+      Channel::ChannelStatus::CONNECTED, channelEventListener);
+  eventHolder.channelEventQueue()->appendListener(
+      Channel::ChannelStatus::FAILED_CONNECT, channelEventListener);
+  eventHolder.channelEventQueue()->appendListener(
+      Channel::ChannelStatus::AUTHORIZATION_FAILED, channelEventListener);
+
   auto connWatcher = std::make_shared<ConnectContainerWatcher>(
       mMessageDispatcher,
       std::function<std::unique_ptr<AbstractChannelAdapter>(
           const ConnectionHolder&)>(ChanelAdapterFactory(notifier)),
-      std::make_shared<MessageMarshaller>(),
-      std::make_shared<Channel::EventQueue>());
+      std::make_shared<MessageMarshaller>(), eventHolder.channelEventQueue());
   mConnectionInfoContainer->registerWatcher(connWatcher);
   mContactContainer->registerWatcher(
       std::make_shared<CryptoSystemContactUpdateInformator>(mCryptoSystem));
