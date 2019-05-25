@@ -31,6 +31,7 @@ crypto/cryptosystemimpl.cpp
 crypto/cryptosystemcontactupdateinformator.cpp
 crypto/cryptosystemdialogremoveinformator.cpp
 adapters/oauthadapter.cpp
+containers/consistentwatchers.cpp
 )
 
 
@@ -89,6 +90,7 @@ constants.h
 adapters/oauthadapter.h
 exception/notauthorizedexception.h
 exception/disconectedexception.h
+containers/consistentwatchers.h
 )
 
 

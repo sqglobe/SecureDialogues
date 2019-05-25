@@ -16,11 +16,6 @@ class ConnectionInfoContainer
  public:
   ConnectionInfoContainer() = default;
 
- public:
-  void updateConnectionStatus(Channel::ChannelStatus newStatus,
-                              const std::string& channelName,
-                              const std::string& message);
-
  private:
 };
 

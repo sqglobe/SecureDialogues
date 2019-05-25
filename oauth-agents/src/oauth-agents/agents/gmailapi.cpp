@@ -126,6 +126,7 @@ std::string GmailApi::loadMessages(
       mRequest.get(builder.getUri(), {{authHeaderName, authToken}});
 
   if (HttpCode::OK != code) {
+    std::cout << "get gmail errror: \n" << response << std::endl;
     throw HttpError(code);
   }
 

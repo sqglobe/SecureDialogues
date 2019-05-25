@@ -39,6 +39,8 @@
 
 #include "eventqueueholder.h"
 
+#include "containers/consistentwatchers.h"
+
 template <typename Container>
 void saveToFile(const std::string& name,
                 Container& container,
@@ -133,7 +135,14 @@ CoreInitializer::CoreInitializer(
                                   Channel::ChannelStatus newStatus,
                                   const std::string& channelName,
                                   const std::string& message) {
-    connContainer->updateConnectionStatus(newStatus, channelName, message);
+    if (!connContainer->has(channelName)) {
+      return;
+    }
+
+    auto wrp = connContainer->wrapper(channelName);
+    wrp->setStatus(newStatus);
+    wrp->setMessage(message);
+    wrp.save();
   };
 
   eventHolder.channelEventQueue()->appendListener(
@@ -158,6 +167,13 @@ CoreInitializer::CoreInitializer(
       std::make_shared<CryptoSystemDialogRemoveInformator>(mCryptoSystem));
 
   loadFromFiles(FILE_CONNECTIONS, FILE_CONTACT, mPassCipher);
+
+  mConnectionInfoContainer->registerWatcher(
+      std::make_shared<ContactConsistentWatcher>(mContactContainer));
+  mContactContainer->registerWatcher(
+      std::make_shared<DialogConsistentWatcher>(mDialogManager));
+  mDialogManager->registerWatcher(
+      std::make_shared<MessagesConsistentWatcher>(mMessageContainer));
 }
 
 CoreInitializer::~CoreInitializer() {}

@@ -158,6 +158,9 @@ class BaseContainer : public std::enable_shared_from_this<
   int size() const noexcept;
   int posOf(const std::string& id) const;
 
+  std::vector<const_element> get_if(
+      std::function<bool(const const_element&)> p) const;
+
  protected:
   const_element find(std::function<bool(const element&)> is) const;
 
@@ -385,6 +388,17 @@ void BaseContainer<Element, ConstElement>::notify(
       it = mTemporaryWatchers.erase(it);
     }
   }
+}
+
+template <typename Element, typename ConstElement>
+std::vector<typename BaseContainer<Element, ConstElement>::const_element>
+BaseContainer<Element, ConstElement>::get_if(
+    std::function<bool(const const_element&)> p) const {
+  std::lock_guard<std::recursive_mutex> guard(mMutex);
+  std::vector<typename BaseContainer<Element, ConstElement>::const_element> res;
+  std::copy_if(std::cbegin(mElements), std::cend(mElements),
+               std::back_inserter(res), p);
+  return res;
 }
 
 #endif  // BASECONTAINER_H

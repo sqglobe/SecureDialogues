@@ -7,7 +7,7 @@ std::string getErrorCodeMessage(HttpCode code) {
     case HttpCode::UNAUTHORIZED:
       return "Unauthorized";
   }
-  return "Undefined HTTP error";
+  return "Undefined HTTP error " + std::to_string(static_cast<int>(code));
 }
 
 HttpError::HttpError(HttpCode code) :
