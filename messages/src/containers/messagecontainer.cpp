@@ -83,8 +83,10 @@ void MessageContainer::cleareHandlers() {
 void MessageContainer::messageChanged(
     const std::string& dialogId,
     const std::shared_ptr<UserMessage>& message) {
-  for (const auto& handler : mEventHandlers) {
-    handler->invalidateData(dialogId);
+  if (mMessages.count(dialogId) > 0) {
+    for (const auto& handler : mEventHandlers) {
+      handler->invalidateData(dialogId);
+    }
   }
 }
 
@@ -104,6 +106,23 @@ void MessageContainer::list(
   const auto& messages = mMessages.at(dialogId);
   for (const auto& message : messages) {
     handler->peekMessage(message);
+  }
+}
+
+void MessageContainer::removeDialog(const std::string& dialogId) {
+  std::lock_guard<std::recursive_mutex> lock(mMutex);
+  if (mMessages.count(dialogId) > 0) {
+    mMessages.erase(dialogId);
+  }
+
+  if (dialogId == mActiveDialog) {
+    mActiveDialog.clear();
+
+    if (mMessages.size() > 0) {
+      mActiveDialog = std::cbegin(mMessages)->first;
+      notifymAboutDialogIdChanged(mActiveDialog);
+      notifyPeekAllMessagesFromActive();
+    }
   }
 }
 

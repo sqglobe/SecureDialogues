@@ -80,7 +80,10 @@ void MessageDespatcher::sendMessage(
 void MessageDespatcher::sendAndForget(const DialogMessage& message,
                                       const std::string& channelName) const {
   std::shared_lock<std::shared_mutex> guard(mMutex);
-  mChannels.at(channelName)->sendMessage(message);
+  DialogMessage mess(message.action(), message.content(), message.dialogId(),
+                     message.adress(), getNextSequential());
+  mess.setSignature(mCryptoSystem->createSignature(mess));
+  mChannels.at(channelName)->sendMessage(mess);
 }
 
 void MessageDespatcher::add(std::shared_ptr<AbstractMessageHandler> handler) {
@@ -126,7 +129,7 @@ unsigned long MessageDespatcher::getNextSequential() const noexcept {
 void MessageDespatcher::sendAck(const DialogMessage& message,
                                 const std::string& channel) {
   if (message.action() != DialogMessage::Action::ABORT &&
-      message.sequential() > 0) {
+      message.sequential() > 0 && mChannels.count(channel) > 0) {
     auto ack = make_ack(message);
     LOGGER->debug(
         "send ack for dialog {0} adress {1} channel {2} sequental {3}",
@@ -158,5 +161,6 @@ bool MessageDespatcher::isSignatureValid(const DialogMessage& message) const
 
 void MessageDespatcher::removeChannel(const std::string& channel) {
   std::unique_lock<std::shared_mutex> guard(mMutex);
+
   mChannels.erase(channel);
 }

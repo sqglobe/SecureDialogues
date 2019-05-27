@@ -12,24 +12,31 @@
 #include <iostream>
 #include "spdlog/spdlog.h"
 
+#include "exception/disconectedexception.h"
+#include "exception/notauthorizedexception.h"
+
 std::shared_ptr<spdlog::logger> Channel::LOGGER =
     spdlog::stdout_color_mt("channel");
 
 Channel::Channel(std::unique_ptr<AbstractChannelAdapter>&& adater,
                  const std::shared_ptr<AbstractMessageDespatcher>& handler,
                  const std::shared_ptr<AbstractMessageMarshaller>& marshaller,
-                 const std::string& name) :
+                 const std::string& name,
+                 const std::shared_ptr<EventQueue>& eventQueue) :
     mAdapter(std::move(adater)),
-    mHandler(handler), mMarshaller(marshaller), mName(name) {}
+    mHandler(handler), mMarshaller(marshaller), mName(name),
+    mEventQueue(eventQueue) {}
 
 Channel::Channel(AbstractChannelAdapter* adapter,
                  const std::shared_ptr<AbstractMessageDespatcher>& handler,
                  const std::shared_ptr<AbstractMessageMarshaller>& marshaller,
-                 const std::string& name) :
+                 const std::string& name,
+                 const std::shared_ptr<EventQueue>& eventQueue) :
     Channel(std::unique_ptr<AbstractChannelAdapter>(adapter),
             handler,
             marshaller,
-            name) {}
+            name,
+            eventQueue) {}
 
 Channel::~Channel() {
   mIsEnds = true;
@@ -37,12 +44,18 @@ Channel::~Channel() {
 
 void Channel::messsageCycle(std::weak_ptr<Channel>&& shared) {
   std::weak_ptr<Channel> weak(shared);
+  bool isDisconected{true};
   while (!mIsEnds) {
     auto th = weak.lock();
     if (!th || !th->mAdapter)
       break;
     try {
       auto msg = th->mAdapter->receive();
+
+      if (isDisconected) {
+        isDisconected = false;
+        th->mEventQueue->enqueue(ChannelStatus::CONNECTED, th->mName, "");
+      }
 
       if (msg.first.empty() || msg.second.empty())
         continue;
@@ -59,9 +72,15 @@ void Channel::messsageCycle(std::weak_ptr<Channel>&& shared) {
           }
         }
       }
-    } catch (const SendMessageException&) {  // TODO: необходимо обрабатывать и
-                                             // другие исключения
-      checkConnectionProcess(weak);
+
+    } catch (const DisconectedException& ex) {
+      th->mEventQueue->enqueue(ChannelStatus::FAILED_CONNECT, th->mName,
+                               std::string(ex.what()));
+      isDisconected = true;
+    } catch (const NotAuthorizedException& ex) {
+      th->mEventQueue->enqueue(ChannelStatus::AUTHORIZATION_FAILED, th->mName,
+                               std::string(ex.what()));
+      isDisconected = true;
     } catch (const std::exception& ex) {
       LOGGER->debug("Get exception when recieve message: {0}", ex.what());
     }
@@ -69,28 +88,21 @@ void Channel::messsageCycle(std::weak_ptr<Channel>&& shared) {
 }
 
 void Channel::sendMessage(const DialogMessage& message) {
-  mAdapter->send(mMarshaller->marshall(message), message.adress());
+  try {
+    mAdapter->send(mMarshaller->marshall(message), message.adress());
+  } catch (const DisconectedException& ex) {
+    mEventQueue->enqueue(ChannelStatus::FAILED_CONNECT, mName,
+                         std::string(ex.what()));
+    throw ex;
+  } catch (const NotAuthorizedException& ex) {
+    mEventQueue->enqueue(ChannelStatus::AUTHORIZATION_FAILED, mName,
+                         std::string(ex.what()));
+    throw ex;
+  }
 }
 
 void Channel::startCycle() {
   std::thread th(&Channel::messsageCycle, this,
                  std::weak_ptr<Channel>(shared_from_this()));
   th.detach();
-}
-
-void Channel::checkConnectionProcess(const std::weak_ptr<Channel>& channel) {
-  auto timeout = std::chrono::seconds(2);
-  static const auto MAX_TIMEOUT = std::chrono::minutes(10);
-
-  while (1) {
-    auto ch = channel.lock();
-    if (!ch || ch->mAdapter->isConnected()) {
-      return;
-    }
-    std::this_thread::sleep_for(timeout);
-    timeout = timeout * 10;
-    if (MAX_TIMEOUT < timeout) {
-      timeout = MAX_TIMEOUT;
-    }
-  }
 }

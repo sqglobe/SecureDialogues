@@ -57,7 +57,3 @@ bool UdpAdapter::connect(const ConnectionHolder&) {
 
   return ec.value() == 0;
 }
-
-bool UdpAdapter::isConnected() const noexcept {
-  return true;
-}

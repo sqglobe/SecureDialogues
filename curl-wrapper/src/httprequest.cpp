@@ -7,7 +7,8 @@
 using CurlHandler = std::unique_ptr<CURL, void (*)(CURL*)>;
 using HeaderHandler = std::unique_ptr<curl_slist, void (*)(curl_slist*)>;
 
-std::string do_request(const std::string& uri, const CurlHandler& handler) {
+std::tuple<HttpCode, std::string> do_request(const std::string& uri,
+                                             const CurlHandler& handler) {
   curl_easy_setopt(handler.get(), CURLOPT_URL, uri.c_str());
   std::string output;
   output.reserve(100);
@@ -15,7 +16,10 @@ std::string do_request(const std::string& uri, const CurlHandler& handler) {
   if (CURLcode res = curl_easy_perform(handler.get()); res != CURLE_OK) {
     throw CurlHttpSendError(curl_easy_strerror(res));
   }
-  return output;
+  auto response_code{0L};
+  curl_easy_getinfo(handler.get(), CURLINFO_RESPONSE_CODE, &response_code);
+  return std::make_tuple(static_cast<HttpCode>(response_code),
+                         std::move(output));
 }
 
 void bind_headers(HeaderHandler& handler,
@@ -55,14 +59,16 @@ CurlHandler make_curl() {
   return ptr;
 }
 
-std::string HttpRequest::get(const std::string& uri) const {
+std::tuple<HttpCode, std::string> HttpRequest::get(
+    const std::string& uri) const {
   auto curl = make_curl();
   curl_easy_setopt(curl.get(), CURLOPT_HTTPGET, 1);
   return do_request(uri, curl);
 }
 
-std::string HttpRequest::get(const std::string& uri,
-                             std::initializer_list<HttpHeader> headers) const {
+std::tuple<HttpCode, std::string> HttpRequest::get(
+    const std::string& uri,
+    std::initializer_list<HttpHeader> headers) const {
   auto curl = make_curl();
   curl_easy_setopt(curl.get(), CURLOPT_HTTPGET, 1);
   HeaderHandler headersHandler(nullptr, curl_slist_free_all);
@@ -71,16 +77,18 @@ std::string HttpRequest::get(const std::string& uri,
   return do_request(uri, curl);
 }
 
-std::string HttpRequest::post(const std::string& uri,
-                              const std::string& body) const {
+std::tuple<HttpCode, std::string> HttpRequest::post(
+    const std::string& uri,
+    const std::string& body) const {
   auto curl = make_curl();
   curl_easy_setopt(curl.get(), CURLOPT_POSTFIELDS, body.c_str());
   return do_request(uri, curl);
 }
 
-std::string HttpRequest::post(const std::string& uri,
-                              const std::string& body,
-                              std::initializer_list<HttpHeader> headers) {
+std::tuple<HttpCode, std::string> HttpRequest::post(
+    const std::string& uri,
+    const std::string& body,
+    std::initializer_list<HttpHeader> headers) {
   auto curl = make_curl();
   curl_easy_setopt(curl.get(), CURLOPT_POSTFIELDS, body.c_str());
 

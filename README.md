@@ -41,6 +41,7 @@
 * [crossguid](https://github.com/graeme-hill/crossguid)
 * [spdlog](https://github.com/gabime/spdlog)
 * [nlohmann json] (https://github.com/nlohmann/json)
+* [eventpp] (https://github.com/wqking/eventpp)
 
 Так же для успешного разбора **CMakeLists.txt**  может потребоваться задать переменную **CMake** - `CMAKE_PREFIX_PATH`.
 

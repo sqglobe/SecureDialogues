@@ -10,6 +10,8 @@ QColor getColor(Dialog::Status status) {
   } else if (Dialog::Status::CANCELED == status ||
              Dialog::Status::CLOSED == status) {
     return QColor(Qt::red);
+  } else if (Dialog::Status::ABORTED == status) {
+    return QColor(240, 128, 128);
   }
   return QColor(Qt::gray);
 }
@@ -25,7 +27,7 @@ void DialogInfoDelegate::paint(QPainter* painter,
     return;
   }
 
-  auto info = qvariant_cast<DialogInfo>(index.data());
+  const auto& info = qvariant_cast<DialogInfo>(index.data());
 
   painter->fillRect(option.rect, getColor(info.status()));
 
@@ -68,7 +70,7 @@ QSize DialogInfoDelegate::sizeHint(const QStyleOptionViewItem& option,
     return QStyledItemDelegate::sizeHint(option, index);
   }
 
-  auto info = qvariant_cast<DialogInfo>(index.data());
+  const auto& info = qvariant_cast<DialogInfo>(index.data());
 
   if (info.unreadMessages() == 0) {
     auto mainTextWidth = option.fontMetrics.width(

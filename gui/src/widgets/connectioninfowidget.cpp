@@ -54,6 +54,8 @@ ConnectionInfoWidget::ConnectionInfoWidget(QWidget* parent) :
   connect(connType, SIGNAL(currentIndexChanged(int)), this,
           SLOT(activatedConnectionType(int)));
   connType->setCurrentIndex(0);
+
+  findChild<QWidget*>("satusWidget")->hide();
 }
 
 ConnectionInfoWidget::~ConnectionInfoWidget() {
@@ -77,6 +79,44 @@ void ConnectionInfoWidget::setElement(const ConnectionHolder& info) {
   mInfo.reset(new ConnectionHolder(info));
 
   activatedConnectionType(static_cast<int>(info.getType()));
+
+  auto connStatus = findChild<QLabel*>("statusText");
+  auto lastMessage = findChild<QLabel*>("lastMessage");
+  QPalette palette = connStatus->palette();
+  switch (info.getStatus()) {
+    case Channel::ChannelStatus::UNDEFINED: {
+      connStatus->setText("Подключение не подтверждено");
+      lastMessage->setText("");
+      palette.setColor(connStatus->backgroundRole(), QColor(192, 192, 192));
+      lastMessage->hide();
+      break;
+    }
+    case Channel::ChannelStatus::CONNECTED: {
+      connStatus->setText("Подключение выполнено успешно");
+      palette.setColor(connStatus->backgroundRole(), QColor(152, 251, 152));
+      lastMessage->setText("");
+      lastMessage->hide();
+
+      break;
+    }
+    case Channel::ChannelStatus::FAILED_CONNECT: {
+      connStatus->setText("Подключение не успешно");
+      lastMessage->setText(info.getMessage().c_str());
+      palette.setColor(connStatus->backgroundRole(), QColor(255, 192, 203));
+      lastMessage->show();
+      break;
+    }
+    case Channel::ChannelStatus::AUTHORIZATION_FAILED: {
+      connStatus->setText("Необходимо выполнить авторизацию");
+      lastMessage->setText(info.getMessage().c_str());
+      palette.setColor(connStatus->backgroundRole(), QColor(250, 128, 114));
+      lastMessage->show();
+    }
+  }
+  connStatus->setAutoFillBackground(true);
+  connStatus->setPalette(palette);
+
+  findChild<QWidget*>("satusWidget")->show();
 }
 
 ConnectionHolder ConnectionInfoWidget::getElement() noexcept(false) {
@@ -157,6 +197,7 @@ void ConnectionInfoWidget::actionCleare() {
   auto connType = findChild<QComboBox*>("connectionType");
   connType->setCurrentIndex(1);
   mInfo.release();
+  findChild<QWidget*>("satusWidget")->hide();
 }
 
 void ConnectionInfoWidget::actionEnable() {

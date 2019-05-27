@@ -30,14 +30,11 @@
           <property name="lineWidth">
            <number>2</number>
           </property>
-          <property name="spacing">
-           <number>0</number>
+          <property name="editTriggers">
+           <set>QAbstractItemView::DoubleClicked|QAbstractItemView::SelectedClicked</set>
           </property>
-          <property name="gridSize">
-           <size>
-            <width>20</width>
-            <height>20</height>
-           </size>
+          <property name="spacing">
+           <number>5</number>
           </property>
          </widget>
         </item>

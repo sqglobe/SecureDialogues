@@ -2,6 +2,7 @@
 #define CONNECTIONINFOCONTAINER_H
 
 #include "basecontainer.h"
+#include "communication/channel.h"
 #include "primitives/connectionholder.h"
 
 class MessageDespatcher;

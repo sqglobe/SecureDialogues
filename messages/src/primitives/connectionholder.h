@@ -3,6 +3,7 @@
 
 #include <any>
 #include <string>
+#include "communication/channel.h"
 
 enum class ConnectionType { UNDEF = 0, UDP, GMAIL, VK };
 
@@ -58,10 +59,18 @@ class ConnectionHolder {
   std::string getConnectionName() const;
   void setConnectionName(const std::string& name);
 
+  Channel::ChannelStatus getStatus() const;
+  void setStatus(const Channel::ChannelStatus& status);
+
+  std::string getMessage() const;
+  void setMessage(const std::string& message);
+
  private:
   std::string mConnName;
   ConnectionType mType;
   std::any mData;
+  Channel::ChannelStatus mStatus{Channel::ChannelStatus::UNDEFINED};
+  std::string mMessage;
 };
 
 template <class C>

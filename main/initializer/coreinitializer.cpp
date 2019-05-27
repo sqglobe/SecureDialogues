@@ -37,6 +37,10 @@
 #include "interfaces/symetricalcipher.h"
 #include "symetrical/symetricalsystemfactories.h"
 
+#include "eventqueueholder.h"
+
+#include "containers/consistentwatchers.h"
+
 template <typename Container>
 void saveToFile(const std::string& name,
                 Container& container,
@@ -96,7 +100,8 @@ void saveKeys(const std::string& fileTempl,
 
 CoreInitializer::CoreInitializer(
     const std::shared_ptr<AbstractUserNotifier>& notifier,
-    const std::string& pass) :
+    const std::string& pass,
+    const EventQueueHolder& eventHolder) :
     mConnectionInfoContainer(std::make_shared<ConnectionInfoContainer>()),
     mContactContainer(std::make_shared<ContactContainer>()),
     mDialogManager(std::make_shared<DialogManager>()),
@@ -106,6 +111,8 @@ CoreInitializer::CoreInitializer(
       "AbstractUserNotifier::Severity");
   qRegisterMetaType<QVector<int>>("QVector<int>");
   qRegisterMetaType<std::string>("std::string");
+  qRegisterMetaType<std::shared_ptr<const Contact>>(
+      "std::shared_ptr<const Contact>");
 
   mAsymetricalKeyStore = loadKeys(FILE_KEY, mPassCipher);
 
@@ -124,11 +131,32 @@ CoreInitializer::CoreInitializer(
   mMessageDispatcher->add(mMessageActionHandler);
   mMessageDispatcher->add(mDialogActionHandler);
 
+  auto channelEventListener = [connContainer = mConnectionInfoContainer](
+                                  Channel::ChannelStatus newStatus,
+                                  const std::string& channelName,
+                                  const std::string& message) {
+    if (!connContainer->has(channelName)) {
+      return;
+    }
+
+    auto wrp = connContainer->wrapper(channelName);
+    wrp->setStatus(newStatus);
+    wrp->setMessage(message);
+    wrp.save();
+  };
+
+  eventHolder.channelEventQueue()->appendListener(
+      Channel::ChannelStatus::CONNECTED, channelEventListener);
+  eventHolder.channelEventQueue()->appendListener(
+      Channel::ChannelStatus::FAILED_CONNECT, channelEventListener);
+  eventHolder.channelEventQueue()->appendListener(
+      Channel::ChannelStatus::AUTHORIZATION_FAILED, channelEventListener);
+
   auto connWatcher = std::make_shared<ConnectContainerWatcher>(
       mMessageDispatcher,
       std::function<std::unique_ptr<AbstractChannelAdapter>(
           const ConnectionHolder&)>(ChanelAdapterFactory(notifier)),
-      std::make_shared<MessageMarshaller>());
+      std::make_shared<MessageMarshaller>(), eventHolder.channelEventQueue());
   mConnectionInfoContainer->registerWatcher(connWatcher);
   mContactContainer->registerWatcher(
       std::make_shared<CryptoSystemContactUpdateInformator>(mCryptoSystem));
@@ -139,6 +167,13 @@ CoreInitializer::CoreInitializer(
       std::make_shared<CryptoSystemDialogRemoveInformator>(mCryptoSystem));
 
   loadFromFiles(FILE_CONNECTIONS, FILE_CONTACT, mPassCipher);
+
+  mConnectionInfoContainer->registerWatcher(
+      std::make_shared<ContactConsistentWatcher>(mContactContainer));
+  mContactContainer->registerWatcher(
+      std::make_shared<DialogConsistentWatcher>(mDialogManager));
+  mDialogManager->registerWatcher(
+      std::make_shared<MessagesConsistentWatcher>(mMessageContainer));
 }
 
 CoreInitializer::~CoreInitializer() {}

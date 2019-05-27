@@ -85,7 +85,8 @@ void TestMessageActionHandlerRecieveMessage::testMessageRecieveOk() {
   mMessageDispatcher->add(
       std::unique_ptr<Channel>(
           new Channel(new FakeChannelAdapter(message), mMessageDispatcher,
-                      std::make_shared<MessageMarshaller>(), channel)),
+                      std::make_shared<MessageMarshaller>(), channel,
+                      std::make_shared<Channel::EventQueue>())),
       channel);
 
   std::this_thread::sleep_for(std::chrono::seconds(1));

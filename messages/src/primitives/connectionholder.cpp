@@ -14,3 +14,19 @@ std::string ConnectionHolder::getConnectionName() const {
 void ConnectionHolder::setConnectionName(const std::string& name) {
   mConnName = name;
 }
+
+Channel::ChannelStatus ConnectionHolder::getStatus() const {
+  return mStatus;
+}
+
+void ConnectionHolder::setStatus(const Channel::ChannelStatus& status) {
+  mStatus = status;
+}
+
+std::string ConnectionHolder::getMessage() const {
+  return mMessage;
+}
+
+void ConnectionHolder::setMessage(const std::string& message) {
+  mMessage = message;
+}

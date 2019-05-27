@@ -21,6 +21,7 @@ class ActiveDialogMessageModel : public QAbstractListModel,
   virtual int rowCount(const QModelIndex& = QModelIndex()) const override;
   virtual QVariant data(const QModelIndex& index,
                         int role = Qt::DisplayRole) const override;
+  virtual Qt::ItemFlags flags(const QModelIndex&) const override;
 
  public:
   virtual void messageAdded(

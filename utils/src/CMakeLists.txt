@@ -8,6 +8,7 @@ set(SOURCES
 set(HEADERS
     utils/interfaces/objectserializer.h
     utils/interfaces/objectdeserializer.h
+    utils/eventqueue.h
 )
 
 

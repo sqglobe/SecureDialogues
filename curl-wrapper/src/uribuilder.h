@@ -8,9 +8,6 @@ class UriBuilder {
  public:
   explicit UriBuilder(const std::string& path);
   UriBuilder();
-  UriBuilder(const UriBuilder& other);
-  UriBuilder& operator=(const UriBuilder& other);
-  ~UriBuilder();
 
  public:
   UriBuilder& appendPath(const std::string& path);
@@ -22,7 +19,6 @@ class UriBuilder {
  private:
   std::string mPath;
   std::string mQuery;
-  CURL* mCurl;
 };
 
 #endif  // URIBUILDER_H

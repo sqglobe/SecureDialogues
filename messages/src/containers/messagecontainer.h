@@ -144,6 +144,8 @@ class MessageContainer : public std::enable_shared_from_this<MessageContainer> {
   void list(const std::string& dialogId,
             const std::shared_ptr<MessageContainerEventHandler>& handler) const;
 
+  void removeDialog(const std::string& dialogId);
+
  private:
   using DialogMessages = std::vector<std::shared_ptr<UserMessage>>;
 

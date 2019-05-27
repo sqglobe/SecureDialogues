@@ -11,6 +11,7 @@ set(SOURCES
 
   oauth-agents/utils/base64.cpp
   oauth-agents/utils/factories.cpp
+  oauth-agents/exceptions/oauth-exceptions.cpp
 )
 
 
@@ -24,12 +25,10 @@ set(HEADERS
   oauth-agents/agents/gmailapi.h
   oauth-agents/agents/vkapi.h
 
-  oauth-agents/exceptions/httpfailexception.h
-
   oauth-agents/utils/base64.h
-
   oauth-agents/utils/factories.h
 
+  oauth-agents/exceptions/oauth-exceptions.h
 )
 
 add_library(oauth-agents STATIC ${SOURCES} ${HEADERS})

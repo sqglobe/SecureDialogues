@@ -29,14 +29,16 @@ SET (DOCUMENTS_OUTPUT_DIRECTORY
     )
 
 
-set(CMAKE_AUTOUIC ON)
-# Tell CMake to run moc when necessary:
-set(CMAKE_AUTOMOC ON)
 # As moc files are generated in the binary dir, tell CMake
 # to always look for includes there:
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 SET(CMAKE_CXX_STANDARD 17)
 SET(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# Setup used libraries
+SET(JSON_BuildTests OFF)
+SET(JSON_Install OFF)
+SET(XG_TESTS OFF)
 
 
 set(MCRYPTO_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/submodules)
@@ -55,6 +57,7 @@ else()
 endif()
 
 include_directories(${PROJECT_SOURCE_DIR}/submodules/spdlog/include)
+include_directories(${PROJECT_SOURCE_DIR}/submodules/eventpp/include)
 
 add_subdirectory(submodules/crossguid)
 add_subdirectory(submodules/cryptopp)
