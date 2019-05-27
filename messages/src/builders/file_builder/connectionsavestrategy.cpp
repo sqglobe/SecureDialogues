@@ -46,11 +46,13 @@ ConnectionSaveStrategy::container::element ConnectionSaveStrategy::from_str(
       obj.setConnection(UdpConnection{});
       break;
     case ConnectionType::GMAIL: {
-      obj.setConnection(GmailConnaection{cols[2], cols[3]});
+      if (cols.size() == 4)
+        obj.setConnection(GmailConnaection{cols[2], cols[3]});
       break;
     }
     case ConnectionType::VK: {
-      obj.setConnection(VkConnection{cols[2], cols[3]});
+      if (cols.size() == 4)
+        obj.setConnection(VkConnection{cols[2], cols[3]});
       break;
     }
     default:

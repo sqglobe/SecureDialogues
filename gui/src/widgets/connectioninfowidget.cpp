@@ -92,7 +92,7 @@ void ConnectionInfoWidget::setElement(const ConnectionHolder& info) {
       break;
     }
     case Channel::ChannelStatus::CONNECTED: {
-      connStatus->setText("Подключение выплнено успешно");
+      connStatus->setText("Подключение выполнено успешно");
       palette.setColor(connStatus->backgroundRole(), QColor(152, 251, 152));
       lastMessage->setText("");
       lastMessage->hide();

@@ -116,9 +116,13 @@ void MessageContainer::removeDialog(const std::string& dialogId) {
   }
 
   if (dialogId == mActiveDialog) {
-    mActiveDialog = std::cend(mMessages)->first;
-    notifymAboutDialogIdChanged(mActiveDialog);
-    notifyPeekAllMessagesFromActive();
+    mActiveDialog.clear();
+
+    if (mMessages.size() > 0) {
+      mActiveDialog = std::cbegin(mMessages)->first;
+      notifymAboutDialogIdChanged(mActiveDialog);
+      notifyPeekAllMessagesFromActive();
+    }
   }
 }
 

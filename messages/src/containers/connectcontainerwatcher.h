@@ -2,6 +2,7 @@
 #define CONNECTCONTAINERWATCHER_H
 
 #include <functional>
+#include <map>
 #include <memory>
 #include "communication/channel.h"
 #include "interfaces/changewatcher.h"
@@ -36,5 +37,6 @@ class ConnectContainerWatcher : public ChangeWatcher<ConnectionHolder> {
       mFabric;
   std::shared_ptr<AbstractMessageMarshaller> mMarshaller;
   std::shared_ptr<Channel::EventQueue> mEventQueue;
+  std::map<std::string, ConnectionHolder> mCachedData;
 };
 #endif  // CONNECTCONTAINERWATCHER_H

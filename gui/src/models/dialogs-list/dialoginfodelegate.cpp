@@ -10,6 +10,8 @@ QColor getColor(Dialog::Status status) {
   } else if (Dialog::Status::CANCELED == status ||
              Dialog::Status::CLOSED == status) {
     return QColor(Qt::red);
+  } else if (Dialog::Status::ABORTED == status) {
+    return QColor(240, 128, 128);
   }
   return QColor(Qt::gray);
 }
