@@ -40,46 +40,50 @@ Channel::Channel(AbstractChannelAdapter* adapter,
 
 Channel::~Channel() {
   mIsEnds = true;
+  try {
+    if (mThread.joinable()) {
+      mThread.join();
+    }
+  } catch (std::exception ex) {
+    LOGGER->error("Get exception: {0}", ex.what());
+  }
 }
 
-void Channel::messsageCycle(std::weak_ptr<Channel>&& shared) {
-  std::weak_ptr<Channel> weak(shared);
+void Channel::messsageCycle() {
   bool isDisconected{true};
   while (!mIsEnds) {
-    auto th = weak.lock();
-    if (!th || !th->mAdapter)
-      break;
     try {
-      auto msg = th->mAdapter->receive();
-
       if (isDisconected) {
+        [[maybe_unused]] std::lock_guard<std::mutex> guard(mMutex);
+        mAdapter->connect();
         isDisconected = false;
-        th->mEventQueue->enqueue(ChannelStatus::CONNECTED, th->mName, "");
+        mEventQueue->enqueue(ChannelStatus::CONNECTED, mName, "");
       }
 
+      auto msg = mAdapter->receive();
       if (msg.first.empty() || msg.second.empty())
         continue;
 
       if (auto dialogMessage = mMarshaller->unmarshall(msg.second, msg.first)) {
-        if (auto hLock = th->mHandler.lock()) {
+        if (auto hLock = mHandler.lock()) {
           try {
             hLock->dispatch(dialogMessage.value(), mName);
           } catch (std::exception& ex) {
             LOGGER->error(
                 "Get Exception {0} when dispatch message {1} for chanel {2} "
                 "from {3}",
-                ex.what(), msg.first, th->mName, msg.first);
+                ex.what(), msg.first, mName, msg.first);
           }
         }
       }
 
     } catch (const DisconectedException& ex) {
-      th->mEventQueue->enqueue(ChannelStatus::FAILED_CONNECT, th->mName,
-                               std::string(ex.what()));
+      mEventQueue->enqueue(ChannelStatus::FAILED_CONNECT, mName,
+                           std::string(ex.what()));
       isDisconected = true;
     } catch (const NotAuthorizedException& ex) {
-      th->mEventQueue->enqueue(ChannelStatus::AUTHORIZATION_FAILED, th->mName,
-                               std::string(ex.what()));
+      mEventQueue->enqueue(ChannelStatus::AUTHORIZATION_FAILED, mName,
+                           std::string(ex.what()));
       isDisconected = true;
     } catch (const std::exception& ex) {
       LOGGER->debug("Get exception when recieve message: {0}", ex.what());
@@ -89,6 +93,7 @@ void Channel::messsageCycle(std::weak_ptr<Channel>&& shared) {
 
 void Channel::sendMessage(const DialogMessage& message) {
   try {
+    [[maybe_unused]] std::lock_guard<std::mutex> guard(mMutex);
     mAdapter->send(mMarshaller->marshall(message), message.adress());
   } catch (const DisconectedException& ex) {
     mEventQueue->enqueue(ChannelStatus::FAILED_CONNECT, mName,
@@ -102,7 +107,5 @@ void Channel::sendMessage(const DialogMessage& message) {
 }
 
 void Channel::startCycle() {
-  std::thread th(&Channel::messsageCycle, this,
-                 std::weak_ptr<Channel>(shared_from_this()));
-  th.detach();
+  mThread = std::thread(&Channel::messsageCycle, this);
 }

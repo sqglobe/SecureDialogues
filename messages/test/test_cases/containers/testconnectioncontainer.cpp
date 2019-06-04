@@ -45,7 +45,7 @@ class FakeCalledRecieveAdapter : public AbstractChannelAdapter {
       std::atomic<bool>& recieveCalled,
       std::atomic<bool>& destructorCalled,
       const std::shared_ptr<AbstractUserNotifier>& notifier) :
-      AbstractChannelAdapter(notifier),
+      AbstractChannelAdapter(notifier, ConnectionHolder("test")),
       mRecieveCall(recieveCalled), mDestructorCall(destructorCalled) {}
   ~FakeCalledRecieveAdapter() override { mDestructorCall = true; }
 
@@ -56,7 +56,7 @@ class FakeCalledRecieveAdapter : public AbstractChannelAdapter {
     std::this_thread::sleep_for(std::chrono::seconds(1));
     return std::pair<std::string, std::string>("", "");
   }
-  virtual bool connect(const ConnectionHolder&) override { return true; }
+  virtual bool connect() override { return true; }
 
  private:
   std::atomic<bool>& mRecieveCall;
@@ -104,7 +104,7 @@ void TestConnectionContainer::testAddConnectionInfo() {
   auto watcher = std::make_shared<FakeConnInfoWatcher>();
   connCont.registerWatcher(watcher);
   connCont.add(
-      ConnectionHolder(GmailConnaection{"fake@gmail.com", "234"}, "fake"));
+      ConnectionHolder(GmailConnection{"fake@gmail.com", "234"}, "fake"));
   std::this_thread::sleep_for(std::chrono::milliseconds(50));
 
   QVERIFY(isRecieveCalled.load());
@@ -114,7 +114,7 @@ void TestConnectionContainer::testAddConnectionInfo() {
   QCOMPARE(connCont.at(0).getConnectionName(), std::string("fake"));
   QCOMPARE(connCont.at(0).getType(), ConnectionType::GMAIL);
 
-  auto gmailConn = connCont.at(0).getConnection<GmailConnaection>();
+  auto gmailConn = connCont.at(0).getConnection<GmailConnection>();
 
   QCOMPARE(gmailConn.email, std::string("fake@gmail.com"));
 }
@@ -139,14 +139,14 @@ void TestConnectionContainer::testUpdateConnectionInfo() {
   auto watcher = std::make_shared<FakeConnInfoWatcher>();
   connCont.registerWatcher(watcher);
   connCont.add(
-      ConnectionHolder(GmailConnaection{"fake@gmail.com", "234"}, "fake"));
+      ConnectionHolder(GmailConnection{"fake@gmail.com", "234"}, "fake"));
   std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
   isRecieveCalled = false;
   isDestructor = false;
 
   connCont.update(
-      ConnectionHolder(GmailConnaection{"fake@gmail.com", "234231"}, "fake"));
+      ConnectionHolder(GmailConnection{"fake@gmail.com", "234231"}, "fake"));
   std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
   QVERIFY(isRecieveCalled.load());
@@ -174,14 +174,14 @@ void TestConnectionContainer::testUpdateConnectionInfoAtPos() {
   auto watcher = std::make_shared<FakeConnInfoWatcher>();
   connCont.registerWatcher(watcher);
   connCont.add(
-      ConnectionHolder(GmailConnaection{"fake@gmail.com", "234"}, "fake"));
+      ConnectionHolder(GmailConnection{"fake@gmail.com", "234"}, "fake"));
   std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
   isRecieveCalled = false;
   isDestructor = false;
 
   connCont.update(
-      ConnectionHolder(GmailConnaection{"fake@gmail.com", "2331234"}, "fake"));
+      ConnectionHolder(GmailConnection{"fake@gmail.com", "2331234"}, "fake"));
   std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
   QVERIFY(isRecieveCalled.load());
@@ -209,14 +209,15 @@ void TestConnectionContainer::testRemoveAtChannelName() {
   auto watcher = std::make_shared<FakeConnInfoWatcher>();
   connCont.registerWatcher(watcher);
   connCont.add(
-      ConnectionHolder(GmailConnaection{"fake@gmail.com", "2331234"}, "fake"));
+      ConnectionHolder(GmailConnection{"fake@gmail.com", "2331234"}, "fake"));
   std::this_thread::sleep_for(std::chrono::milliseconds(50));
 
   isRecieveCalled = false;
   isDestructor = false;
 
-  connCont.remove("fake");
+  auto res = connCont.remove("fake");
   std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+  QVERIFY(res);
   QVERIFY(isDestructor.load());
   QCOMPARE(watcher->mMethodCalled, std::string("removedElement"));
 }
@@ -239,7 +240,7 @@ void TestConnectionContainer::testRemoveAtPosition() {
   ConnectionInfoContainer connCont;
   connCont.registerWatcher(connectWatcher);
   connCont.add(
-      ConnectionHolder(GmailConnaection{"fake@gmail.com", "2331234"}, "fake"));
+      ConnectionHolder(GmailConnection{"fake@gmail.com", "2331234"}, "fake"));
   std::this_thread::sleep_for(std::chrono::milliseconds(10));
   auto watcher = std::make_shared<FakeConnInfoWatcher>();
   connCont.registerWatcher(watcher);

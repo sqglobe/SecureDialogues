@@ -1,13 +1,17 @@
-#ifndef OAUTHADAPTER_H
-#define OAUTHADAPTER_H
+#ifndef EMAILADAPTER_H
+#define EMAILADAPTER_H
 
 #include <list>
+#include <memory>
+
+#include "email-agent/imapreciever.h"
+#include "email-agent/smtpsender.h"
 #include "interfaces/abstractchanneladapter.h"
 
-#include "oauth-agents/interfaces/apiagent.h"
-#include "oauth-agents/interfaces/oauthagent.h"
+class SmtpSender;
+class ImapReciever;
 
-class OauthAdapter : public AbstractChannelAdapter {
+class EmailAdapter : public AbstractChannelAdapter {
  public:
   using AbstractChannelAdapter::AbstractChannelAdapter;
 
@@ -19,9 +23,9 @@ class OauthAdapter : public AbstractChannelAdapter {
   virtual bool connect() override;
 
  private:
-  std::unique_ptr<OAuthAgent> mOauthAgent;
-  std::unique_ptr<ApiAgent> mApiAgent;
   std::list<std::pair<std::string, std::string> > mMessages;
+  std::unique_ptr<SmtpSender> mSender;
+  std::unique_ptr<ImapReciever> mReciever;
 };
 
-#endif  // OAUTHADAPTER_H
+#endif  // EMAILADAPTER_H

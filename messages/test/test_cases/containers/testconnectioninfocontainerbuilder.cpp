@@ -28,10 +28,10 @@ TestConnectionInfocontainerBuilder::TestConnectionInfocontainerBuilder(
 void TestConnectionInfocontainerBuilder::testSerialize() {
   auto connCont = ConnectionInfoContainer();
   connCont.add(
-      ConnectionHolder(GmailConnaection{"fake@gmail.com", "1234"}, "fake"));
+      ConnectionHolder(GmailConnection{"fake@gmail.com", "1234"}, "fake"));
 
   connCont.add(
-      ConnectionHolder(GmailConnaection{"fake2@gmail.com", "123234"}, "fake2"));
+      ConnectionHolder(GmailConnection{"fake2@gmail.com", "123234"}, "fake2"));
   connCont.add(ConnectionHolder(UdpConnection{}, "fake_udp"));
 
   FakeFile fakeFile("");
@@ -51,7 +51,7 @@ void TestConnectionInfocontainerBuilder::testUnserialize() {
   builder.unserialize();
 
   auto connHolder = connCont.get("fake");
-  auto gmailConn = connHolder.getConnection<GmailConnaection>();
+  auto gmailConn = connHolder.getConnection<GmailConnection>();
 
   QCOMPARE(connCont.size(), 1);
   QVERIFY(connCont.has("fake"));

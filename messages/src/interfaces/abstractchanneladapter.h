@@ -5,6 +5,7 @@
 #include <string>
 #include <utility>
 #include "abstractusernotifier.h"
+#include "primitives/connectionholder.h"
 
 class SendMessageException : public std::runtime_error {
  public:
@@ -28,7 +29,8 @@ class AbstractChannelAdapter {
    * пользователя о происшедших проблемах
    */
   explicit AbstractChannelAdapter(
-      const std::shared_ptr<AbstractUserNotifier>& notifier);
+      const std::shared_ptr<AbstractUserNotifier>& notifier,
+      const ConnectionHolder& conn);
   virtual ~AbstractChannelAdapter() = default;
 
  public:
@@ -59,7 +61,7 @@ class AbstractChannelAdapter {
    * @param conn параметры подключения
    * @return true - если подключение прошло успешно, false в противном случае
    */
-  virtual bool connect(const ConnectionHolder& conn) = 0;
+  virtual bool connect() = 0;
 
  protected:
   /**
@@ -69,8 +71,11 @@ class AbstractChannelAdapter {
    */
   void notify(AbstractUserNotifier::Severity sev, const std::string& message);
 
+  ConnectionHolder getHolder() const;
+
  private:
   std::shared_ptr<AbstractUserNotifier> mNotifier;
+  ConnectionHolder mConn;
 };
 
 #endif  // ABSTRACTCHANNELADAPTER_H

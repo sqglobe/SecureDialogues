@@ -134,7 +134,7 @@ CoreInitializer::CoreInitializer(
   auto channelEventListener = [connContainer = mConnectionInfoContainer](
                                   Channel::ChannelStatus newStatus,
                                   const std::string& channelName,
-                                  const std::string& message) {
+                                  const std::string& message) mutable {
     if (!connContainer->has(channelName)) {
       return;
     }

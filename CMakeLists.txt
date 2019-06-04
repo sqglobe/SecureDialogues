@@ -71,6 +71,7 @@ add_subdirectory(utils)
 add_subdirectory(oauth-agents)
 add_subdirectory(doc)
 add_subdirectory(curl-wrapper)
+add_subdirectory(email-agent)
 
 
 

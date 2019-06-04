@@ -5,11 +5,11 @@
 #include <string>
 #include "communication/channel.h"
 
-enum class ConnectionType { UNDEF = 0, UDP, GMAIL, VK };
+enum class ConnectionType { UNDEF = 0, UDP, GMAIL, VK, EMAIL };
 
 struct UdpConnection {};
 
-struct GmailConnaection {
+struct GmailConnection {
   std::string email;
   std::string accessToken;
 };
@@ -17,6 +17,19 @@ struct GmailConnaection {
 struct VkConnection {
   std::string userId;
   std::string accessToken;
+};
+
+struct EmailConnection {
+  std::string userName;
+  std::string password;
+  bool tlsUsed;
+  std::string from;
+
+  std::string smtpAddr;
+  int smtpPort;
+
+  std::string imapAddr;
+  int imapPort;
 };
 
 template <typename T>
@@ -29,15 +42,21 @@ struct ConnectionTraits<UdpConnection> {
 };
 
 template <>
-struct ConnectionTraits<GmailConnaection> {
+struct ConnectionTraits<GmailConnection> {
   static const ConnectionType TYPE = ConnectionType::GMAIL;
-  using ConnectionClass = GmailConnaection;
+  using ConnectionClass = GmailConnection;
 };
 
 template <>
 struct ConnectionTraits<VkConnection> {
   static const ConnectionType TYPE = ConnectionType::VK;
   using ConnectionClass = VkConnection;
+};
+
+template <>
+struct ConnectionTraits<EmailConnection> {
+  static const ConnectionType TYPE = ConnectionType::EMAIL;
+  using ConnectionClass = EmailConnection;
 };
 
 class ConnectionHolder {

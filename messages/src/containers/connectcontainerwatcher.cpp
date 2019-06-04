@@ -2,6 +2,8 @@
 #include <algorithm>
 #include <iterator>
 #include "communication/messagedespatcher.h"
+#include "exception/disconectedexception.h"
+#include "exception/notauthorizedexception.h"
 #include "interfaces/abstractchanneladapter.h"
 
 bool isImportantChanges(const ConnectionHolder& newValue,
@@ -16,9 +18,16 @@ bool isImportantChanges(const ConnectionHolder& newValue,
          newC = newValue.getConnection<VkConnection>();
     return oldC.userId != newC.userId || oldC.accessToken != newC.accessToken;
   } else if (type == ConnectionType::GMAIL) {
-    auto oldC = oldValue.getConnection<GmailConnaection>(),
-         newC = newValue.getConnection<GmailConnaection>();
+    auto oldC = oldValue.getConnection<GmailConnection>(),
+         newC = newValue.getConnection<GmailConnection>();
     return oldC.email != newC.email || oldC.accessToken != newC.accessToken;
+  } else if (type == ConnectionType::EMAIL) {
+    auto oldC = oldValue.getConnection<EmailConnection>(),
+         newC = newValue.getConnection<EmailConnection>();
+    return oldC.from != newC.from || oldC.tlsUsed != newC.tlsUsed ||
+           oldC.imapAddr != newC.imapAddr || oldC.imapPort != newC.imapPort ||
+           oldC.password != newC.password || oldC.smtpAddr != newC.smtpAddr ||
+           oldC.smtpPort != newC.smtpPort || oldC.userName != newC.userName;
   }
   return false;
 }
@@ -33,22 +42,38 @@ ConnectContainerWatcher::ConnectContainerWatcher(
     mFabric(fabric), mMarshaller(marshaller), mEventQueue(eventQueue) {}
 
 void ConnectContainerWatcher::added(const ConnectionHolder& obj) {
-  mDespatcher->add(
-      std::make_shared<Channel>(mFabric(obj), mDespatcher, mMarshaller,
-                                obj.getConnectionName(), mEventQueue),
-      obj.getConnectionName());
-  mCachedData.emplace(obj.getConnectionName(), obj);
+  try {
+    mDespatcher->add(
+        std::make_shared<Channel>(mFabric(obj), mDespatcher, mMarshaller,
+                                  obj.getConnectionName(), mEventQueue),
+        obj.getConnectionName());
+    mCachedData.emplace(obj.getConnectionName(), obj);
+  } catch (const DisconectedException& ex) {
+    mEventQueue->enqueue(Channel::ChannelStatus::FAILED_CONNECT,
+                         obj.getConnectionName(), std::string(ex.what()));
+  } catch (const NotAuthorizedException& ex) {
+    mEventQueue->enqueue(Channel::ChannelStatus::AUTHORIZATION_FAILED,
+                         obj.getConnectionName(), std::string(ex.what()));
+  }
 }
 
 void ConnectContainerWatcher::changed(const ConnectionHolder& obj) {
   if (mCachedData.count(obj.getConnectionName()) == 0 ||
       isImportantChanges(obj, mCachedData.at(obj.getConnectionName()))) {
-    mDespatcher->removeChannel(obj.getConnectionName());
-    mDespatcher->add(
-        std::make_shared<Channel>(mFabric(obj), mDespatcher, mMarshaller,
-                                  obj.getConnectionName(), mEventQueue),
-        obj.getConnectionName());
-    mCachedData.insert_or_assign(obj.getConnectionName(), obj);
+    try {
+      mDespatcher->removeChannel(obj.getConnectionName());
+      mDespatcher->add(
+          std::make_shared<Channel>(mFabric(obj), mDespatcher, mMarshaller,
+                                    obj.getConnectionName(), mEventQueue),
+          obj.getConnectionName());
+      mCachedData.insert_or_assign(obj.getConnectionName(), obj);
+    } catch (const DisconectedException& ex) {
+      mEventQueue->enqueue(Channel::ChannelStatus::FAILED_CONNECT,
+                           obj.getConnectionName(), std::string(ex.what()));
+    } catch (const NotAuthorizedException& ex) {
+      mEventQueue->enqueue(Channel::ChannelStatus::AUTHORIZATION_FAILED,
+                           obj.getConnectionName(), std::string(ex.what()));
+    }
   }
 }
 

@@ -56,6 +56,46 @@ ConnectionInfoWidget::ConnectionInfoWidget(QWidget* parent) :
   connType->setCurrentIndex(0);
 
   findChild<QWidget*>("satusWidget")->hide();
+
+  // email connection
+
+  connect(this, &ConnectionInfoWidget::cleareVal,
+          findChild<QLineEdit*>("emailLogin"), &QLineEdit::clear);
+  connect(this, &ConnectionInfoWidget::changeEnabled,
+          findChild<QLineEdit*>("emailLogin"), &QLineEdit::setEnabled);
+
+  connect(this, &ConnectionInfoWidget::cleareVal,
+          findChild<QLineEdit*>("emailPass"), &QLineEdit::clear);
+  connect(this, &ConnectionInfoWidget::changeEnabled,
+          findChild<QLineEdit*>("emailPass"), &QLineEdit::setEnabled);
+
+  connect(this, &ConnectionInfoWidget::cleareVal,
+          findChild<QLineEdit*>("emailFrom"), &QLineEdit::clear);
+  connect(this, &ConnectionInfoWidget::changeEnabled,
+          findChild<QLineEdit*>("emailFrom"), &QLineEdit::setEnabled);
+
+  connect(this, &ConnectionInfoWidget::cleareVal,
+          findChild<QLineEdit*>("smtpUrl"), &QLineEdit::clear);
+  connect(this, &ConnectionInfoWidget::changeEnabled,
+          findChild<QLineEdit*>("smtpUrl"), &QLineEdit::setEnabled);
+
+  connect(this, &ConnectionInfoWidget::cleareVal,
+          findChild<QLineEdit*>("imapUrl"), &QLineEdit::clear);
+  connect(this, &ConnectionInfoWidget::changeEnabled,
+          findChild<QLineEdit*>("imapUrl"), &QLineEdit::setEnabled);
+
+  connect(this, &ConnectionInfoWidget::cleareVal,
+          findChild<QLineEdit*>("smtpPort"), &QLineEdit::clear);
+  connect(this, &ConnectionInfoWidget::changeEnabled,
+          findChild<QLineEdit*>("smtpPort"), &QLineEdit::setEnabled);
+
+  connect(this, &ConnectionInfoWidget::cleareVal,
+          findChild<QLineEdit*>("imapPort"), &QLineEdit::clear);
+  connect(this, &ConnectionInfoWidget::changeEnabled,
+          findChild<QLineEdit*>("imapPort"), &QLineEdit::setEnabled);
+
+  connect(this, &ConnectionInfoWidget::changeEnabled,
+          findChild<QCheckBox*>("useTls"), &QCheckBox::setEnabled);
 }
 
 ConnectionInfoWidget::~ConnectionInfoWidget() {
@@ -69,8 +109,20 @@ void ConnectionInfoWidget::setElement(const ConnectionHolder& info) {
   conn_name->setText(info.getConnectionName().c_str());
 
   if (info.getType() == ConnectionType::GMAIL) {
-    auto gmailConn = info.getConnection<GmailConnaection>();
+    auto gmailConn = info.getConnection<GmailConnection>();
     login->setText(gmailConn.email.c_str());
+  } else if (info.getType() == ConnectionType::EMAIL) {
+    auto connInfo = info.getConnection<EmailConnection>();
+    findChild<QLineEdit*>("emailLogin")->setText(connInfo.userName.c_str());
+    findChild<QLineEdit*>("emailFrom")->setText(connInfo.from.c_str());
+    findChild<QLineEdit*>("smtpUrl")->setText(connInfo.smtpAddr.c_str());
+    findChild<QLineEdit*>("imapUrl")->setText(connInfo.imapAddr.c_str());
+    findChild<QLineEdit*>("smtpPort")
+        ->setText(QString::number(connInfo.smtpPort));
+    findChild<QLineEdit*>("imapPort")
+        ->setText(QString::number(connInfo.imapPort));
+
+    findChild<QCheckBox*>("useTls")->setChecked(connInfo.tlsUsed);
   }
 
   auto connType = findChild<QComboBox*>("connectionType");
@@ -133,28 +185,72 @@ ConnectionHolder ConnectionInfoWidget::getElement() noexcept(false) {
   if (connType->currentIndex() == static_cast<int>(ConnectionType::GMAIL)) {
     checks.emplace_back("Необходимо заполнить поле 'Логин'", [this]() -> bool {
       auto login = findChild<QLineEdit*>("login");
-      return !login->text().isEmpty();
+      return !login->text().trimmed().isEmpty();
     });
 
     checks.emplace_back("Необходимо заполнить поле 'Пароль'", [this]() -> bool {
       auto pass = findChild<QLineEdit*>("pass");
-      return !pass->text().isEmpty();
+      return !pass->text().trimmed().isEmpty();
     });
   } else if (connType->currentIndex() == static_cast<int>(ConnectionType::VK)) {
     checks.emplace_back("Необходимо заполнить поле 'URL'", [this]() -> bool {
       auto login = findChild<QLineEdit*>("vkOauthUrl");
-      return !login->text().isEmpty();
+      return !login->text().trimmed().isEmpty();
     });
     checks.emplace_back("Значение в поле 'URL' имеет не верный формат",
                         [this]() -> bool {
                           auto txt = findChild<QLineEdit*>("vkOauthUrl");
-                          auto url = QUrl(txt->text());
+                          auto url = QUrl(txt->text().trimmed());
                           if (!url.isValid() || !url.hasFragment())
                             return false;
                           auto query = QUrlQuery(url.fragment());
                           return query.hasQueryItem("access_token") &&
                                  query.hasQueryItem("user_id");
                         });
+  } else if (connType->currentIndex() ==
+             static_cast<int>(ConnectionType::EMAIL)) {
+    checks.emplace_back("Поле 'Логин' не заполнено", [this]() -> bool {
+      return !findChild<QLineEdit*>("emailLogin")->text().trimmed().isEmpty();
+    });
+
+    checks.emplace_back("Поле 'Пароль' не заполнено", [this]() -> bool {
+      return !findChild<QLineEdit*>("emailPass")->text().trimmed().isEmpty();
+    });
+
+    checks.emplace_back(
+        "Поле 'From' не заполнено или имеет не верный вормат",
+        [this]() -> bool {
+          QRegExp re(
+              "^(\\S+)@([a-z0-9-]+)(\\.)([a-z]{2,4})(\\.?)([a-z]{0,4})+$");
+          auto text = findChild<QLineEdit*>("emailFrom")->text().trimmed();
+          return !text.isEmpty() && re.indexIn(text) != -1;
+        });
+
+    checks.emplace_back("'Алрес SMTP сервера' не заполнен", [this]() -> bool {
+      return !findChild<QLineEdit*>("smtpUrl")->text().trimmed().isEmpty();
+    });
+
+    checks.emplace_back(
+        "'Порт SMTP сервера' не заполнен или имеет не верный формат",
+        [this]() -> bool {
+          auto port = findChild<QLineEdit*>("smtpPort")->text().trimmed();
+          bool ok = false;
+          port.toInt(&ok);
+          return !port.isEmpty() && ok;
+        });
+
+    checks.emplace_back("'Алрес IMAP сервера' не заполнен", [this]() -> bool {
+      return !findChild<QLineEdit*>("imapUrl")->text().trimmed().isEmpty();
+    });
+
+    checks.emplace_back(
+        "'Порт IMAP сервера' не заполнен или имеет не верный формат",
+        [this]() -> bool {
+          auto port = findChild<QLineEdit*>("imapPort")->text().trimmed();
+          bool ok = false;
+          port.toInt(&ok);
+          return !port.isEmpty() && ok;
+        });
   }
 
   auto conn_name = findChild<QLineEdit*>("connectionName");
@@ -177,17 +273,28 @@ ConnectionHolder ConnectionInfoWidget::getElement() noexcept(false) {
     oauth->loadAccessToken(passText);
     passText = oauth->getRefreshToken();
     connHolder.setConnection(
-        GmailConnaection{login->text().toStdString(), passText});
+        GmailConnection{login->text().toStdString(), passText});
   } else if (connectionType == ConnectionType::VK) {
     auto url = findChild<QLineEdit*>("vkOauthUrl");
     auto query = QUrlQuery(QUrl(url->text()).fragment());
     connHolder.setConnection(
         VkConnection{query.queryItemValue("user_id").toStdString(),
                      query.queryItemValue("access_token").toStdString()});
+  } else if (connectionType == ConnectionType::EMAIL) {
+    auto conn = EmailConnection{
+        findChild<QLineEdit*>("emailLogin")->text().trimmed().toStdString(),
+        findChild<QLineEdit*>("emailPass")->text().trimmed().toStdString(),
+        findChild<QCheckBox*>("useTls")->isChecked(),
+        findChild<QLineEdit*>("emailFrom")->text().trimmed().toStdString(),
+        findChild<QLineEdit*>("smtpUrl")->text().trimmed().toStdString(),
+        findChild<QLineEdit*>("smtpPort")->text().trimmed().toInt(),
+        findChild<QLineEdit*>("imapUrl")->text().trimmed().toStdString(),
+        findChild<QLineEdit*>("imapPort")->text().trimmed().toInt(),
+    };
+    connHolder.setConnection(conn);
   } else {
     connHolder.setConnection(UdpConnection{});
   }
-
   mInfo.release();
   return connHolder;
 }

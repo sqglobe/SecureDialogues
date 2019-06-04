@@ -69,15 +69,15 @@ void TestConnectionWidget::init() {
       std::make_shared<CryptoSystemFake>(), std::make_shared<FakeNotifier>());
   mContainer = std::make_shared<ConnectionInfoContainer>();
   mContainer->add(ConnectionHolder(
-      GmailConnaection{"test1@gmail.com", "09asdkvju"}, "conn 1"));
+      GmailConnection{"test1@gmail.com", "09asdkvju"}, "conn 1"));
   mContainer->add(ConnectionHolder(
-      GmailConnaection{"test2@gmail.com", "09asdkvju"}, "conn 2"));
+      GmailConnection{"test2@gmail.com", "09asdkvju"}, "conn 2"));
   mContainer->add(ConnectionHolder(
-      GmailConnaection{"test3@gmail.com", "09asdkvju"}, "conn 3"));
+      GmailConnection{"test3@gmail.com", "09asdkvju"}, "conn 3"));
   mContainer->add(ConnectionHolder(
-      GmailConnaection{"test4@gmail.com", "09asdkvju"}, "conn 4"));
+      GmailConnection{"test4@gmail.com", "09asdkvju"}, "conn 4"));
   mContainer->add(ConnectionHolder(
-      GmailConnaection{"test5@gmail.com", "09asdkvju"}, "conn 5"));
+      GmailConnection{"test5@gmail.com", "09asdkvju"}, "conn 5"));
 
   mWidget = std::make_shared<FakeConnectionInfoWidget>();
 

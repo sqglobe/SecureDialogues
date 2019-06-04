@@ -83,7 +83,7 @@ class Channel : public std::enable_shared_from_this<Channel> {
    * @param shared указатель на класс Channel, для которого запускается поток
    * приема сообщений
    */
-  void messsageCycle(std::weak_ptr<Channel>&& shared);
+  void messsageCycle();
 
   /**
    * Выполняет отправку сообщения по сети через AbstractChannelAdapter
@@ -105,6 +105,8 @@ class Channel : public std::enable_shared_from_this<Channel> {
   std::string mName;
   std::shared_ptr<EventQueue> mEventQueue;
   static std::shared_ptr<spdlog::logger> LOGGER;
+  std::thread mThread;
+  std::mutex mMutex;
 };
 
 #endif  // CHANNEL_H

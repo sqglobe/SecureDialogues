@@ -8,7 +8,8 @@
 class FakeChannelAdapter : public AbstractChannelAdapter {
  public:
   FakeChannelAdapter(const std::string& message) :
-      AbstractChannelAdapter(std::shared_ptr<FakeNotifier>(new FakeNotifier)) {
+      AbstractChannelAdapter(std::shared_ptr<FakeNotifier>(new FakeNotifier),
+                             ConnectionHolder("test")) {
     mMessage = message;
   }
   virtual void send(const std::string&, const std::string&) override {}
@@ -16,12 +17,12 @@ class FakeChannelAdapter : public AbstractChannelAdapter {
     if (isFirst) {
       isFirst = false;
     } else {
-      std::this_thread::sleep_for(std::chrono::seconds(60));
+      std::this_thread::sleep_for(std::chrono::seconds(5));
     }
 
     return std::make_pair("test", mMessage);
   }
-  virtual bool connect(const ConnectionHolder&) override { return true; }
+  virtual bool connect() override { return true; }
 
  private:
   std::string mMessage;

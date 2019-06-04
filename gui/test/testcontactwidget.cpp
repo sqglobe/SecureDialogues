@@ -68,8 +68,7 @@ TestContactWidget::TestContactWidget(QObject* parent) : QObject(parent) {
 
 void TestContactWidget::init() {
   std::vector<ConnectionHolder> infos = {
-      ConnectionHolder(GmailConnaection{"login1@gmail.com", "tesr23"},
-                       "conn 1"),
+      ConnectionHolder(GmailConnection{"login1@gmail.com", "tesr23"}, "conn 1"),
       ConnectionHolder(UdpConnection{}, "conn 2"),
       ConnectionHolder(UdpConnection{}, "conn 3"),
       ConnectionHolder(UdpConnection{}, "conn 4"),

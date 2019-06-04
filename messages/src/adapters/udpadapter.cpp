@@ -41,7 +41,7 @@ std::pair<std::string, std::string> UdpAdapter::receive() {
   return std::make_pair(std::string(), std::string());
 }
 
-bool UdpAdapter::connect(const ConnectionHolder&) {
+bool UdpAdapter::connect() {
   using boost::asio::ip::udp;
 
   boost::asio::io_service io_context;
