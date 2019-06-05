@@ -6,6 +6,21 @@
 #include "exception/notauthorizedexception.h"
 #include "interfaces/abstractchanneladapter.h"
 
+std::chrono::seconds waitAck(ConnectionType type) {
+  switch (type) {
+    case ConnectionType::VK:
+      return std::chrono::seconds(10);
+    case ConnectionType::UDP:
+      return std::chrono::seconds(10);
+    case ConnectionType::GMAIL:
+      return std::chrono::seconds(30);
+    case ConnectionType::EMAIL:
+      return std::chrono::seconds(360);
+    default:
+      assert(false);
+  }
+}
+
 bool isImportantChanges(const ConnectionHolder& newValue,
                         const ConnectionHolder& oldValue) {
   if (oldValue.getType() != newValue.getType())
@@ -45,7 +60,8 @@ void ConnectContainerWatcher::added(const ConnectionHolder& obj) {
   try {
     mDespatcher->add(
         std::make_shared<Channel>(mFabric(obj), mDespatcher, mMarshaller,
-                                  obj.getConnectionName(), mEventQueue),
+                                  obj.getConnectionName(), mEventQueue,
+                                  waitAck(obj.getType())),
         obj.getConnectionName());
     mCachedData.emplace(obj.getConnectionName(), obj);
   } catch (const DisconectedException& ex) {
@@ -64,7 +80,8 @@ void ConnectContainerWatcher::changed(const ConnectionHolder& obj) {
       mDespatcher->removeChannel(obj.getConnectionName());
       mDespatcher->add(
           std::make_shared<Channel>(mFabric(obj), mDespatcher, mMarshaller,
-                                    obj.getConnectionName(), mEventQueue),
+                                    obj.getConnectionName(), mEventQueue,
+                                    waitAck(obj.getType())),
           obj.getConnectionName());
       mCachedData.insert_or_assign(obj.getConnectionName(), obj);
     } catch (const DisconectedException& ex) {

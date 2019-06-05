@@ -83,10 +83,10 @@ void TestMessageActionHandlerRecieveMessage::testMessageRecieveOk() {
   mDialogManager->add(dialog);
 
   mMessageDispatcher->add(
-      std::unique_ptr<Channel>(
-          new Channel(new FakeChannelAdapter(message), mMessageDispatcher,
-                      std::make_shared<MessageMarshaller>(), channel,
-                      std::make_shared<Channel::EventQueue>())),
+      std::unique_ptr<Channel>(new Channel(
+          new FakeChannelAdapter(message), mMessageDispatcher,
+          std::make_shared<MessageMarshaller>(), channel,
+          std::make_shared<Channel::EventQueue>(), std::chrono::seconds(5))),
       channel);
 
   std::this_thread::sleep_for(std::chrono::seconds(1));

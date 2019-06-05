@@ -22,6 +22,9 @@
 #include <QTextEdit>
 
 #include <memory>
+
+#include <iostream>
+
 Q_DECLARE_METATYPE(std::string)
 
 const std::string PUBLIC_KEY =
@@ -86,10 +89,10 @@ void TestContactWidget::init() {
           std::make_shared<FakeNotifier>());
   // Contact(const std::string &channelMoniker, const std::string &name, const
   // std::string &adress, const std::string &id);
-  mContainer->add(std::make_shared<Contact>("conn 1", "name conn 1 1",
-                                            "adress 1", PUBLIC_KEY, "id 1"));
-  mContainer->add(std::make_shared<Contact>("conn 1", "name conn 1 2",
-                                            "adress 2", PUBLIC_KEY, "id 2"));
+  mContainer->add(std::make_shared<Contact>(
+      "conn 1", "name conn 1 1", "addr1@gmail.com", PUBLIC_KEY, "id 1"));
+  mContainer->add(std::make_shared<Contact>(
+      "conn 1", "name conn 1 2", "addr2@gmail.com", PUBLIC_KEY, "id 2"));
   mContainer->add(std::make_shared<Contact>("conn 2", "name conn 2 3",
                                             "adress 3", PUBLIC_KEY, "id 3"));
   mContainer->add(std::make_shared<Contact>("conn 3", "name conn 3 4",
@@ -115,7 +118,6 @@ void TestContactWidget::testViewAt() {
   auto userAdress = mWidget->findChild<QLineEdit*>("contactAdress");
   auto userName = mWidget->findChild<QLineEdit*>("contactName");
   auto connNames = mWidget->findChild<QComboBox*>("channelMonikers");
-
   QCOMPARE(connNames->currentText().toStdString(), connection);
   QCOMPARE(userName->text().toStdString(), name);
   QCOMPARE(userAdress->text().toStdString(), adress);
@@ -128,9 +130,9 @@ void TestContactWidget::testViewAt_data() {
   QTest::addColumn<int>("viewPos");
 
   QTest::newRow("0") << std::string("conn 1") << std::string("name conn 1 1")
-                     << std::string("adress 1") << 0;
+                     << std::string("addr1@gmail.com") << 0;
   QTest::newRow("1") << std::string("conn 1") << std::string("name conn 1 2")
-                     << std::string("adress 2") << 1;
+                     << std::string("addr2@gmail.com") << 1;
   QTest::newRow("2") << std::string("conn 2") << std::string("name conn 2 3")
                      << std::string("adress 3") << 2;
   QTest::newRow("3") << std::string("conn 3") << std::string("name conn 3 4")
@@ -163,6 +165,7 @@ void TestContactWidget::testUpdate() {
   connNames->setCurrentText(new_connection.c_str());
 
   mGasket->update();
+
   QCOMPARE(mChangeWatcher->mMethod, std::string("changed"));
   QCOMPARE(mChangeWatcher->mVal->get()->adress(), new_adress);
   QCOMPARE(mChangeWatcher->mVal->get()->channelMoniker(), new_connection);
@@ -179,9 +182,11 @@ void TestContactWidget::testUpdate_data() {
 
   QTest::newRow("0") << std::string("conn 1")
                      << std::string("name conn fake new")
-                     << std::string("adress new") << std::string("id 1") << 0;
+                     << std::string("addr-new@gmail.com") << std::string("id 1")
+                     << 0;
   QTest::newRow("1") << std::string("conn 1") << std::string("name conn 1 2")
-                     << std::string("adress 2") << std::string("id 2") << 1;
+                     << std::string("addr2@gmail.com") << std::string("id 2")
+                     << 1;
   QTest::newRow("2") << std::string("conn 5") << std::string("name conn 2 3")
                      << std::string("adress 3") << std::string("id 3") << 2;
   QTest::newRow("3") << std::string("conn 3") << std::string("name conn 3 4")
@@ -189,7 +194,8 @@ void TestContactWidget::testUpdate_data() {
   QTest::newRow("4") << std::string("conn 4") << std::string("name conn test")
                      << std::string("adress 5") << std::string("id 5") << 4;
   QTest::newRow("5") << std::string("conn 1") << std::string("name conn 4 6")
-                     << std::string("adress 6") << std::string("id 6") << 5;
+                     << std::string("addr5@gmail.com") << std::string("id 6")
+                     << 5;
   QTest::newRow("6") << std::string("conn 3")
                      << std::string("name conn fale _1")
                      << std::string("adress 7") << std::string("id 7") << 6;
@@ -207,12 +213,15 @@ void TestContactWidget::testAdd() {
   auto connNames = mWidget->findChild<QComboBox*>("channelMonikers");
   auto pub = mWidget->findChild<QTextEdit*>("publicKey");
 
+  connNames->setCurrentText(new_connection.c_str());
   userAdress->setText(new_adress.c_str());
   userName->setText(new_name.c_str());
-  connNames->setCurrentText(new_connection.c_str());
   pub->setPlainText(PUBLIC_KEY.c_str());
 
   mGasket->add();
+  std::cout << "Add: " << mChangeWatcher->mMethod << " "
+            << mChangeWatcher->mVal->get()->adress() << std::endl;
+
   QCOMPARE(mChangeWatcher->mMethod, std::string("added"));
   QCOMPARE(mChangeWatcher->mVal->get()->adress(), new_adress);
   QCOMPARE(mChangeWatcher->mVal->get()->channelMoniker(), new_connection);
@@ -225,9 +234,9 @@ void TestContactWidget::testAdd_data() {
   QTest::addColumn<std::string>("new_adress");
 
   QTest::newRow("0") << std::string("conn 1") << std::string("added name 1")
-                     << std::string("added new adress 1");
+                     << std::string("addr-added-1@gmail.com");
   QTest::newRow("1") << std::string("conn 1") << std::string("added name 2")
-                     << std::string("added new adress 2");
+                     << std::string("addr-added-2@gmail.com");
   QTest::newRow("2") << std::string("conn 5") << std::string("added name 3")
                      << std::string("added new adress 3");
   QTest::newRow("3") << std::string("conn 3") << std::string("added name 4")
@@ -235,7 +244,7 @@ void TestContactWidget::testAdd_data() {
   QTest::newRow("4") << std::string("conn 4") << std::string("added name 5")
                      << std::string("added new adress 5");
   QTest::newRow("5") << std::string("conn 1") << std::string("added name 6")
-                     << std::string("added new adress 6");
+                     << std::string("addr-added-6@gmail.com");
 }
 
 void TestContactWidget::testEnable() {

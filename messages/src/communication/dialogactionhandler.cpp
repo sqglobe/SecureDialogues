@@ -79,6 +79,12 @@ void DialogActionHandler::handle(const DialogMessage& message,
       auto dialog = mDialogManager->get(message.dialogId());
       if (dialog->isSequentalOk(message.sequential())) {
         prepareForFoundDialog(message, channel);
+      } else {
+        LOGGER->warn(
+            "Get message with invalid sequential {0}, dialog id{1}, action: "
+            "{2}",
+            message.sequential(), message.dialogId(),
+            static_cast<int>(message.action()));
       }
     }
   } catch (std::exception& ex) {
@@ -228,6 +234,7 @@ void DialogActionHandler::prepareForFoundDialog(const DialogMessage& message,
                   make_delivery_handler_for_active_dialog_request(
                       mMessageDispatcher,
                       mDialogManager->wrapper(message.dialogId()), mNotifier));
+      LOGGER->debug("Get message KEY_VERIFICATION from {0}", channel);
     } else {
       sendRequest(message.dialogId(), DialogMessage::Action::CANCEL_DIALOG,
                   make_delivery_handler_for_cancel_dialog_request(

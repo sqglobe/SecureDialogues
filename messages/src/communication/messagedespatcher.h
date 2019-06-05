@@ -107,7 +107,6 @@ class MessageDespatcher : public AbstractMessageDespatcher {
   std::vector<std::string> getChannelsNames() const;
 
  private:
-  unsigned long getNextSequential() const noexcept;
   void sendAck(const DialogMessage& message, const std::string& channel);
   bool isSignatureValid(const DialogMessage& message) const noexcept;
 
@@ -119,9 +118,9 @@ class MessageDespatcher : public AbstractMessageDespatcher {
   std::shared_ptr<AbstractUserNotifier> mNotifier;
 
   mutable std::shared_ptr<
-      TimeoutedRrepository<std::shared_ptr<DeliveryHandler>, unsigned long>>
+      TimeoutedRrepository<std::shared_ptr<DeliveryHandler>,
+                           std::pair<std::string, unsigned long>>>
       mRepo;
-  mutable std::atomic_ulong mSequentialNumber = 1;
   static std::shared_ptr<spdlog::logger> LOGGER;
 };
 

@@ -9,8 +9,7 @@
 
 #include "communication/channel.h"
 #include "interfaces/changewatcher.h"
-
-class ConnectionHolder;
+#include "primitives/connectionholder.h"
 
 /**
  * с Модель отображает список существующих подключений.
@@ -19,10 +18,12 @@ class ConnectionHolder;
  */
 class ChannelsListModel : public QAbstractListModel,
                           public ChangeWatcher<ConnectionHolder> {
+ public:
   struct ListItem {
     QString name;
     QString message;
     Channel::ChannelStatus status;
+    ConnectionType connectionType;
   };
 
  public:

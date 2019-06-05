@@ -22,21 +22,24 @@ Channel::Channel(std::unique_ptr<AbstractChannelAdapter>&& adater,
                  const std::shared_ptr<AbstractMessageDespatcher>& handler,
                  const std::shared_ptr<AbstractMessageMarshaller>& marshaller,
                  const std::string& name,
-                 const std::shared_ptr<EventQueue>& eventQueue) :
+                 const std::shared_ptr<EventQueue>& eventQueue,
+                 std::chrono::seconds waitAck) :
     mAdapter(std::move(adater)),
     mHandler(handler), mMarshaller(marshaller), mName(name),
-    mEventQueue(eventQueue) {}
+    mEventQueue(eventQueue), mWaitAckInterval(waitAck) {}
 
 Channel::Channel(AbstractChannelAdapter* adapter,
                  const std::shared_ptr<AbstractMessageDespatcher>& handler,
                  const std::shared_ptr<AbstractMessageMarshaller>& marshaller,
                  const std::string& name,
-                 const std::shared_ptr<EventQueue>& eventQueue) :
+                 const std::shared_ptr<EventQueue>& eventQueue,
+                 std::chrono::seconds waitAck) :
     Channel(std::unique_ptr<AbstractChannelAdapter>(adapter),
             handler,
             marshaller,
             name,
-            eventQueue) {}
+            eventQueue,
+            waitAck) {}
 
 Channel::~Channel() {
   mIsEnds = true;
@@ -108,4 +111,8 @@ void Channel::sendMessage(const DialogMessage& message) {
 
 void Channel::startCycle() {
   mThread = std::thread(&Channel::messsageCycle, this);
+}
+
+std::chrono::seconds Channel::getWaitAckInterval() const {
+  return mWaitAckInterval;
 }

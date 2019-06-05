@@ -32,21 +32,7 @@ SmtpSender::SmtpSender(const std::string& address,
 }
 
 void SmtpSender::connect() {
-  try {
-    mTransport->connect();
-  } catch (const vmime::exceptions::connection_error&) {
-    // TODO: need to handle connection error
-    throw;
-  } catch (const vmime::exceptions::authentication_error&) {
-    // TODO: need to handle authentication_error
-    throw;
-  } catch (const vmime::exceptions::connection_greeting_error&) {
-    // TODO: need to handle Server did not initiated the connection correctly.
-    throw;
-  } catch (const vmime::exceptions::socket_not_connected_exception&) {
-    // TODO: need to handle socket not connected
-    throw;
-  }
+  mTransport->connect();
 }
 
 void SmtpSender::send(const std::string& to, const std::string& body) {
@@ -58,17 +44,5 @@ void SmtpSender::send(const std::string& to, const std::string& body) {
   mb.getTextPart()->setText(
       vmime::make_shared<vmime::stringContentHandler>(body));
   auto message = mb.construct();
-
-  try {
-    mTransport->send(message);
-  } catch (const vmime::exceptions::connection_error&) {
-    // TODO: need to handle connection error
-    throw;
-  } catch (const vmime::exceptions::socket_not_connected_exception&) {
-    // TODO: need to handle socket not connected
-    throw;
-  } catch (const vmime::exceptions::not_connected&) {
-    // TODO: need to handle transport not_connected
-    throw;
-  }
+  mTransport->send(message);
 }

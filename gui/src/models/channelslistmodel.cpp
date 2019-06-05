@@ -1,12 +1,12 @@
 #include "channelslistmodel.h"
 #include <algorithm>
 #include <iterator>
-#include "primitives/connectionholder.h"
 
 #include <QBrush>
 #include <QColor>
 
 #include <iostream>
+Q_DECLARE_METATYPE(ChannelsListModel::ListItem);
 
 ChannelsListModel::ChannelsListModel(
     const std::vector<ConnectionHolder>& elements) {
@@ -15,7 +15,7 @@ ChannelsListModel::ChannelsListModel(
                  [](const ConnectionHolder& cInfo) -> ListItem {
                    return {cInfo.getConnectionName().c_str(),
                            "Подключение на данный момент не установлено",
-                           Channel::ChannelStatus::UNDEFINED};
+                           Channel::ChannelStatus::UNDEFINED, cInfo.getType()};
                  });
 }
 
@@ -44,6 +44,8 @@ QVariant ChannelsListModel::data(const QModelIndex& index, int role) const {
       case S::AUTHORIZATION_FAILED:
         return QBrush(QColor(250, 128, 114));
     }
+  } else if (Qt::UserRole == role) {
+    return QVariant::fromValue(mChannelNames.at(index.row()));
   }
   return QVariant();
 }
@@ -53,7 +55,7 @@ void ChannelsListModel::added(const ChangeWatcher::element& obj) {
   beginInsertRows(QModelIndex(), mChannelNames.size(), mChannelNames.size());
   mChannelNames.append({obj.getConnectionName().c_str(),
                         "Подключение на данный момент не установлено",
-                        Channel::ChannelStatus::UNDEFINED});
+                        Channel::ChannelStatus::UNDEFINED, obj.getType()});
   endInsertRows();
 }
 
@@ -66,6 +68,7 @@ void ChannelsListModel::changed(const ChangeWatcher::element& obj) {
     int dst = static_cast<int>(std::distance(mChannelNames.begin(), it));
     it->status = obj.getStatus();
     it->message = obj.getMessage().c_str();
+    it->connectionType = obj.getType();
     emit dataChanged(createIndex(dst, 0), createIndex(dst, 0));
   }
 }

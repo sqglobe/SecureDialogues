@@ -43,6 +43,11 @@ class ContainerElementWrapper {
   bool remove();
 
   /**
+   * @brief загружает последние изменения элемента из контейнера
+   */
+  void reload();
+
+  /**
    * @brief Возвращает ссылку на оборачиваемый элемент, для получения доступа к
    * его методам.
    * @return  ссылку на элемент
@@ -82,6 +87,11 @@ bool ContainerElementWrapper<C>::save() {
 template <typename C>
 bool ContainerElementWrapper<C>::remove() {
   return mContainer->remove(mElement);
+}
+
+template <typename C>
+void ContainerElementWrapper<C>::reload() {
+  mElement = mContainer->get(get_id(mElement));
 }
 
 template <typename C>

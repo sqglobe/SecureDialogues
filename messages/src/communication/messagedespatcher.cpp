@@ -27,15 +27,16 @@ MessageDespatcher::MessageDespatcher(
     const std::shared_ptr<AbstractUserNotifier>& notifier) :
     mCryptoSystem(cryptoSystem),
     mNotifier(notifier),
-    mRepo(
-        TimeoutedRrepository<std::shared_ptr<DeliveryHandler>, unsigned long>::
-            make(std::chrono::seconds(WAIT_ACK),
-                 std::chrono::milliseconds(CHECK_IDLE_ACK))) {}
+    mRepo(TimeoutedRrepository<std::shared_ptr<DeliveryHandler>,
+                               std::pair<std::string, unsigned long> >::
+              make(std::chrono::seconds(WAIT_ACK),
+                   std::chrono::milliseconds(CHECK_IDLE_ACK))) {}
 
 void MessageDespatcher::dispatch(const DialogMessage& message,
                                  const std::string& channelName) noexcept {
   if (DialogMessage::Action::ACK == message.action()) {
-    if (!mRepo->remove(message.sequential())) {
+    if (!mRepo->remove(
+            std::make_pair(message.dialogId(), message.sequential()))) {
       LOGGER->warn(
           "Get message from {0} with action {1} sequental {2}. Not found seq "
           "in repo",
@@ -67,23 +68,32 @@ void MessageDespatcher::sendMessage(
     const DialogMessage& message,
     const std::string& channelName,
     const std::shared_ptr<DeliveryHandler>& deliveryHandler) const {
-  DialogMessage mess(message.action(), message.content(), message.dialogId(),
-                     message.adress(), getNextSequential());
-  mess.setSignature(mCryptoSystem->createSignature(mess));
-  mRepo->store(deliveryHandler, mess.sequential());
-  {
-    std::shared_lock<std::shared_mutex> guard(mMutex);
-    mChannels.at(channelName)->sendMessage(mess);
+  std::shared_lock<std::shared_mutex> guard(mMutex);
+
+  if (mChannels.count(channelName) == 0) {
+    LOGGER->warn("Not found channel {0}", channelName);
+    return;
   }
+
+  DialogMessage mess(message.action(), message.content(), message.dialogId(),
+                     message.adress(), message.sequential());
+
+  mess.setSignature(mCryptoSystem->createSignature(mess));
+  mRepo->store(deliveryHandler,
+               std::make_pair(mess.dialogId(), mess.sequential()),
+               mChannels.at(channelName)->getWaitAckInterval());
+  mChannels.at(channelName)->sendMessage(mess);
 }
 
 void MessageDespatcher::sendAndForget(const DialogMessage& message,
                                       const std::string& channelName) const {
   std::shared_lock<std::shared_mutex> guard(mMutex);
   DialogMessage mess(message.action(), message.content(), message.dialogId(),
-                     message.adress(), getNextSequential());
+                     message.adress(), message.sequential());
   mess.setSignature(mCryptoSystem->createSignature(mess));
-  mChannels.at(channelName)->sendMessage(mess);
+  if (mChannels.count(channelName) > 0) {
+    mChannels.at(channelName)->sendMessage(mess);
+  }
 }
 
 void MessageDespatcher::add(std::shared_ptr<AbstractMessageHandler> handler) {
@@ -122,18 +132,11 @@ std::vector<std::string> MessageDespatcher::getChannelsNames() const {
   return res;
 }
 
-unsigned long MessageDespatcher::getNextSequential() const noexcept {
-  return ++mSequentialNumber;
-}
-
 void MessageDespatcher::sendAck(const DialogMessage& message,
                                 const std::string& channel) {
   if (message.action() != DialogMessage::Action::ABORT &&
       message.sequential() > 0 && mChannels.count(channel) > 0) {
     auto ack = make_ack(message);
-    LOGGER->debug(
-        "send ack for dialog {0} adress {1} channel {2} sequental {3}",
-        message.dialogId(), message.adress(), channel, message.sequential());
     sendAndForget(ack, channel);
   }
 }

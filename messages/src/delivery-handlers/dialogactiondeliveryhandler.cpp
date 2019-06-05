@@ -47,6 +47,7 @@ DialogActionDeliveryHandler::DialogActionDeliveryHandler(
 {}
 
 void DialogActionDeliveryHandler::removed() {
+  mWrapper.reload();
   mWrapper->setStatus(mNext);
   mWrapper.save();
 }
@@ -63,6 +64,7 @@ void DialogActionDeliveryHandler::timeouted() {
   mNotifier->notify(AbstractUserNotifier::Severity::ERROR,
                     "Диалог для " + mWrapper->getAdress() +
                         " удален, потому что удаленная сторона не отвечает");
+  mWrapper.reload();
   mWrapper->setStatus(Dialog::Status::ABORTED);
   mWrapper.save();
 }

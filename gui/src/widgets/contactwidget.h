@@ -52,6 +52,9 @@ class ContactWidget : public QWidget {
    */
   void actionDisable();
 
+ public slots:
+  void connectionNameUpdated(int);
+
  signals:
   void cleareVal();
   void changeEnabled(bool isEnabled);

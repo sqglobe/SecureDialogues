@@ -131,10 +131,14 @@ class Dialog {
   bool isMessageActionAllowed(DialogMessage::Action action) const noexcept;
 
  private:
+  unsigned long getNextSequental() const;
+
+ private:
   std::shared_ptr<const Contact> mContact;
   std::string mDialogId;
   Status mStatus;
   unsigned long mLastSequental;
+  mutable unsigned long mThisSequental;
 };
 
 #endif  // DIALOG_H
