@@ -2,8 +2,8 @@
 #include "cryptosystemimpl.h"
 
 CryptoSystemContactUpdateInformator::CryptoSystemContactUpdateInformator(
-    const std::shared_ptr<CryptoSystemImpl>& system) :
-    mSystem(system) {}
+    std::shared_ptr<CryptoSystemImpl> system) :
+    mSystem(std::move(system)) {}
 
 void CryptoSystemContactUpdateInformator::added(
     const ChangeWatcher::element& obj) {

@@ -23,10 +23,10 @@ std::shared_ptr<spdlog::logger> MessageDespatcher::LOGGER =
     spdlog::stdout_color_mt("message-despatcher");
 
 MessageDespatcher::MessageDespatcher(
-    const std::shared_ptr<const CryptoSystem>& cryptoSystem,
-    const std::shared_ptr<AbstractUserNotifier>& notifier) :
-    mCryptoSystem(cryptoSystem),
-    mNotifier(notifier),
+    std::shared_ptr<const CryptoSystem> cryptoSystem,
+    std::shared_ptr<AbstractUserNotifier> notifier) :
+    mCryptoSystem(std::move(cryptoSystem)),
+    mNotifier(std::move(notifier)),
     mRepo(TimeoutedRrepository<std::shared_ptr<DeliveryHandler>,
                                std::pair<std::string, unsigned long> >::
               make(std::chrono::seconds(WAIT_ACK),

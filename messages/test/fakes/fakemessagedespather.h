@@ -17,8 +17,7 @@ class FakeMessageDespather : public AbstractMessageDespatcher {
                    const std::string&,
                    const std::shared_ptr<DeliveryHandler>&) const override {}
 
-  virtual void sendAndForget(const DialogMessage&,
-                             const std::string&) const override {}
+  void sendAndForget(const DialogMessage&, const std::string&) const override {}
 
  public:
   DialogMessage mMessage;

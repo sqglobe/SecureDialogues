@@ -10,10 +10,10 @@ class ImapReciever {
   ImapReciever(const std::string& address,
                int port,
                bool tlsUsed,
-               const std::string& folder,
+               std::string folder,
                const std::string& userName,
                const std::string& pass,
-               const std::string& subject);
+               std::string subject);
   void connect();
 
   std::list<std::pair<std::string, std::string>> recievedMessages();

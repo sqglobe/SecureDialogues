@@ -9,7 +9,7 @@ class ConnectionHolder;
 
 class ChanelAdapterFactory {
  public:
-  ChanelAdapterFactory(const std::shared_ptr<AbstractUserNotifier>& notifier);
+  ChanelAdapterFactory(std::shared_ptr<AbstractUserNotifier> notifier);
 
  public:
   std::unique_ptr<AbstractChannelAdapter> operator()(

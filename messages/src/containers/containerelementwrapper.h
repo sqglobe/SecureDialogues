@@ -20,8 +20,7 @@ class ContainerElementWrapper {
    * @param container контейнер, в который будет выполняться сохранение элемента
    * @param elem оборачиваемый элемент
    */
-  ContainerElementWrapper(const std::shared_ptr<C>& container,
-                          const element& elem);
+  ContainerElementWrapper(std::shared_ptr<C> container, const element& elem);
 
   /**
    * @brief Конструктор перемещения
@@ -68,10 +67,10 @@ class ContainerElementWrapper {
 
 template <typename C>
 ContainerElementWrapper<C>::ContainerElementWrapper(
-    const std::shared_ptr<C>& container,
+    std::shared_ptr<C> container,
     const ContainerElementWrapper::element& elem) :
     mElement(make_element_copy(elem)),
-    mContainer(container) {}
+    mContainer(std::move(container)) {}
 
 template <typename C>
 ContainerElementWrapper<C>::ContainerElementWrapper(

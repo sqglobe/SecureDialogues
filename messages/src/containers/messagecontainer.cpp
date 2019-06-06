@@ -151,12 +151,11 @@ void MessageContainer::notifyPeekAllMessagesFromActive() const {
   }
 }
 
-MessageContainer::Wrapper::Wrapper(
-    const std::shared_ptr<MessageContainer>& container,
-    const std::shared_ptr<UserMessage>& message,
-    const std::string& dialogid) :
-    mMessage(message),
-    mContainer(container), mDialogId(dialogid)
+MessageContainer::Wrapper::Wrapper(std::shared_ptr<MessageContainer> container,
+                                   std::shared_ptr<UserMessage> message,
+                                   std::string dialogid) :
+    mMessage(std::move(message)),
+    mContainer(std::move(container)), mDialogId(std::move(dialogid))
 
 {}
 

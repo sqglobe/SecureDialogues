@@ -20,9 +20,9 @@ class DialogCreation : public QDialog {
   Q_OBJECT
 
  public:
-  explicit DialogCreation(const std::shared_ptr<ContactModel>& model,
+  explicit DialogCreation(std::shared_ptr<ContactModel> model,
                           QWidget* parent = nullptr);
-  ~DialogCreation();
+  ~DialogCreation() override;
 
  public:
   DialogCreation(const DialogCreation&) = delete;

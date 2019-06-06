@@ -1,19 +1,22 @@
 #include "contact.h"
 #include "utils.h"
 
-Contact::Contact(const std::string& channelMoniker,
-                 const std::string& name,
-                 const std::string& adress,
-                 const std::string& key) :
-    Contact(channelMoniker, name, adress, key, make_uiid()) {}
+Contact::Contact(std::string channelMoniker,
+                 std::string name,
+                 std::string adress,
+                 std::string key) :
+    mChannelMoniker(std::move(channelMoniker)),
+    mName(std::move(name)), mAdress(std::move(adress)), mContactId(make_uiid()),
+    mPublicKey(std::move(key)) {}
 
-Contact::Contact(const std::string& channelMoniker,
-                 const std::string& name,
-                 const std::string& adress,
-                 const std::string& key,
-                 const std::string& id) :
-    mChannelMoniker(channelMoniker),
-    mName(name), mAdress(adress), mContactId(id), mPublicKey(key) {}
+Contact::Contact(std::string channelMoniker,
+                 std::string name,
+                 std::string adress,
+                 std::string key,
+                 std::string id) :
+    mChannelMoniker(std::move(channelMoniker)),
+    mName(std::move(name)), mAdress(std::move(adress)),
+    mContactId(std::move(id)), mPublicKey(std::move(key)) {}
 
 std::string Contact::name() const {
   return mName;

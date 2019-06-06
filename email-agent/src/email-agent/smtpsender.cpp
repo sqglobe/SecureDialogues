@@ -3,14 +3,14 @@
 #include "skipcertverifier.h"
 
 SmtpSender::SmtpSender(const std::string& address,
-                       const std::string& from,
+                       std::string from,
                        int port,
                        bool tlsUsed,
                        const std::string& userName,
                        const std::string& pass,
-                       const std::string& subject) :
-    mFrom(from),
-    mSubject(subject)
+                       std::string subject) :
+    mFrom(std::move(from)),
+    mSubject(std::move(subject))
 
 {
   auto session = vmime::net::session::create();

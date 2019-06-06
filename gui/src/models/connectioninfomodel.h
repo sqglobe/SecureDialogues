@@ -15,8 +15,7 @@ class ConnectionInfoModel
     : public QAbstractListModel,
       public ChangeWatcher<ConnectionInfoContainer::const_element> {
  public:
-  explicit ConnectionInfoModel(
-      const std::shared_ptr<ConnectionInfoContainer>& cont);
+  explicit ConnectionInfoModel(std::shared_ptr<ConnectionInfoContainer> cont);
   ConnectionInfoContainer::const_element getAt(const QModelIndex& pos) const;
 
  public:

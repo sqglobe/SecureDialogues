@@ -55,11 +55,11 @@ class DialogMessage {
    * @param number порядковый номер сообщения в системе исчисления отправителя
    */
   DialogMessage(const Action& action,
-                const std::string& content,
-                const std::string& dialogId,
-                const std::string& adress = "",
+                std::string content,
+                std::string dialogId,
+                std::string adress = "",
                 unsigned long number = 0,
-                const std::string& sign = "");
+                std::string sign = "");
 
   /**
    * @brief Простой конструктор класса
@@ -70,11 +70,11 @@ class DialogMessage {
    * @param number порядковый номер сообщения в системе исчисления отправителя
    */
   DialogMessage(const Action& action,
-                const std::string& content,
-                const std::string& dialogId,
-                const std::string& adress,
+                std::string content,
+                std::string dialogId,
+                std::string adress,
                 unsigned long number,
-                const std::string& sign,
+                std::string sign,
                 long timestamp);
 
  public:

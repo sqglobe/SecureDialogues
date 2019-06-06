@@ -68,7 +68,7 @@ std::string getErrorDescription(int error) {
   return "Ошибка неизвестна " + std::to_string(error);
 }
 
-VkApi::VkApi(const std::string& userId) : mUserId(userId) {}
+VkApi::VkApi(std::string userId) : mUserId(std::move(userId)) {}
 
 std::list<std::pair<std::string, std::string> > VkApi::getMessages(
     const std::string& authHeaderName,

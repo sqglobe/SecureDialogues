@@ -10,10 +10,10 @@
 #include "widgetsutils.h"
 Q_DECLARE_METATYPE(ChannelsListModel::ListItem);
 
-ContactWidget::ContactWidget(const std::shared_ptr<ChannelsListModel>& model,
+ContactWidget::ContactWidget(std::shared_ptr<ChannelsListModel> model,
                              QWidget* parent) :
     QWidget(parent),
-    ui(new Ui::ContactWidget), mModel(model) {
+    ui(new Ui::ContactWidget), mModel(std::move(model)) {
   ui->setupUi(this);
 
   auto userAdress = findChild<QLineEdit*>("contactAdress");

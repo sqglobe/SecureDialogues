@@ -13,9 +13,8 @@ class MessageActionHandler;
 class MessageHandlerWrapper : public QObject {
   Q_OBJECT
  public:
-  explicit MessageHandlerWrapper(
-      const std::shared_ptr<MessageActionHandler>& handler,
-      QObject* parent = nullptr);
+  explicit MessageHandlerWrapper(std::shared_ptr<MessageActionHandler> handler,
+                                 QObject* parent = nullptr);
 
  signals:
 

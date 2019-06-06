@@ -15,7 +15,7 @@ class MessageContainer;
 class ContactConsistentWatcher : public ChangeWatcher<ConnectionHolder> {
  public:
   ContactConsistentWatcher(
-      const std::shared_ptr<ContactContainer>& consistentConteiner);
+      std::shared_ptr<ContactContainer> consistentConteiner);
 
  public:
   void added(const element&) override {}
@@ -29,8 +29,7 @@ class ContactConsistentWatcher : public ChangeWatcher<ConnectionHolder> {
 class DialogConsistentWatcher
     : public ChangeWatcher<std::shared_ptr<const Contact>> {
  public:
-  DialogConsistentWatcher(
-      const std::shared_ptr<DialogManager>& consistentConteiner);
+  DialogConsistentWatcher(std::shared_ptr<DialogManager> consistentConteiner);
 
  public:
   void added(const element&) override {}
@@ -45,7 +44,7 @@ class MessagesConsistentWatcher
     : public ChangeWatcher<std::shared_ptr<const Dialog>> {
  public:
   MessagesConsistentWatcher(
-      const std::shared_ptr<MessageContainer>& consistentConteiner);
+      std::shared_ptr<MessageContainer> consistentConteiner);
 
  public:
   void added(const element&) override {}

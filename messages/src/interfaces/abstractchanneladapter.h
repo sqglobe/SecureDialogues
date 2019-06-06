@@ -29,8 +29,8 @@ class AbstractChannelAdapter {
    * пользователя о происшедших проблемах
    */
   explicit AbstractChannelAdapter(
-      const std::shared_ptr<AbstractUserNotifier>& notifier,
-      const ConnectionHolder& conn);
+      std::shared_ptr<AbstractUserNotifier> notifier,
+      ConnectionHolder conn);
   virtual ~AbstractChannelAdapter() = default;
 
  public:

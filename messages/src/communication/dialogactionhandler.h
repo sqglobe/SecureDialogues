@@ -38,12 +38,11 @@ class DialogActionHandler : public AbstractMessageHandler {
    * диалогов
    * @param contacts - контейнер контактов
    */
-  DialogActionHandler(
-      const std::shared_ptr<DialogManager>& dialogManager,
-      const std::shared_ptr<AbstractMessageDespatcher>& dispatcher,
-      const std::shared_ptr<AbstractUserNotifier>& notifier,
-      const std::shared_ptr<ContactContainer>& contacts,
-      const std::shared_ptr<CryptoSystem>& cryptoSystem);
+  DialogActionHandler(std::shared_ptr<DialogManager> dialogManager,
+                      std::shared_ptr<AbstractMessageDespatcher> dispatcher,
+                      std::shared_ptr<AbstractUserNotifier> notifier,
+                      std::shared_ptr<ContactContainer> contacts,
+                      std::shared_ptr<CryptoSystem> cryptoSystem);
 
  public:
   /**

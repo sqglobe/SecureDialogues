@@ -5,8 +5,8 @@
 #include "primitives/dialog.h"
 
 ContactConsistentWatcher::ContactConsistentWatcher(
-    const std::shared_ptr<ContactContainer>& consistentConteiner) :
-    mConsistentConteiner(consistentConteiner) {}
+    std::shared_ptr<ContactContainer> consistentConteiner) :
+    mConsistentConteiner(std::move(consistentConteiner)) {}
 
 void ContactConsistentWatcher::removed(const element& obj) {
   auto removed = mConsistentConteiner->get_if(
@@ -20,8 +20,8 @@ void ContactConsistentWatcher::removed(const element& obj) {
 }
 
 DialogConsistentWatcher::DialogConsistentWatcher(
-    const std::shared_ptr<DialogManager>& consistentConteiner) :
-    mConsistentConteiner(consistentConteiner) {}
+    std::shared_ptr<DialogManager> consistentConteiner) :
+    mConsistentConteiner(std::move(consistentConteiner)) {}
 
 void DialogConsistentWatcher::removed(const ChangeWatcher::element& obj) {
   auto removed = mConsistentConteiner->get_if(
@@ -35,8 +35,8 @@ void DialogConsistentWatcher::removed(const ChangeWatcher::element& obj) {
 }
 
 MessagesConsistentWatcher::MessagesConsistentWatcher(
-    const std::shared_ptr<MessageContainer>& consistentConteiner) :
-    mConsistentConteiner(consistentConteiner) {}
+    std::shared_ptr<MessageContainer> consistentConteiner) :
+    mConsistentConteiner(std::move(consistentConteiner)) {}
 
 void MessagesConsistentWatcher::removed(const ChangeWatcher::element& obj) {
   mConsistentConteiner->removeDialog(obj->getDialogId());

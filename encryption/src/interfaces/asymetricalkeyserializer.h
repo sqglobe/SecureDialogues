@@ -6,8 +6,6 @@ class AsymetricalKeyStore;
 
 class AsymetricalKeySerializer : public ObjectDeserializer<AsymetricalKeyStore>,
                                  public ObjectSerializer<AsymetricalKeyStore> {
- public:
-  virtual ~AsymetricalKeySerializer() = default;
 };
 
 #endif  // ASYMETRICALKEYSERIALIZER_H

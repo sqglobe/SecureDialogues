@@ -16,12 +16,12 @@ static std::shared_ptr<spdlog::logger> LOGGER =
 ImapReciever::ImapReciever(const std::string& address,
                            int port,
                            bool tlsUsed,
-                           const std::string& folder,
+                           std::string folder,
                            const std::string& userName,
                            const std::string& pass,
-                           const std::string& subject) :
-    mFolder(folder),
-    mSubject(subject) {
+                           std::string subject) :
+    mFolder(std::move(folder)),
+    mSubject(std::move(subject)) {
   auto session = vmime::net::session::create();
   session->getProperties()["server.port"] = port;
   session->getProperties()["connection.tls"] = tlsUsed;
@@ -79,7 +79,7 @@ ImapReciever::recievedMessages() {
       messBody->getContents()->extract(out);
       out.flush();
 
-      res.push_back({from->getEmail().generate(), body});
+      res.emplace_back(from->getEmail().generate(), std::move(body));
     }
   }
 

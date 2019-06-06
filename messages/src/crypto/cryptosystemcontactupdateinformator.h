@@ -15,7 +15,7 @@ class CryptoSystemContactUpdateInformator
     : public ChangeWatcher<ContactContainer::const_element> {
  public:
   explicit CryptoSystemContactUpdateInformator(
-      const std::shared_ptr<CryptoSystemImpl>& system);
+      std::shared_ptr<CryptoSystemImpl> system);
 
  public:
   void added(const element& obj) override;

@@ -2,14 +2,14 @@
 
 #include "uribuilder.h"
 
-VkOauth::VkOauth(const std::string& clientId, const std::string& redirectUri) :
-    mClientId(clientId), mRedirectUri(redirectUri) {}
+VkOauth::VkOauth(std::string clientId, std::string redirectUri) :
+    mClientId(std::move(clientId)), mRedirectUri(std::move(redirectUri)) {}
 
-VkOauth::VkOauth(const std::string& clientId,
-                 const std::string& redirectUri,
-                 const std::string& accessToken) :
-    VkOauth(clientId, redirectUri) {
-  mAccessToken = accessToken;
+VkOauth::VkOauth(std::string clientId,
+                 std::string redirectUri,
+                 std::string accessToken) :
+    mClientId(std::move(clientId)),
+    mRedirectUri(std::move(redirectUri)), mAccessToken(std::move(accessToken)) {
 }
 
 std::string VkOauth::getUserUrl() const {

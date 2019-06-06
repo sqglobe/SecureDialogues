@@ -128,7 +128,7 @@ void ConnectionInfoWidget::setElement(const ConnectionHolder& info) {
   auto connType = findChild<QComboBox*>("connectionType");
   connType->setCurrentIndex(static_cast<int>(info.getType()));
 
-  mInfo.reset(new ConnectionHolder(info));
+  mInfo = std::make_unique<ConnectionHolder>(info);
 
   activatedConnectionType(static_cast<int>(info.getType()));
 

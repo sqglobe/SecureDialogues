@@ -5,19 +5,21 @@
 
 #include "oauth-agents/exceptions/oauth-exceptions.h"
 
-GmailOauth::GmailOauth(const std::string& clientId,
-                       const std::string& clientSecret,
-                       const std::string& redirectUri) :
-    mClientId(clientId),
-    mClientSecret(clientSecret), mRedirectUri(redirectUri) {}
+GmailOauth::GmailOauth(std::string clientId,
+                       std::string clientSecret,
+                       std::string redirectUri) :
+    mClientId(std::move(clientId)),
+    mClientSecret(std::move(clientSecret)),
+    mRedirectUri(std::move(redirectUri)) {}
 
-GmailOauth::GmailOauth(const std::string& clientId,
-                       const std::string& clientSecret,
-                       const std::string& redirectUri,
-                       const std::string& refreshToken) :
-    GmailOauth(clientId, clientSecret, redirectUri) {
-  mRefreshToken = refreshToken;
-}
+GmailOauth::GmailOauth(std::string clientId,
+                       std::string clientSecret,
+                       std::string redirectUri,
+                       std::string refreshToken) :
+    mClientId(std::move(clientId)),
+    mClientSecret(std::move(clientSecret)),
+    mRedirectUri(std::move(redirectUri)),
+    mRefreshToken(std::move(refreshToken)) {}
 
 std::string GmailOauth::getUserUrl() const {
   UriBuilder builder("https://accounts.google.com/o/oauth2/v2/auth");

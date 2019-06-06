@@ -13,6 +13,19 @@ void split(const std::string& s, char delim, Out result) {
   }
 }
 
+template <typename Out>
+void splitToViews(const std::string& s, char delim, Out result) {
+  std::string_view main_view(s);
+
+  for (auto pos = main_view.find(delim);; pos = main_view.find(delim)) {
+    *(result++) = main_view.substr(0, pos);
+    if (pos == std::string_view::npos) {
+      break;
+    }
+    main_view.remove_prefix(pos + 1);
+  }
+}
+
 std::string make_uiid();
 
 long get_timestamp();

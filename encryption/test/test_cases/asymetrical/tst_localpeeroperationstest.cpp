@@ -69,7 +69,7 @@ void LocalPeerOperationsTest::test_signatureCreation() {
 
   std::cout << sign << std::endl;
 
-  QVERIFY(sign.size() > 0);
+  QVERIFY(!sign.empty());
 }
 
 void LocalPeerOperationsTest::test_decryption() {

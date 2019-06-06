@@ -44,14 +44,14 @@ void MessageNotDeliveriedHandler::timeouted() {
 }
 
 MessageActionHandler::MessageActionHandler(
-    const std::shared_ptr<DialogManager>& manager,
-    const std::shared_ptr<MessageContainer>& container,
-    const std::shared_ptr<const MessageDespatcher>& despatcher,
-    const std::shared_ptr<AbstractUserNotifier>& notifier,
-    const std::shared_ptr<const CryptoSystem>& system) :
-    mDialogManager(manager),
-    mMessageContainer(container), mDespatcher(despatcher), mNotifier(notifier),
-    mCryptoSystem(system) {}
+    std::shared_ptr<DialogManager> manager,
+    std::shared_ptr<MessageContainer> container,
+    std::shared_ptr<const MessageDespatcher> despatcher,
+    std::shared_ptr<AbstractUserNotifier> notifier,
+    std::shared_ptr<const CryptoSystem> system) :
+    mDialogManager(std::move(manager)),
+    mMessageContainer(std::move(container)), mDespatcher(std::move(despatcher)),
+    mNotifier(std::move(notifier)), mCryptoSystem(std::move(system)) {}
 
 // TODO : make save for exceptions
 void MessageActionHandler::handle(const DialogMessage& message,

@@ -1,10 +1,10 @@
 #include "messagehandlerwrapper.h"
 #include "communication/messageactionhandler.h"
 MessageHandlerWrapper::MessageHandlerWrapper(
-    const std::shared_ptr<MessageActionHandler>& handler,
+    std::shared_ptr<MessageActionHandler> handler,
     QObject* parent) :
     QObject(parent),
-    mMessageHandler(handler) {}
+    mMessageHandler(std::move(handler)) {}
 
 void MessageHandlerWrapper::setActiveDialog(std::string idDialog) {
   mMessageHandler->setActiveDialog(idDialog);

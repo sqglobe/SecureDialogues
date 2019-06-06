@@ -58,7 +58,7 @@ GuiInitializer::GuiInitializer(
                    &QAction::triggered, pubObject,
                    &PublicKeyObject::showCurrentPublicKey);
 
-  QThread* messageWorkThread = new QThread(parent);
+  auto messageWorkThread = new QThread(parent);
 
   initMessageWrapper(coreInit, parent, userNotifier, messageWorkThread);
   initDialogWrapper(coreInit, parent, userNotifier, messageWorkThread);

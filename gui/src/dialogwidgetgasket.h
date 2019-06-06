@@ -12,10 +12,10 @@
 template <typename Container, typename Widget>
 class DialogWidgetGasket {
  public:
-  DialogWidgetGasket(const std::shared_ptr<Container>& container,
+  DialogWidgetGasket(std::shared_ptr<Container> container,
                      Widget* widget,
-                     const std::shared_ptr<AbstractUserAsk>& userAsk,
-                     const std::shared_ptr<AbstractUserNotifier>& notifier);
+                     std::shared_ptr<AbstractUserAsk> userAsk,
+                     std::shared_ptr<AbstractUserNotifier> notifier);
 
  public:
   /**
@@ -50,12 +50,13 @@ class DialogWidgetGasket {
 
 template <typename Container, typename Widget>
 DialogWidgetGasket<Container, Widget>::DialogWidgetGasket(
-    const std::shared_ptr<Container>& container,
+    std::shared_ptr<Container> container,
     Widget* widget,
-    const std::shared_ptr<AbstractUserAsk>& userAsk,
-    const std::shared_ptr<AbstractUserNotifier>& notifier) :
-    mContainer(container),
-    mWidget(widget), mUserAsk(userAsk), mUserNotifier(notifier) {}
+    std::shared_ptr<AbstractUserAsk> userAsk,
+    std::shared_ptr<AbstractUserNotifier> notifier) :
+    mContainer(std::move(container)),
+    mWidget(widget), mUserAsk(std::move(userAsk)),
+    mUserNotifier(std::move(notifier)) {}
 
 template <typename Container, typename Widget>
 void DialogWidgetGasket<Container, Widget>::viewAt(int pos) {

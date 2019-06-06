@@ -25,20 +25,20 @@ static unsigned long init_sequental() {
 invalid_dialog_action::invalid_dialog_action(const std::string& str) :
     std::runtime_error(str) {}
 
-Dialog::Dialog(const std::shared_ptr<const Contact>& contact,
-               const std::string& dialogId,
+Dialog::Dialog(std::shared_ptr<const Contact> contact,
+               std::string dialogId,
                Status status) :
     Dialog(contact, dialogId, 0, status) {}
 
-Dialog::Dialog(const std::shared_ptr<const Contact>& contact,
-               const std::string& dialogId,
+Dialog::Dialog(std::shared_ptr<const Contact> contact,
+               std::string dialogId,
                unsigned long sequental,
                Dialog::Status status) :
-    mContact(contact),
-    mDialogId(dialogId), mStatus(status), mLastSequental(sequental),
+    mContact(std::move(contact)),
+    mDialogId(std::move(dialogId)), mStatus(status), mLastSequental(sequental),
     mThisSequental(init_sequental()) {}
 
-Dialog::Dialog(const std::shared_ptr<const Contact>& contact) :
+Dialog::Dialog(std::shared_ptr<const Contact> contact) :
     Dialog(contact, make_uiid(), Status::NEW) {}
 
 std::string Dialog::getDialogId() const {

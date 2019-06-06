@@ -32,9 +32,9 @@ class MessageContainer : public std::enable_shared_from_this<MessageContainer> {
      * @param message указатель на сообщение, которое содержит прокси-класс
      * @param dialogid - идентификатор диалога, к которому принадлежит сообщение
      */
-    Wrapper(const std::shared_ptr<MessageContainer>& container,
-            const std::shared_ptr<UserMessage>& message,
-            const std::string& dialogid);
+    Wrapper(std::shared_ptr<MessageContainer> container,
+            std::shared_ptr<UserMessage> message,
+            std::string dialogid);
 
    public:
     /**

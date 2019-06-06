@@ -5,10 +5,10 @@
 
 class VkOauth : public OAuthAgent {
  public:
-  VkOauth(const std::string& clientId, const std::string& redirectUri);
-  VkOauth(const std::string& clientId,
-          const std::string& redirectUri,
-          const std::string& accessToken);
+  VkOauth(std::string clientId, std::string redirectUri);
+  VkOauth(std::string clientId,
+          std::string redirectUri,
+          std::string accessToken);
 
  public:
   std::string getUserUrl() const override;

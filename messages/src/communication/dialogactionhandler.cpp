@@ -61,14 +61,15 @@ std::string dialog_to_string(const std::shared_ptr<const Dialog>& dialog) {
 }
 
 DialogActionHandler::DialogActionHandler(
-    const std::shared_ptr<DialogManager>& dialogManager,
-    const std::shared_ptr<AbstractMessageDespatcher>& dispatcher,
-    const std::shared_ptr<AbstractUserNotifier>& notifier,
-    const std::shared_ptr<ContactContainer>& contacts,
-    const std::shared_ptr<CryptoSystem>& cryptoSystem) :
-    mDialogManager(dialogManager),
-    mMessageDispatcher(dispatcher), mNotifier(notifier),
-    mContactContainer(contacts), mCryptoSystem(cryptoSystem) {}
+    std::shared_ptr<DialogManager> dialogManager,
+    std::shared_ptr<AbstractMessageDespatcher> dispatcher,
+    std::shared_ptr<AbstractUserNotifier> notifier,
+    std::shared_ptr<ContactContainer> contacts,
+    std::shared_ptr<CryptoSystem> cryptoSystem) :
+    mDialogManager(std::move(dialogManager)),
+    mMessageDispatcher(std::move(dispatcher)), mNotifier(std::move(notifier)),
+    mContactContainer(std::move(contacts)),
+    mCryptoSystem(std::move(cryptoSystem)) {}
 
 void DialogActionHandler::handle(const DialogMessage& message,
                                  const std::string& channel) noexcept {

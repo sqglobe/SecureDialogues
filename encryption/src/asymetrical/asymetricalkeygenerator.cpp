@@ -10,8 +10,8 @@ std::shared_ptr<spdlog::logger> AsymetricalKeyGenerator::LOGGER =
     spdlog::stdout_color_mt("asymetrical-key-generator");
 
 AsymetricalKeyGenerator::AsymetricalKeyGenerator(
-    const std::shared_ptr<AsymetricalKeyStore>& key) :
-    mKeyStore(key) {}
+    std::shared_ptr<AsymetricalKeyStore> key) :
+    mKeyStore(std::move(key)) {}
 
 bool AsymetricalKeyGenerator::generate() {
   try {

@@ -14,9 +14,9 @@ class AbstractUserNotifier;
 class PublicKeyObject : public QObject {
   Q_OBJECT
  public:
-  PublicKeyObject(const std::shared_ptr<CryptoSystemImpl>& system,
-                  const std::shared_ptr<AbstractUserNotifier>& notifier,
-                  const std::shared_ptr<const AbstractUserAsk>& ask,
+  PublicKeyObject(std::shared_ptr<CryptoSystemImpl> system,
+                  std::shared_ptr<AbstractUserNotifier> notifier,
+                  std::shared_ptr<const AbstractUserAsk> ask,
                   QObject* parent = nullptr);
 
  public slots:

@@ -2,11 +2,11 @@
 
 UserMessage::UserMessage(UserMessage::Status status,
                          UserMessage::Type type,
-                         const std::string& content) :
+                         std::string content) :
     mStatus(status),
-    mType(type), mContent(content) {}
+    mType(type), mContent(std::move(content)) {}
 
-UserMessage::UserMessage(UserMessage::Type type, const std::string& content) :
+UserMessage::UserMessage(UserMessage::Type type, std::string content) :
     UserMessage(UserMessage::Status::WAIT_DELIVERY, type, content) {}
 
 void UserMessage::updateStatus(UserMessage::Status status) noexcept {

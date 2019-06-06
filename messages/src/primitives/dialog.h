@@ -50,8 +50,8 @@ class Dialog {
    * @param dialogId - id диалога, должно быть уникальным
    * @param status - текущий статус диалога
    */
-  Dialog(const std::shared_ptr<const Contact>& contact,
-         const std::string& dialogId,
+  Dialog(std::shared_ptr<const Contact> contact,
+         std::string dialogId,
          Status status = Status::NEW);
 
   /**
@@ -61,8 +61,8 @@ class Dialog {
    * @param sequental порядковый номер инициирующего диалог сообщения
    * @param status статус диалога
    */
-  Dialog(const std::shared_ptr<const Contact>& contact,
-         const std::string& dialogId,
+  Dialog(std::shared_ptr<const Contact> contact,
+         std::string dialogId,
          unsigned long sequental,
          Status status = Status::NEW);
 
@@ -71,7 +71,7 @@ class Dialog {
    * генерирует id диалога
    * @param contact - контакт, с которым создается диалог
    */
-  Dialog(const std::shared_ptr<const Contact>& contact);
+  Dialog(std::shared_ptr<const Contact> contact);
 
  public:
   std::string getDialogId() const;

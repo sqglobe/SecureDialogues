@@ -62,9 +62,13 @@ struct ConnectionTraits<EmailConnection> {
 class ConnectionHolder {
  public:
   template <class C>
-  ConnectionHolder(const C& conn, const std::string& name);
-  explicit ConnectionHolder(const std::string& name);
+  ConnectionHolder(const C& conn, std::string name);
+  explicit ConnectionHolder(std::string name);
+  ConnectionHolder(ConnectionHolder&& holder) noexcept = default;
+  ConnectionHolder(const ConnectionHolder& holder) = default;
+  ConnectionHolder& operator=(const ConnectionHolder& holder) = default;
 
+ public:
  public:
   template <class C>
   void setConnection(const C& conn);
@@ -93,8 +97,8 @@ class ConnectionHolder {
 };
 
 template <class C>
-ConnectionHolder::ConnectionHolder(const C& conn, const std::string& name) :
-    mConnName(name) {
+ConnectionHolder::ConnectionHolder(const C& conn, std::string name) :
+    mConnName(std::move(name)) {
   setConnection(conn);
 }
 

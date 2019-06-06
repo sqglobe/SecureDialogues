@@ -20,10 +20,10 @@ class Contact {
    * @param adress - адрес, на который будут отправлены сообщения
    * @param key - публичный ключ собеседника
    */
-  Contact(const std::string& channelMoniker,
-          const std::string& name,
-          const std::string& adress,
-          const std::string& key);
+  Contact(std::string channelMoniker,
+          std::string name,
+          std::string adress,
+          std::string key);
 
   /**
    * @brief Конструктор класса
@@ -35,11 +35,11 @@ class Contact {
    * @param id - уникальный идентификатор пользователя, служит для связи с
    * другими классами
    */
-  Contact(const std::string& channelMoniker,
-          const std::string& name,
-          const std::string& adress,
-          const std::string& key,
-          const std::string& id);
+  Contact(std::string channelMoniker,
+          std::string name,
+          std::string adress,
+          std::string key,
+          std::string id);
 
  public:
   std::string name() const;

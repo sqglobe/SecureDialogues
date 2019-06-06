@@ -8,15 +8,15 @@ static CurlHandler CURL_HANDLER(curl_easy_init(), curl_easy_cleanup);
 void appendEscape(const std::string& param, std::string& out, CURL* curl) {
   if (char* output =
           curl_easy_escape(curl, param.c_str(), static_cast<int>(param.size()));
-      !output) {
-    throw CurlEscapeError("Failed eascape path");
-  } else {
+      output) {
     out.append(output);
     curl_free(output);
+    return;
   }
+  throw CurlEscapeError("Failed eascape path");
 }
 
-UriBuilder::UriBuilder(const std::string& path) : mPath(path) {}
+UriBuilder::UriBuilder(std::string path) : mPath(std::move(path)) {}
 
 UriBuilder& UriBuilder::appendPath(const std::string& path) {
   if (!CURL_HANDLER) {

@@ -30,8 +30,8 @@ class logger;
 
 class MessageDespatcher : public AbstractMessageDespatcher {
  public:
-  MessageDespatcher(const std::shared_ptr<const CryptoSystem>& cryptoSystem,
-                    const std::shared_ptr<AbstractUserNotifier>& notifier);
+  MessageDespatcher(std::shared_ptr<const CryptoSystem> cryptoSystem,
+                    std::shared_ptr<AbstractUserNotifier> notifier);
 
  public:
   /**

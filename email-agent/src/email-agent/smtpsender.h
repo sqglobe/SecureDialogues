@@ -7,12 +7,12 @@
 class SmtpSender {
  public:
   SmtpSender(const std::string& address,
-             const std::string& from,
+             std::string from,
              int port,
              bool tlsUsed,
              const std::string& userName,
              const std::string& pass,
-             const std::string& subject);
+             std::string subject);
 
  public:
   void connect();

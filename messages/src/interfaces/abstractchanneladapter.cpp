@@ -2,10 +2,10 @@
 #include "primitives/connectionholder.h"
 
 AbstractChannelAdapter::AbstractChannelAdapter(
-    const std::shared_ptr<AbstractUserNotifier>& notifier,
-    const ConnectionHolder& conn) :
-    mNotifier(notifier),
-    mConn(conn) {}
+    std::shared_ptr<AbstractUserNotifier> notifier,
+    ConnectionHolder conn) :
+    mNotifier(std::move(notifier)),
+    mConn(std::move(conn)) {}
 
 void AbstractChannelAdapter::notify(AbstractUserNotifier::Severity sev,
                                     const std::string& message) {

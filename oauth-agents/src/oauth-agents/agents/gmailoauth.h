@@ -9,14 +9,14 @@
 
 class GmailOauth : public OAuthAgent {
  public:
-  GmailOauth(const std::string& clientId,
-             const std::string& clientSecret,
-             const std::string& redirectUri);
+  GmailOauth(std::string clientId,
+             std::string clientSecret,
+             std::string redirectUri);
 
-  GmailOauth(const std::string& clientId,
-             const std::string& clientSecret,
-             const std::string& redirectUri,
-             const std::string& refreshToken);
+  GmailOauth(std::string clientId,
+             std::string clientSecret,
+             std::string redirectUri,
+             std::string refreshToken);
 
  public:
   std::string getUserUrl() const override;

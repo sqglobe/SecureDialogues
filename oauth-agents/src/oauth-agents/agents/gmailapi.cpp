@@ -74,7 +74,7 @@ std::string getTimeFilter() {
   return buffer.str();
 }
 
-GmailApi::GmailApi(const std::string& mail) : mUserMail(mail) {}
+GmailApi::GmailApi(std::string mail) : mUserMail(std::move(mail)) {}
 
 void GmailApi::sendMessage(const std::string& to,
                            const std::string& body,
@@ -140,12 +140,12 @@ std::string GmailApi::loadMessages(
                   : messages.size();
   bool breaked = false;
   for (std::size_t i = 0; i < size; i++) {
-    if (auto id = messages.at(i).at("id"); id == mLastMessage) {
-      breaked = true;
-      break;
-    } else {
+    if (auto id = messages.at(i).at("id"); id != mLastMessage) {
       loadedMessages->push_front(
           getMail(id, authHeaderName, authToken, mUserMail));
+    } else {
+      breaked = true;
+      break;
     }
   }
   auto first = messages.empty() ? "" : messages.at(0).at("id");

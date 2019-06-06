@@ -73,7 +73,7 @@ void RemotePeerOperationsTest::test_encryption() {
 
   std::cout << encr << std::endl;
 
-  QVERIFY(encr.size() > 0);
+  QVERIFY(!encr.empty());
 }
 
 QTEST_APPLESS_MAIN(RemotePeerOperationsTest)

@@ -5,7 +5,7 @@ DialogActionHandlerWrapper::DialogActionHandlerWrapper(
     std::shared_ptr<DialogActionHandler> handler,
     QObject* parent) :
     QObject(parent),
-    mHandler(handler) {}
+    mHandler(std::move(handler)) {}
 
 void DialogActionHandlerWrapper::createDialogAction(
     std::shared_ptr<const Contact> contact) {

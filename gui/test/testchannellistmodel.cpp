@@ -34,7 +34,7 @@ void TestChannelListModel::init() {
   auto messageDispatcher = std::make_shared<MessageDespatcher>(
       std::make_shared<CryptoSystemFake>(), std::make_shared<FakeNotifier>());
 
-  mContainer.reset(new ConnectionInfoContainer());
+  mContainer = std::make_unique<ConnectionInfoContainer>();
   mContainer->add(ConnectionHolder(UdpConnection{}, "conn 1"));
   mContainer->add(ConnectionHolder(UdpConnection{}, "conn 2"));
   mContainer->add(ConnectionHolder(UdpConnection{}, "conn 3"));

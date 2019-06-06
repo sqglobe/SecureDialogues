@@ -19,9 +19,9 @@ class ContactWidget : public QWidget {
   Q_OBJECT
 
  public:
-  explicit ContactWidget(const std::shared_ptr<ChannelsListModel>& model,
+  explicit ContactWidget(std::shared_ptr<ChannelsListModel> model,
                          QWidget* parent = nullptr);
-  ~ContactWidget();
+  ~ContactWidget() override;
 
  public:
   ContactWidget(const ContactWidget&) = delete;

@@ -43,12 +43,11 @@ class MessageActionHandler : public AbstractMessageHandler {
    * @param notifier класс, который используется для того, чтобы
    * проинформировать пользователя о каком-либо событии
    */
-  MessageActionHandler(
-      const std::shared_ptr<DialogManager>& manager,
-      const std::shared_ptr<MessageContainer>& container,
-      const std::shared_ptr<const MessageDespatcher>& despatcher,
-      const std::shared_ptr<AbstractUserNotifier>& notifier,
-      const std::shared_ptr<const CryptoSystem>& system);
+  MessageActionHandler(std::shared_ptr<DialogManager> manager,
+                       std::shared_ptr<MessageContainer> container,
+                       std::shared_ptr<const MessageDespatcher> despatcher,
+                       std::shared_ptr<AbstractUserNotifier> notifier,
+                       std::shared_ptr<const CryptoSystem> system);
 
  public:
   void handle(const DialogMessage& message,

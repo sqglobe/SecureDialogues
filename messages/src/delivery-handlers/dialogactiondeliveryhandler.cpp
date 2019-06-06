@@ -16,11 +16,11 @@ static std::shared_ptr<spdlog::logger> LOGGER =
 class DialogActionDeliveryHandler : public DeliveryHandler {
  public:
   DialogActionDeliveryHandler(
-      const std::weak_ptr<AbstractMessageDespatcher>& dispatcher,
+      std::weak_ptr<AbstractMessageDespatcher> dispatcher,
       DialogManager::wrapper_type&& wrapper,
       Dialog::Status nextStatus,
       bool abortNeed,
-      const std::shared_ptr<AbstractUserNotifier>& notifier);
+      std::shared_ptr<AbstractUserNotifier> notifier);
 
  public:
   void removed() override;
@@ -35,14 +35,14 @@ class DialogActionDeliveryHandler : public DeliveryHandler {
 };
 
 DialogActionDeliveryHandler::DialogActionDeliveryHandler(
-    const std::weak_ptr<AbstractMessageDespatcher>& dispatcher,
+    std::weak_ptr<AbstractMessageDespatcher> dispatcher,
     DialogManager::wrapper_type&& wrapper,
     Dialog::Status nextStatus,
     bool abortNeed,
-    const std::shared_ptr<AbstractUserNotifier>& notifier) :
-    mNotifier(notifier),
-    mWrapper(std::move(wrapper)), mDispatcher(dispatcher), mNext(nextStatus),
-    mAbortNeed(abortNeed)
+    std::shared_ptr<AbstractUserNotifier> notifier) :
+    mNotifier(std::move(notifier)),
+    mWrapper(std::move(wrapper)), mDispatcher(std::move(dispatcher)),
+    mNext(nextStatus), mAbortNeed(abortNeed)
 
 {}
 

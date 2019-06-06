@@ -5,10 +5,10 @@
 #include "primitives/dialog.h"
 
 DialogActionMenu::DialogActionMenu(
-    const std::shared_ptr<AbstractUserNotifier>& notifier,
+    std::shared_ptr<AbstractUserNotifier> notifier,
     QObject* parent) :
     QObject(parent),
-    mMenu(new QMenu()), mNotifier(notifier) {
+    mMenu(new QMenu()), mNotifier(std::move(notifier)) {
   mMenu->setTitle("Укажите действие для диалога");
 }
 

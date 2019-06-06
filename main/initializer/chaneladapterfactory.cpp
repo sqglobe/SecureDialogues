@@ -17,7 +17,7 @@ class FakeChannelAdapter : public AbstractChannelAdapter {
     mMessage = message;
   }
   void send(const std::string&, const std::string&) override {}
-  virtual std::pair<std::string, std::string> receive() override {
+  std::pair<std::string, std::string> receive() override {
     if (isFirst) {
       isFirst = false;
     } else {
@@ -33,8 +33,8 @@ class FakeChannelAdapter : public AbstractChannelAdapter {
 };
 
 ChanelAdapterFactory::ChanelAdapterFactory(
-    const std::shared_ptr<AbstractUserNotifier>& notifier) :
-    mNotifier(notifier) {}
+    std::shared_ptr<AbstractUserNotifier> notifier) :
+    mNotifier(std::move(notifier)) {}
 
 std::unique_ptr<AbstractChannelAdapter> ChanelAdapterFactory::operator()(
     const ConnectionHolder& conn) {
