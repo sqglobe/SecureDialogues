@@ -53,16 +53,15 @@ class DialogActionHandler : public AbstractMessageHandler {
    * @param message - управляющее сообщение
    * @param channel - мнемокод канала, по которому пришло сообщение
    */
-  virtual void handle(const DialogMessage& message,
-                      const std::string& channel) noexcept override;
+  void handle(const DialogMessage& message,
+              const std::string& channel) noexcept override;
 
   /**
    * @brief Определяет обрабатывается ли указанный тип сообщение данным классом
    * @param action - тип сообщения
    * @return возвращает true, если указанный тип обрабатывается, иначе - false
    */
-  virtual bool isItYouAction(DialogMessage::Action action) const
-      noexcept override;
+  bool isItYouAction(DialogMessage::Action action) const noexcept override;
 
  public:
   /**

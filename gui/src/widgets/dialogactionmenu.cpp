@@ -5,7 +5,7 @@
 #include "primitives/dialog.h"
 
 DialogActionMenu::DialogActionMenu(
-    std::shared_ptr<AbstractUserNotifier> notifier,
+    const std::shared_ptr<AbstractUserNotifier>& notifier,
     QObject* parent) :
     QObject(parent),
     mMenu(new QMenu()), mNotifier(notifier) {

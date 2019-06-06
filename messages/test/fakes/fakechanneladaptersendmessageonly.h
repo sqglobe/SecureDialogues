@@ -7,18 +7,17 @@
 class FakeChannelAdapterSendMessageOnly : public AbstractChannelAdapter {
  public:
   FakeChannelAdapterSendMessageOnly() :
-      AbstractChannelAdapter(std::shared_ptr<FakeNotifier>(new FakeNotifier),
+      AbstractChannelAdapter(std::make_shared<FakeNotifier>(),
                              ConnectionHolder("test")) {}
-  virtual void send(const std::string& message,
-                    const std::string& adress) override {
+  void send(const std::string& message, const std::string& adress) override {
     mMessage = message;
     mAdress = adress;
   }
-  virtual std::pair<std::string, std::string> receive() override {
+  std::pair<std::string, std::string> receive() override {
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
     return std::make_pair("test", "fake");
   }
-  virtual bool connect() override { return true; }
+  bool connect() override { return true; }
 
  public:
   std::string mMessage;

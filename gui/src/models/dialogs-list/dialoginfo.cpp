@@ -56,8 +56,6 @@ DialogInfo& DialogInfo::operator=(const std::shared_ptr<const Dialog>& info) {
   return *this;
 }
 
-DialogInfo::DialogInfo() {}
-
 void DialogInfo::messagesReaded() {
   mUnreadMessages = 0;
 }

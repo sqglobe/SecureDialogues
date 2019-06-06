@@ -37,7 +37,7 @@ void SmtpSender::connect() {
 
 void SmtpSender::send(const std::string& to, const std::string& body) {
   vmime::messageBuilder mb;
-  mb.setSubject(vmime::text(mSubject.c_str()));
+  mb.setSubject(vmime::text(mSubject));
   mb.setExpeditor(vmime::mailbox(mFrom));
   mb.getRecipients().appendAddress(vmime::make_shared<vmime::mailbox>(to));
   mb.getTextPart()->setCharset(vmime::charsets::UTF_8);

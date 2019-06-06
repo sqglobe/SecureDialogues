@@ -86,7 +86,7 @@ class ConnectionHolder {
 
  private:
   std::string mConnName;
-  ConnectionType mType;
+  ConnectionType mType{ConnectionType::UNDEF};
   std::any mData;
   Channel::ChannelStatus mStatus{Channel::ChannelStatus::UNDEFINED};
   std::string mMessage;

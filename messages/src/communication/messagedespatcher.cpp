@@ -2,7 +2,7 @@
 #include <iterator>
 #include <utility>
 
-#include "assert.h"
+#include <cassert>
 #include "channel.h"
 #include "constants.h"
 #include "delivery-handlers/deliveryhandler.h"
@@ -96,7 +96,8 @@ void MessageDespatcher::sendAndForget(const DialogMessage& message,
   }
 }
 
-void MessageDespatcher::add(std::shared_ptr<AbstractMessageHandler> handler) {
+void MessageDespatcher::add(
+    const std::shared_ptr<AbstractMessageHandler>& handler) {
   std::unique_lock<std::shared_mutex> guard(mMutex);
   mHandlers.push_back(handler);
 }
@@ -146,12 +147,11 @@ bool MessageDespatcher::isSignatureValid(const DialogMessage& message) const
   try {
     if (mCryptoSystem->isSignatureOk(message)) {
       return true;
-    } else {
-      LOGGER->error(
-          "Подпись для адреса {0} не верна. Возможно публичный ключ изменился "
-          "или это является следствием атаки",
-          message.adress());
     }
+    LOGGER->error(
+        "Подпись для адреса {0} не верна. Возможно публичный ключ изменился "
+        "или это является следствием атаки",
+        message.adress());
   } catch (std::range_error&) {
     LOGGER->error("Не найден публичный ключ для пользователя {0} ",
                   message.adress());

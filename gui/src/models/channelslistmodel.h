@@ -35,9 +35,9 @@ class ChannelsListModel : public QAbstractListModel,
                 int role = Qt::DisplayRole) const override;
 
  public:
-  virtual void added(const element& obj) override;
-  virtual void changed(const element& obj) override;
-  virtual void removed(const element& obj) override;
+  void added(const element& obj) override;
+  void changed(const element& obj) override;
+  void removed(const element& obj) override;
 
  private:
   QVector<ListItem> mChannelNames;

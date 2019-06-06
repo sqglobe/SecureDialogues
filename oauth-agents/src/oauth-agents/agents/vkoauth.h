@@ -11,13 +11,12 @@ class VkOauth : public OAuthAgent {
           const std::string& accessToken);
 
  public:
-  virtual std::string getUserUrl() const override;
-  virtual void loadAccessToken(const std::string& userCode) noexcept(
-      false) override;
-  virtual void refreshAccessToken() noexcept(false) override;
-  virtual std::pair<std::string, std::string> getAuthParam() const override;
-  virtual bool isExpired() const override;
-  virtual std::string getRefreshToken() const override;
+  std::string getUserUrl() const override;
+  void loadAccessToken(const std::string& userCode) noexcept(false) override;
+  void refreshAccessToken() noexcept(false) override;
+  std::pair<std::string, std::string> getAuthParam() const override;
+  bool isExpired() const override;
+  std::string getRefreshToken() const override;
 
  private:
   std::string mClientId;

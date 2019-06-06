@@ -14,8 +14,8 @@ class AesCipher : public SymetricalCipher {
             const CryptoPP::SecByteBlock& iv);
 
  public:
-  virtual std::string encrypt(const std::string& source) const override;
-  virtual std::string decrypt(const std::string& data) const override;
+  std::string encrypt(const std::string& source) const override;
+  std::string decrypt(const std::string& data) const override;
 
  private:
   CryptoPP::SecByteBlock mKey;

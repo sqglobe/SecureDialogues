@@ -9,21 +9,21 @@ Q_DECLARE_METATYPE(std::string)
 class FakeContactWatcher
     : public ChangeWatcher<ContactContainer::const_element> {
  public:
-  virtual void added(const ContactContainer::const_element& obj) override {
+  void added(const ContactContainer::const_element& obj) override {
     mMethod = "added";
     mId = obj->id();
     mChannel = obj->channelMoniker();
     mAdress = obj->adress();
     mName = obj->name();
   }
-  virtual void changed(const ContactContainer::const_element& obj) override {
+  void changed(const ContactContainer::const_element& obj) override {
     mMethod = "changed";
     mId = obj->id();
     mChannel = obj->channelMoniker();
     mAdress = obj->adress();
     mName = obj->name();
   }
-  virtual void removed(const ContactContainer::const_element& obj) override {
+  void removed(const ContactContainer::const_element& obj) override {
     mMethod = "removed";
     mId = obj->id();
     mChannel = obj->channelMoniker();

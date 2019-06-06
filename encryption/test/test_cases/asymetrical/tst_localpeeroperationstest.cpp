@@ -56,17 +56,10 @@ class LocalPeerOperationsTest : public QObject {
   Q_OBJECT
 
  public:
-  LocalPeerOperationsTest();
-  ~LocalPeerOperationsTest();
-
  private slots:
   void test_signatureCreation();
   void test_decryption();
 };
-
-LocalPeerOperationsTest::LocalPeerOperationsTest() {}
-
-LocalPeerOperationsTest::~LocalPeerOperationsTest() {}
 
 void LocalPeerOperationsTest::test_signatureCreation() {
   std::string message = "Hello, World!";

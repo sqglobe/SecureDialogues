@@ -23,22 +23,22 @@ class DialogUserModel : public QAbstractListModel,
   explicit DialogUserModel(const std::shared_ptr<DialogManager>& dialogs);
 
  public:
-  virtual int rowCount(const QModelIndex& = QModelIndex()) const override;
-  virtual QVariant data(const QModelIndex& index,
-                        int role = Qt::DisplayRole) const override;
+  int rowCount(const QModelIndex& = QModelIndex()) const override;
+  QVariant data(const QModelIndex& index,
+                int role = Qt::DisplayRole) const override;
 
  public:
-  virtual void added(const element& obj) override;
-  virtual void changed(const element& obj) override;
-  virtual void removed(const element& obj) override;
+  void added(const element& obj) override;
+  void changed(const element& obj) override;
+  void removed(const element& obj) override;
 
  public:
-  virtual void messageAdded(const std::string& dialogId,
-                            const std::shared_ptr<const UserMessage>&) override;
+  void messageAdded(const std::string& dialogId,
+                    const std::shared_ptr<const UserMessage>&) override;
 
-  virtual void activeDialogChanged(const std::string&) override;
-  virtual void peekMessage(const std::shared_ptr<const UserMessage>&) override;
-  virtual void invalidateData(const std::string&) override;
+  void activeDialogChanged(const std::string&) override;
+  void peekMessage(const std::shared_ptr<const UserMessage>&) override;
+  void invalidateData(const std::string&) override;
 
  public:
   std::pair<Dialog::Status, std::string> getDialogInfo(

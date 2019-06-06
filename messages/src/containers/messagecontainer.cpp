@@ -1,7 +1,6 @@
 #include "messagecontainer.h"
 #include "interfaces/messageconteinereventhandler.h"
 #include "usermessage.h"
-MessageContainer::MessageContainer() {}
 
 void MessageContainer::setActiveDialog(const std::string& dialogId) {
   std::lock_guard<std::recursive_mutex> lock(mMutex);
@@ -82,7 +81,7 @@ void MessageContainer::cleareHandlers() {
 
 void MessageContainer::messageChanged(
     const std::string& dialogId,
-    const std::shared_ptr<UserMessage>& message) {
+    const std::shared_ptr<UserMessage>& /*message*/) {
   if (mMessages.count(dialogId) > 0) {
     for (const auto& handler : mEventHandlers) {
       handler->invalidateData(dialogId);
@@ -118,7 +117,7 @@ void MessageContainer::removeDialog(const std::string& dialogId) {
   if (dialogId == mActiveDialog) {
     mActiveDialog.clear();
 
-    if (mMessages.size() > 0) {
+    if (!mMessages.empty()) {
       mActiveDialog = std::cbegin(mMessages)->first;
       notifymAboutDialogIdChanged(mActiveDialog);
       notifyPeekAllMessagesFromActive();

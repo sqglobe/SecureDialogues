@@ -176,8 +176,6 @@ CoreInitializer::CoreInitializer(
       std::make_shared<MessagesConsistentWatcher>(mMessageContainer));
 }
 
-CoreInitializer::~CoreInitializer() {}
-
 std::shared_ptr<MessageActionHandler> CoreInitializer::getMessageActionHandler()
     const {
   return mMessageActionHandler;

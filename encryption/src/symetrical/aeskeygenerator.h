@@ -8,7 +8,7 @@
  */
 class AesKeyGenerator : public Generator<AesKeyStruct> {
  public:
-  virtual AesKeyGenerator::Value generate() noexcept(false) override;
+  AesKeyGenerator::Value generate() noexcept(false) override;
 };
 
 #endif  // AESKEYGENERATOR_H

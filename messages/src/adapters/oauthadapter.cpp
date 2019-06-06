@@ -1,7 +1,7 @@
 #include "oauthadapter.h"
 #include "oauth-agents/utils/factories.h"
 
-#include <assert.h>
+#include <cassert>
 #include <thread>
 
 #include "exception/disconectedexception.h"

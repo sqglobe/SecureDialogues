@@ -1,6 +1,6 @@
 #ifndef CONTAINERELEMENTWRAPPER_H
 #define CONTAINERELEMENTWRAPPER_H
-#include <assert.h>
+#include <cassert>
 #include <memory>
 #include <mutex>
 
@@ -27,7 +27,7 @@ class ContainerElementWrapper {
    * @brief Конструктор перемещения
    * @param elem обертка, для которой выполняется перемещение
    */
-  ContainerElementWrapper(ContainerElementWrapper<C>&& elem);
+  ContainerElementWrapper(ContainerElementWrapper<C>&& elem) noexcept;
 
  public:
   /**
@@ -75,9 +75,9 @@ ContainerElementWrapper<C>::ContainerElementWrapper(
 
 template <typename C>
 ContainerElementWrapper<C>::ContainerElementWrapper(
-    ContainerElementWrapper<C>&& elem) :
+    ContainerElementWrapper<C>&& elem) noexcept :
     mElement(std::move(elem.mElement)),
-    mContainer(elem.mContainer) {}
+    mContainer(std::move(elem.mContainer)) {}
 
 template <typename C>
 bool ContainerElementWrapper<C>::save() {

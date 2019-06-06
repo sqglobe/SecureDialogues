@@ -26,11 +26,10 @@ bool isPassValid(const std::string& pass, const std::string& passFile) {
     std::ofstream out(passFile.c_str());
     out << digest << std::flush;
     return true;
-  } else {
-    std::string str((std::istreambuf_iterator<char>(f)),
-                    std::istreambuf_iterator<char>());
-    return str == digest;
   }
+  std::string str((std::istreambuf_iterator<char>(f)),
+                  std::istreambuf_iterator<char>());
+  return str == digest;
 }
 
 std::string getPassword(const std::string& passFile) {

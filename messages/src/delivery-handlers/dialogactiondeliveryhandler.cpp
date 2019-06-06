@@ -23,8 +23,8 @@ class DialogActionDeliveryHandler : public DeliveryHandler {
       const std::shared_ptr<AbstractUserNotifier>& notifier);
 
  public:
-  virtual void removed() override;
-  virtual void timeouted() override;
+  void removed() override;
+  void timeouted() override;
 
  protected:
   std::shared_ptr<AbstractUserNotifier> mNotifier;

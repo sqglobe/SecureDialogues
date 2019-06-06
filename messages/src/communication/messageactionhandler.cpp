@@ -26,8 +26,8 @@ class MessageNotDeliveriedHandler : public DeliveryHandler {
       mMessageWrapper(std::move(wrapper)) {}
 
  public:
-  virtual void removed() override;
-  virtual void timeouted() override;
+  void removed() override;
+  void timeouted() override;
 
  private:
   std::unique_ptr<MessageContainer::Wrapper> mMessageWrapper;

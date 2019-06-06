@@ -20,8 +20,12 @@ class ContactWidget : public QWidget {
 
  public:
   explicit ContactWidget(const std::shared_ptr<ChannelsListModel>& model,
-                         QWidget* parent = 0);
+                         QWidget* parent = nullptr);
   ~ContactWidget();
+
+ public:
+  ContactWidget(const ContactWidget&) = delete;
+  ContactWidget operator=(const ContactWidget&) = delete;
 
  public:
   /**

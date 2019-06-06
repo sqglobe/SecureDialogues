@@ -7,7 +7,7 @@
 class UriBuilder {
  public:
   explicit UriBuilder(const std::string& path);
-  UriBuilder();
+  UriBuilder() = default;
 
  public:
   UriBuilder& appendPath(const std::string& path);

@@ -1,5 +1,4 @@
 #include "userinformator.h"
-#include <QDebug>
 #include <QMessageBox>
 
 UserInformator::UserInformator(QWidget* parent) :
@@ -10,7 +9,6 @@ UserInformator::UserInformator(QWidget* parent) :
 
 void UserInformator::notify(AbstractUserNotifier::Severity sev,
                             const std::string& message) {
-  qDebug() << message.c_str();
   emit hasMessage(sev, QString(message.c_str()));
 }
 

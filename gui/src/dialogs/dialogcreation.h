@@ -24,6 +24,10 @@ class DialogCreation : public QDialog {
                           QWidget* parent = nullptr);
   ~DialogCreation();
 
+ public:
+  DialogCreation(const DialogCreation&) = delete;
+  DialogCreation& operator=(const DialogCreation&) = delete;
+
  private slots:
   void on_buttonBox_accepted();
   void on_buttonBox_rejected();

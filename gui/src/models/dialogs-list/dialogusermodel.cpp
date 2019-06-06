@@ -24,7 +24,6 @@ QVariant DialogUserModel::data(const QModelIndex& index, int role) const {
   } else if (Qt::DisplayRole == role) {
     auto p = static_cast<std::size_t>(index.row());
     return QVariant::fromValue(mDialogsInfo[p]);
-    ;
   }
   return QVariant();
 }
@@ -71,7 +70,7 @@ void DialogUserModel::removed(const ChangeWatcher::element& obj) {
   endResetModel();
 
   if (activeDialog == obj->getDialogId()) {
-    if (mDialogsInfo.size() == 0) {
+    if (mDialogsInfo.empty()) {
       activeDialog = "";
       emit notValidDialogWasSelected(activeDialog);
     } else {

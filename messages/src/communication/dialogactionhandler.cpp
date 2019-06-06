@@ -2,7 +2,7 @@
 #include "containers/contactcontainer.h"
 #include "containers/dialogmanager.h"
 
-#include <assert.h>
+#include <cassert>
 #include "delivery-handlers/dialogactiondeliveryhandler.h"
 #include "interfaces/abstractmessagedespatcher.h"
 #include "interfaces/abstractusernotifier.h"
@@ -226,7 +226,6 @@ void DialogActionHandler::prepareForFoundDialog(const DialogMessage& message,
                     mMessageDispatcher,
                     mDialogManager->wrapper(message.dialogId()), mNotifier),
                 res);
-    return;
   } else if (message.action() == DialogMessage::Action::KEY_VERIFICATION) {
     if (mCryptoSystem->checkVerificationString(message.dialogId(),
                                                message.content())) {

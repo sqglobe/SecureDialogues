@@ -9,14 +9,13 @@ class GmailApi : public ApiAgent {
   explicit GmailApi(const std::string& mail);
 
  public:
-  virtual std::list<std::pair<std::string, std::string> > getMessages(
+  std::list<std::pair<std::string, std::string> > getMessages(
       const std::string& authHeaderName,
       const std::string& authToken) noexcept(false) override;
-  virtual void sendMessage(
-      const std::string& to,
-      const std::string& body,
-      const std::string& authHeaderName,
-      const std::string& authToken) noexcept(false) override;
+  void sendMessage(const std::string& to,
+                   const std::string& body,
+                   const std::string& authHeaderName,
+                   const std::string& authToken) noexcept(false) override;
 
  private:
   std::string loadMessages(

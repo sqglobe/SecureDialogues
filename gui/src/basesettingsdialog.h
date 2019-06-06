@@ -35,6 +35,10 @@ class BaseSettingsDialog : public QDialog {
                               QWidget* parent = nullptr);
   ~BaseSettingsDialog();
 
+ public:
+  BaseSettingsDialog(const BaseSettingsDialog&) = delete;
+  BaseSettingsDialog& operator=(const BaseSettingsDialog&) = delete;
+
  signals:
 
   /**

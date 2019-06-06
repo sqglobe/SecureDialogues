@@ -38,17 +38,10 @@ class RemotePeerOperationsTest : public QObject {
   Q_OBJECT
 
  public:
-  RemotePeerOperationsTest();
-  ~RemotePeerOperationsTest();
-
  private slots:
   void test_signatureVerification();
   void test_encryption();
 };
-
-RemotePeerOperationsTest::RemotePeerOperationsTest() {}
-
-RemotePeerOperationsTest::~RemotePeerOperationsTest() {}
 
 void RemotePeerOperationsTest::test_signatureVerification() {
   std::string signature =

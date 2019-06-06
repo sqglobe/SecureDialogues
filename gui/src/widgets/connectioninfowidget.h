@@ -20,6 +20,10 @@ class ConnectionInfoWidget : public QWidget {
   ~ConnectionInfoWidget();
 
  public:
+  ConnectionInfoWidget(const ConnectionInfoWidget&) = delete;
+  ConnectionInfoWidget& operator=(const ConnectionInfoWidget&) = delete;
+
+ public:
   /**
    * @brief Передает виджету подключение, которое необходимо отобразить
    * @param info подключение для отображения

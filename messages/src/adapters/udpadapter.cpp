@@ -35,7 +35,7 @@ std::pair<std::string, std::string> UdpAdapter::receive() {
                           remote_endpoint);
 
     return std::make_pair(remote_endpoint.address().to_string(),
-                          std::string(messg.c_str()));
+                          std::string(messg));
   }
 
   return std::make_pair(std::string(), std::string());

@@ -1,5 +1,5 @@
-#include <assert.h>
 #include <QTest>
+#include <cassert>
 #include <iostream>
 #include <memory>
 #include "containers/basecontainer.h"

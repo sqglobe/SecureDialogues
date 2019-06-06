@@ -18,8 +18,8 @@ class UserInformator : public QObject,
   explicit UserInformator(QWidget* parent);
 
  public:
-  virtual void notify(Severity sev, const std::string& message) override;
-  virtual bool ask(const std::string& question) const override;
+  void notify(Severity sev, const std::string& message) override;
+  bool ask(const std::string& question) const override;
 
  signals:
   void hasMessage(AbstractUserNotifier::Severity sev, QString message);

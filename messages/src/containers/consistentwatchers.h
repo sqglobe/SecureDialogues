@@ -18,9 +18,9 @@ class ContactConsistentWatcher : public ChangeWatcher<ConnectionHolder> {
       const std::shared_ptr<ContactContainer>& consistentConteiner);
 
  public:
-  virtual void added(const element&) override {}
-  virtual void changed(const element&) override {}
-  virtual void removed(const element& obj) override;
+  void added(const element&) override {}
+  void changed(const element&) override {}
+  void removed(const element& obj) override;
 
  private:
   std::shared_ptr<ContactContainer> mConsistentConteiner;
@@ -33,9 +33,9 @@ class DialogConsistentWatcher
       const std::shared_ptr<DialogManager>& consistentConteiner);
 
  public:
-  virtual void added(const element&) override {}
-  virtual void changed(const element&) override {}
-  virtual void removed(const element& obj) override;
+  void added(const element&) override {}
+  void changed(const element&) override {}
+  void removed(const element& obj) override;
 
  private:
   std::shared_ptr<DialogManager> mConsistentConteiner;
@@ -48,9 +48,9 @@ class MessagesConsistentWatcher
       const std::shared_ptr<MessageContainer>& consistentConteiner);
 
  public:
-  virtual void added(const element&) override {}
-  virtual void changed(const element&) override {}
-  virtual void removed(const element& obj) override;
+  void added(const element&) override {}
+  void changed(const element&) override {}
+  void removed(const element& obj) override;
 
  private:
   std::shared_ptr<MessageContainer> mConsistentConteiner;

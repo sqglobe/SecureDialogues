@@ -54,8 +54,8 @@ class BaseContainer : public std::enable_shared_from_this<
       TransparentContainerElementWrapper<BaseContainer<Element, ConstElement>>;
 
  private:
-  typedef void (ChangeWatcher<const_element>::*WatherFunc)(
-      const const_element&);
+  using WatherFunc =
+      void (ChangeWatcher<const_element>::*)(const const_element&);
 
  public:
   /**
@@ -375,7 +375,7 @@ template <typename Element, typename ConstElement>
 void BaseContainer<Element, ConstElement>::notify(
     const BaseContainer::const_element& elem,
     BaseContainer::WatherFunc func) {
-  for (auto watcher : mWatchers) {
+  for (const auto& watcher : mWatchers) {
     ((*watcher).*func)(elem);
   }
 

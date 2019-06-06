@@ -22,6 +22,10 @@ class MainWindow : public QMainWindow {
   explicit MainWindow(const std::string& pass, QWidget* parent = nullptr);
   ~MainWindow() override;
 
+ public:
+  MainWindow(const MainWindow&) = delete;
+  MainWindow& operator=(const MainWindow&) = delete;
+
  public slots:
   void on_badDialogSelected(std::string);
   void on_goodDialogSelected(std::string);

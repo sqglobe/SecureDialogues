@@ -1,6 +1,6 @@
 #include "basesettingsdialog.h"
-#include <assert.h>
 #include <QSortFilterProxyModel>
+#include <cassert>
 #include "ui_basesettingsdialog.h"
 
 BaseSettingsDialog::BaseSettingsDialog(QAbstractItemModel* model,

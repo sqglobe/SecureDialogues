@@ -1,5 +1,5 @@
 #include "systemmessagegenerator.h"
-#include <assert.h>
+#include <cassert>
 #include "containers/messagecontainer.h"
 #include "containers/usermessage.h"
 #include "primitives/dialog.h"

@@ -5,7 +5,7 @@
 class FakeUserAsk : public AbstractUserAsk {
  public:
   FakeUserAsk(bool retVal);
-  virtual bool ask(const std::string& question) const override;
+  bool ask(const std::string& question) const override;
 
  private:
   bool mRetVal;

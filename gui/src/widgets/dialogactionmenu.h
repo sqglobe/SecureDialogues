@@ -17,8 +17,9 @@ class AbstractUserNotifier;
 class DialogActionMenu : public QObject {
   Q_OBJECT
  public:
-  explicit DialogActionMenu(std::shared_ptr<AbstractUserNotifier> notifier,
-                            QObject* parent = nullptr);
+  explicit DialogActionMenu(
+      const std::shared_ptr<AbstractUserNotifier>& notifier,
+      QObject* parent = nullptr);
 
  signals:
   void acceptDialog(std::string dialogId);

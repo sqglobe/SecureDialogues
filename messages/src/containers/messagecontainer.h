@@ -58,9 +58,6 @@ class MessageContainer : public std::enable_shared_from_this<MessageContainer> {
   };
 
  public:
-  MessageContainer();
-
- public:
   /**
    * @brief Задает новый активный диалог.
    * Этот метод инициализирует событие о том, что изменился активный диалог,
@@ -127,7 +124,7 @@ class MessageContainer : public std::enable_shared_from_this<MessageContainer> {
    * диалога
    */
   void messageChanged(const std::string& dialogId,
-                      const std::shared_ptr<UserMessage>& message);
+                      const std::shared_ptr<UserMessage>&);
 
  public:
   /**

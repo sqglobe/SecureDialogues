@@ -25,12 +25,12 @@ static unsigned long init_sequental() {
 invalid_dialog_action::invalid_dialog_action(const std::string& str) :
     std::runtime_error(str) {}
 
-Dialog::Dialog(std::shared_ptr<const Contact> contact,
+Dialog::Dialog(const std::shared_ptr<const Contact>& contact,
                const std::string& dialogId,
                Status status) :
     Dialog(contact, dialogId, 0, status) {}
 
-Dialog::Dialog(std::shared_ptr<const Contact> contact,
+Dialog::Dialog(const std::shared_ptr<const Contact>& contact,
                const std::string& dialogId,
                unsigned long sequental,
                Dialog::Status status) :
@@ -38,7 +38,7 @@ Dialog::Dialog(std::shared_ptr<const Contact> contact,
     mDialogId(dialogId), mStatus(status), mLastSequental(sequental),
     mThisSequental(init_sequental()) {}
 
-Dialog::Dialog(std::shared_ptr<const Contact> contact) :
+Dialog::Dialog(const std::shared_ptr<const Contact>& contact) :
     Dialog(contact, make_uiid(), Status::NEW) {}
 
 std::string Dialog::getDialogId() const {
@@ -49,7 +49,7 @@ std::string Dialog::getChannelMoniker() const {
   return mContact->channelMoniker();
 }
 
-DialogMessage Dialog::makeMessage(const DialogMessage::Action action,
+DialogMessage Dialog::makeMessage(DialogMessage::Action action,
                                   const std::string& content) const
     noexcept(false) {
   if (!DIALOG_STATE_MACHINE.isMessageActionAllowed(mStatus, action)) {

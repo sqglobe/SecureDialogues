@@ -14,7 +14,7 @@ void ContactConsistentWatcher::removed(const element& obj) {
         return cont->channelMoniker() == obj.getConnectionName();
       });
 
-  for (auto element : removed) {
+  for (const auto& element : removed) {
     mConsistentConteiner->remove(element->id());
   }
 }
@@ -29,7 +29,7 @@ void DialogConsistentWatcher::removed(const ChangeWatcher::element& obj) {
         return dial->getContactId() == obj->id();
       });
 
-  for (auto element : removed) {
+  for (const auto& element : removed) {
     mConsistentConteiner->remove(element->getDialogId());
   }
 }

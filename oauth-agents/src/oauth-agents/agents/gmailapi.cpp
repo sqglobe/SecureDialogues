@@ -54,7 +54,7 @@ std::pair<std::string, std::string> GmailApi::getMail(
                      // sm;
     std::string val = it->at("value");
     std::string toMail =
-        std::regex_search(val, sm, std::regex("<([^>]+)>")) && sm.size() > 0
+        std::regex_search(val, sm, std::regex("<([^>]+)>")) && !sm.empty()
             ? sm[1]
             : std::string(it->at("value"));
     std::string body = playload.at("body").at("size") == 0 ||
@@ -148,7 +148,7 @@ std::string GmailApi::loadMessages(
           getMail(id, authHeaderName, authToken, mUserMail));
     }
   }
-  auto first = messages.size() > 0 ? messages.at(0).at("id") : "";
+  auto first = messages.empty() ? "" : messages.at(0).at("id");
   if (!breaked && !mLastMessage.empty()) {
     auto pageToken = body.at("nextPageToken");
     loadMessages(authHeaderName, authToken, pageToken, loadedMessages);

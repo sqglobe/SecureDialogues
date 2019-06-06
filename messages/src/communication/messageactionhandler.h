@@ -51,10 +51,9 @@ class MessageActionHandler : public AbstractMessageHandler {
       const std::shared_ptr<const CryptoSystem>& system);
 
  public:
-  virtual void handle(const DialogMessage& message,
-                      const std::string& channel) noexcept override;
-  virtual bool isItYouAction(DialogMessage::Action action) const
-      noexcept override;
+  void handle(const DialogMessage& message,
+              const std::string& channel) noexcept override;
+  bool isItYouAction(DialogMessage::Action action) const noexcept override;
 
  public:
   /**

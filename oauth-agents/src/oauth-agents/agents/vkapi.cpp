@@ -110,7 +110,7 @@ std::list<std::pair<std::string, std::string> > VkApi::getMessages(
           std::tuple(static_cast<int>(element.at(FLAGS)),
                      static_cast<int>(element.at(PEER)), element.at(TEXT));
       if (!(flags & OUTBOX)) {
-        messages.push_back(std::pair(std::to_string(peer), text));
+        messages.emplace_back(std::to_string(peer), text);
       }
     }
   }

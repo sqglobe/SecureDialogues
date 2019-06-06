@@ -59,9 +59,8 @@ std::shared_ptr<BaseSettingsDialog> make_dialog(
   auto userInformator = std::make_shared<UserInformator>(dialog.get());
 
   auto gasket = new ContactGasket(
-      std::unique_ptr<DialogWidgetGasket<ContactContainer, ContactWidget>>(
-          new DialogWidgetGasket<ContactContainer, ContactWidget>(
-              contact, widget, userInformator, userInformator)),
+      std::make_unique<DialogWidgetGasket<ContactContainer, ContactWidget>>(
+          contact, widget, userInformator, userInformator),
       dialog.get());
 
   contact_for_dialog(dialog, gasket, widget);
@@ -80,10 +79,9 @@ std::shared_ptr<BaseSettingsDialog> make_dialog(
   auto userInformator = std::make_shared<UserInformator>(dialog.get());
 
   auto gasket = new ConnectionInfoGasket(
-      std::unique_ptr<
+      std::make_unique<
           DialogWidgetGasket<ConnectionInfoContainer, ConnectionInfoWidget>>(
-          new DialogWidgetGasket<ConnectionInfoContainer, ConnectionInfoWidget>(
-              connInfo, widget, userInformator, userInformator)),
+          connInfo, widget, userInformator, userInformator),
       dialog.get());
 
   contact_for_dialog(dialog, gasket, widget);

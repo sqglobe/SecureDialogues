@@ -18,8 +18,6 @@ void appendEscape(const std::string& param, std::string& out, CURL* curl) {
 
 UriBuilder::UriBuilder(const std::string& path) : mPath(path) {}
 
-UriBuilder::UriBuilder() {}
-
 UriBuilder& UriBuilder::appendPath(const std::string& path) {
   if (!CURL_HANDLER) {
     throw CurlInitError("Failed init curl in UriBuilder");

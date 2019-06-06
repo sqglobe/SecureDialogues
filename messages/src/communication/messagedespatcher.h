@@ -55,15 +55,15 @@ class MessageDespatcher : public AbstractMessageDespatcher {
       const std::string& channelName,
       const std::shared_ptr<DeliveryHandler>& deliveryHandler) const override;
 
-  virtual void sendAndForget(const DialogMessage& message,
-                             const std::string& channelName) const override;
+  void sendAndForget(const DialogMessage& message,
+                     const std::string& channelName) const override;
 
  public:
   /**
    * @brief Добавляет новый обработчик входящих сообщений
    * @param handler - обработчик сообщений
    */
-  void add(std::shared_ptr<AbstractMessageHandler> handler);
+  void add(const std::shared_ptr<AbstractMessageHandler>& handler);
 
   /**
    * @brief Добавляет новый обработчик входящих сообщений

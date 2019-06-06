@@ -3,8 +3,6 @@
 #include "containers/usermessage.h"
 Q_DECLARE_METATYPE(std::shared_ptr<const UserMessage>);
 
-ActiveDialogMessageModel::ActiveDialogMessageModel() {}
-
 int ActiveDialogMessageModel::rowCount(const QModelIndex&) const {
   std::lock_guard<std::recursive_mutex> guard(mMutex);
   return static_cast<int>(mRows.size());

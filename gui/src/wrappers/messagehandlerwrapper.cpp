@@ -1,7 +1,7 @@
 #include "messagehandlerwrapper.h"
 #include "communication/messageactionhandler.h"
 MessageHandlerWrapper::MessageHandlerWrapper(
-    std::shared_ptr<MessageActionHandler> handler,
+    const std::shared_ptr<MessageActionHandler>& handler,
     QObject* parent) :
     QObject(parent),
     mMessageHandler(handler) {}
