@@ -15,20 +15,18 @@ class ConnectionInfoModel
     : public QAbstractListModel,
       public ChangeWatcher<ConnectionInfoContainer::const_element> {
  public:
-  explicit ConnectionInfoModel(
-      const std::shared_ptr<ConnectionInfoContainer>& cont);
+  explicit ConnectionInfoModel(std::shared_ptr<ConnectionInfoContainer> cont);
   ConnectionInfoContainer::const_element getAt(const QModelIndex& pos) const;
 
  public:
-  virtual int rowCount(
-      const QModelIndex& parent = QModelIndex()) const override;
-  virtual QVariant data(const QModelIndex& index,
-                        int role = Qt::DisplayRole) const override;
+  int rowCount(const QModelIndex& parent = QModelIndex()) const override;
+  QVariant data(const QModelIndex& index,
+                int role = Qt::DisplayRole) const override;
 
  public:
-  virtual void added(const element& obj) override;
-  virtual void changed(const element& obj) override;
-  virtual void removed(const element& obj) override;
+  void added(const element& obj) override;
+  void changed(const element& obj) override;
+  void removed(const element& obj) override;
 
  private:
   std::shared_ptr<ConnectionInfoContainer> mContainer;

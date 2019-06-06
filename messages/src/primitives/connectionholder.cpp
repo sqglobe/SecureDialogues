@@ -1,7 +1,7 @@
 #include "connectionholder.h"
 
-ConnectionHolder::ConnectionHolder(const std::string& name) :
-    mConnName(name), mType(ConnectionType::UNDEF) {}
+ConnectionHolder::ConnectionHolder(std::string name) :
+    mConnName(std::move(name)), mType(ConnectionType::UNDEF) {}
 
 ConnectionType ConnectionHolder::getType() const {
   return mType;

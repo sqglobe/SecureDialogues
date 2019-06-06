@@ -9,22 +9,34 @@
 
 #include <iostream>
 #include "dialogstatemachine.h"
+
+#include <random>
+
 static const DialogStateMachine DIALOG_STATE_MACHINE;
+
+static unsigned long init_sequental() {
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<unsigned long> dis(
+      0, std::numeric_limits<unsigned int>::max());
+  return dis(gen);
+}
 
 invalid_dialog_action::invalid_dialog_action(const std::string& str) :
     std::runtime_error(str) {}
 
 Dialog::Dialog(std::shared_ptr<const Contact> contact,
-               const std::string& dialogId,
+               std::string dialogId,
                Status status) :
     Dialog(contact, dialogId, 0, status) {}
 
 Dialog::Dialog(std::shared_ptr<const Contact> contact,
-               const std::string& dialogId,
+               std::string dialogId,
                unsigned long sequental,
                Dialog::Status status) :
-    mContact(contact),
-    mDialogId(dialogId), mStatus(status), mLastSequental(sequental) {}
+    mContact(std::move(contact)),
+    mDialogId(std::move(dialogId)), mStatus(status), mLastSequental(sequental),
+    mThisSequental(init_sequental()) {}
 
 Dialog::Dialog(std::shared_ptr<const Contact> contact) :
     Dialog(contact, make_uiid(), Status::NEW) {}
@@ -37,7 +49,7 @@ std::string Dialog::getChannelMoniker() const {
   return mContact->channelMoniker();
 }
 
-DialogMessage Dialog::makeMessage(const DialogMessage::Action action,
+DialogMessage Dialog::makeMessage(DialogMessage::Action action,
                                   const std::string& content) const
     noexcept(false) {
   if (!DIALOG_STATE_MACHINE.isMessageActionAllowed(mStatus, action)) {
@@ -46,7 +58,8 @@ DialogMessage Dialog::makeMessage(const DialogMessage::Action action,
        << " cant be made for dialog state " << static_cast<int>(mStatus);
     throw invalid_dialog_action(ss.str());
   }
-  return DialogMessage(action, content, mDialogId, mContact->adress());
+  return DialogMessage(action, content, mDialogId, mContact->adress(),
+                       getNextSequental());
 }
 
 DialogMessage Dialog::makeAbort() {
@@ -90,4 +103,10 @@ bool Dialog::isSequentalOk(unsigned long sequental) {
 bool Dialog::isMessageActionAllowed(DialogMessage::Action action) const
     noexcept {
   return DIALOG_STATE_MACHINE.isMessageActionAllowed(mStatus, action);
+}
+
+unsigned long Dialog::getNextSequental() const {
+  std::cout << "Dialog id: " << mDialogId << " sequental: " << mThisSequental
+            << std::endl;
+  return ++mThisSequental;
 }

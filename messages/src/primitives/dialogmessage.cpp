@@ -4,29 +4,26 @@
 #include "utils.h"
 
 DialogMessage::DialogMessage(const DialogMessage::Action& action,
-                             const std::string& content,
-                             const std::string& dialogId,
-                             const std::string& adress,
+                             std::string content,
+                             std::string dialogId,
+                             std::string adress,
                              unsigned long number,
-                             const std::string& sign) :
-
-    DialogMessage(action,
-                  content,
-                  dialogId,
-                  adress,
-                  number,
-                  sign,
-                  get_timestamp()) {}
+                             std::string sign) :
+    mAction(action),
+    mContent(std::move(content)), mDialogId(std::move(dialogId)),
+    mAdress(std::move(adress)), mSign(std::move(sign)),
+    mSequentialNumber(number), mTimestamp(get_timestamp()) {}
 
 DialogMessage::DialogMessage(const DialogMessage::Action& action,
-                             const std::string& content,
-                             const std::string& dialogId,
-                             const std::string& adress,
+                             std::string content,
+                             std::string dialogId,
+                             std::string adress,
                              unsigned long number,
-                             const std::string& sign,
+                             std::string sign,
                              long timestamp) :
     mAction(action),
-    mContent(content), mDialogId(dialogId), mAdress(adress), mSign(sign),
+    mContent(std::move(content)), mDialogId(std::move(dialogId)),
+    mAdress(std::move(adress)), mSign(std::move(sign)),
     mSequentialNumber(number), mTimestamp(timestamp) {}
 
 DialogMessage::Action DialogMessage::action() const noexcept {

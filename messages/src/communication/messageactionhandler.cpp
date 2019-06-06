@@ -26,8 +26,8 @@ class MessageNotDeliveriedHandler : public DeliveryHandler {
       mMessageWrapper(std::move(wrapper)) {}
 
  public:
-  virtual void removed() override;
-  virtual void timeouted() override;
+  void removed() override;
+  void timeouted() override;
 
  private:
   std::unique_ptr<MessageContainer::Wrapper> mMessageWrapper;
@@ -44,14 +44,14 @@ void MessageNotDeliveriedHandler::timeouted() {
 }
 
 MessageActionHandler::MessageActionHandler(
-    const std::shared_ptr<DialogManager>& manager,
-    const std::shared_ptr<MessageContainer>& container,
-    const std::shared_ptr<const MessageDespatcher>& despatcher,
-    const std::shared_ptr<AbstractUserNotifier>& notifier,
-    const std::shared_ptr<const CryptoSystem>& system) :
-    mDialogManager(manager),
-    mMessageContainer(container), mDespatcher(despatcher), mNotifier(notifier),
-    mCryptoSystem(system) {}
+    std::shared_ptr<DialogManager> manager,
+    std::shared_ptr<MessageContainer> container,
+    std::shared_ptr<const MessageDespatcher> despatcher,
+    std::shared_ptr<AbstractUserNotifier> notifier,
+    std::shared_ptr<const CryptoSystem> system) :
+    mDialogManager(std::move(manager)),
+    mMessageContainer(std::move(container)), mDespatcher(std::move(despatcher)),
+    mNotifier(std::move(notifier)), mCryptoSystem(std::move(system)) {}
 
 // TODO : make save for exceptions
 void MessageActionHandler::handle(const DialogMessage& message,
@@ -70,6 +70,15 @@ void MessageActionHandler::handle(const DialogMessage& message,
         despatcher->sendAndForget(
             make_abort(message.dialogId(), message.adress()), channel);
       }
+      return;
+    }
+    if (auto dialog = mDialogManager->get(message.dialogId());
+        !dialog->isSequentalOk(message.sequential())) {
+      LOGGER->warn(
+          "Get message with invalid sequential {0}, dialog id{1}, action: {2}",
+          message.sequential(), message.dialogId(),
+          static_cast<int>(message.action()));
+      return;
     }
     auto content = mCryptoSystem->decryptMessageBody(message.dialogId(),
                                                      message.content());

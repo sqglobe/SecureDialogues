@@ -5,11 +5,11 @@
 #include <string>
 #include "communication/channel.h"
 
-enum class ConnectionType { UNDEF = 0, UDP, GMAIL, VK };
+enum class ConnectionType { UNDEF = 0, UDP, GMAIL, VK, EMAIL };
 
 struct UdpConnection {};
 
-struct GmailConnaection {
+struct GmailConnection {
   std::string email;
   std::string accessToken;
 };
@@ -17,6 +17,19 @@ struct GmailConnaection {
 struct VkConnection {
   std::string userId;
   std::string accessToken;
+};
+
+struct EmailConnection {
+  std::string userName;
+  std::string password;
+  bool tlsUsed;
+  std::string from;
+
+  std::string smtpAddr;
+  int smtpPort;
+
+  std::string imapAddr;
+  int imapPort;
 };
 
 template <typename T>
@@ -29,9 +42,9 @@ struct ConnectionTraits<UdpConnection> {
 };
 
 template <>
-struct ConnectionTraits<GmailConnaection> {
+struct ConnectionTraits<GmailConnection> {
   static const ConnectionType TYPE = ConnectionType::GMAIL;
-  using ConnectionClass = GmailConnaection;
+  using ConnectionClass = GmailConnection;
 };
 
 template <>
@@ -40,12 +53,22 @@ struct ConnectionTraits<VkConnection> {
   using ConnectionClass = VkConnection;
 };
 
+template <>
+struct ConnectionTraits<EmailConnection> {
+  static const ConnectionType TYPE = ConnectionType::EMAIL;
+  using ConnectionClass = EmailConnection;
+};
+
 class ConnectionHolder {
  public:
   template <class C>
-  ConnectionHolder(const C& conn, const std::string& name);
-  explicit ConnectionHolder(const std::string& name);
+  ConnectionHolder(const C& conn, std::string name);
+  explicit ConnectionHolder(std::string name);
+  ConnectionHolder(ConnectionHolder&& holder) noexcept = default;
+  ConnectionHolder(const ConnectionHolder& holder) = default;
+  ConnectionHolder& operator=(const ConnectionHolder& holder) = default;
 
+ public:
  public:
   template <class C>
   void setConnection(const C& conn);
@@ -67,15 +90,15 @@ class ConnectionHolder {
 
  private:
   std::string mConnName;
-  ConnectionType mType;
+  ConnectionType mType{ConnectionType::UNDEF};
   std::any mData;
   Channel::ChannelStatus mStatus{Channel::ChannelStatus::UNDEFINED};
   std::string mMessage;
 };
 
 template <class C>
-ConnectionHolder::ConnectionHolder(const C& conn, const std::string& name) :
-    mConnName(name) {
+ConnectionHolder::ConnectionHolder(const C& conn, std::string name) :
+    mConnName(std::move(name)) {
   setConnection(conn);
 }
 

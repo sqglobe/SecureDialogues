@@ -5,13 +5,13 @@
 #include "interfaces/abstractuserask.h"
 #include "interfaces/abstractusernotifier.h"
 
-PublicKeyObject::PublicKeyObject(
-    const std::shared_ptr<CryptoSystemImpl>& system,
-    const std::shared_ptr<AbstractUserNotifier>& notifier,
-    const std::shared_ptr<const AbstractUserAsk>& ask,
-    QObject* parent) :
+PublicKeyObject::PublicKeyObject(std::shared_ptr<CryptoSystemImpl> system,
+                                 std::shared_ptr<AbstractUserNotifier> notifier,
+                                 std::shared_ptr<const AbstractUserAsk> ask,
+                                 QObject* parent) :
     QObject(parent),
-    mSystem(system), mNotifier(notifier), mAsk(ask) {}
+    mSystem(std::move(system)), mNotifier(std::move(notifier)),
+    mAsk(std::move(ask)) {}
 
 void PublicKeyObject::generateNewKey() {
   if (mAsk->ask(

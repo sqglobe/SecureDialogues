@@ -13,7 +13,6 @@ set(SOURCES fakefile.cpp fakeuserask.cpp)
 set(HEADERS 
     fakechanneladapter.h
     fakechanneladaptersendmessageonly.h
-    fakeconnectioninfowidget.h
     fakedialogmessage.h
     fakefile.h
     fakemessagecontainerhandler.h

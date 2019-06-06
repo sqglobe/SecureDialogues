@@ -8,11 +8,12 @@
 #include "models/channelslistmodel.h"
 #include "primitives/contact.h"
 #include "widgetsutils.h"
+Q_DECLARE_METATYPE(ChannelsListModel::ListItem);
 
-ContactWidget::ContactWidget(const std::shared_ptr<ChannelsListModel>& model,
+ContactWidget::ContactWidget(std::shared_ptr<ChannelsListModel> model,
                              QWidget* parent) :
     QWidget(parent),
-    ui(new Ui::ContactWidget), mModel(model) {
+    ui(new Ui::ContactWidget), mModel(std::move(model)) {
   ui->setupUi(this);
 
   auto userAdress = findChild<QLineEdit*>("contactAdress");
@@ -33,6 +34,10 @@ ContactWidget::ContactWidget(const std::shared_ptr<ChannelsListModel>& model,
   connect(this, &ContactWidget::changeEnabled, connNames,
           &QComboBox::setEnabled);
   connect(this, &ContactWidget::changeEnabled, pubKey, &QTextEdit::setEnabled);
+
+  connect(connNames, SIGNAL(currentIndexChanged(int)), this,
+          SLOT(connectionNameUpdated(int)));
+  connectionNameUpdated(0);
 }
 
 ContactWidget::~ContactWidget() {
@@ -60,6 +65,9 @@ std::shared_ptr<Contact> ContactWidget::getElement() {
   auto userName = findChild<QLineEdit*>("contactName");
   auto connNames = findChild<QComboBox*>("channelMonikers");
   auto pubKey = findChild<QTextEdit*>("publicKey");
+  auto connInfoVariant = connNames->currentData();
+
+  auto userAddressText = userAdress->text().trimmed();
 
   checks.emplace_back(
       "Необходимо заполнить поле 'Адрес'",
@@ -71,20 +79,50 @@ std::shared_ptr<Contact> ContactWidget::getElement() {
   checks.emplace_back(
       "Необходимо заполнить публичный ключ для связи с контактом",
       [pubKey]() -> bool { return !pubKey->toPlainText().isEmpty(); });
+  if (connInfoVariant.canConvert<ChannelsListModel::ListItem>()) {
+    auto item = qvariant_cast<ChannelsListModel::ListItem>(connInfoVariant);
+    if (item.connectionType == ConnectionType::VK) {
+      checks.emplace_back(
+          "Поле 'Адрес' должно содержать vk id (например 123451) или ссылку на "
+          "страницу пользователя",
+          [userAddressText]() -> bool {
+            QRegExp re("^(https://vk.com/id|id)?\\d+$");
+            return !userAddressText.isEmpty() &&
+                   re.indexIn(userAddressText) != -1;
+          });
+    } else if (item.connectionType == ConnectionType::GMAIL ||
+               item.connectionType == ConnectionType::EMAIL) {
+      checks.emplace_back(
+          "Поле 'Адрес' должно содержать e-mail", [userAddressText]() -> bool {
+            QRegExp re(
+                "^(\\S+)@([a-z0-9-]+)(\\.)([a-z]{2,4})(\\.?)([a-z]{0,4})+$");
+            return !userAddressText.isEmpty() &&
+                   re.indexIn(userAddressText) != -1;
+          });
+    }
+  }
 
   WigetUtils::test(checks);
+  if (connInfoVariant.canConvert<ChannelsListModel::ListItem>()) {
+    auto item = qvariant_cast<ChannelsListModel::ListItem>(connInfoVariant);
+    if (auto re = QRegExp("^\\D+(\\d+)$");
+        item.connectionType == ConnectionType::VK &&
+        re.indexIn(userAddressText) != -1) {
+      userAddressText = re.cap(1);
+    }
+  }
 
   std::shared_ptr<Contact> res(
       mContact
           ? std::make_shared<Contact>(
                 connNames->currentText().toStdString(),
-                userName->text().toStdString(),
-                userAdress->text().trimmed().toStdString(),
+                userName->text().trimmed().toStdString(),
+                userAddressText.toStdString(),
                 pubKey->toPlainText().trimmed().toStdString(), mContact->id())
           : std::make_shared<Contact>(
                 connNames->currentText().toStdString(),
-                userName->text().toStdString(),
-                userAdress->text().trimmed().toStdString(),
+                userName->text().trimmed().toStdString(),
+                userAddressText.toStdString(),
                 pubKey->toPlainText().trimmed().toStdString()));
 
   mContact.reset();
@@ -103,4 +141,32 @@ void ContactWidget::actionEnable() {
 
 void ContactWidget::actionDisable() {
   emit changeEnabled(false);
+}
+
+void ContactWidget::connectionNameUpdated(int) {
+  auto connNames = findChild<QComboBox*>("channelMonikers");
+  auto connInfoVariant = connNames->currentData();
+  if (connInfoVariant.canConvert<ChannelsListModel::ListItem>()) {
+    auto item = qvariant_cast<ChannelsListModel::ListItem>(connInfoVariant);
+    auto userAdress = findChild<QLineEdit*>("contactAdress");
+    if (item.connectionType == ConnectionType::VK) {
+      userAdress->setPlaceholderText("Ссылка на страницу пользователя/ВК id");
+      userAdress->setToolTip(
+          "Укажите ссылку на страницу пользователя (например "
+          "https://vk.com/id99900), либо просто ВК id (например id99900 или "
+          "99900 )");
+    } else if (item.connectionType == ConnectionType::EMAIL) {
+      userAdress->setPlaceholderText("E-mail адрес");
+      userAdress->setToolTip("Укажите валидный e-mail адрес");
+    } else if (item.connectionType == ConnectionType::GMAIL) {
+      userAdress->setPlaceholderText("E-mail адрес Gmail");
+      userAdress->setToolTip("Укажите валидный e-mail адрес сервиса Gmail");
+    } else if (item.connectionType == ConnectionType::UDP) {
+      userAdress->setPlaceholderText("IP адрес");
+      userAdress->setToolTip("Укажите валидный IP адрес или имя хоста");
+    } else {
+      userAdress->setPlaceholderText("");
+      userAdress->setToolTip("");
+    }
+  }
 }

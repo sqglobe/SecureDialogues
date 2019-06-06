@@ -32,7 +32,7 @@ class UserMessage {
    * @param type тип сообщения
    * @param content текст сообщения
    */
-  UserMessage(Status status, Type type, const std::string& content);
+  UserMessage(Status status, Type type, std::string content);
 
   /**
    * @brief Конструктор. Статус имеет значение - WAIT_DELIVERY. Используется
@@ -40,7 +40,7 @@ class UserMessage {
    * @param type - тип сообщения
    * @param content - текст сообщения
    */
-  UserMessage(Type type, const std::string& content);
+  UserMessage(Type type, std::string content);
 
  public:
   /**

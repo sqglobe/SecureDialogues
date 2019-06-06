@@ -15,23 +15,20 @@
 class ActiveDialogMessageModel : public QAbstractListModel,
                                  public MessageContainerEventHandler {
  public:
-  ActiveDialogMessageModel();
+  ActiveDialogMessageModel() = default;
 
  public:
-  virtual int rowCount(const QModelIndex& = QModelIndex()) const override;
-  virtual QVariant data(const QModelIndex& index,
-                        int role = Qt::DisplayRole) const override;
-  virtual Qt::ItemFlags flags(const QModelIndex&) const override;
+  int rowCount(const QModelIndex& = QModelIndex()) const override;
+  QVariant data(const QModelIndex& index,
+                int role = Qt::DisplayRole) const override;
+  Qt::ItemFlags flags(const QModelIndex&) const override;
 
  public:
-  virtual void messageAdded(
-      const std::string& dialogId,
-      const std::shared_ptr<const UserMessage>& message) override;
-  virtual void activeDialogChanged(
-      const std::string& newActiveDialogId) override;
-  virtual void peekMessage(
-      const std::shared_ptr<const UserMessage>& message) override;
-  virtual void invalidateData(const std::string& dialogId) override;
+  void messageAdded(const std::string& dialogId,
+                    const std::shared_ptr<const UserMessage>& message) override;
+  void activeDialogChanged(const std::string& newActiveDialogId) override;
+  void peekMessage(const std::shared_ptr<const UserMessage>& message) override;
+  void invalidateData(const std::string& dialogId) override;
 
  private:
   std::vector<std::shared_ptr<const UserMessage> > mRows;

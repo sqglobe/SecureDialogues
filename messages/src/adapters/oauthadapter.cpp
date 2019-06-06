@@ -1,7 +1,7 @@
 #include "oauthadapter.h"
 #include "oauth-agents/utils/factories.h"
 
-#include <assert.h>
+#include <cassert>
 #include <thread>
 
 #include "exception/disconectedexception.h"
@@ -19,6 +19,8 @@ static std::shared_ptr<spdlog::logger> LOGGER =
     spdlog::stdout_color_mt("oauthadapter-logger");
 
 void OauthAdapter::send(const std::string& message, const std::string& adress) {
+  assert(mOauthAgent);
+  assert(mApiAgent);
   try {
     if (mOauthAgent->isExpired()) {
       mOauthAgent->refreshAccessToken();
@@ -52,6 +54,8 @@ void OauthAdapter::send(const std::string& message, const std::string& adress) {
 }
 
 std::pair<std::string, std::string> OauthAdapter::receive() {
+  assert(mOauthAgent);
+  assert(mApiAgent);
   try {
     if (mOauthAgent->isExpired()) {
       mOauthAgent->refreshAccessToken();
@@ -90,10 +94,11 @@ std::pair<std::string, std::string> OauthAdapter::receive() {
   }
 }
 
-bool OauthAdapter::connect(const ConnectionHolder& conn) {
+bool OauthAdapter::connect() {
+  auto conn = getHolder();
   switch (conn.getType()) {
     case ConnectionType::GMAIL: {
-      auto connInfo = conn.getConnection<GmailConnaection>();
+      auto connInfo = conn.getConnection<GmailConnection>();
       auto factory = makeFactory(AgentType::GMAIL);
       mOauthAgent = factory->makeOauthAgent(connInfo.accessToken);
       mApiAgent = factory->makeApiAgent(connInfo.email);

@@ -1,6 +1,6 @@
 #ifndef CONTAINERELEMENTWRAPPER_H
 #define CONTAINERELEMENTWRAPPER_H
-#include <assert.h>
+#include <cassert>
 #include <memory>
 #include <mutex>
 
@@ -20,14 +20,13 @@ class ContainerElementWrapper {
    * @param container контейнер, в который будет выполняться сохранение элемента
    * @param elem оборачиваемый элемент
    */
-  ContainerElementWrapper(const std::shared_ptr<C>& container,
-                          const element& elem);
+  ContainerElementWrapper(std::shared_ptr<C> container, const element& elem);
 
   /**
    * @brief Конструктор перемещения
    * @param elem обертка, для которой выполняется перемещение
    */
-  ContainerElementWrapper(ContainerElementWrapper<C>&& elem);
+  ContainerElementWrapper(ContainerElementWrapper<C>&& elem) noexcept;
 
  public:
   /**
@@ -41,6 +40,11 @@ class ContainerElementWrapper {
    * @return  true, если изменения прошли успешно, в противном случае - false
    */
   bool remove();
+
+  /**
+   * @brief загружает последние изменения элемента из контейнера
+   */
+  void reload();
 
   /**
    * @brief Возвращает ссылку на оборачиваемый элемент, для получения доступа к
@@ -63,16 +67,16 @@ class ContainerElementWrapper {
 
 template <typename C>
 ContainerElementWrapper<C>::ContainerElementWrapper(
-    const std::shared_ptr<C>& container,
+    std::shared_ptr<C> container,
     const ContainerElementWrapper::element& elem) :
     mElement(make_element_copy(elem)),
-    mContainer(container) {}
+    mContainer(std::move(container)) {}
 
 template <typename C>
 ContainerElementWrapper<C>::ContainerElementWrapper(
-    ContainerElementWrapper<C>&& elem) :
+    ContainerElementWrapper<C>&& elem) noexcept :
     mElement(std::move(elem.mElement)),
-    mContainer(elem.mContainer) {}
+    mContainer(std::move(elem.mContainer)) {}
 
 template <typename C>
 bool ContainerElementWrapper<C>::save() {
@@ -82,6 +86,11 @@ bool ContainerElementWrapper<C>::save() {
 template <typename C>
 bool ContainerElementWrapper<C>::remove() {
   return mContainer->remove(mElement);
+}
+
+template <typename C>
+void ContainerElementWrapper<C>::reload() {
+  mElement = mContainer->get(get_id(mElement));
 }
 
 template <typename C>

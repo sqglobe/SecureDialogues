@@ -38,17 +38,10 @@ class RemotePeerOperationsTest : public QObject {
   Q_OBJECT
 
  public:
-  RemotePeerOperationsTest();
-  ~RemotePeerOperationsTest();
-
  private slots:
   void test_signatureVerification();
   void test_encryption();
 };
-
-RemotePeerOperationsTest::RemotePeerOperationsTest() {}
-
-RemotePeerOperationsTest::~RemotePeerOperationsTest() {}
 
 void RemotePeerOperationsTest::test_signatureVerification() {
   std::string signature =
@@ -80,7 +73,7 @@ void RemotePeerOperationsTest::test_encryption() {
 
   std::cout << encr << std::endl;
 
-  QVERIFY(encr.size() > 0);
+  QVERIFY(!encr.empty());
 }
 
 QTEST_APPLESS_MAIN(RemotePeerOperationsTest)

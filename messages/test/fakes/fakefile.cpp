@@ -1,6 +1,6 @@
 #include "fakefile.h"
 
-FakeFile::FakeFile(const std::string& readline) : mReadline(readline) {}
+FakeFile::FakeFile(std::string readline) : mReadline(std::move(readline)) {}
 
 std::string getline(FakeFile& fileobject) {
   auto retval = fileobject.mReadline;

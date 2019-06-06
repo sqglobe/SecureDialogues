@@ -19,7 +19,7 @@ class DialogUserViewWrapper : public QObject {
   Q_OBJECT
  public:
   explicit DialogUserViewWrapper(QListView* view,
-                                 const std::shared_ptr<DialogUserModel>& model,
+                                 std::shared_ptr<DialogUserModel> model,
                                  QObject* parent = nullptr);
 
  signals:

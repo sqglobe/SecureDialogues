@@ -14,12 +14,12 @@ class CryptoSystemDialogRemoveInformator
     : public ChangeWatcher<DialogManager::const_element> {
  public:
   explicit CryptoSystemDialogRemoveInformator(
-      const std::shared_ptr<CryptoSystemImpl>& system);
+      std::shared_ptr<CryptoSystemImpl> system);
 
  public:
-  virtual void added(const element& obj) override;
-  virtual void changed(const element& obj) override;
-  virtual void removed(const element& obj) override;
+  void added(const element&) override;
+  void changed(const element&) override;
+  void removed(const element& obj) override;
 
  private:
   std::shared_ptr<CryptoSystemImpl> mSystem;

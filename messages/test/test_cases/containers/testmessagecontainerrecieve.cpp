@@ -12,8 +12,6 @@ class TestMessageContainerRecieve : public QObject {
   Q_OBJECT
 
  public:
-  TestMessageContainerRecieve();
-
  private Q_SLOTS:
 
   void init();
@@ -34,8 +32,6 @@ class TestMessageContainerRecieve : public QObject {
 
 const std::string TestMessageContainerRecieve::FAKE_DIALOG_ID =
     "FAKE_DIALOG_ID";
-
-TestMessageContainerRecieve::TestMessageContainerRecieve() {}
 
 void TestMessageContainerRecieve::init() {
   mFakeMessagesAdded =

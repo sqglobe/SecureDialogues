@@ -51,7 +51,7 @@ class Dialog {
    * @param status - текущий статус диалога
    */
   Dialog(std::shared_ptr<const Contact> contact,
-         const std::string& dialogId,
+         std::string dialogId,
          Status status = Status::NEW);
 
   /**
@@ -62,7 +62,7 @@ class Dialog {
    * @param status статус диалога
    */
   Dialog(std::shared_ptr<const Contact> contact,
-         const std::string& dialogId,
+         std::string dialogId,
          unsigned long sequental,
          Status status = Status::NEW);
 
@@ -85,7 +85,7 @@ class Dialog {
    * @throws выбрасывает исключение, если action не соответствует состоянию
    * диалога
    */
-  DialogMessage makeMessage(const DialogMessage::Action action,
+  DialogMessage makeMessage(DialogMessage::Action action,
                             const std::string& content) const noexcept(false);
 
   /**
@@ -131,10 +131,14 @@ class Dialog {
   bool isMessageActionAllowed(DialogMessage::Action action) const noexcept;
 
  private:
+  unsigned long getNextSequental() const;
+
+ private:
   std::shared_ptr<const Contact> mContact;
   std::string mDialogId;
   Status mStatus;
   unsigned long mLastSequental;
+  mutable unsigned long mThisSequental;
 };
 
 #endif  // DIALOG_H

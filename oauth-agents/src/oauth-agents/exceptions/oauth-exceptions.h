@@ -25,7 +25,7 @@ class HttpError : public std::exception {
   HttpError(HttpCode code);
 
  public:
-  virtual const char* what() const noexcept override;
+  const char* what() const noexcept override;
   HttpCode code() const noexcept;
 
  private:

@@ -13,9 +13,6 @@ class FakeMessageContainerHandlerUpdateActiveDialog;
 class TestMessageContainerChangeActiveDialog : public QObject {
   Q_OBJECT
 
- public:
-  TestMessageContainerChangeActiveDialog();
-
  private Q_SLOTS:
   void init();
   void testActiveDialogChange();
@@ -25,9 +22,6 @@ class TestMessageContainerChangeActiveDialog : public QObject {
   std::shared_ptr<FakeMessageContainerHandlerUpdateActiveDialog> mFake;
   std::shared_ptr<MessageContainer> mMessageContainer;
 };
-
-TestMessageContainerChangeActiveDialog::
-    TestMessageContainerChangeActiveDialog() {}
 
 void TestMessageContainerChangeActiveDialog::init() {
   mFake = std::make_shared<FakeMessageContainerHandlerUpdateActiveDialog>();

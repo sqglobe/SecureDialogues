@@ -38,12 +38,11 @@ class DialogActionHandler : public AbstractMessageHandler {
    * диалогов
    * @param contacts - контейнер контактов
    */
-  DialogActionHandler(
-      const std::shared_ptr<DialogManager>& dialogManager,
-      const std::shared_ptr<AbstractMessageDespatcher>& dispatcher,
-      const std::shared_ptr<AbstractUserNotifier>& notifier,
-      const std::shared_ptr<ContactContainer>& contacts,
-      const std::shared_ptr<CryptoSystem>& cryptoSystem);
+  DialogActionHandler(std::shared_ptr<DialogManager> dialogManager,
+                      std::shared_ptr<AbstractMessageDespatcher> dispatcher,
+                      std::shared_ptr<AbstractUserNotifier> notifier,
+                      std::shared_ptr<ContactContainer> contacts,
+                      std::shared_ptr<CryptoSystem> cryptoSystem);
 
  public:
   /**
@@ -53,16 +52,15 @@ class DialogActionHandler : public AbstractMessageHandler {
    * @param message - управляющее сообщение
    * @param channel - мнемокод канала, по которому пришло сообщение
    */
-  virtual void handle(const DialogMessage& message,
-                      const std::string& channel) noexcept override;
+  void handle(const DialogMessage& message,
+              const std::string& channel) noexcept override;
 
   /**
    * @brief Определяет обрабатывается ли указанный тип сообщение данным классом
    * @param action - тип сообщения
    * @return возвращает true, если указанный тип обрабатывается, иначе - false
    */
-  virtual bool isItYouAction(DialogMessage::Action action) const
-      noexcept override;
+  bool isItYouAction(DialogMessage::Action action) const noexcept override;
 
  public:
   /**

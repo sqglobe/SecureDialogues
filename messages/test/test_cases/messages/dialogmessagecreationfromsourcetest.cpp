@@ -9,14 +9,10 @@ class DialogMessageCreationFromSourceTest : public QObject {
   Q_OBJECT
 
  public:
-  DialogMessageCreationFromSourceTest();
-
  private Q_SLOTS:
   void testDialogCreatedOk_data();
   void testDialogCreatedOk();
 };
-
-DialogMessageCreationFromSourceTest::DialogMessageCreationFromSourceTest() {}
 
 void DialogMessageCreationFromSourceTest::testDialogCreatedOk_data() {
   QTest::addColumn<DialogMessage::Action>("action");

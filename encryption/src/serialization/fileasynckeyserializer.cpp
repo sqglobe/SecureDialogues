@@ -100,10 +100,10 @@ Key KeyLoader<Key>::loadKey(
 }
 
 FileAsyncKeySerializer::FileAsyncKeySerializer(
-    const std::string& fileTemplate,
-    const std::shared_ptr<const SymetricalCipher>& cipher) :
-    mFileTemplate(fileTemplate),
-    mCipher(cipher) {}
+    std::string fileTemplate,
+    std::shared_ptr<const SymetricalCipher> cipher) :
+    mFileTemplate(std::move(fileTemplate)),
+    mCipher(std::move(cipher)) {}
 
 void FileAsyncKeySerializer::serialize(
     const AsymetricalKeyStore& store) noexcept(false) {

@@ -31,9 +31,8 @@ class CryptoSystemImpl : public CryptoSystem {
   };
 
  public:
-  CryptoSystemImpl(
-      const std::shared_ptr<AsymetricalKeyStore>& keys,
-      const std::shared_ptr<AbstractMessageMarshaller>& marshaller);
+  CryptoSystemImpl(std::shared_ptr<AsymetricalKeyStore> keys,
+                   std::shared_ptr<AbstractMessageMarshaller> marshaller);
 
  public:
   bool isSignatureOk(const DialogMessage& message) const

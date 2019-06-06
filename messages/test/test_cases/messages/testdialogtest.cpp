@@ -11,14 +11,10 @@ class TestDialogTest : public QObject {
   Q_OBJECT
 
  public:
-  TestDialogTest();
-
  private Q_SLOTS:
   void testDialogCreation_data();
   void testDialogCreation();
 };
-
-TestDialogTest::TestDialogTest() {}
 
 void TestDialogTest::testDialogCreation_data() {
   QTest::addColumn<std::string>("adress");

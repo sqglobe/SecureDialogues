@@ -20,11 +20,11 @@
 #include <sstream>
 
 CryptoSystemImpl::CryptoSystemImpl(
-    const std::shared_ptr<AsymetricalKeyStore>& keys,
-    const std::shared_ptr<AbstractMessageMarshaller>& marshaller) :
-    mAsymKeys(keys),
-    mMarshaller(marshaller),
-    mLocal(std::make_shared<LocalPeerOperations>(keys->getPrivateKey())) {}
+    std::shared_ptr<AsymetricalKeyStore> keys,
+    std::shared_ptr<AbstractMessageMarshaller> marshaller) :
+    mAsymKeys(std::move(keys)),
+    mMarshaller(std::move(marshaller)),
+    mLocal(std::make_shared<LocalPeerOperations>(mAsymKeys->getPrivateKey())) {}
 
 bool CryptoSystemImpl::isSignatureOk(const DialogMessage& message) const
     noexcept(false) {

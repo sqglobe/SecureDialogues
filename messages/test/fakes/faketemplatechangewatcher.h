@@ -8,9 +8,9 @@
 template <typename T>
 class FakeTemplateChangeWatcher : public ChangeWatcher<T> {
  public:
-  virtual void added(const T& obj) override;
-  virtual void changed(const T& obj) override;
-  virtual void removed(const T& obj) override;
+  void added(const T& obj) override;
+  void changed(const T& obj) override;
+  void removed(const T& obj) override;
 
  public:
   std::string mMethod;

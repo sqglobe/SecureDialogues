@@ -27,11 +27,11 @@ void bind_headers(HeaderHandler& handler,
   for (const auto& [name, value] : headers) {
     auto header = name;
     header.append(":").append(value);
-    if (auto tmp = curl_slist_append(handler.get(), header.c_str()); !tmp) {
-      throw CurlHttpHeaderError("Failed to append header to http request");
-    } else {
+    if (auto tmp = curl_slist_append(handler.get(), header.c_str()); tmp) {
       handler.release();
       handler.reset(tmp);
+    } else {
+      throw CurlHttpHeaderError("Failed to append header to http request");
     }
   }
 }

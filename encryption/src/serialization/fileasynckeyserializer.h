@@ -22,12 +22,11 @@ class FileAsyncKeySerializer : public AsymetricalKeySerializer {
    * @param cipher - шифратор, с помощью которого шифруются ключи при
    * сохранении, и дешифруются при считывании из файлов.
    */
-  FileAsyncKeySerializer(const std::string& fileTemplate,
-                         const std::shared_ptr<const SymetricalCipher>& cipher);
+  FileAsyncKeySerializer(std::string fileTemplate,
+                         std::shared_ptr<const SymetricalCipher> cipher);
 
-  virtual void serialize(const AsymetricalKeyStore& store) noexcept(
-      false) override;
-  virtual void deserialize(AsymetricalKeyStore& store) noexcept(false) override;
+  void serialize(const AsymetricalKeyStore& store) noexcept(false) override;
+  void deserialize(AsymetricalKeyStore& store) noexcept(false) override;
 
  private:
   std::string mFileTemplate;

@@ -58,7 +58,7 @@ GuiInitializer::GuiInitializer(
                    &QAction::triggered, pubObject,
                    &PublicKeyObject::showCurrentPublicKey);
 
-  QThread* messageWorkThread = new QThread(parent);
+  auto messageWorkThread = new QThread(parent);
 
   initMessageWrapper(coreInit, parent, userNotifier, messageWorkThread);
   initDialogWrapper(coreInit, parent, userNotifier, messageWorkThread);
@@ -96,8 +96,8 @@ void GuiInitializer::initMessageWrapper(
   dialogsView->setContextMenuPolicy(Qt::CustomContextMenu);
   dialogsView->setItemDelegate(new DialogInfoDelegate(parent));
 
-  mDialogUserViewWrapper = std::unique_ptr<DialogUserViewWrapper>(
-      new DialogUserViewWrapper(dialogsView, dialogUserModel));
+  mDialogUserViewWrapper =
+      std::make_unique<DialogUserViewWrapper>(dialogsView, dialogUserModel);
   messageWraper->moveToThread(messageThread);
 
   QObject::connect(dialogUserModel.get(),

@@ -12,7 +12,7 @@
 #include <vector>
 class FakeFile {
  public:
-  FakeFile(const std::string& readline);
+  FakeFile(std::string readline);
 
  public:
   std::string mReadline;

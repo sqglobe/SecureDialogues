@@ -19,19 +19,19 @@ std::shared_ptr<Dialog> mk_dialog(const std::string& channel,
 
 class FakeDialogWather : public ChangeWatcher<DialogManager::const_element> {
  public:
-  virtual void added(const DialogManager::const_element& obj) override {
+  void added(const DialogManager::const_element& obj) override {
     mMethod = "added";
     mDialogId = obj->getDialogId();
     mChannel = obj->getChannelMoniker();
     mStatus = obj->getStatus();
   }
-  virtual void changed(const DialogManager::const_element& obj) override {
+  void changed(const DialogManager::const_element& obj) override {
     mMethod = "changed";
     mDialogId = obj->getDialogId();
     mChannel = obj->getChannelMoniker();
     mStatus = obj->getStatus();
   }
-  virtual void removed(const DialogManager::const_element& obj) override {
+  void removed(const DialogManager::const_element& obj) override {
     mMethod = "removed";
     mDialogId = obj->getDialogId();
     mChannel = obj->getChannelMoniker();

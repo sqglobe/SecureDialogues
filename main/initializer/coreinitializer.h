@@ -29,7 +29,6 @@ class CoreInitializer {
   CoreInitializer(const std::shared_ptr<AbstractUserNotifier>& notifier,
                   const std::string& pass,
                   const EventQueueHolder& eventHolder);
-  ~CoreInitializer();
 
   // getters for core objects
  public:

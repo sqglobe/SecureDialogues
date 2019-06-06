@@ -12,10 +12,10 @@ class OauthAdapter : public AbstractChannelAdapter {
   using AbstractChannelAdapter::AbstractChannelAdapter;
 
  public:
-  virtual void send(const std::string& message,
-                    const std::string& adress) noexcept(false);
-  virtual std::pair<std::string, std::string> receive() noexcept(false);
-  virtual bool connect(const ConnectionHolder& conn);
+  void send(const std::string& message,
+            const std::string& adress) noexcept(false) override;
+  std::pair<std::string, std::string> receive() noexcept(false) override;
+  bool connect() override;
 
  private:
   std::unique_ptr<OAuthAgent> mOauthAgent;

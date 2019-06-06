@@ -30,8 +30,8 @@ class logger;
 
 class MessageDespatcher : public AbstractMessageDespatcher {
  public:
-  MessageDespatcher(const std::shared_ptr<const CryptoSystem>& cryptoSystem,
-                    const std::shared_ptr<AbstractUserNotifier>& notifier);
+  MessageDespatcher(std::shared_ptr<const CryptoSystem> cryptoSystem,
+                    std::shared_ptr<AbstractUserNotifier> notifier);
 
  public:
   /**
@@ -55,15 +55,15 @@ class MessageDespatcher : public AbstractMessageDespatcher {
       const std::string& channelName,
       const std::shared_ptr<DeliveryHandler>& deliveryHandler) const override;
 
-  virtual void sendAndForget(const DialogMessage& message,
-                             const std::string& channelName) const override;
+  void sendAndForget(const DialogMessage& message,
+                     const std::string& channelName) const override;
 
  public:
   /**
    * @brief Добавляет новый обработчик входящих сообщений
    * @param handler - обработчик сообщений
    */
-  void add(std::shared_ptr<AbstractMessageHandler> handler);
+  void add(const std::shared_ptr<AbstractMessageHandler>& handler);
 
   /**
    * @brief Добавляет новый обработчик входящих сообщений
@@ -107,7 +107,6 @@ class MessageDespatcher : public AbstractMessageDespatcher {
   std::vector<std::string> getChannelsNames() const;
 
  private:
-  unsigned long getNextSequential() const noexcept;
   void sendAck(const DialogMessage& message, const std::string& channel);
   bool isSignatureValid(const DialogMessage& message) const noexcept;
 
@@ -119,9 +118,9 @@ class MessageDespatcher : public AbstractMessageDespatcher {
   std::shared_ptr<AbstractUserNotifier> mNotifier;
 
   mutable std::shared_ptr<
-      TimeoutedRrepository<std::shared_ptr<DeliveryHandler>, unsigned long>>
+      TimeoutedRrepository<std::shared_ptr<DeliveryHandler>,
+                           std::pair<std::string, unsigned long>>>
       mRepo;
-  mutable std::atomic_ulong mSequentialNumber = 1;
   static std::shared_ptr<spdlog::logger> LOGGER;
 };
 

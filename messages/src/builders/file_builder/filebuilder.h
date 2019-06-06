@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include <assert.h>
+#include <cassert>
 #include <type_traits>
 
 /**
@@ -118,7 +118,7 @@ FileBuilder<F, SaveStrategy>::FileBuilder(F& fileObj,
 template <typename F, typename SaveStrategy>
 void FileBuilder<F, SaveStrategy>::serialize() {
   auto cont_data = SaveStrategy::getContainerData(mContainer);
-  for (auto obj : cont_data) {
+  for (const auto& obj : cont_data) {
     std::string line = SaveStrategy::to_str(obj);
     writeline(mfileObject, line);
   }

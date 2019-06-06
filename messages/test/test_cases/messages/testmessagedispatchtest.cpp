@@ -52,17 +52,18 @@ void TestMessageDispatchTest::testDispatchMessageForActionMessage() {
   Channel channel(
       std::unique_ptr<AbstractChannelAdapter>(new FakeChannelAdapter(check)),
       dsp, std::make_shared<MessageMarshaller>(), "test",
-      std::make_shared<Channel::EventQueue>());
+      std::make_shared<Channel::EventQueue>(), std::chrono::seconds(5));
   dsp->add(std::unique_ptr<FakeMessageHandler>(
       new FakeMessageHandler(DialogMessage::Action::MESSAGE, outMessage)));
   dsp->add(std::unique_ptr<FakeMessageHandler>(new FakeMessageHandler(
       DialogMessage::Action::ACCEPT_DIALOG, notUsedDialog)));
-  dsp->add(std::make_shared<Channel>(std::unique_ptr<AbstractChannelAdapter>(
-                                         new FakeChannelAdapter(check)),
-                                     dsp, std::make_shared<MessageMarshaller>(),
-                                     "test",
-                                     std::make_shared<Channel::EventQueue>()),
-           "test");
+  dsp->add(
+      std::make_shared<Channel>(std::unique_ptr<AbstractChannelAdapter>(
+                                    new FakeChannelAdapter(check)),
+                                dsp, std::make_shared<MessageMarshaller>(),
+                                "test", std::make_shared<Channel::EventQueue>(),
+                                std::chrono::seconds(5)),
+      "test");
   std::this_thread::sleep_for(std::chrono::seconds(1));
 
   QCOMPARE(notUsedDialog.action(), DialogMessage::Action::ACCEPT_DIALOG);

@@ -54,7 +54,8 @@ class Channel : public std::enable_shared_from_this<Channel> {
           const std::shared_ptr<AbstractMessageDespatcher>& handler,
           const std::shared_ptr<AbstractMessageMarshaller>& marshaller,
           const std::string& name,
-          const std::shared_ptr<EventQueue>& eventQueue);
+          const std::shared_ptr<EventQueue>& eventQueue,
+          std::chrono::seconds waitAck);
 
   /**
    * @brief Конструктор класса
@@ -69,7 +70,8 @@ class Channel : public std::enable_shared_from_this<Channel> {
           const std::shared_ptr<AbstractMessageDespatcher>& handler,
           const std::shared_ptr<AbstractMessageMarshaller>& marshaller,
           const std::string& name,
-          const std::shared_ptr<EventQueue>& eventQueue);
+          const std::shared_ptr<EventQueue>& eventQueue,
+          std::chrono::seconds waitAck);
   ~Channel();
 
  public:
@@ -83,7 +85,7 @@ class Channel : public std::enable_shared_from_this<Channel> {
    * @param shared указатель на класс Channel, для которого запускается поток
    * приема сообщений
    */
-  void messsageCycle(std::weak_ptr<Channel>&& shared);
+  void messsageCycle();
 
   /**
    * Выполняет отправку сообщения по сети через AbstractChannelAdapter
@@ -97,6 +99,8 @@ class Channel : public std::enable_shared_from_this<Channel> {
    */
   void startCycle();
 
+  std::chrono::seconds getWaitAckInterval() const;
+
  private:
   std::unique_ptr<AbstractChannelAdapter> mAdapter;
   std::weak_ptr<AbstractMessageDespatcher> mHandler;
@@ -105,6 +109,9 @@ class Channel : public std::enable_shared_from_this<Channel> {
   std::string mName;
   std::shared_ptr<EventQueue> mEventQueue;
   static std::shared_ptr<spdlog::logger> LOGGER;
+  std::thread mThread;
+  std::mutex mMutex;
+  std::chrono::seconds mWaitAckInterval;
 };
 
 #endif  // CHANNEL_H

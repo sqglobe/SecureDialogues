@@ -11,7 +11,7 @@ class DialogInfo {
   std::string mAddress;
   std::string mMoniker;
   std::string mDialogId;
-  Dialog::Status mStatus;
+  Dialog::Status mStatus = Dialog::Status::NEW;
   std::size_t mUnreadMessages = 0;
   std::chrono::system_clock::time_point mLastUpdated;
 
@@ -19,7 +19,7 @@ class DialogInfo {
   explicit DialogInfo(const std::shared_ptr<const Dialog>& elem);
   DialogInfo& operator=(const DialogInfo& info);
   DialogInfo& operator=(const std::shared_ptr<const Dialog>& info);
-  DialogInfo();
+  DialogInfo() = default;
 
  public:
   void messagesReaded();

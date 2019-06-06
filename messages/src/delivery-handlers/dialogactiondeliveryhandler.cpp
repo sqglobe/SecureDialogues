@@ -16,15 +16,15 @@ static std::shared_ptr<spdlog::logger> LOGGER =
 class DialogActionDeliveryHandler : public DeliveryHandler {
  public:
   DialogActionDeliveryHandler(
-      const std::weak_ptr<AbstractMessageDespatcher>& dispatcher,
+      std::weak_ptr<AbstractMessageDespatcher> dispatcher,
       DialogManager::wrapper_type&& wrapper,
       Dialog::Status nextStatus,
       bool abortNeed,
-      const std::shared_ptr<AbstractUserNotifier>& notifier);
+      std::shared_ptr<AbstractUserNotifier> notifier);
 
  public:
-  virtual void removed() override;
-  virtual void timeouted() override;
+  void removed() override;
+  void timeouted() override;
 
  protected:
   std::shared_ptr<AbstractUserNotifier> mNotifier;
@@ -35,18 +35,19 @@ class DialogActionDeliveryHandler : public DeliveryHandler {
 };
 
 DialogActionDeliveryHandler::DialogActionDeliveryHandler(
-    const std::weak_ptr<AbstractMessageDespatcher>& dispatcher,
+    std::weak_ptr<AbstractMessageDespatcher> dispatcher,
     DialogManager::wrapper_type&& wrapper,
     Dialog::Status nextStatus,
     bool abortNeed,
-    const std::shared_ptr<AbstractUserNotifier>& notifier) :
-    mNotifier(notifier),
-    mWrapper(std::move(wrapper)), mDispatcher(dispatcher), mNext(nextStatus),
-    mAbortNeed(abortNeed)
+    std::shared_ptr<AbstractUserNotifier> notifier) :
+    mNotifier(std::move(notifier)),
+    mWrapper(std::move(wrapper)), mDispatcher(std::move(dispatcher)),
+    mNext(nextStatus), mAbortNeed(abortNeed)
 
 {}
 
 void DialogActionDeliveryHandler::removed() {
+  mWrapper.reload();
   mWrapper->setStatus(mNext);
   mWrapper.save();
 }
@@ -63,6 +64,7 @@ void DialogActionDeliveryHandler::timeouted() {
   mNotifier->notify(AbstractUserNotifier::Severity::ERROR,
                     "Диалог для " + mWrapper->getAdress() +
                         " удален, потому что удаленная сторона не отвечает");
+  mWrapper.reload();
   mWrapper->setStatus(Dialog::Status::ABORTED);
   mWrapper.save();
 }

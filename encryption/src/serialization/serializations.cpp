@@ -20,8 +20,8 @@ CryptoPP::SecByteBlock readBlock(std::stringstream& ss) {
     throw BadFormatException("message have a bad format");
   }
 
-  field.resize(isize);
-  ss.read(&field[0], field.size());
+  field.resize(static_cast<std::size_t>(isize));
+  ss.read(&field[0], static_cast<int>(field.size()));
 
   return CryptoPP::SecByteBlock(
       reinterpret_cast<const unsigned char*>(&field[0]), field.size());

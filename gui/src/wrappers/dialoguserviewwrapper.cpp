@@ -6,10 +6,10 @@
 
 DialogUserViewWrapper::DialogUserViewWrapper(
     QListView* view,
-    const std::shared_ptr<DialogUserModel>& model,
+    std::shared_ptr<DialogUserModel> model,
     QObject* parent) :
     QObject(parent),
-    mView(view), mProxy(new DialogSortModel), mModel(model) {
+    mView(view), mProxy(new DialogSortModel), mModel(std::move(model)) {
   mProxy->setDynamicSortFilter(true);
   mProxy->setSourceModel(mModel.get());
   mView->setModel(mProxy.get());

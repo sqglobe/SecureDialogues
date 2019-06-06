@@ -7,7 +7,7 @@
 class FakeMessageContainerHandlerOnlyMesssageAdded
     : public MessageContainerEventHandler {
  public:
-  virtual void messageAdded(
+  void messageAdded(
       const std::string& dialogId,
       const std::shared_ptr<const UserMessage>& message) override {
     mIsIncomming = message->type() == UserMessage::Type::IN;
@@ -15,15 +15,11 @@ class FakeMessageContainerHandlerOnlyMesssageAdded
     mDialogId = dialogId;
   }
 
-  virtual void activeDialogChanged([
-      [maybe_unused]] const std::string& newActiveDialogId) override {}
+  void activeDialogChanged(const std::string&) override {}
 
-  virtual void peekMessage([
-      [maybe_unused]] const std::shared_ptr<const UserMessage>& message)
-      override {}
+  void peekMessage(const std::shared_ptr<const UserMessage>&) override {}
 
-  virtual void invalidateData([
-      [maybe_unused]] const std::string& dialogId) override {}
+  void invalidateData(const std::string&) override {}
 
  public:
   bool mIsIncomming;
@@ -34,22 +30,17 @@ class FakeMessageContainerHandlerOnlyMesssageAdded
 class FakeMessageContainerHandlerUpdateActiveDialog
     : public MessageContainerEventHandler {
  public:
-  virtual void messageAdded(
-      [[maybe_unused]] const std::string& dialogId,
-      [[maybe_unused]] const std::shared_ptr<const UserMessage>& message)
-      override {}
+  void messageAdded(const std::string&,
+                    const std::shared_ptr<const UserMessage>&) override {}
 
-  virtual void activeDialogChanged(
-      const std::string& newActiveDialogId) override {
+  void activeDialogChanged(const std::string& newActiveDialogId) override {
     mActiveDialogId = newActiveDialogId;
   }
-  virtual void peekMessage(
-      const std::shared_ptr<const UserMessage>& message) override {
+  void peekMessage(const std::shared_ptr<const UserMessage>& message) override {
     mIsIncomming = message->type() == UserMessage::Type::IN;
     mMessage = message->content();
   }
-  virtual void invalidateData([
-      [maybe_unused]] const std::string& dialogId) override {}
+  void invalidateData(const std::string&) override {}
 
  public:
   std::string mActiveDialogId;

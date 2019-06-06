@@ -28,11 +28,18 @@ TestConnectionInfocontainerBuilder::TestConnectionInfocontainerBuilder(
 void TestConnectionInfocontainerBuilder::testSerialize() {
   auto connCont = ConnectionInfoContainer();
   connCont.add(
-      ConnectionHolder(GmailConnaection{"fake@gmail.com", "1234"}, "fake"));
+      ConnectionHolder(GmailConnection{"fake@gmail.com", "1234"}, "fake"));
 
   connCont.add(
-      ConnectionHolder(GmailConnaection{"fake2@gmail.com", "123234"}, "fake2"));
+      ConnectionHolder(GmailConnection{"fake2@gmail.com", "123234"}, "fake2"));
   connCont.add(ConnectionHolder(UdpConnection{}, "fake_udp"));
+
+  connCont.add(ConnectionHolder(VkConnection{"134", "test123"}, "fake_vk"));
+
+  connCont.add(ConnectionHolder(
+      EmailConnection{"fake_user", "fake_pass", true, "fake@from.com",
+                      "smtp.fake.com", 100, "imap.fake.com", 121},
+      "fake_email"));
 
   FakeFile fakeFile("");
   auto builder = make_builder(fakeFile, connCont);
@@ -42,6 +49,10 @@ void TestConnectionInfocontainerBuilder::testSerialize() {
   QCOMPARE(fakeFile.mwritelines[1],
            std::string("fake2;2;fake2@gmail.com;123234"));
   QCOMPARE(fakeFile.mwritelines[2], std::string("fake_udp;1"));
+  QCOMPARE(fakeFile.mwritelines[3], std::string("fake_vk;3;134;test123"));
+  QCOMPARE(fakeFile.mwritelines[4],
+           std::string("fake_email;4;fake_user;fake_pass;1;fake@from.com;smtp."
+                       "fake.com;100;imap.fake.com;121"));
 }
 
 void TestConnectionInfocontainerBuilder::testUnserialize() {
@@ -51,7 +62,7 @@ void TestConnectionInfocontainerBuilder::testUnserialize() {
   builder.unserialize();
 
   auto connHolder = connCont.get("fake");
-  auto gmailConn = connHolder.getConnection<GmailConnaection>();
+  auto gmailConn = connHolder.getConnection<GmailConnection>();
 
   QCOMPARE(connCont.size(), 1);
   QVERIFY(connCont.has("fake"));

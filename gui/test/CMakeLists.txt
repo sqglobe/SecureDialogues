@@ -19,7 +19,7 @@ add_executable(TestChannelListModel testchannellistmodel.cpp)
 add_test(NAME TestChannelListModel COMMAND TestChannelListModel)
 target_link_libraries(TestChannelListModel PRIVATE ${MY_TEST_LIBS})
 
-add_executable(TestConnectionWidget testconnectionwidget.cpp)
+add_executable(TestConnectionWidget testconnectionwidget.cpp fakeconnectioninfowidget.h)
 add_test(NAME TestConnectionWidget COMMAND TestConnectionWidget)
 target_link_libraries(TestConnectionWidget PRIVATE ${MY_TEST_LIBS})
 

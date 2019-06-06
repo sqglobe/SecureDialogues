@@ -33,7 +33,11 @@ class BaseSettingsDialog : public QDialog {
   explicit BaseSettingsDialog(QAbstractItemModel* model,
                               QWidget* dataWidget,
                               QWidget* parent = nullptr);
-  ~BaseSettingsDialog();
+  ~BaseSettingsDialog() override;
+
+ public:
+  BaseSettingsDialog(const BaseSettingsDialog&) = delete;
+  BaseSettingsDialog& operator=(const BaseSettingsDialog&) = delete;
 
  signals:
 

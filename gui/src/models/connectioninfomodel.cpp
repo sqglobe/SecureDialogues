@@ -7,8 +7,8 @@ QString to_qstring(const ConnectionInfoContainer::const_element& el) {
 }
 
 ConnectionInfoModel::ConnectionInfoModel(
-    const std::shared_ptr<ConnectionInfoContainer>& cont) :
-    mContainer(cont) {}
+    std::shared_ptr<ConnectionInfoContainer> cont) :
+    mContainer(std::move(cont)) {}
 
 int ConnectionInfoModel::rowCount([
     [maybe_unused]] const QModelIndex& parent) const {

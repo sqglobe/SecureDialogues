@@ -13,15 +13,11 @@ class FakeMessageDespather : public AbstractMessageDespatcher {
     mMessage = message;
     mChannelName = channelName;
   }
-  virtual void sendMessage(
-      [[maybe_unused]] const DialogMessage& message,
-      [[maybe_unused]] const std::string& channelName,
-      [[maybe_unused]] const std::shared_ptr<DeliveryHandler>& deliveryHandler)
-      const override {}
+  void sendMessage(const DialogMessage&,
+                   const std::string&,
+                   const std::shared_ptr<DeliveryHandler>&) const override {}
 
-  virtual void sendAndForget(
-      [[maybe_unused]] const DialogMessage& message,
-      [[maybe_unused]] const std::string& channelName) const override {}
+  void sendAndForget(const DialogMessage&, const std::string&) const override {}
 
  public:
   DialogMessage mMessage;
@@ -40,10 +36,8 @@ class FakeMessageSendDespatcher : public AbstractMessageDespatcher {
       mMessage(DialogMessage::Action::ACCEPT_DIALOG, "", ""),
       mResolve(resolve) {}
 
-  void dispatch(
-      [[maybe_unused]] const DialogMessage& message,
-      [[maybe_unused]] const std::string& channelName) noexcept override {}
-  virtual void sendMessage(
+  void dispatch(const DialogMessage&, const std::string&) noexcept override {}
+  void sendMessage(
       const DialogMessage& message,
       const std::string& channelName,
       const std::shared_ptr<DeliveryHandler>& deliveryHandler) const override {
@@ -58,8 +52,8 @@ class FakeMessageSendDespatcher : public AbstractMessageDespatcher {
     }
   }
 
-  virtual void sendAndForget(const DialogMessage& message,
-                             const std::string& channelName) const override {
+  void sendAndForget(const DialogMessage& message,
+                     const std::string& channelName) const override {
     mMessage = message;
     mChannel = channelName;
     mSendFunction = "sendAndForget";

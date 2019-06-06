@@ -19,9 +19,13 @@ class ContactWidget : public QWidget {
   Q_OBJECT
 
  public:
-  explicit ContactWidget(const std::shared_ptr<ChannelsListModel>& model,
-                         QWidget* parent = 0);
-  ~ContactWidget();
+  explicit ContactWidget(std::shared_ptr<ChannelsListModel> model,
+                         QWidget* parent = nullptr);
+  ~ContactWidget() override;
+
+ public:
+  ContactWidget(const ContactWidget&) = delete;
+  ContactWidget operator=(const ContactWidget&) = delete;
 
  public:
   /**
@@ -51,6 +55,9 @@ class ContactWidget : public QWidget {
    * @brief Поля виджета становятся не доступными для редактирования
    */
   void actionDisable();
+
+ public slots:
+  void connectionNameUpdated(int);
 
  signals:
   void cleareVal();

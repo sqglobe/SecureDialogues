@@ -21,7 +21,6 @@ class ConnectionInfoGasket : public QObject {
       std::unique_ptr<DialogWidgetGasket<ConnectionInfoContainer,
                                          ConnectionInfoWidget>>&& gasket,
       QObject* parent = nullptr);
-  ~ConnectionInfoGasket() = default;
 
  public slots:
   void onActionViewAt(int pos);

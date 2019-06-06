@@ -1,6 +1,7 @@
 #include "chaneladapterfactory.h"
 #include <thread>
 
+#include "adapters/emailadapter.h"
 #include "adapters/oauthadapter.h"
 #include "adapters/udpadapter.h"
 
@@ -12,11 +13,11 @@ class FakeChannelAdapter : public AbstractChannelAdapter {
  public:
   FakeChannelAdapter(const std::string& message,
                      const std::shared_ptr<AbstractUserNotifier>& notifier) :
-      AbstractChannelAdapter(notifier) {
+      AbstractChannelAdapter(notifier, ConnectionHolder("test")) {
     mMessage = message;
   }
-  virtual void send(const std::string&, const std::string&) override {}
-  virtual std::pair<std::string, std::string> receive() override {
+  void send(const std::string&, const std::string&) override {}
+  std::pair<std::string, std::string> receive() override {
     if (isFirst) {
       isFirst = false;
     } else {
@@ -24,7 +25,7 @@ class FakeChannelAdapter : public AbstractChannelAdapter {
     }
     return std::make_pair("test", mMessage);
   }
-  virtual bool connect(const ConnectionHolder&) override { return true; }
+  bool connect() override { return true; }
 
  private:
   std::string mMessage;
@@ -32,32 +33,21 @@ class FakeChannelAdapter : public AbstractChannelAdapter {
 };
 
 ChanelAdapterFactory::ChanelAdapterFactory(
-    const std::shared_ptr<AbstractUserNotifier>& notifier) :
-    mNotifier(notifier) {}
+    std::shared_ptr<AbstractUserNotifier> notifier) :
+    mNotifier(std::move(notifier)) {}
 
 std::unique_ptr<AbstractChannelAdapter> ChanelAdapterFactory::operator()(
     const ConnectionHolder& conn) {
   using T = ConnectionType;
-  AbstractChannelAdapter* adapter = nullptr;
-
-  try {
-    switch (conn.getType()) {
-      case T::UDP:
-        adapter = new UdpAdapter(mNotifier);
-        break;
-      case T::GMAIL:
-      case T::VK:
-        adapter = new OauthAdapter(mNotifier);
-        break;
-      default:
-        adapter = new FakeChannelAdapter("test", mNotifier);
-    }
-    adapter->connect(conn);
-    return std::unique_ptr<AbstractChannelAdapter>(adapter);
-  } catch (...) {
-    if (nullptr != adapter) {
-      delete adapter;
-    }
-    throw;
+  switch (conn.getType()) {
+    case T::UDP:
+      return std::make_unique<UdpAdapter>(mNotifier, conn);
+    case T::GMAIL:
+    case T::VK:
+      return std::make_unique<OauthAdapter>(mNotifier, conn);
+    case T::EMAIL:
+      return std::make_unique<EmailAdapter>(mNotifier, conn);
+    default:
+      return std::make_unique<FakeChannelAdapter>("test", mNotifier);
   }
 }

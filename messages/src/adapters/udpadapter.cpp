@@ -35,13 +35,13 @@ std::pair<std::string, std::string> UdpAdapter::receive() {
                           remote_endpoint);
 
     return std::make_pair(remote_endpoint.address().to_string(),
-                          std::string(messg.c_str()));
+                          std::string(messg));
   }
 
   return std::make_pair(std::string(), std::string());
 }
 
-bool UdpAdapter::connect(const ConnectionHolder&) {
+bool UdpAdapter::connect() {
   using boost::asio::ip::udp;
 
   boost::asio::io_service io_context;

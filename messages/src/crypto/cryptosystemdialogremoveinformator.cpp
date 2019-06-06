@@ -2,18 +2,13 @@
 
 #include "cryptosystemimpl.h"
 CryptoSystemDialogRemoveInformator::CryptoSystemDialogRemoveInformator(
-    const std::shared_ptr<CryptoSystemImpl>& system) :
-    mSystem(system) {}
+    std::shared_ptr<CryptoSystemImpl> system) :
+    mSystem(std::move(system)) {}
 
-void CryptoSystemDialogRemoveInformator::added(
-    const ChangeWatcher::element& obj) {
-  (void)obj;
-}
+void CryptoSystemDialogRemoveInformator::added(const ChangeWatcher::element&) {}
 
 void CryptoSystemDialogRemoveInformator::changed(
-    const ChangeWatcher::element& obj) {
-  (void)obj;
-}
+    const ChangeWatcher::element&) {}
 
 void CryptoSystemDialogRemoveInformator::removed(
     const ChangeWatcher::element& obj) {

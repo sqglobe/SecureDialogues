@@ -122,7 +122,7 @@ QWidget* UserMessageModelDelegate::createEditor(
     const QStyleOptionViewItem& option,
     const QModelIndex& index) const {
   if (index.data().canConvert<std::shared_ptr<const UserMessage>>()) {
-    QLabel* editor = new QLabel(parent);
+    auto editor = new QLabel(parent);
     editor->setFocusPolicy(Qt::StrongFocus);
     editor->setTextInteractionFlags(Qt::TextSelectableByMouse |
                                     Qt::TextSelectableByKeyboard);
@@ -132,9 +132,8 @@ QWidget* UserMessageModelDelegate::createEditor(
     editor->setAutoFillBackground(true);
     editor->setIndent(TEXT_PADDING);
     return editor;
-  } else {
-    return QStyledItemDelegate::createEditor(parent, option, index);
   }
+  return QStyledItemDelegate::createEditor(parent, option, index);
 }
 
 void UserMessageModelDelegate::setEditorData(QWidget* editor,
@@ -142,7 +141,7 @@ void UserMessageModelDelegate::setEditorData(QWidget* editor,
   if (index.data().canConvert<std::shared_ptr<const UserMessage>>()) {
     auto message =
         qvariant_cast<std::shared_ptr<const UserMessage>>(index.data());
-    QLabel* label = qobject_cast<QLabel*>(editor);
+    auto label = qobject_cast<QLabel*>(editor);
     label->setText(message->content().c_str());
     label->setAlignment(getOptions(message));
 

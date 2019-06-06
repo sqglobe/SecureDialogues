@@ -17,7 +17,11 @@ class ConnectionInfoWidget : public QWidget {
 
  public:
   explicit ConnectionInfoWidget(QWidget* parent = nullptr);
-  ~ConnectionInfoWidget();
+  ~ConnectionInfoWidget() override;
+
+ public:
+  ConnectionInfoWidget(const ConnectionInfoWidget&) = delete;
+  ConnectionInfoWidget& operator=(const ConnectionInfoWidget&) = delete;
 
  public:
   /**

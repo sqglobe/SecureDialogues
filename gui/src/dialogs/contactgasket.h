@@ -21,7 +21,6 @@ class ContactGasket : public QObject {
       std::unique_ptr<DialogWidgetGasket<ContactContainer, ContactWidget>>&&
           gasket,
       QObject* parent = nullptr);
-  ~ContactGasket() = default;
 
  public slots:
   void onActionViewAt(int pos);

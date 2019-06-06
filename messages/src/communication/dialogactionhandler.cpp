@@ -2,7 +2,7 @@
 #include "containers/contactcontainer.h"
 #include "containers/dialogmanager.h"
 
-#include <assert.h>
+#include <cassert>
 #include "delivery-handlers/dialogactiondeliveryhandler.h"
 #include "interfaces/abstractmessagedespatcher.h"
 #include "interfaces/abstractusernotifier.h"
@@ -61,14 +61,15 @@ std::string dialog_to_string(const std::shared_ptr<const Dialog>& dialog) {
 }
 
 DialogActionHandler::DialogActionHandler(
-    const std::shared_ptr<DialogManager>& dialogManager,
-    const std::shared_ptr<AbstractMessageDespatcher>& dispatcher,
-    const std::shared_ptr<AbstractUserNotifier>& notifier,
-    const std::shared_ptr<ContactContainer>& contacts,
-    const std::shared_ptr<CryptoSystem>& cryptoSystem) :
-    mDialogManager(dialogManager),
-    mMessageDispatcher(dispatcher), mNotifier(notifier),
-    mContactContainer(contacts), mCryptoSystem(cryptoSystem) {}
+    std::shared_ptr<DialogManager> dialogManager,
+    std::shared_ptr<AbstractMessageDespatcher> dispatcher,
+    std::shared_ptr<AbstractUserNotifier> notifier,
+    std::shared_ptr<ContactContainer> contacts,
+    std::shared_ptr<CryptoSystem> cryptoSystem) :
+    mDialogManager(std::move(dialogManager)),
+    mMessageDispatcher(std::move(dispatcher)), mNotifier(std::move(notifier)),
+    mContactContainer(std::move(contacts)),
+    mCryptoSystem(std::move(cryptoSystem)) {}
 
 void DialogActionHandler::handle(const DialogMessage& message,
                                  const std::string& channel) noexcept {
@@ -79,6 +80,12 @@ void DialogActionHandler::handle(const DialogMessage& message,
       auto dialog = mDialogManager->get(message.dialogId());
       if (dialog->isSequentalOk(message.sequential())) {
         prepareForFoundDialog(message, channel);
+      } else {
+        LOGGER->warn(
+            "Get message with invalid sequential {0}, dialog id{1}, action: "
+            "{2}",
+            message.sequential(), message.dialogId(),
+            static_cast<int>(message.action()));
       }
     }
   } catch (std::exception& ex) {
@@ -220,7 +227,6 @@ void DialogActionHandler::prepareForFoundDialog(const DialogMessage& message,
                     mMessageDispatcher,
                     mDialogManager->wrapper(message.dialogId()), mNotifier),
                 res);
-    return;
   } else if (message.action() == DialogMessage::Action::KEY_VERIFICATION) {
     if (mCryptoSystem->checkVerificationString(message.dialogId(),
                                                message.content())) {
@@ -228,6 +234,7 @@ void DialogActionHandler::prepareForFoundDialog(const DialogMessage& message,
                   make_delivery_handler_for_active_dialog_request(
                       mMessageDispatcher,
                       mDialogManager->wrapper(message.dialogId()), mNotifier));
+      LOGGER->debug("Get message KEY_VERIFICATION from {0}", channel);
     } else {
       sendRequest(message.dialogId(), DialogMessage::Action::CANCEL_DIALOG,
                   make_delivery_handler_for_cancel_dialog_request(
