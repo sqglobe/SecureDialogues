@@ -41,7 +41,7 @@ RUN mkdir /cross && cd /cross && git clone https://github.com/mxe/mxe.git
 
 WORKDIR /cross/mxe
 
-RUN make MXE_TARGETS=i686-w64-mingw32.shared MXE_PLUGIN_DIRS=plugins/gcc7 gcc qtbase boost -j4 JOBS=4
+RUN make MXE_TARGETS=i686-w64-mingw32.shared MXE_PLUGIN_DIRS=plugins/gcc7 gcc qtbase boost vmime -j4 JOBS=4
 
 ENV PATH="/cross/mxe/usr/bin:${PATH}"
 

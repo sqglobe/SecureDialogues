@@ -7,15 +7,14 @@ RUN apt-get update \
  && apt-get install -y apt-utils 
 
 RUN  apt-get update \
-  && apt-get install -y make gcc-7 g++-7 ninja-build wget \
-  && update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 20 --slave /usr/bin/g++ g++ /usr/bin/g++-7
+  && apt-get install -y make gcc-7 g++-7 ninja-build wget 
   
 RUN mkdir /opt/cmake \
  && wget -P / https://github.com/Kitware/CMake/releases/download/v3.13.4/cmake-3.13.4-Linux-x86_64.sh \
  && sh /cmake-3.13.4-Linux-x86_64.sh --prefix=/opt/cmake --skip-license \
  && ln -s /opt/cmake/bin/cmake /usr/local/bin/cmake
   
-RUN  apt-get install -y git qtdeclarative5-dev plantuml libboost-all-dev ruby plantuml uuid-dev libcurl4-openssl-dev libssl-dev\
+RUN  apt-get install -y git qtdeclarative5-dev plantuml libboost-all-dev ruby plantuml uuid-dev libcurl4-openssl-dev libssl-dev libvmime-dev \
   && gem install prawn --version 2.1.0 \
   && gem install addressable --version 2.4.0 \
   && gem install prawn-svg --version 0.26.0 \
@@ -25,11 +24,22 @@ RUN  apt-get install -y git qtdeclarative5-dev plantuml libboost-all-dev ruby pl
   && gem install pygments.rb \
   && gem install coderay 
 
+#RUN apt install -y sendmail pkg-config  libgnutls-dev libghc-gsasl-dev
+
+#WORKDIR /build
+
+#RUN git clone https://github.com/kisli/vmime.git && cd vmime && git checkout v0.9.2 \
+#  && mkdir build && cd build \
+#  && cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF -DVMIME_BUILD_SAMPLES=OFF ../ \
+#  && cmake --build . && make install
+
 # Установим рабочую директорию нашего приложения
 WORKDIR /app/build
 
+RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 20 --slave /usr/bin/g++ g++ /usr/bin/g++-7
+
 # Установим точку входа 
-ENTRYPOINT cmake -DBUILD_TESTING=OFF  -DJSON_BuildTests=OFF -DJSON_Install=OFF -DXG_TESTS=OFF /app/src \
+ENTRYPOINT cmake  -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF  -DJSON_BuildTests=OFF -DJSON_Install=OFF -DXG_TESTS=OFF /app/src \
         && make -j4 JOBS=4 \
         && cp documents/architecture.pdf documents/user-guid.pdf /app/res \
         && cp bin/SecureDialogues /app/res/SecureDialogues-ubuntu-16.04-x86_64
