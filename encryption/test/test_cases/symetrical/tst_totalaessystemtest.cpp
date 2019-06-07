@@ -34,17 +34,12 @@ void TotalAesSystemTest::test_encryption_decryption() {
 
     std::string keyData;
     auto oneCipher = generateSymmetricalCipherTo(keyData, remote);
-    std::cout << "key data: " << keyData << std::endl;
 
     auto secondCipher = createSymmetricalCipherFrom(keyData, local);
 
     auto encrypted = oneCipher->encrypt(message);
 
-    std::cout << "encrypted: \n" << encrypted << std::endl;
-
     auto decrypted = secondCipher->decrypt(encrypted);
-
-    std::cout << "decrypted: \n" << decrypted << std::endl;
     QCOMPARE(message, decrypted);
 
   } catch (std::exception& ex) {

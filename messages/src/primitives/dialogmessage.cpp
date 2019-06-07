@@ -67,8 +67,10 @@ void DialogMessage::setContent(const std::string& content) {
 }
 
 DialogMessage make_abort(const std::string& dialogId,
-                         const std::string& contact) {
-  return DialogMessage(DialogMessage::Action::ABORT, "", dialogId, contact);
+                         const std::string& contact,
+                         unsigned long number) {
+  return DialogMessage(DialogMessage::Action::ABORT, "", dialogId, contact,
+                       number);
 }
 
 DialogMessage make_ack(const DialogMessage& mess) {

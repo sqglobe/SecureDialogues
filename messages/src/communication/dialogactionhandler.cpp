@@ -201,14 +201,15 @@ void DialogActionHandler::prepareNotFoundDialog(const DialogMessage& message,
                         dialog_to_string(dialog));
       return;
     }
-  } catch (std::range_error& ex) {
+  } catch (std::range_error&) {
     mNotifier->notify(AbstractUserNotifier::Severity::ERROR,
                       "Адресат '" + message.adress() +
                           "' прислал запрос на добавление диалога, но контакт "
                           "с таким адрсом не найден");
   }
   if (auto lock = mMessageDispatcher.lock()) {
-    lock->sendAndForget(make_abort(message.dialogId(), message.adress()),
+    lock->sendAndForget(make_abort(message.dialogId(), message.adress(),
+                                   std::numeric_limits<unsigned long>::max()),
                         channel);
     LOGGER->warn(
         "Get message with action {0} for dialog with adress {1} content {2}. "
@@ -234,7 +235,6 @@ void DialogActionHandler::prepareForFoundDialog(const DialogMessage& message,
                   make_delivery_handler_for_active_dialog_request(
                       mMessageDispatcher,
                       mDialogManager->wrapper(message.dialogId()), mNotifier));
-      LOGGER->debug("Get message KEY_VERIFICATION from {0}", channel);
     } else {
       sendRequest(message.dialogId(), DialogMessage::Action::CANCEL_DIALOG,
                   make_delivery_handler_for_cancel_dialog_request(
@@ -290,8 +290,10 @@ void DialogActionHandler::prepareHandleException(
       abortDialog(message.dialogId());
     } else {
       if (auto lock = mMessageDispatcher.lock()) {
-        lock->sendAndForget(make_abort(message.dialogId(), message.adress()),
-                            channel);
+        lock->sendAndForget(
+            make_abort(message.dialogId(), message.adress(),
+                       std::numeric_limits<unsigned long>::max()),
+            channel);
       }
     }
 

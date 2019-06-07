@@ -66,9 +66,6 @@ void LocalPeerOperationsTest::test_signatureCreation() {
   auto key = load(PRIVATE);
   LocalPeerOperations opers(key);
   auto sign = opers.createSign(message);
-
-  std::cout << sign << std::endl;
-
   QVERIFY(!sign.empty());
 }
 
