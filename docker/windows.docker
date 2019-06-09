@@ -41,13 +41,15 @@ RUN mkdir /cross && cd /cross && git clone https://github.com/mxe/mxe.git
 
 WORKDIR /cross/mxe
 
-RUN make MXE_TARGETS=i686-w64-mingw32.shared MXE_PLUGIN_DIRS=plugins/gcc7 gcc qtbase boost vmime -j4 JOBS=4
+RUN make MXE_TARGETS=i686-w64-mingw32.shared MXE_PLUGIN_DIRS=plugins/gcc7 \
+        gcc qtbase boost libiconv gnutls libgcrypt libgpg_error libgsasl -j4 JOBS=4
 
 ENV PATH="/cross/mxe/usr/bin:${PATH}"
 
 WORKDIR /submodules
 RUN git clone https://github.com/curl/curl.git
 WORKDIR /submodules/curl-build
+
 
 RUN i686-w64-mingw32.shared-cmake \
        -DBUILD_TESTING=OFF \
@@ -60,6 +62,24 @@ RUN i686-w64-mingw32.shared-cmake \
       /submodules/curl && make && make install
       
 
+WORKDIR /submodules
+
+RUN git clone https://github.com/kisli/vmime.git && cd vmime && git checkout v0.9.2 
+
+WORKDIR /submodules/vmime-build
+
+RUN i686-w64-mingw32.shared-cmake \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DVMIME_HAVE_MESSAGING_PROTO_SENDMAIL=False \
+    -DVMIME_HAVE_MLANG_H=False \
+    -DVMIME_BUILD_STATIC_LIBRARY=ON \
+    -DVMIME_BUILD_SHARED_LIBRARY=OFF \
+    -DVMIME_BUILD_DOCUMENTATION=OFF \
+    -DVMIME_CHARSETCONV_LIB=iconv \
+    -D_RUN_RESULT_VAR=0 \
+    -DVMIME_BUILD_SAMPLES=OFF /submodules/vmime \
+  && make  VERBOSE=1 && make install
+
 WORKDIR /app/build
 
 ENTRYPOINT i686-w64-mingw32.shared-cmake \
@@ -69,6 +89,7 @@ ENTRYPOINT i686-w64-mingw32.shared-cmake \
      -DXG_TESTS=OFF \
      -DBUILD_STATIC=ON \
      -DBUILD_SHARED_LIBS=OFF \
+     -DVMIME_ROOT=/cross/mxe/usr/i686-w64-mingw32.shared \
      /app/src \
   && make -j4 JOBS=4 \
   && mkdir -p /app/res/SecureDialogues-windows-i686 /app/res/SecureDialogues-windows-i686/platforms/ /app/res/SecureDialogues-windows-i686/styles \

@@ -56,6 +56,10 @@ else()
     message("cryptopp dir exists")
 endif()
 
+#IF (WIN32)
+#  ADD_DEFINITIONS(-DVMIME_STATIC)
+#ENDIF()
+
 include_directories(${PROJECT_SOURCE_DIR}/submodules/spdlog/include)
 include_directories(${PROJECT_SOURCE_DIR}/submodules/eventpp/include)
 

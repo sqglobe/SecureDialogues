@@ -40,6 +40,15 @@ else()
     message(FATAL_ERROR "Cant file vmime")
 endif()
 
+set(EMAIL_WIN_LIBS "")
+
+if(WIN32)
+#    find_package( Iconv REQUIRED)
+    find_package(GnuTLS REQUIRED)
+#    find_package(GSasl REQUIRED)
+    list(APPEND EMAIL_WIN_LIBS iconv gsasl ${GNUTLS_LIBRARIES})
+endif()
+
 
 set( EMAIL_SRC
      email-agent/imapreciever.cpp
@@ -56,4 +65,6 @@ set( EMAIL_HEADER
 add_library(email-agent STATIC ${EMAIL_SRC} ${EMAIL_HEADER})
 
 target_include_directories(email-agent PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${MCRYPTO_INCLUDE_DIR})
-target_link_libraries(email-agent PUBLIC  ${VMIME_LIBRARIES})
+target_link_libraries(email-agent PUBLIC  ${VMIME_LIBRARIES} ${EMAIL_WIN_LIBS})
+
+

@@ -13,13 +13,14 @@ RUN mkdir /opt/cmake \
  && ln -s /opt/cmake/bin/cmake /usr/local/bin/cmake
 
 RUN mkdir /3rdparty \
- && wget -P /3rdparty https://netcologne.dl.sourceforge.net/project/boost/boost/1.58.0/boost_1_58_0.tar.gz \
  && cd /3rdparty \
- && tar -xzf boost_1_58_0.tar.gz
+ && git clone https://github.com/boostorg/boost.git \
+ && cd boost \
+ && git checkout boost-1.58.0
  
 RUN yum install -y bzip2-devel zlib-devel libicu-devel python-devel 
 
-RUN cd /3rdparty/boost_1_58_0 \
+RUN cd /3rdparty/boost \
  && scl enable devtoolset-7 "./bootstrap.sh --prefix=/usr/local --with-toolset=gcc && ./b2 install" 
   
 # Установим рабочую директорию нашего приложения
