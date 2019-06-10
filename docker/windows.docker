@@ -78,7 +78,7 @@ RUN i686-w64-mingw32.shared-cmake \
     -DVMIME_CHARSETCONV_LIB=iconv \
     -D_RUN_RESULT_VAR=0 \
     -DVMIME_BUILD_SAMPLES=OFF /submodules/vmime \
-  && make  VERBOSE=1 && make install
+  && make && make install
 
 WORKDIR /app/build
 
@@ -89,6 +89,7 @@ ENTRYPOINT i686-w64-mingw32.shared-cmake \
      -DXG_TESTS=OFF \
      -DBUILD_STATIC=ON \
      -DBUILD_SHARED_LIBS=OFF \
+     -DUSE_VMIME_SHARED=OFF \
      -DVMIME_ROOT=/cross/mxe/usr/i686-w64-mingw32.shared \
      /app/src \
   && make -j4 JOBS=4 \
@@ -113,6 +114,15 @@ ENTRYPOINT i686-w64-mingw32.shared-cmake \
    /cross/mxe/usr/i686-w64-mingw32.shared/bin/libintl-8.dll \
    /cross/mxe/usr/i686-w64-mingw32.shared/bin/libiconv-2.dll \
    /cross/mxe/usr/i686-w64-mingw32.shared/bin/libpcre-1.dll \
+   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libgnutls-30.dll \
+   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libgsasl-7.dll \
+   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libgmp-10.dll \
+   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libhogweed-4.dll \
+   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libidn2-0.dll \
+   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libnettle-6.dll \
+   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libunistring-2.dll \
+   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libidn-12.dll \
+   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libntlm-0.dll \
    /app/res/SecureDialogues-windows-i686 \
   && cp /cross/mxe/usr/i686-w64-mingw32.shared/qt5/plugins/platforms/qwindows.dll /app/res/SecureDialogues-windows-i686/platforms/ \
   && cp /cross/mxe/usr/i686-w64-mingw32.shared/qt5/plugins/styles/qwindowsvistastyle.dll /app/res/SecureDialogues-windows-i686/styles 

@@ -43,10 +43,16 @@ endif()
 set(EMAIL_WIN_LIBS "")
 
 if(WIN32)
-#    find_package( Iconv REQUIRED)
+    list(APPEND EMAIL_WIN_LIBS ws2_32 iconv)
+endif()
+
+if(NOT USE_VMIME_SHARED)
     find_package(GnuTLS REQUIRED)
-#    find_package(GSasl REQUIRED)
-    list(APPEND EMAIL_WIN_LIBS iconv gsasl ${GNUTLS_LIBRARIES})
+    list(APPEND EMAIL_WIN_LIBS gsasl ${GNUTLS_LIBRARIES})
+endif()
+
+if(NOT USE_VMIME_SHARED AND NOT WIN32)
+  list(APPEND EMAIL_WIN_LIBS anl)
 endif()
 
 

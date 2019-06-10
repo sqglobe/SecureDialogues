@@ -4,6 +4,13 @@ project(SecureDialogues)
 find_package(Git REQUIRED)
 
 
+OPTION(
+	USE_VMIME_SHARED
+	"Use vmime as shared lib"
+	ON
+)
+
+
 SET (CMAKE_LIBRARY_OUTPUT_DIRECTORY
         ${PROJECT_BINARY_DIR}/bin
         CACHE PATH
@@ -56,9 +63,9 @@ else()
     message("cryptopp dir exists")
 endif()
 
-#IF (WIN32)
-#  ADD_DEFINITIONS(-DVMIME_STATIC)
-#ENDIF()
+IF (NOT USE_VMIME_SHARED)
+  ADD_DEFINITIONS(-DVMIME_STATIC)
+ENDIF()
 
 include_directories(${PROJECT_SOURCE_DIR}/submodules/spdlog/include)
 include_directories(${PROJECT_SOURCE_DIR}/submodules/eventpp/include)
