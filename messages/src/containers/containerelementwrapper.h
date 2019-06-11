@@ -11,6 +11,11 @@
  */
 template <typename C>
 class ContainerElementWrapper {
+ private:
+  struct nested_class {
+    int empty_field;
+  };
+
  public:
   using element = typename C::element;
 
@@ -53,6 +58,10 @@ class ContainerElementWrapper {
    */
   element& get();
 
+  operator const int nested_class::*() const {
+    return mStateOk ? &nested_class::empty_field : nullptr;
+  }
+
  public:
   ContainerElementWrapper(ContainerElementWrapper&) = delete;
   ContainerElementWrapper& operator=(const ContainerElementWrapper&) = delete;
@@ -62,6 +71,7 @@ class ContainerElementWrapper {
   element mElement;
 
  private:
+  bool mStateOk{true};
   std::shared_ptr<C> mContainer;
 };
 
@@ -80,17 +90,31 @@ ContainerElementWrapper<C>::ContainerElementWrapper(
 
 template <typename C>
 bool ContainerElementWrapper<C>::save() {
-  return mContainer->strictUpdate(mElement);
+  try {
+    return mContainer->strictUpdate(mElement);
+  } catch (const std::exception&) {
+    mStateOk = false;
+  }
+  return false;
 }
 
 template <typename C>
 bool ContainerElementWrapper<C>::remove() {
-  return mContainer->remove(mElement);
+  try {
+    return mContainer->remove(mElement);
+  } catch (const std::exception&) {
+    mStateOk = false;
+  }
+  return false;
 }
 
 template <typename C>
 void ContainerElementWrapper<C>::reload() {
-  mElement = mContainer->get(get_id(mElement));
+  try {
+    mElement = mContainer->get(get_id(mElement));
+  } catch (const std::exception&) {
+    mStateOk = false;
+  }
 }
 
 template <typename C>
