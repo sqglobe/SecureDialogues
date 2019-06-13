@@ -46,21 +46,9 @@ RUN make MXE_TARGETS=i686-w64-mingw32.shared MXE_PLUGIN_DIRS=plugins/gcc7 \
 
 ENV PATH="/cross/mxe/usr/bin:${PATH}"
 
-WORKDIR /submodules
-RUN git clone https://github.com/curl/curl.git
-WORKDIR /submodules/curl-build
+ADD curl.mk /cross/mxe/src
 
-
-RUN i686-w64-mingw32.shared-cmake \
-       -DBUILD_TESTING=OFF \
-       -DHTTP_ONLY=ON \
-       -DUSE_OPENSSL=ON \
-       -DBUILD_CURL_EXE=OFF \
-       -DCURL_STATICLIB=ON \
-       -DBUILD_SHARED_LIBS=OFF \
-       -DUSE_LIBSSH2=OFF \
-      /submodules/curl && make && make install
-      
+RUN cd  /cross/mxe && make MXE_TARGETS=i686-w64-mingw32.shared MXE_PLUGIN_DIRS=plugins/gcc7 curl  
 
 WORKDIR /submodules
 
@@ -123,6 +111,7 @@ ENTRYPOINT i686-w64-mingw32.shared-cmake \
    /cross/mxe/usr/i686-w64-mingw32.shared/bin/libunistring-2.dll \
    /cross/mxe/usr/i686-w64-mingw32.shared/bin/libidn-12.dll \
    /cross/mxe/usr/i686-w64-mingw32.shared/bin/libntlm-0.dll \
+   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libcurl-4.dll \
    /app/res/SecureDialogues-windows-i686 \
   && cp /cross/mxe/usr/i686-w64-mingw32.shared/qt5/plugins/platforms/qwindows.dll /app/res/SecureDialogues-windows-i686/platforms/ \
   && cp /cross/mxe/usr/i686-w64-mingw32.shared/qt5/plugins/styles/qwindowsvistastyle.dll /app/res/SecureDialogues-windows-i686/styles 
