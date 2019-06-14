@@ -41,24 +41,32 @@ RUN mkdir /cross && cd /cross && git clone https://github.com/mxe/mxe.git
 
 WORKDIR /cross/mxe
 
-RUN make MXE_TARGETS=i686-w64-mingw32.shared MXE_PLUGIN_DIRS=plugins/gcc7 gcc qtbase boost -j4 JOBS=4
+RUN make MXE_TARGETS=i686-w64-mingw32.shared MXE_PLUGIN_DIRS=plugins/gcc7 \
+        gcc qtbase boost libiconv gnutls libgcrypt libgpg_error libgsasl -j4 JOBS=4
 
 ENV PATH="/cross/mxe/usr/bin:${PATH}"
 
+ADD curl.mk /cross/mxe/src
+
+RUN cd  /cross/mxe && make MXE_TARGETS=i686-w64-mingw32.shared MXE_PLUGIN_DIRS=plugins/gcc7 curl  
+
 WORKDIR /submodules
-RUN git clone https://github.com/curl/curl.git
-WORKDIR /submodules/curl-build
+
+RUN git clone https://github.com/kisli/vmime.git && cd vmime && git checkout v0.9.2 
+
+WORKDIR /submodules/vmime-build
 
 RUN i686-w64-mingw32.shared-cmake \
-       -DBUILD_TESTING=OFF \
-       -DHTTP_ONLY=ON \
-       -DUSE_OPENSSL=ON \
-       -DBUILD_CURL_EXE=OFF \
-       -DCURL_STATICLIB=ON \
-       -DBUILD_SHARED_LIBS=OFF \
-       -DUSE_LIBSSH2=OFF \
-      /submodules/curl && make && make install
-      
+    -DCMAKE_BUILD_TYPE=Release \
+    -DVMIME_HAVE_MESSAGING_PROTO_SENDMAIL=False \
+    -DVMIME_HAVE_MLANG_H=False \
+    -DVMIME_BUILD_STATIC_LIBRARY=ON \
+    -DVMIME_BUILD_SHARED_LIBRARY=OFF \
+    -DVMIME_BUILD_DOCUMENTATION=OFF \
+    -DVMIME_CHARSETCONV_LIB=iconv \
+    -D_RUN_RESULT_VAR=0 \
+    -DVMIME_BUILD_SAMPLES=OFF /submodules/vmime \
+  && make && make install
 
 WORKDIR /app/build
 
@@ -69,6 +77,8 @@ ENTRYPOINT i686-w64-mingw32.shared-cmake \
      -DXG_TESTS=OFF \
      -DBUILD_STATIC=ON \
      -DBUILD_SHARED_LIBS=OFF \
+     -DUSE_VMIME_SHARED=OFF \
+     -DVMIME_ROOT=/cross/mxe/usr/i686-w64-mingw32.shared \
      /app/src \
   && make -j4 JOBS=4 \
   && mkdir -p /app/res/SecureDialogues-windows-i686 /app/res/SecureDialogues-windows-i686/platforms/ /app/res/SecureDialogues-windows-i686/styles \
@@ -92,6 +102,16 @@ ENTRYPOINT i686-w64-mingw32.shared-cmake \
    /cross/mxe/usr/i686-w64-mingw32.shared/bin/libintl-8.dll \
    /cross/mxe/usr/i686-w64-mingw32.shared/bin/libiconv-2.dll \
    /cross/mxe/usr/i686-w64-mingw32.shared/bin/libpcre-1.dll \
+   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libgnutls-30.dll \
+   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libgsasl-7.dll \
+   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libgmp-10.dll \
+   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libhogweed-4.dll \
+   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libidn2-0.dll \
+   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libnettle-6.dll \
+   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libunistring-2.dll \
+   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libidn-12.dll \
+   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libntlm-0.dll \
+   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libcurl-4.dll \
    /app/res/SecureDialogues-windows-i686 \
   && cp /cross/mxe/usr/i686-w64-mingw32.shared/qt5/plugins/platforms/qwindows.dll /app/res/SecureDialogues-windows-i686/platforms/ \
   && cp /cross/mxe/usr/i686-w64-mingw32.shared/qt5/plugins/styles/qwindowsvistastyle.dll /app/res/SecureDialogues-windows-i686/styles 

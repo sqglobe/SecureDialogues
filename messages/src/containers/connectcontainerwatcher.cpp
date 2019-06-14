@@ -9,11 +9,11 @@
 std::chrono::seconds waitAck(ConnectionType type) {
   switch (type) {
     case ConnectionType::VK:
-      return std::chrono::seconds(10);
-    case ConnectionType::UDP:
-      return std::chrono::seconds(10);
-    case ConnectionType::GMAIL:
       return std::chrono::seconds(30);
+    case ConnectionType::UDP:
+      return std::chrono::seconds(30);
+    case ConnectionType::GMAIL:
+      return std::chrono::seconds(40);
     case ConnectionType::EMAIL:
       return std::chrono::seconds(360);
     default:

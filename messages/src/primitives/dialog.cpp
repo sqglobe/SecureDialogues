@@ -7,7 +7,6 @@
 #include <vector>
 #include "utils.h"
 
-#include <iostream>
 #include "dialogstatemachine.h"
 
 #include <random>
@@ -64,7 +63,8 @@ DialogMessage Dialog::makeMessage(DialogMessage::Action action,
 
 DialogMessage Dialog::makeAbort() {
   setStatus(Status::ABORTED);
-  return make_abort(mDialogId, mContact->adress());
+  auto message = make_abort(mDialogId, mContact->adress(), getNextSequental());
+  return message;
 }
 
 Dialog::Status Dialog::getStatus() const noexcept {
@@ -106,7 +106,5 @@ bool Dialog::isMessageActionAllowed(DialogMessage::Action action) const
 }
 
 unsigned long Dialog::getNextSequental() const {
-  std::cout << "Dialog id: " << mDialogId << " sequental: " << mThisSequental
-            << std::endl;
   return ++mThisSequental;
 }

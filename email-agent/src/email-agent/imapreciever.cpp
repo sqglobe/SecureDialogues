@@ -10,8 +10,20 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include "spdlog/spdlog.h"
 
+#include <vmime/net/imap/IMAPFolder.hpp>
+
 static std::shared_ptr<spdlog::logger> LOGGER =
     spdlog::stdout_color_mt("imap-reciever-logger");
+
+vmime::net::message::uid getLastMessageUid(
+    const vmime::shared_ptr<vmime::net::folder>& folder) {
+  if (folder->getMessageCount() > 0) {
+    auto message = folder->getMessage(folder->getMessageCount());
+    folder->fetchMessage(message, vmime::net::fetchAttributes::UID);
+    return message->getUID();
+  }
+  return vmime::net::message::uid(1);
+}
 
 ImapReciever::ImapReciever(const std::string& address,
                            int port,
@@ -47,14 +59,14 @@ void ImapReciever::connect() {
   path /= vmime::net::folder::path::component(mFolder);
   mImapFolder = mStore->getFolder(path);
   mImapFolder->open(vmime::net::folder::MODE_READ_ONLY);
-
-  if (mImapFolder->getMessageCount() > 0) {
-    auto message = mImapFolder->getMessage(mImapFolder->getMessageCount());
-    mImapFolder->fetchMessage(message, vmime::net::fetchAttributes::UID);
-    mLastMessage = message->getUID();
-  } else {
-    mLastMessage = vmime::net::message::uid(1);
+  if (auto imapFolder =
+          vmime::dynamicCast<vmime::net::imap::IMAPFolder, vmime::net::folder>(
+              mImapFolder);
+      imapFolder) {
+    mUidValidity = imapFolder->getUIDValidity();
   }
+
+  mLastMessage = getLastMessageUid(mImapFolder);
 }
 
 std::list<std::pair<std::string, std::string> >
@@ -80,6 +92,17 @@ ImapReciever::recievedMessages() {
       out.flush();
 
       res.emplace_back(from->getEmail().generate(), std::move(body));
+    }
+  }
+
+  if (auto imapFolder =
+          vmime::dynamicCast<vmime::net::imap::IMAPFolder, vmime::net::folder>(
+              mImapFolder);
+      imapFolder) {
+    if (mUidValidity != imapFolder->getUIDValidity()) {
+      LOGGER->debug("UID validity changed");
+      mUidValidity = imapFolder->getUIDValidity();
+      mLastMessage = getLastMessageUid(mImapFolder);
     }
   }
 

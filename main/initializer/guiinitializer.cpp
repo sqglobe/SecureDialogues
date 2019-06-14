@@ -127,8 +127,8 @@ void GuiInitializer::initDialogWrapper(
     const std::shared_ptr<AbstractUserNotifier>& userNotifier,
     QThread* messageThread) {
   // TODO Add actions to wrapers like send message, send dialog control command
-  auto dialogWraper =
-      new DialogActionHandlerWrapper(coreInit->getDialogActionHandler());
+  auto dialogWraper = new DialogActionHandlerWrapper(
+      coreInit->getDialogActionHandler(), userNotifier);
   dialogWraper->moveToThread(messageThread);
 
   auto dialogMenu = new DialogActionMenu(userNotifier, parent);

@@ -84,7 +84,7 @@ void GmailApi::sendMessage(const std::string& to,
   ss << "From: " << mUserMail << "\n"
      << "To: " << to << "\n"
      << "Subject: "
-     << "message-sender"
+     << "sequre-dialogues"
      << "\n"
      << "\n"
      << body;
@@ -121,12 +121,12 @@ std::string GmailApi::loadMessages(
     builder.appendQuery("pageToken", lastPageToken);
   }
 
-  builder.appendQuery("q", getTimeFilter() + " " + "subject:(message-sender)");
+  builder.appendQuery("q",
+                      getTimeFilter() + " " + "subject:(sequre-dialogues)");
   auto [code, response] =
       mRequest.get(builder.getUri(), {{authHeaderName, authToken}});
 
   if (HttpCode::OK != code) {
-    std::cout << "get gmail errror: \n" << response << std::endl;
     throw HttpError(code);
   }
 
