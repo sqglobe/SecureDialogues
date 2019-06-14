@@ -14,6 +14,8 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include "spdlog/spdlog.h"
 
+#include <limits>
+
 #undef ERROR
 
 std::shared_ptr<spdlog::logger> MessageActionHandler::LOGGER =
@@ -68,7 +70,9 @@ void MessageActionHandler::handle(const DialogMessage& message,
             "abort",
             message.adress());
         despatcher->sendAndForget(
-            make_abort(message.dialogId(), message.adress()), channel);
+            make_abort(message.dialogId(), message.adress(),
+                       std::numeric_limits<unsigned long>::max()),
+            channel);
       }
       return;
     }
@@ -148,7 +152,9 @@ void MessageActionHandler::abortOnException(
     } else {
       if (auto despatcher = mDespatcher.lock()) {
         despatcher->sendAndForget(
-            make_abort(message.dialogId(), message.adress()), channel);
+            make_abort(message.dialogId(), message.adress(),
+                       std::numeric_limits<unsigned long>::max()),
+            channel);
       }
     }
   } catch (std::exception& ex) {

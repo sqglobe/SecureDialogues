@@ -5,6 +5,7 @@
 #include <memory>
 class Contact;
 class DialogActionHandler;
+class AbstractUserNotifier;
 
 /**
  * @brief Класс-оболочка для взаимодействия с DialogActionHandler
@@ -15,6 +16,7 @@ class DialogActionHandlerWrapper : public QObject {
  public:
   explicit DialogActionHandlerWrapper(
       std::shared_ptr<DialogActionHandler> handler,
+      std::shared_ptr<AbstractUserNotifier> notifier,
       QObject* parent = nullptr);
 
  signals:
@@ -27,6 +29,7 @@ class DialogActionHandlerWrapper : public QObject {
 
  private:
   std::shared_ptr<DialogActionHandler> mHandler;
+  std::shared_ptr<AbstractUserNotifier> mNotifier;
 };
 
 #endif  // DIALOGACTIONHANDLERWRAPPER_H

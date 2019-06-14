@@ -219,9 +219,6 @@ void TestContactWidget::testAdd() {
   pub->setPlainText(PUBLIC_KEY.c_str());
 
   mGasket->add();
-  std::cout << "Add: " << mChangeWatcher->mMethod << " "
-            << mChangeWatcher->mVal->get()->adress() << std::endl;
-
   QCOMPARE(mChangeWatcher->mMethod, std::string("added"));
   QCOMPARE(mChangeWatcher->mVal->get()->adress(), new_adress);
   QCOMPARE(mChangeWatcher->mVal->get()->channelMoniker(), new_connection);

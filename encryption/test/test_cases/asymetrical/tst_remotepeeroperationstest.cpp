@@ -71,8 +71,6 @@ void RemotePeerOperationsTest::test_encryption() {
 
   auto encr = opers.encrypt(message);
 
-  std::cout << encr << std::endl;
-
   QVERIFY(!encr.empty());
 }
 

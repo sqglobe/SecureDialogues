@@ -25,6 +25,7 @@ class ImapReciever {
   vmime::shared_ptr<vmime::net::folder> mImapFolder;
   vmime::shared_ptr<vmime::net::store> mStore;
   vmime::net::message::uid mLastMessage;
+  vmime_uint32 mUidValidity;
 };
 
 #endif  // IMAPRECIEVER_H

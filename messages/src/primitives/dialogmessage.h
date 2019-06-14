@@ -110,7 +110,8 @@ class DialogMessage {
  * @return новое сообщение с типом abort для указанного диалога.
  */
 DialogMessage make_abort(const std::string& dialogId,
-                         const std::string& contact);
+                         const std::string& contact,
+                         unsigned long number);
 
 /**
  * @brief Создает подтверждение о доставке для указанного сообщения
