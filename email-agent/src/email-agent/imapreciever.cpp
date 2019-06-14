@@ -91,18 +91,11 @@ ImapReciever::recievedMessages() {
       vmime::net::fetchAttributes::ENVELOPE | vmime::net::fetchAttributes::UID);
   std::list<std::pair<std::string, std::string> > res;
 
-  LOGGER->debug("Try to fetch from uid {0}, get count: {1}",
-                static_cast<std::string>(mLastMessage), allMessages.size());
-
   for (auto it = std::next(allMessages.cbegin()); it != allMessages.cend();
        ++it) {
     auto message = *it;
     auto header = message->getHeader();
     auto from = header->From()->getValue<vmime::mailbox>();
-    LOGGER->debug("Prepare message uid {0}, from '{1}', subject '{2}'",
-                  static_cast<std::string>(message->getUID()),
-                  from->getEmail().generate(),
-                  header->Subject()->getValue()->generate());
     if (header->Subject()->getValue()->generate() == mSubject) {
       std::string body;
       vmime::utility::outputStreamStringAdapter out(body);
