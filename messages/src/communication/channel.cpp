@@ -68,6 +68,7 @@ void Channel::messsageCycle() {
         continue;
 
       if (auto dialogMessage = mMarshaller->unmarshall(msg.second, msg.first)) {
+        LOGGER->debug("Recieved message from {0}\n{1}", msg.first, msg.second);
         if (auto hLock = mHandler.lock()) {
           try {
             hLock->dispatch(dialogMessage.value(), mName);
@@ -95,6 +96,8 @@ void Channel::messsageCycle() {
 }
 
 void Channel::sendMessage(const DialogMessage& message) {
+  LOGGER->debug("Sneds message to {0}\n{1}", message.adress(),
+                mMarshaller->marshall(message));
   try {
     [[maybe_unused]] std::lock_guard<std::mutex> guard(mMutex);
     mAdapter->send(mMarshaller->marshall(message), message.adress());

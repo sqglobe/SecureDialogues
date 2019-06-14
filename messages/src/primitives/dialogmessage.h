@@ -38,7 +38,6 @@ class DialogMessage {
     CREATE_DIALOG,
     ACCEPT_DIALOG,
     CLOSE_DIALOG,
-    CANCEL_DIALOG,
     ACK,
     ABORT,
     VERIFY_KEY,

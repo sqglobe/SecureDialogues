@@ -12,16 +12,8 @@ void DialogActionHandlerWrapper::createDialogAction(
   mHandler->createDialog(contact);
 }
 
-void DialogActionHandlerWrapper::acceptDialogAction(std::string dialogId) {
-  mHandler->acceptDialog(dialogId);
-}
-
 void DialogActionHandlerWrapper::closeDialogAction(std::string dialogId) {
   mHandler->closeDialog(dialogId);
-}
-
-void DialogActionHandlerWrapper::cancelDialogAction(std::string dialogId) {
-  mHandler->cancelDialog(dialogId);
 }
 
 void DialogActionHandlerWrapper::abortDialogAction(std::string dialogId) {

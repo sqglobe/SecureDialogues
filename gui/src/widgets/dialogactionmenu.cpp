@@ -16,21 +16,9 @@ void DialogActionMenu::aboutToHide() {
   mDialogId = "";
 }
 
-void DialogActionMenu::acceptAction() {
-  if (!mDialogId.empty()) {
-    emit acceptDialog(mDialogId);
-  }
-}
-
 void DialogActionMenu::closeDialogAction() {
   if (!mDialogId.empty()) {
     emit closeDialog(mDialogId);
-  }
-}
-
-void DialogActionMenu::cancelActoin() {
-  if (!mDialogId.empty()) {
-    emit canceltDialog(mDialogId);
   }
 }
 
@@ -47,12 +35,6 @@ void DialogActionMenu::showMenuAtPos(QPoint pos,
   mMenu->clear();
   QAction* act;
   mDialogId = dialogId;
-  if (S::CREATE_REQUEST == status) {
-    act = mMenu->addAction("Подтвердить создание");
-    connect(act, &QAction::triggered, this, &DialogActionMenu::acceptAction);
-    act = mMenu->addAction("Отменить создание");
-    connect(act, &QAction::triggered, this, &DialogActionMenu::cancelActoin);
-  }
   act = mMenu->addAction("Закрыть");
   auto res = connect(act, &QAction::triggered, this,
                      &DialogActionMenu::closeDialogAction);

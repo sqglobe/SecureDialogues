@@ -80,15 +80,6 @@ make_delivery_handler_for_create_dialog_request(
 }
 
 std::shared_ptr<DeliveryHandler>
-make_delivery_handler_for_cancel_dialog_request(
-    const std::weak_ptr<AbstractMessageDespatcher>& dispatcher,
-    DialogManager::wrapper_type&& wrapper,
-    const std::shared_ptr<AbstractUserNotifier>& notifier) {
-  return std::make_shared<DialogActionDeliveryHandler>(
-      dispatcher, std::move(wrapper), Dialog::Status::CANCELED, true, notifier);
-}
-
-std::shared_ptr<DeliveryHandler>
 make_delivery_handler_for_wait_verification_dialog_request(
     const std::weak_ptr<AbstractMessageDespatcher>& dispatcher,
     DialogManager::wrapper_type&& wrapper,

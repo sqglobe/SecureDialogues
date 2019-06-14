@@ -144,10 +144,6 @@ void GuiInitializer::initDialogWrapper(
                    &DialogActionMenu::showMenuAtPos);
   QObject::connect(dialogMenu, &DialogActionMenu::closeDialog, dialogWraper,
                    &DialogActionHandlerWrapper::closeDialogAction);
-  QObject::connect(dialogMenu, &DialogActionMenu::acceptDialog, dialogWraper,
-                   &DialogActionHandlerWrapper::acceptDialogAction);
-  QObject::connect(dialogMenu, &DialogActionMenu::canceltDialog, dialogWraper,
-                   &DialogActionHandlerWrapper::cancelDialogAction);
   QObject::connect(dialogMenu, &DialogActionMenu::removeDialog, dialogWraper,
                    &DialogActionHandlerWrapper::removeDialogAction);
 }

@@ -8,7 +8,6 @@ const std::string ACTION_MESSAGE = "MESSAGE";
 const std::string ACTION_CREATE_DIALOG = "CREATE_DIALOG";
 const std::string ACTION_ACCEPT_DIALOG = "ACCEPT_DIALOG";
 const std::string ACTION_CLOSE_DIALOG = "CLOSE_DIALOG";
-const std::string ACTION_CANCEL_DIALOG = "CANCEL_DIALOG";
 const std::string ACTION_ACK = "ACK";
 const std::string ACTION_ABORT = "ABORT";
 const std::string ACTION_VERIFY_KEY = "VERIFY_KEY";
@@ -124,8 +123,6 @@ DialogMessage::Action MessageMarshaller::convertAction(
     const std::string& action) {
   if (action == ACTION_ACCEPT_DIALOG) {
     return DialogMessage::Action::ACCEPT_DIALOG;
-  } else if (action == ACTION_CANCEL_DIALOG) {
-    return DialogMessage::Action::CANCEL_DIALOG;
   } else if (action == ACTION_CLOSE_DIALOG) {
     return DialogMessage::Action::CLOSE_DIALOG;
   } else if (action == ACTION_CREATE_DIALOG) {
@@ -149,8 +146,6 @@ std::string MessageMarshaller::convertAction(DialogMessage::Action action) {
   using Action = DialogMessage::Action;
   if (Action::ACCEPT_DIALOG == action) {
     return ACTION_ACCEPT_DIALOG;
-  } else if (Action::CANCEL_DIALOG == action) {
-    return ACTION_CANCEL_DIALOG;
   } else if (Action::CLOSE_DIALOG == action) {
     return ACTION_CLOSE_DIALOG;
   } else if (Action::CREATE_DIALOG == action) {

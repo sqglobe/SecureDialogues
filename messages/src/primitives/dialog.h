@@ -34,11 +34,9 @@ class Dialog {
     CREATE_REQUEST,
     WAIT_CONFIRM,
     ACCEPTED_WAIT,
-    CANCEL_WAIT,
     WAIT_KEY_VERIFICAION,
     ACTIVE,
     CLOSED,
-    CANCELED,
     ABORTED
   };
 

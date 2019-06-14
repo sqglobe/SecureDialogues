@@ -80,13 +80,6 @@ class DialogActionHandler : public AbstractMessageHandler {
   void createDialog(const std::shared_ptr<const Contact>& contact);
 
   /**
-   * @brief Уведомляет удаленную сторону о том, что пользователь согласен
-   * принять диалог. Так же сам диалог переводится в соответствующее состояние.
-   * @param dialogId - id диалога, для которого выполняется уведомление.
-   */
-  void acceptDialog(const std::string& dialogId);
-
-  /**
    * @brief Уведомляет удаленную сторону о закрытии диалога сообщением ABORT.
    * Диалог, с указанным кодом переводится в соответствующее состояние. Этот
    * метод вызывается, когда произошла ошибка в обработке диалога.
@@ -99,12 +92,6 @@ class DialogActionHandler : public AbstractMessageHandler {
    * @param dialogId - id диалога на закрытие
    */
   void closeDialog(const std::string& dialogId);
-
-  /**
-   * @brief Отклоняет создание диалога
-   * @param dialogId - id диалога, для которого производится операция
-   */
-  void cancelDialog(const std::string& dialogId);
 
  private:
   void sendRequest(const std::string& dialogId,

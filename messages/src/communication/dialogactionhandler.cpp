@@ -23,9 +23,6 @@ std::string get_dialog_status_description(Dialog::Status status) {
     case S::ACTIVE:
       return "Пользователь подтвердил создание диалога. Тперь возможно "
              "пересылать ему сообщения";
-    case S::CANCELED:
-      return "Создание диалога было отменено удаленным пользователем. "
-             "Поробуйте пересоздать диалог";
     case S::CLOSED:
       return "Диалог был закрыт";
     case S::NEW:
@@ -37,8 +34,6 @@ std::string get_dialog_status_description(Dialog::Status status) {
              "установления диалога";
     case S::ACCEPTED_WAIT:
       return "Ожидает подтверждения о получении согласия на создание диалога";
-    case S::CANCEL_WAIT:
-      return "Ожидает подтверждения о получении отказа в устанослении диалога";
     case S::CREATE_REQUEST:
       return "Пользователь запросил создание диалога";
     case S::WAIT_KEY_VERIFICAION:
@@ -96,10 +91,9 @@ void DialogActionHandler::handle(const DialogMessage& message,
 bool DialogActionHandler::isItYouAction(DialogMessage::Action action) const
     noexcept {
   using A = DialogMessage::Action;
-  return A::ACCEPT_DIALOG == action || A::CANCEL_DIALOG == action ||
-         A::CLOSE_DIALOG == action || A::CREATE_DIALOG == action ||
-         A::ABORT == action || A::KEY_VERIFICATION == action ||
-         A::VERIFY_KEY == action;
+  return A::ACCEPT_DIALOG == action || A::CLOSE_DIALOG == action ||
+         A::CREATE_DIALOG == action || A::ABORT == action ||
+         A::KEY_VERIFICATION == action || A::VERIFY_KEY == action;
 }
 
 void DialogActionHandler::removeDialog(const std::string& dialogId) {
@@ -115,22 +109,6 @@ void DialogActionHandler::createDialog(
       dialog, DialogMessage::Action::CREATE_DIALOG,
       make_delivery_handler_for_create_dialog_request(
           mMessageDispatcher, mDialogManager->wrapper(dialog), mNotifier));
-}
-
-void DialogActionHandler::acceptDialog(const std::string& dialogId) {
-  auto dialog = mDialogManager->get(dialogId);
-  auto message = dialog->makeMessage(
-      DialogMessage::Action::VERIFY_KEY,
-      mCryptoSystem->generateAndExportKey(dialogId, dialog->getAdress()));
-  if (auto lock = mMessageDispatcher.lock()) {
-    lock->sendMessage(
-        message, dialog->getChannelMoniker(),
-        make_delivery_handler_for_wait_verification_dialog_request(
-            mMessageDispatcher, mDialogManager->wrapper(dialogId), mNotifier));
-  } else {
-    throw std::runtime_error("Не удалось отправить сообщение для контакта " +
-                             dialog->getDialogId());
-  }
 }
 
 void DialogActionHandler::abortDialog(const std::string& dialogId) {
@@ -154,13 +132,6 @@ void DialogActionHandler::closeDialog(const std::string& dialogId) {
   } else {
     abortDialog(dialogId);
   }
-}
-
-void DialogActionHandler::cancelDialog(const std::string& dialogId) {
-  sendRequest(
-      dialogId, DialogMessage::Action::CANCEL_DIALOG,
-      make_delivery_handler_for_cancel_dialog_request(
-          mMessageDispatcher, mDialogManager->wrapper(dialogId), mNotifier));
 }
 
 /*
@@ -197,11 +168,24 @@ void DialogActionHandler::prepareNotFoundDialog(const DialogMessage& message,
                                              message.sequential(),
                                              Dialog::Status::CREATE_REQUEST);
       mDialogManager->add(dialog);
-      mNotifier->notify(AbstractUserNotifier::Severity::INFO,
-                        dialog_to_string(dialog));
+      auto sendMessage =
+          dialog->makeMessage(DialogMessage::Action::VERIFY_KEY,
+                              mCryptoSystem->generateAndExportKey(
+                                  message.dialogId(), dialog->getAdress()));
+      if (auto lock = mMessageDispatcher.lock()) {
+        lock->sendMessage(
+            sendMessage, dialog->getChannelMoniker(),
+            make_delivery_handler_for_wait_verification_dialog_request(
+                mMessageDispatcher, mDialogManager->wrapper(message.dialogId()),
+                mNotifier));
+      } else {
+        mNotifier->notify(AbstractUserNotifier::Severity::ERROR,
+                          "Не удалось отправить сообщение для контакта " +
+                              dialog->getDialogId());
+      }
       return;
     }
-  } catch (std::range_error& ex) {
+  } catch (std::range_error&) {
     mNotifier->notify(AbstractUserNotifier::Severity::ERROR,
                       "Адресат '" + message.adress() +
                           "' прислал запрос на добавление диалога, но контакт "
@@ -236,10 +220,7 @@ void DialogActionHandler::prepareForFoundDialog(const DialogMessage& message,
                       mDialogManager->wrapper(message.dialogId()), mNotifier));
       LOGGER->debug("Get message KEY_VERIFICATION from {0}", channel);
     } else {
-      sendRequest(message.dialogId(), DialogMessage::Action::CANCEL_DIALOG,
-                  make_delivery_handler_for_cancel_dialog_request(
-                      mMessageDispatcher,
-                      mDialogManager->wrapper(message.dialogId()), mNotifier));
+      abortDialog(message.dialogId());
       mNotifier->notify(
           AbstractUserNotifier::Severity::INFO,
           "Не удалось произвести верификацию сеансового ключа с контактом " +
@@ -261,8 +242,6 @@ Dialog::Status DialogActionHandler::map(DialogMessage::Action action) const
   switch (action) {
     case A::ACCEPT_DIALOG:
       return Dialog::Status::ACTIVE;
-    case A::CANCEL_DIALOG:
-      return Dialog::Status::CANCELED;
     case A::CLOSE_DIALOG:
       return Dialog::Status::CLOSED;
     case A::ABORT:
@@ -275,8 +254,7 @@ Dialog::Status DialogActionHandler::map(DialogMessage::Action action) const
 bool DialogActionHandler::isRemoveDialogAction(
     DialogMessage::Action action) const noexcept {
   using A = DialogMessage::Action;
-  return action == A::CANCEL_DIALOG || action == A::CLOSE_DIALOG ||
-         action == A::ABORT;
+  return action == A::CLOSE_DIALOG || action == A::ABORT;
 }
 
 void DialogActionHandler::prepareHandleException(

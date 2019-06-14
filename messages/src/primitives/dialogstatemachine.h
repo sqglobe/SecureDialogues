@@ -15,17 +15,11 @@
  */
 class DialogStateMachine {
  public:
-  DialogStateMachine();
-
  public:
   bool isStateTransitionAllowed(Dialog::Status currState,
                                 Dialog::Status newState) const noexcept;
   bool isMessageActionAllowed(Dialog::Status currState,
                               DialogMessage::Action action) const noexcept;
-
- private:
-  std::vector<std::set<Dialog::Status>> mStateTransisions;
-  std::vector<std::set<DialogMessage::Action>> mAllowedActions;
 };
 
 #endif  // DIALOGSTATEMACHINE_H
