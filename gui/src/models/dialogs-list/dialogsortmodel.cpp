@@ -12,8 +12,7 @@ int getRating(Dialog::Status status) {
   else if (status == S::WAIT_CONFIRM || status == S::ACCEPTED_WAIT ||
            status == S::WAIT_KEY_VERIFICAION)
     return 3;
-  else if (status == S::CANCEL_WAIT || status == S::CLOSED ||
-           status == S::CANCELED || status == S::ABORTED)
+  else if (status == S::CLOSED || status == S::ABORTED)
     return 4;
   return 10;
 }

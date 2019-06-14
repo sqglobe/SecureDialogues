@@ -41,9 +41,6 @@ class TestDialogActionHandler : public QObject {
   void testCloseDialog();
   void testCloseDialog_data();
 
-  void testCancelDialog();
-  void testCancelDialog_data();
-
   void testDialogActionRecieve();
   void testDialogActionRecieve_data();
 
@@ -170,35 +167,6 @@ void TestDialogActionHandler::testCloseDialog_data() {
                      << std::string("channel 2");
 }
 
-void TestDialogActionHandler::testCancelDialog() {
-  exec_test(&DialogActionHandler::cancelDialog, mDialogManager,
-            mMessageDispatcher, mNotifier, mContacts);
-}
-
-void TestDialogActionHandler::testCancelDialog_data() {
-  QTest::addColumn<DialogMessage::Action>("action");
-  QTest::addColumn<std::string>("dialog_id");
-  QTest::addColumn<Dialog::Status>("new_status");
-  QTest::addColumn<std::string>("adress");
-  QTest::addColumn<std::string>("channel");
-
-  QTest::newRow("0") << DialogMessage::Action::CANCEL_DIALOG
-                     << std::string("created dialog 1")
-                     << Dialog::Status::CANCELED
-                     << std::string("adress created1")
-                     << std::string("channel 3");
-  QTest::newRow("1") << DialogMessage::Action::CANCEL_DIALOG
-                     << std::string("created dialog 2")
-                     << Dialog::Status::CANCELED
-                     << std::string("adress created2")
-                     << std::string("channel 3");
-  QTest::newRow("2") << DialogMessage::Action::CANCEL_DIALOG
-                     << std::string("created dialog 3")
-                     << Dialog::Status::CANCELED
-                     << std::string("adress created3")
-                     << std::string("channel 3");
-}
-
 void TestDialogActionHandler::testDialogActionRecieve() {
   QFETCH(std::string, dialog_id);
   QFETCH(Dialog::Status, new_status);
@@ -265,32 +233,6 @@ SIGNATURE: 1\n\
 --------------------------------------------------------------\n\
 ") << std::string("accepted")
                      << 1;
-
-  QTest::newRow("4") << std::string("new dialog 3") << Dialog::Status::CANCELED
-                     << std::string(
-                            "SECURE DIALOG MESSAGE\n\
-VERSION:1.0\n\
-ACTION:CANCEL_DIALOG\n\
-SEQUENTAL_NUMBER:3\n\
-DIALOG:new dialog 3\n\
-TIMESTAMP:1232323\n\
-SIGNATURE: 1\n\
---------------------------------------------------------------\n\
-") << std::string("canceled")
-                     << 3;
-
-  QTest::newRow("5") << std::string("new dialog 4") << Dialog::Status::CANCELED
-                     << std::string(
-                            "SECURE DIALOG MESSAGE\n\
-VERSION:1.0\n\
-ACTION:CANCEL_DIALOG\n\
-SEQUENTAL_NUMBER:2\n\
-DIALOG:new dialog 4\n\
-TIMESTAMP:1232323\n\
-SIGNATURE: 1\n\
---------------------------------------------------------------\n\
-") << std::string("canceled")
-                     << 2;
 
   QTest::newRow("6") << std::string("active dialog 1") << Dialog::Status::CLOSED
                      << std::string(

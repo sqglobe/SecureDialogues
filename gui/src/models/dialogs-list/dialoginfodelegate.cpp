@@ -7,8 +7,7 @@ Q_DECLARE_METATYPE(DialogInfo);
 QColor getColor(Dialog::Status status) {
   if (Dialog::Status::ACTIVE == status) {
     return QColor(Qt::green);
-  } else if (Dialog::Status::CANCELED == status ||
-             Dialog::Status::CLOSED == status) {
+  } else if (Dialog::Status::CLOSED == status) {
     return QColor(Qt::red);
   } else if (Dialog::Status::ABORTED == status) {
     return QColor(240, 128, 128);

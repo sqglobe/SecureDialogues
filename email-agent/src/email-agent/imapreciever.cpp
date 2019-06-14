@@ -17,8 +17,9 @@ static std::shared_ptr<spdlog::logger> LOGGER =
 
 vmime::net::message::uid getLastMessageUid(
     const vmime::shared_ptr<vmime::net::folder>& folder) {
-  if (folder->getMessageCount() > 0) {
-    auto message = folder->getMessage(folder->getMessageCount());
+  auto folderStatus = folder->getStatus();
+  if (folderStatus->getMessageCount() > 0) {
+    auto message = folder->getMessage(folderStatus->getMessageCount());
     folder->fetchMessage(message, vmime::net::fetchAttributes::UID);
     return message->getUID();
   }
@@ -66,13 +67,25 @@ void ImapReciever::connect() {
     mUidValidity = imapFolder->getUIDValidity();
   }
 
-  mLastMessage = getLastMessageUid(mImapFolder);
+  if (mImapFolder->getMessageCount() > 0) {
+    auto message = mImapFolder->getMessage(mImapFolder->getMessageCount());
+    mImapFolder->fetchMessage(message, vmime::net::fetchAttributes::UID);
+    mLastMessage = message->getUID();
+  } else {
+    mLastMessage = vmime::net::message::uid(1);
+  }
 }
 
 std::list<std::pair<std::string, std::string> >
 ImapReciever::recievedMessages() {
+  auto nextLastUid = getLastMessageUid(mImapFolder);
+
+  if (nextLastUid == mLastMessage) {
+    return {};
+  }
+
   auto allMessages = mImapFolder->getMessages(
-      vmime::net::messageSet::byUID(mLastMessage, "*"));
+      vmime::net::messageSet::byUID(mLastMessage, nextLastUid));
   mImapFolder->fetchMessages(
       allMessages,
       vmime::net::fetchAttributes::ENVELOPE | vmime::net::fetchAttributes::UID);
@@ -106,7 +119,7 @@ ImapReciever::recievedMessages() {
     }
   }
 
-  mLastMessage = (*allMessages.rbegin())->getUID();
+  mLastMessage = nextLastUid;
 
   return res;
 }

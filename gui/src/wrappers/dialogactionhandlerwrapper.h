@@ -23,9 +23,7 @@ class DialogActionHandlerWrapper : public QObject {
 
  public slots:
   void createDialogAction(std::shared_ptr<const Contact> contact);
-  void acceptDialogAction(std::string dialogId);
   void closeDialogAction(std::string dialogId);
-  void cancelDialogAction(std::string dialogId);
   void abortDialogAction(std::string dialogId);
   void removeDialogAction(std::string dialogId);
 

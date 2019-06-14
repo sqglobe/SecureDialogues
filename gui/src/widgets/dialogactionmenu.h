@@ -21,16 +21,12 @@ class DialogActionMenu : public QObject {
                             QObject* parent = nullptr);
 
  signals:
-  void acceptDialog(std::string dialogId);
-  void canceltDialog(std::string dialogId);
   void closeDialog(std::string dialogId);
   void removeDialog(std::string dialogId);
 
  protected slots:
   void aboutToHide();
-  void acceptAction();
   void closeDialogAction();
-  void cancelActoin();
   void removeAction();
 
  public slots:

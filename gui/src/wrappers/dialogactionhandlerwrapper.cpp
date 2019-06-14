@@ -20,19 +20,6 @@ void DialogActionHandlerWrapper::createDialogAction(
   }
 }
 
-void DialogActionHandlerWrapper::acceptDialogAction(std::string dialogId) {
-  try {
-    mHandler->acceptDialog(dialogId);
-  } catch (const std::out_of_range&) {
-    mNotifier->notify(AbstractUserNotifier::Severity::ERROR,
-                      "Не удалось подтвердить создание диалога. Причина - "
-                      "диалог не существует");
-  } catch (const std::exception&) {
-    mNotifier->notify(AbstractUserNotifier::Severity::ERROR,
-                      "Ошибка при подтверждении создания диалога.");
-  }
-}
-
 void DialogActionHandlerWrapper::closeDialogAction(std::string dialogId) {
   try {
     mHandler->closeDialog(dialogId);
@@ -43,19 +30,6 @@ void DialogActionHandlerWrapper::closeDialogAction(std::string dialogId) {
   } catch (const std::exception&) {
     mNotifier->notify(AbstractUserNotifier::Severity::ERROR,
                       "Ошибка при закрытии диалога.");
-  }
-}
-
-void DialogActionHandlerWrapper::cancelDialogAction(std::string dialogId) {
-  try {
-    mHandler->cancelDialog(dialogId);
-  } catch (const std::out_of_range&) {
-    mNotifier->notify(
-        AbstractUserNotifier::Severity::ERROR,
-        "Не удалось отменить создание диалога. Причина - диалог не существует");
-  } catch (const std::exception&) {
-    mNotifier->notify(AbstractUserNotifier::Severity::ERROR,
-                      "Ошибка при отмене создания диалога.");
   }
 }
 

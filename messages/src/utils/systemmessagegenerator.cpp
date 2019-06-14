@@ -14,8 +14,6 @@ std::string get_message(Dialog::Status status) {
       return "Диалог сброшен";
     case S::CLOSED:
       return "Диалог был закрыт";
-    case S::CANCEL_WAIT:
-      return "Ожидает закрытия";
     default:
       assert(false);
   }
@@ -23,8 +21,7 @@ std::string get_message(Dialog::Status status) {
 
 bool isInSystemMessageState(Dialog::Status status) {
   using S = Dialog::Status;
-  return S::ABORTED == status || S::CLOSED == status ||
-         S::CANCEL_WAIT == status;
+  return S::ABORTED == status || S::CLOSED == status;
 }
 
 SystemMessageGenerator::SystemMessageGenerator(
