@@ -128,10 +128,6 @@ image::{generateddir}/dialog-contact-selected.png[щелчек по контак
 
 image::{generateddir}/dialog-messages.png[dialog messages]
 
-Если собеседник *B* отклоняет создание диалога, то *A* получит соответствующее сообщение `CANCEL_DIALOG` и создание диалога будет завершено:
-
-image::{generateddir}/dialog-cancel.png[cancel dialog]
-
 Если проверка сеансового ключа не прошла, то в этом случае диалог так же будет закрыт сообщением `CLOSE_DIALOG`:
 
 image::{generateddir}/dialog-key-not-valid.png[close dialog]

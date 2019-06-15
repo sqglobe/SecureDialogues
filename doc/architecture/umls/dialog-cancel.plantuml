@@ -1,4 +1,0 @@
-@startuml
-A --> B : <latex>S_A(CREATE\_DIALOG)</latex>
-B --> A : <latex>S_B(CANCEL\_DIALOG)</latex>
-@enduml

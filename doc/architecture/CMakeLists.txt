@@ -19,7 +19,6 @@ set (
     umls/dialog-composition.plantuml
     umls/dialog-contact-selected.plantuml
     umls/dialog-messages.planuml
-    umls/dialog-cancel.plantuml
     umls/dialog-key-not-valid.plantuml
     )
 
