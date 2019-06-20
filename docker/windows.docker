@@ -83,36 +83,7 @@ ENTRYPOINT i686-w64-mingw32.shared-cmake \
   && make -j4 JOBS=4 \
   && mkdir -p /app/res/SecureDialogues-windows-i686 /app/res/SecureDialogues-windows-i686/platforms/ /app/res/SecureDialogues-windows-i686/styles \
   && cp bin/SecureDialogues.exe /app/res/SecureDialogues-windows-i686/SecureDialogues-windows-i686.exe \
-  && cp /cross/mxe/usr/i686-w64-mingw32.shared/bin/libboost_system-mt.dll \
-   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libwinpthread-1.dll \
-   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libgcc_s_sjlj-1.dll \
-   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libstdc++-6.dll \
-   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libcrypto-1_1.dll \
-   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libssl-1_1.dll \
-   /cross/mxe/usr/i686-w64-mingw32.shared/bin/zlib1.dll \
-   /cross/mxe/usr/i686-w64-mingw32.shared/qt5/bin/Qt5Core.dll \
-   /cross/mxe/usr/i686-w64-mingw32.shared/qt5/bin/Qt5Gui.dll \
-   /cross/mxe/usr/i686-w64-mingw32.shared/qt5/bin/Qt5Widgets.dll \
-   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libpcre2-16-0.dll \
-   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libharfbuzz-0.dll \
-   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libpng16-16.dll \
-   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libfreetype-6.dll \
-   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libglib-2.0-0.dll \
-   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libbz2.dll \
-   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libintl-8.dll \
-   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libiconv-2.dll \
-   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libpcre-1.dll \
-   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libgnutls-30.dll \
-   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libgsasl-7.dll \
-   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libgmp-10.dll \
-   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libhogweed-4.dll \
-   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libidn2-0.dll \
-   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libnettle-6.dll \
-   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libunistring-2.dll \
-   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libidn-12.dll \
-   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libntlm-0.dll \
-   /cross/mxe/usr/i686-w64-mingw32.shared/bin/libcurl-4.dll \
-   /app/res/SecureDialogues-windows-i686 \
+  && /cross/mxe/tools/copydlldeps.sh -c -f bin/SecureDialogues.exe -d /app/res/SecureDialogues-windows-i686 -R /cross/mxe/usr/ \
   && cp /cross/mxe/usr/i686-w64-mingw32.shared/qt5/plugins/platforms/qwindows.dll /app/res/SecureDialogues-windows-i686/platforms/ \
   && cp /cross/mxe/usr/i686-w64-mingw32.shared/qt5/plugins/styles/qwindowsvistastyle.dll /app/res/SecureDialogues-windows-i686/styles 
         
