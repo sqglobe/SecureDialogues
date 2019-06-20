@@ -16,7 +16,6 @@ class AsymetricalKeyGenerator {
 
  private:
   std::shared_ptr<AsymetricalKeyStore> mKeyStore;
-  static std::shared_ptr<spdlog::logger> LOGGER;
 };
 
 #endif  // ASYMETRICALKEYGENERATOR_H

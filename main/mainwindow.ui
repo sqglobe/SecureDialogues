@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>SecureDialogues</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>../secure-dialogues.ico</normaloff>../secure-dialogues.ico</iconset>
+  </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>

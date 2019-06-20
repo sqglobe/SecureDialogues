@@ -28,7 +28,7 @@ RUN apt install -y pkg-config  libgnutls-dev libghc-gsasl-dev
 
 WORKDIR /build
 
-RUN git clone https://github.com/kisli/vmime.git && cd vmime && git checkout v0.9.2 \
+RUN git clone https://github.com/kisli/vmime.git && cd vmime && git checkout e2fc1911f17374ae5343c28ec52493f1dfdf09ab \
   && mkdir build && cd build \
   && cmake -G "Unix Makefiles" -DVMIME_HAVE_MESSAGING_PROTO_SENDMAIL=False \
     -DVMIME_HAVE_MLANG_H=False \

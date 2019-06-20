@@ -34,7 +34,7 @@ qt5_wrap_ui(UI_WRAP ${MAIN_UI})
 qt5_wrap_cpp(MOC_WRAP ${MAIN_MOC})
 
 
-add_executable(SecureDialogues ${UI_WRAP} ${MAIN_SOURCE} ${MOC_WRAP})
+add_executable(SecureDialogues ${UI_WRAP} ${MAIN_SOURCE} ${MOC_WRAP} secure-dialogues.rc)
 target_link_libraries(SecureDialogues Qt5::Core Qt5::Gui  Qt5::Widgets gui  )
 
 if(MSVC)

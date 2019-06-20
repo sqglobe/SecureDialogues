@@ -15,11 +15,28 @@ RUN apt-get update && apt-get install -y git qtdeclarative5-dev plantuml libboos
   && gem install pygments.rb \
   && gem install coderay
 
+RUN apt install -y pkg-config  libgnutls28-dev libghc-gsasl-dev
+
+WORKDIR /build
+
+RUN git clone https://github.com/kisli/vmime.git && cd vmime && git checkout e2fc1911f17374ae5343c28ec52493f1dfdf09ab \
+  && mkdir build && cd build \
+  && cmake -G "Unix Makefiles" -DVMIME_HAVE_MESSAGING_PROTO_SENDMAIL=False \
+    -DVMIME_HAVE_MLANG_H=False \
+    -DVMIME_BUILD_STATIC_LIBRARY=ON \
+    -DVMIME_BUILD_SHARED_LIBRARY=OFF \
+    -DVMIME_BUILD_DOCUMENTATION=OFF \
+    -DVMIME_CHARSETCONV_LIB=iconv \
+    -D_RUN_RESULT_VAR=0 \
+    -DVMIME_BUILD_SAMPLES=OFF ../ \
+  && cmake --build . && make install
+
+
 # Установим рабочую директорию нашего приложения
 WORKDIR /app/build
 
 # Установим точку входа 
-ENTRYPOINT cmake -DBUILD_TESTING=OFF -DJSON_BuildTests=OFF -DJSON_Install=OFF -DXG_TESTS=OFF   -DCMAKE_BUILD_TYPE=Release /app/src \
+ENTRYPOINT cmake -DBUILD_TESTING=OFF -DJSON_BuildTests=OFF -DJSON_Install=OFF -DXG_TESTS=OFF   -DCMAKE_BUILD_TYPE=Release  -DUSE_VMIME_SHARED=OFF  /app/src \
         && make -j4 JOBS=4 \
         && cp documents/architecture.pdf documents/user-guid.pdf /app/res \
         && cp bin/SecureDialogues /app/res/SecureDialogues-ubuntu-18.04-x86_64

@@ -18,9 +18,6 @@
 
 #undef ERROR
 
-std::shared_ptr<spdlog::logger> MessageActionHandler::LOGGER =
-    spdlog::stdout_color_mt("message-action-handler");
-
 class MessageNotDeliveriedHandler : public DeliveryHandler {
  public:
   MessageNotDeliveriedHandler(
@@ -65,10 +62,11 @@ void MessageActionHandler::handle(const DialogMessage& message,
           .append(". С указанным пользователем отсутсвуют открытые диалоги");
       mNotifier->notify(AbstractUserNotifier::Severity::ERROR, err);
       if (auto despatcher = mDespatcher.lock()) {
-        LOGGER->warn(
-            "get message action from {0}, creatred dialog not found. Send "
-            "abort",
-            message.adress());
+        spdlog::get("root_logger")
+            ->warn(
+                "get message action from {0}, creatred dialog not found. Send "
+                "abort",
+                message.adress());
         despatcher->sendAndForget(
             make_abort(message.dialogId(), message.adress(),
                        std::numeric_limits<unsigned long>::max()),
@@ -78,10 +76,12 @@ void MessageActionHandler::handle(const DialogMessage& message,
     }
     if (auto dialog = mDialogManager->get(message.dialogId());
         !dialog->isSequentalOk(message.sequential())) {
-      LOGGER->warn(
-          "Get message with invalid sequential {0}, dialog id{1}, action: {2}",
-          message.sequential(), message.dialogId(),
-          static_cast<int>(message.action()));
+      spdlog::get("root_logger")
+          ->warn(
+              "Get message with invalid sequential {0}, dialog id{1}, action: "
+              "{2}",
+              message.sequential(), message.dialogId(),
+              static_cast<int>(message.action()));
       return;
     }
     auto content = mCryptoSystem->decryptMessageBody(message.dialogId(),
@@ -89,8 +89,9 @@ void MessageActionHandler::handle(const DialogMessage& message,
     mMessageContainer->addMessage(message.dialogId(), content, true);
   } catch (std::exception& ex) {
     abortOnException(message, channel);
-    LOGGER->warn("catch exception {0} when prepare message from {1}", ex.what(),
-                 message.adress());
+    spdlog::get("root_logger")
+        ->warn("catch exception {0} when prepare message from {1}", ex.what(),
+               message.adress());
   }
 }
 
@@ -158,7 +159,8 @@ void MessageActionHandler::abortOnException(
       }
     }
   } catch (std::exception& ex) {
-    LOGGER->warn("catch exception {0} when abort message from {1}", ex.what(),
-                 message.adress());
+    spdlog::get("root_logger")
+        ->warn("catch exception {0} when abort message from {1}", ex.what(),
+               message.adress());
   }
 }

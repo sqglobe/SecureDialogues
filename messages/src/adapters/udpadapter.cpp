@@ -9,9 +9,6 @@
 
 #include "spdlog/spdlog.h"
 
-static std::shared_ptr<spdlog::logger> LOGGER =
-    spdlog::stdout_color_mt("udp-adapter");
-
 void UdpAdapter::send(const std::string& message, const std::string& adress) {
   using boost::asio::ip::udp;
   udp::endpoint remote_endpoint(
@@ -52,7 +49,8 @@ bool UdpAdapter::connect() {
   mSocket->bind(udp::endpoint(udp::v4(), 5555), ec);
 
   if (ec) {
-    LOGGER->error("Get error while created endpoint: {0}", ec.message());
+    spdlog::get("root_logger")
+        ->error("Get error while created endpoint: {0}", ec.message());
   }
 
   return ec.value() == 0;

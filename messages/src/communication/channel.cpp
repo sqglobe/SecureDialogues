@@ -15,9 +15,6 @@
 #include "exception/disconectedexception.h"
 #include "exception/notauthorizedexception.h"
 
-std::shared_ptr<spdlog::logger> Channel::LOGGER =
-    spdlog::stdout_color_mt("channel");
-
 Channel::Channel(std::unique_ptr<AbstractChannelAdapter>&& adater,
                  const std::shared_ptr<AbstractMessageDespatcher>& handler,
                  const std::shared_ptr<AbstractMessageMarshaller>& marshaller,
@@ -48,7 +45,7 @@ Channel::~Channel() {
       mThread.join();
     }
   } catch (std::exception ex) {
-    LOGGER->error("Get exception: {0}", ex.what());
+    spdlog::get("root_logger")->error("Get exception: {0}", ex.what());
   }
 }
 
@@ -72,10 +69,12 @@ void Channel::messsageCycle() {
           try {
             hLock->dispatch(dialogMessage.value(), mName);
           } catch (std::exception& ex) {
-            LOGGER->error(
-                "Get Exception {0} when dispatch message {1} for chanel {2} "
-                "from {3}",
-                ex.what(), msg.first, mName, msg.first);
+            spdlog::get("root_logger")
+                ->error(
+                    "Get Exception {0} when dispatch message {1} for chanel "
+                    "{2} "
+                    "from {3}",
+                    ex.what(), msg.first, mName, msg.first);
           }
         }
       }
@@ -89,7 +88,8 @@ void Channel::messsageCycle() {
                            std::string(ex.what()));
       isDisconected = true;
     } catch (const std::exception& ex) {
-      LOGGER->debug("Get exception when recieve message: {0}", ex.what());
+      spdlog::get("root_logger")
+          ->debug("Get exception when recieve message: {0}", ex.what());
     }
   }
 }

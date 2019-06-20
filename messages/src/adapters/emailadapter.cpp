@@ -8,9 +8,6 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include "spdlog/spdlog.h"
 
-static std::shared_ptr<spdlog::logger> LOGGER =
-    spdlog::stdout_color_mt("email-adapter-logger");
-
 void EmailAdapter::send(const std::string& message, const std::string& adress) {
   try {
     auto encoded =
@@ -68,12 +65,32 @@ bool EmailAdapter::connect() {
       mReciever->connect();
       return true;
     } catch (const vmime::exceptions::connection_error& ex) {
+      auto logger = spdlog::get("root_logger");
+      logger->error("Get connection_error : {0}", ex.what());
+      while (auto o = ex.other()) {
+        logger->error("Parent exception {0} {1}", o->name(), o->what());
+      }
       throw DisconectedException(ex.what());
     } catch (const vmime::exceptions::authentication_error& ex) {
+      auto logger = spdlog::get("root_logger");
+      logger->error("Get authentication_error : {0}", ex.what());
+      while (auto o = ex.other()) {
+        logger->error("Parent exception {0} {1}", o->name(), o->what());
+      }
       throw NotAuthorizedException(ex.what());
     } catch (const vmime::exceptions::connection_greeting_error& ex) {
+      auto logger = spdlog::get("root_logger");
+      logger->error("Get connection_greeting_error : {0}", ex.what());
+      while (auto o = ex.other()) {
+        logger->error("Parent exception {0} {1}", o->name(), o->what());
+      }
       throw DisconectedException(ex.what());
     } catch (const vmime::exceptions::socket_not_connected_exception& ex) {
+      auto logger = spdlog::get("root_logger");
+      logger->error("Get socket_not_connected_exception : {0}", ex.what());
+      while (auto o = ex.other()) {
+        logger->error("Parent exception {0} {1}", o->name(), o->what());
+      }
       throw DisconectedException(ex.what());
     }
   }

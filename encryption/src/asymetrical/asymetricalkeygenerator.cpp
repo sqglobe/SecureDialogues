@@ -6,9 +6,6 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/spdlog.h>
 
-std::shared_ptr<spdlog::logger> AsymetricalKeyGenerator::LOGGER =
-    spdlog::stdout_color_mt("asymetrical-key-generator");
-
 AsymetricalKeyGenerator::AsymetricalKeyGenerator(
     std::shared_ptr<AsymetricalKeyStore> key) :
     mKeyStore(std::move(key)) {}
@@ -26,7 +23,8 @@ bool AsymetricalKeyGenerator::generate() {
     mKeyStore->setKeys(publicKey, privateKey);
     return true;
   } catch (std::exception& ex) {
-    LOGGER->error("Failed generate keys with exception {0}", ex.what());
+    spdlog::get("root_logger")
+        ->error("Failed generate keys with exception {0}", ex.what());
     return false;
   }
 }

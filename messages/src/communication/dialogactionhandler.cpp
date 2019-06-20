@@ -14,9 +14,6 @@
 
 #undef ERROR
 
-std::shared_ptr<spdlog::logger> DialogActionHandler::LOGGER =
-    spdlog::stdout_color_mt("dialog-action-handler");
-
 std::string get_dialog_status_description(Dialog::Status status) {
   using S = Dialog::Status;
   switch (status) {
@@ -76,11 +73,13 @@ void DialogActionHandler::handle(const DialogMessage& message,
       if (dialog->isSequentalOk(message.sequential())) {
         prepareForFoundDialog(message, channel);
       } else {
-        LOGGER->warn(
-            "Get message with invalid sequential {0}, dialog id{1}, action: "
-            "{2}",
-            message.sequential(), message.dialogId(),
-            static_cast<int>(message.action()));
+        spdlog::get("root_logger")
+            ->warn(
+                "Get message with invalid sequential {0}, dialog id{1}, "
+                "action: "
+                "{2}",
+                message.sequential(), message.dialogId(),
+                static_cast<int>(message.action()));
       }
     }
   } catch (std::exception& ex) {
@@ -195,11 +194,13 @@ void DialogActionHandler::prepareNotFoundDialog(const DialogMessage& message,
     lock->sendAndForget(make_abort(message.dialogId(), message.adress(),
                                    std::numeric_limits<unsigned long>::max()),
                         channel);
-    LOGGER->warn(
-        "Get message with action {0} for dialog with adress {1} content {2}. "
-        "This dialog is not found. Aborted",
-        static_cast<int>(message.action()), message.adress(),
-        message.content());
+    spdlog::get("root_logger")
+        ->warn(
+            "Get message with action {0} for dialog with adress {1} content "
+            "{2}. "
+            "This dialog is not found. Aborted",
+            static_cast<int>(message.action()), message.adress(),
+            message.content());
   }
 }
 
@@ -262,8 +263,9 @@ void DialogActionHandler::prepareHandleException(
     const std::string& channel,
     const std::exception& ex) noexcept {
   try {
-    LOGGER->warn("dialog {0} from {1} makes error {2}", message.dialogId(),
-                 channel, ex.what());
+    spdlog::get("root_logger")
+        ->warn("dialog {0} from {1} makes error {2}", message.dialogId(),
+               channel, ex.what());
     if (mDialogManager->has(message.dialogId())) {
       abortDialog(message.dialogId());
     } else {
@@ -276,9 +278,11 @@ void DialogActionHandler::prepareHandleException(
     }
 
   } catch (std::exception& exc) {
-    LOGGER->error(
-        "dialog {0} from {1} get excpetion {2} when prepare handle exception "
-        "{3}",
-        message.dialogId(), channel, exc.what(), ex.what());
+    spdlog::get("root_logger")
+        ->error(
+            "dialog {0} from {1} get excpetion {2} when prepare handle "
+            "exception "
+            "{3}",
+            message.dialogId(), channel, exc.what(), ex.what());
   }
 }

@@ -79,7 +79,6 @@ class MessageActionHandler : public AbstractMessageHandler {
   std::weak_ptr<const MessageDespatcher> mDespatcher;
   std::shared_ptr<AbstractUserNotifier> mNotifier;
   std::shared_ptr<const CryptoSystem> mCryptoSystem;
-  static std::shared_ptr<spdlog::logger> LOGGER;
 };
 
 #endif  // MESSAGEACTIONHANDLER_H

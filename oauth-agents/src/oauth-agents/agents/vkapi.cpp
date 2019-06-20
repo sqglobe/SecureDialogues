@@ -20,9 +20,6 @@
 
 // https://vk.com/dev/using_longpoll
 
-static std::shared_ptr<spdlog::logger> LOGGER =
-    spdlog::stdout_color_mt("vk-api-logger");
-
 enum MESSAGE_FLAGS { OUTBOX = 2, CHAT = 16 };
 
 enum MESSAGE_ELEMETS {

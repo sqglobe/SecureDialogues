@@ -121,7 +121,6 @@ class MessageDespatcher : public AbstractMessageDespatcher {
       TimeoutedRrepository<std::shared_ptr<DeliveryHandler>,
                            std::pair<std::string, unsigned long>>>
       mRepo;
-  static std::shared_ptr<spdlog::logger> LOGGER;
 };
 
 #endif  // MESSAGEDESPATCHER_H

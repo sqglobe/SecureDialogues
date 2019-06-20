@@ -19,9 +19,6 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <iostream>
 
-std::shared_ptr<spdlog::logger> MessageDespatcher::LOGGER =
-    spdlog::stdout_color_mt("message-despatcher");
-
 MessageDespatcher::MessageDespatcher(
     std::shared_ptr<const CryptoSystem> cryptoSystem,
     std::shared_ptr<AbstractUserNotifier> notifier) :
@@ -37,22 +34,26 @@ void MessageDespatcher::dispatch(const DialogMessage& message,
   if (DialogMessage::Action::ACK == message.action()) {
     if (!mRepo->remove(
             std::make_pair(message.dialogId(), message.sequential()))) {
-      LOGGER->warn(
-          "Get message from {0} with action {1} sequental {2}. Not found seq "
-          "in repo",
-          message.adress(), static_cast<int>(message.action()),
-          message.sequential());
+      spdlog::get("root_logger")
+          ->warn(
+              "Get message from {0} with action {1} sequental {2}. Not found "
+              "seq "
+              "in repo",
+              message.adress(), static_cast<int>(message.action()),
+              message.sequential());
     }
   } else {
     sendAck(message, channelName);
     if (!isSignatureValid(message)) {
-      LOGGER->error(
-          "Get invalid message signature for message {0} for address {1} "
-          "channel {2}",
-          message.content(), message.adress(), channelName);
+      spdlog::get("root_logger")
+          ->error(
+              "Get invalid message signature for message {0} for address {1} "
+              "channel {2}",
+              message.content(), message.adress(), channelName);
     } else if (get_timestamp() - message.timestamp() > MAX_TIMESTAMP_DIFF) {
-      LOGGER->error("Get old message {0} for address {1} channel {2}",
-                    message.content(), message.adress(), channelName);
+      spdlog::get("root_logger")
+          ->error("Get old message {0} for address {1} channel {2}",
+                  message.content(), message.adress(), channelName);
     } else {
       std::shared_lock<std::shared_mutex> guard(mMutex);
       for (auto& handler : mHandlers) {
@@ -71,7 +72,7 @@ void MessageDespatcher::sendMessage(
   std::shared_lock<std::shared_mutex> guard(mMutex);
 
   if (mChannels.count(channelName) == 0) {
-    LOGGER->warn("Not found channel {0}", channelName);
+    spdlog::get("root_logger")->warn("Not found channel {0}", channelName);
     return;
   }
 
@@ -148,16 +149,20 @@ bool MessageDespatcher::isSignatureValid(const DialogMessage& message) const
     if (mCryptoSystem->isSignatureOk(message)) {
       return true;
     }
-    LOGGER->error(
-        "Подпись для адреса {0} не верна. Возможно публичный ключ изменился "
-        "или это является следствием атаки",
-        message.adress());
+    spdlog::get("root_logger")
+        ->error(
+            "Подпись для адреса {0} не верна. Возможно публичный ключ "
+            "изменился "
+            "или это является следствием атаки",
+            message.adress());
   } catch (std::range_error&) {
-    LOGGER->error("Не найден публичный ключ для пользователя {0} ",
-                  message.adress());
+    spdlog::get("root_logger")
+        ->error("Не найден публичный ключ для пользователя {0} ",
+                message.adress());
   } catch (std::exception& ex) {
-    LOGGER->error("при проверки подписи сообщения от {0} произошла ошибка {1}",
-                  message.adress(), ex.what());
+    spdlog::get("root_logger")
+        ->error("при проверки подписи сообщения от {0} произошла ошибка {1}",
+                message.adress(), ex.what());
   }
   return false;
 }

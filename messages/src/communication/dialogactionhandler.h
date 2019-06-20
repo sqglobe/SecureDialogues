@@ -115,8 +115,6 @@ class DialogActionHandler : public AbstractMessageHandler {
   std::shared_ptr<AbstractUserNotifier> mNotifier;
   std::shared_ptr<ContactContainer> mContactContainer;
   std::shared_ptr<CryptoSystem> mCryptoSystem;
-
-  static std::shared_ptr<spdlog::logger> LOGGER;
 };
 
 #endif  // DIALOGACTIONHANDLER_H

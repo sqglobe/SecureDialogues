@@ -10,9 +10,6 @@
 
 #undef ERROR
 
-static std::shared_ptr<spdlog::logger> LOGGER =
-    spdlog::stdout_color_mt("dialog-action-delivery-handler");
-
 class DialogActionDeliveryHandler : public DeliveryHandler {
  public:
   DialogActionDeliveryHandler(
@@ -55,9 +52,10 @@ void DialogActionDeliveryHandler::removed() {
 void DialogActionDeliveryHandler::timeouted() {
   if (mAbortNeed) {
     if (auto lock = mDispatcher.lock()) {
-      LOGGER->warn(
-          " ACK for dialog {0} and adress {1} not recieved. ABORT sended ",
-          mWrapper->getDialogId(), mWrapper->getAdress());
+      spdlog::get("root_logger")
+          ->warn(
+              " ACK for dialog {0} and adress {1} not recieved. ABORT sended ",
+              mWrapper->getDialogId(), mWrapper->getAdress());
       lock->sendAndForget(mWrapper->makeAbort(), mWrapper->getChannelMoniker());
     }
   }

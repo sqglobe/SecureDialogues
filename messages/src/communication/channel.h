@@ -108,7 +108,6 @@ class Channel : public std::enable_shared_from_this<Channel> {
   std::shared_ptr<AbstractMessageMarshaller> mMarshaller;
   std::string mName;
   std::shared_ptr<EventQueue> mEventQueue;
-  static std::shared_ptr<spdlog::logger> LOGGER;
   std::thread mThread;
   std::mutex mMutex;
   std::chrono::seconds mWaitAckInterval;

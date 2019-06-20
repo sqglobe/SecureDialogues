@@ -12,16 +12,16 @@ endif ()
 
 find_path(VMIME_INCLUDE_DIR vmime/vmime.hpp
    HINTS
+   ${VMIME_ROOT}/include/
    ${PC_VMIME_INCLUDEDIR}
    ${PC_VMIME_INCLUDE_DIRS}
-   ${VMIME_ROOT}/include/
    )
 
 find_library(VMIME_LIBRARY NAMES vmime
    HINTS
+   ${VMIME_ROOT}/lib/
    ${PC_VMIME_LIBDIR}
    ${PC_VMIME_LIBRARY_DIRS}
-   ${VMIME_ROOT}/lib/
    )
 
 mark_as_advanced(VMIME_INCLUDE_DIR VMIME_LIBRARY)
@@ -39,7 +39,7 @@ if(Vmime_FOUND)
 else()
     message(FATAL_ERROR "Cant file vmime")
 endif()
-
+message("VMIME_LIBRARY ${VMIME_LIBRARY}, VMIME_INCLUDE_DIR ${VMIME_INCLUDE_DIR}")
 set(EMAIL_WIN_LIBS "")
 
 if(WIN32)
@@ -70,7 +70,7 @@ set( EMAIL_HEADER
 
 add_library(email-agent STATIC ${EMAIL_SRC} ${EMAIL_HEADER})
 
-target_include_directories(email-agent PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${MCRYPTO_INCLUDE_DIR})
+target_include_directories(email-agent PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${MCRYPTO_INCLUDE_DIR} ${VMIME_INCLUDE_DIRS})
 target_link_libraries(email-agent PUBLIC  ${VMIME_LIBRARIES} ${EMAIL_WIN_LIBS})
 
 

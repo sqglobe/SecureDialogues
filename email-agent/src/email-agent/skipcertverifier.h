@@ -5,7 +5,7 @@
 
 class SkipCertVerifier : public vmime::security::cert::certificateVerifier {
  public:
-  void verify(vmime::shared_ptr<vmime::security::cert::certificateChain>,
+  void verify(const vmime::shared_ptr<vmime::security::cert::certificateChain>&,
               const vmime::string&) override;
 };
 

@@ -4,7 +4,7 @@ FROM ubuntu:bionic
 RUN  apt-get update \
   && apt-get install -y qt5-default
   
-RUN apt-get install -y libboost-system1.65.1 libuuid1 libssl1.1 libcurl4 libvmime
+RUN apt-get install -y libboost-system1.65.1 libuuid1 libssl1.1 libcurl4 libgnutls30 libgsasl7
 
 WORKDIR /app
 

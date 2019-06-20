@@ -113,7 +113,7 @@ ImapReciever::recievedMessages() {
               mImapFolder);
       imapFolder) {
     if (mUidValidity != imapFolder->getUIDValidity()) {
-      LOGGER->debug("UID validity changed");
+      spdlog::get("root_logger")->debug("UID validity changed");
       mUidValidity = imapFolder->getUIDValidity();
       mLastMessage = getLastMessageUid(mImapFolder);
     }
