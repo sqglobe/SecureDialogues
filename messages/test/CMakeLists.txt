@@ -21,6 +21,7 @@ add_subdirectory(fakes)
 
 
 add_subdirectory( test_cases/containers )
+add_subdirectory( test_cases/persistent_storage )
 add_subdirectory( test_cases/messages )
 add_subdirectory( test_cases/watchers )
 add_subdirectory( test_cases/utils )
