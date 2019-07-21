@@ -34,6 +34,7 @@
 * [asio Boost](https://think-async.com/Asio/)
 * [libcurl] (https://github.com/curl/curl) версии **7.50.0** и выше
 * [vmime] (https://www.vmime.org/) начиная с коммита **e2fc191** и выше.
+* [persistent-storage](https://github.com/sqglobe/persistent-storage) версии **1.0.0** и выше.
 
 Ниже перечислены модули, которые так же используются при сборке, но они либо добавлены в репозиторий,
 либо будут склонированы во время сборки:
