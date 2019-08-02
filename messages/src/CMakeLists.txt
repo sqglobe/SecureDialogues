@@ -3,6 +3,7 @@ project(messages)
 find_package (Threads)
 find_package(Boost  REQUIRED system)
 find_package(BerkeleyDB REQUIRED)
+find_package(persistent-storage REQUIRED)
 
 set(SOURCES 
 primitives/dialogmessage.cpp
@@ -34,9 +35,9 @@ crypto/cryptosystemdialogremoveinformator.cpp
 adapters/oauthadapter.cpp
 containers/consistentwatchers.cpp
 adapters/emailadapter.cpp
-persistent_storage/dbfactory.cpp
 persistent_storage/contactmarshaller.cpp
-persistent_storage/store_primitives.cpp
+persistent_storage/dialogmarshaller.cpp
+persistent_storage/connectionmarshaller.cpp
 )
 
 
@@ -97,13 +98,13 @@ exception/notauthorizedexception.h
 exception/disconectedexception.h
 containers/consistentwatchers.h
 adapters/emailadapter.h
-persistent_storage/dbfactory.h
 persistent_storage/contactmarshaller.h
-persistent_storage/store_primitives.h
+persistent_storage/dialogmarshaller.h
+persistent_storage/connectionmarshaller.h
 )
 
 add_library(messages STATIC ${SOURCES} ${HEADERS})
 
 target_include_directories(messages PUBLIC   ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries( messages ${PROJ_CRYPTOPP_LIB} xg encryption oauth-agents email-agent Oracle::BerkeleyDB ${CMAKE_THREAD_LIBS_INIT} ${Boost_SYSTEM_LIBRARY} pthread)
+target_link_libraries( messages ${PROJ_CRYPTOPP_LIB} xg encryption oauth-agents email-agent Oracle::BerkeleyDB ${CMAKE_THREAD_LIBS_INIT} ${Boost_SYSTEM_LIBRARY} pthread persistent-storage)
 
