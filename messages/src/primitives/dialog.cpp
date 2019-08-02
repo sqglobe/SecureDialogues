@@ -24,28 +24,41 @@ static unsigned long init_sequental() {
 invalid_dialog_action::invalid_dialog_action(const std::string& str) :
     std::runtime_error(str) {}
 
-Dialog::Dialog(std::shared_ptr<const Contact> contact,
-               std::string dialogId,
-               Status status) :
-    Dialog(contact, dialogId, 0, status) {}
+Dialog::Dialog(const Contact& contact) :
+    Dialog(contact.id(),
+           contact.adress(),
+           contact.name(),
+           make_uiid(),
+           0,
+           init_sequental(),
+           Dialog::Status::NEW) {}
 
-Dialog::Dialog(std::shared_ptr<const Contact> contact,
+Dialog::Dialog(std::string contactId,
+               std::string address,
+               std::string name,
+               std::string dialogId,
+               unsigned long peerSequental,
+               unsigned long thisSequental,
+               Dialog::Status status) :
+    mDialogId(std::move(dialogId)),
+    mContactId(std::move(contactId)), mAdress(std::move(address)),
+    mName(std::move(name)), mStatus(status), mLastSequental(peerSequental),
+    mThisSequental(thisSequental) {}
+
+Dialog::Dialog(const Contact& contact,
                std::string dialogId,
                unsigned long sequental,
                Dialog::Status status) :
-    mContact(std::move(contact)),
-    mDialogId(std::move(dialogId)), mStatus(status), mLastSequental(sequental),
-    mThisSequental(init_sequental()) {}
-
-Dialog::Dialog(std::shared_ptr<const Contact> contact) :
-    Dialog(contact, make_uiid(), Status::NEW) {}
+    Dialog(contact.id(),
+           contact.adress(),
+           contact.name(),
+           dialogId,
+           sequental,
+           init_sequental(),
+           status) {}
 
 std::string Dialog::getDialogId() const {
   return mDialogId;
-}
-
-std::string Dialog::getChannelMoniker() const {
-  return mContact->channelMoniker();
 }
 
 DialogMessage Dialog::makeMessage(DialogMessage::Action action,
@@ -57,13 +70,12 @@ DialogMessage Dialog::makeMessage(DialogMessage::Action action,
        << " cant be made for dialog state " << static_cast<int>(mStatus);
     throw invalid_dialog_action(ss.str());
   }
-  return DialogMessage(action, content, mDialogId, mContact->adress(),
-                       getNextSequental());
+  return DialogMessage(action, content, mDialogId, mAdress, getNextSequental());
 }
 
 DialogMessage Dialog::makeAbort() {
   setStatus(Status::ABORTED);
-  auto message = make_abort(mDialogId, mContact->adress(), getNextSequental());
+  auto message = make_abort(mDialogId, mAdress, getNextSequental());
   return message;
 }
 
@@ -81,15 +93,15 @@ void Dialog::setStatus(Dialog::Status status) noexcept(false) {
 }
 
 std::string Dialog::getContactId() const {
-  return mContact->id();
+  return mContactId;
 }
 
 std::string Dialog::getAdress() const {
-  return mContact->adress();
+  return mAdress;
 }
 
 std::string Dialog::getName() const {
-  return mContact->name();
+  return mAdress;
 }
 
 bool Dialog::isSequentalOk(unsigned long sequental) {

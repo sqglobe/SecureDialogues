@@ -1,6 +1,6 @@
 project(email-agent)
 
-if (NOT WIN32)
+if (NOT WIN32 AND NOT  VMIME_ROOT)
    # try using pkg-config to get the directories and then use these values
    # in the find_path() and find_library() calls
    # also fills in VMIME_DEFINITIONS, although that isn't normally useful
