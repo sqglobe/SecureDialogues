@@ -3,12 +3,13 @@
 
 #include <memory>
 #include "interfaces/abstractmessagehandler.h"
+
+#include "containers/storages.h"
 namespace spdlog {
 class logger;
 }
 
 class AbstractUserNotifier;
-class DialogManager;
 class MessageContainer;
 class MessageDespatcher;
 class CryptoSystem;
@@ -43,7 +44,8 @@ class MessageActionHandler : public AbstractMessageHandler {
    * @param notifier класс, который используется для того, чтобы
    * проинформировать пользователя о каком-либо событии
    */
-  MessageActionHandler(std::shared_ptr<DialogManager> manager,
+  MessageActionHandler(std::shared_ptr<DialogStorage> dialogs,
+                       std::shared_ptr<ContactStorage> contacts,
                        std::shared_ptr<MessageContainer> container,
                        std::shared_ptr<const MessageDespatcher> despatcher,
                        std::shared_ptr<AbstractUserNotifier> notifier,
@@ -60,7 +62,7 @@ class MessageActionHandler : public AbstractMessageHandler {
    * диалогу
    * @param message текст сообщения
    */
-  void sendMessage(const std::string& message);
+  void sendMessage(std::string&& message);
 
   /**
    * @brief Задает активный диалог, к которому будет относиться все отправляемые
@@ -74,7 +76,8 @@ class MessageActionHandler : public AbstractMessageHandler {
                         const std::string& channel) noexcept;
 
  private:
-  std::shared_ptr<DialogManager> mDialogManager;
+  std::shared_ptr<DialogStorage> mDialogStorage;
+  std::shared_ptr<ContactStorage> mContactStorage;
   std::shared_ptr<MessageContainer> mMessageContainer;
   std::weak_ptr<const MessageDespatcher> mDespatcher;
   std::shared_ptr<AbstractUserNotifier> mNotifier;

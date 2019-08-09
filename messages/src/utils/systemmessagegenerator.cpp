@@ -33,7 +33,7 @@ void SystemMessageGenerator::changed(const ChangeWatcher::element& obj) {
     auto text = get_message(obj->getStatus());
     if (auto lock = mMessageContainer.lock()) {
       lock->addMessage(
-          obj->getDialogId(),
+          std::string(obj->getDialogId()),
           std::make_shared<UserMessage>(UserMessage::Status::DELIVERIED,
                                         UserMessage::Type::SYSTEM, text));
     }

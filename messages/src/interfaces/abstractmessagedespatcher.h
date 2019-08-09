@@ -18,7 +18,7 @@ class AbstractMessageDespatcher {
    * Вызывается, когда поступает новое сообщение
    * @param message поступившее сообщение
    */
-  virtual void dispatch(const DialogMessage& message,
+  virtual void dispatch(DialogMessage&& message,
                         const std::string& channelName) noexcept = 0;
 
   /**
@@ -30,9 +30,9 @@ class AbstractMessageDespatcher {
    * подтверждение не доставлено
    */
   virtual void sendMessage(
-      const DialogMessage& message,
-      const std::string& channelName,
-      const std::shared_ptr<DeliveryHandler>& deliveryHandler) const = 0;
+      DialogMessage&& message,
+      std::string_view channelName,
+      std::shared_ptr<DeliveryHandler>&& deliveryHandler) const = 0;
 
   /**
    * @brief Отправляет сообщение по через канал channelName. Подтверждение о
@@ -40,7 +40,7 @@ class AbstractMessageDespatcher {
    * @param message  сообщение, которое подлежит отправке
    * @param channelName канал, по которому необходимо отправить сообщение
    */
-  virtual void sendAndForget(const DialogMessage& message,
-                             const std::string& channelName) const = 0;
+  virtual void sendAndForget(DialogMessage&& message,
+                             std::string_view channelName) const = 0;
 };
 #endif  // ABSTRACTMESSAGEDESPATCHER_H

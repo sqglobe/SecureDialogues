@@ -3,16 +3,16 @@
 
 #include "interfaces/abstractmessagehandler.h"
 
+#include "containers/storages.h"
+
 #include <memory>
 #include "primitives/dialog.h"
 #include "primitives/dialogmessage.h"
 
-class DialogManager;
 class AbstractMessageDespatcher;
 class AbstractDialogEventHandler;
 class AbstractUserNotifier;
 class Contact;
-class ContactContainer;
 class DeliveryHandler;
 class CryptoSystem;
 
@@ -38,10 +38,10 @@ class DialogActionHandler : public AbstractMessageHandler {
    * диалогов
    * @param contacts - контейнер контактов
    */
-  DialogActionHandler(std::shared_ptr<DialogManager> dialogManager,
+  DialogActionHandler(std::shared_ptr<DialogStorage> dialogManager,
                       std::shared_ptr<AbstractMessageDespatcher> dispatcher,
                       std::shared_ptr<AbstractUserNotifier> notifier,
-                      std::shared_ptr<ContactContainer> contacts,
+                      std::shared_ptr<ContactStorage> contacts,
                       std::shared_ptr<CryptoSystem> cryptoSystem);
 
  public:
@@ -70,14 +70,14 @@ class DialogActionHandler : public AbstractMessageHandler {
    * ABORT.
    * @param dialogId - моникер диалога, который необходимо удалить
    */
-  void removeDialog(const std::string& dialogId);
+  void removeDialog(std::string_view dialogId);
 
   /**
    * @brief Создает диалог с указанным контактом
    * Так же отправляется сообщение CREATE_DIALOG указанному контакту.
    * @param contact - контакт, с которым необходимо создать диалог.
    */
-  void createDialog(const std::shared_ptr<const Contact>& contact);
+  void createDialog(const Contact& contact);
 
   /**
    * @brief Уведомляет удаленную сторону о закрытии диалога сообщением ABORT.
@@ -85,19 +85,19 @@ class DialogActionHandler : public AbstractMessageHandler {
    * метод вызывается, когда произошла ошибка в обработке диалога.
    * @param dialogId - моникер диалога для которого производится информирование.
    */
-  void abortDialog(const std::string& dialogId);
+  void abortDialog(std::string_view dialogId);
 
   /**
    * @brief Уведомляет удаленную сторону о закрытии диалога
    * @param dialogId - id диалога на закрытие
    */
-  void closeDialog(const std::string& dialogId);
+  void closeDialog(std::string_view dialogId);
 
  private:
   void sendRequest(const std::string& dialogId,
                    DialogMessage::Action action,
-                   const std::shared_ptr<DeliveryHandler>& handler,
-                   const std::string& content = "");
+                   std::shared_ptr<DeliveryHandler>&& handler,
+                   std::string&& content = "");
   void prepareNotFoundDialog(const DialogMessage& message,
                              const std::string& channel);
   void prepareForFoundDialog(const DialogMessage& message,
@@ -110,10 +110,10 @@ class DialogActionHandler : public AbstractMessageHandler {
                               const std::exception& ex) noexcept;
 
  private:
-  std::shared_ptr<DialogManager> mDialogManager;
+  std::shared_ptr<DialogStorage> mDialogStorage;
   std::weak_ptr<AbstractMessageDespatcher> mMessageDispatcher;
   std::shared_ptr<AbstractUserNotifier> mNotifier;
-  std::shared_ptr<ContactContainer> mContactContainer;
+  std::shared_ptr<ContactStorage> mContactStorage;
   std::shared_ptr<CryptoSystem> mCryptoSystem;
 };
 

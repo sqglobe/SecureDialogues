@@ -1,6 +1,4 @@
 #include "dialogactionhandler.h"
-#include "containers/contactcontainer.h"
-#include "containers/dialogmanager.h"
 
 #include <cassert>
 #include "delivery-handlers/dialogactiondeliveryhandler.h"
@@ -10,8 +8,8 @@
 #include "spdlog/spdlog.h"
 
 #include <spdlog/sinks/stdout_color_sinks.h>
+#include "communication_helpers.h"
 #include "interfaces/cryptosystem.h"
-
 #undef ERROR
 
 std::string get_dialog_status_description(Dialog::Status status) {
@@ -40,37 +38,38 @@ std::string get_dialog_status_description(Dialog::Status status) {
   }
 }
 
-std::string dialog_to_string(const std::shared_ptr<const Dialog>& dialog) {
+std::string dialog_to_string(const Dialog& dialog, const Contact& contact) {
   std::string res;
-  auto status = dialog->getStatus();
+  auto status = dialog.getStatus();
   res.reserve(500);
   res.append(get_dialog_status_description(status));
   res.append(". Пользователь: ");
-  res.append(dialog->getName());
+  res.append(contact.name());
   res.append(", Канал: ");
-  res.append(dialog->getChannelMoniker());
+  res.append(contact.channelMoniker());
   return res;
 }
 
 DialogActionHandler::DialogActionHandler(
-    std::shared_ptr<DialogManager> dialogManager,
+    std::shared_ptr<DialogStorage> dialogManager,
     std::shared_ptr<AbstractMessageDespatcher> dispatcher,
     std::shared_ptr<AbstractUserNotifier> notifier,
-    std::shared_ptr<ContactContainer> contacts,
+    std::shared_ptr<ContactStorage> contacts,
     std::shared_ptr<CryptoSystem> cryptoSystem) :
-    mDialogManager(std::move(dialogManager)),
+    mDialogStorage(std::move(dialogManager)),
     mMessageDispatcher(std::move(dispatcher)), mNotifier(std::move(notifier)),
-    mContactContainer(std::move(contacts)),
+    mContactStorage(std::move(contacts)),
     mCryptoSystem(std::move(cryptoSystem)) {}
 
 void DialogActionHandler::handle(const DialogMessage& message,
                                  const std::string& channel) noexcept {
   try {
-    if (!mDialogManager->has(message.dialogId())) {
+    if (!mDialogStorage->has(std::string(message.dialogId()))) {
       prepareNotFoundDialog(message, channel);
     } else {
-      auto dialog = mDialogManager->get(message.dialogId());
+      auto dialog = mDialogStorage->wrapper(std::string(message.dialogId()));
       if (dialog->isSequentalOk(message.sequential())) {
+        dialog.save();
         prepareForFoundDialog(message, channel);
       } else {
         spdlog::get("root_logger")
@@ -95,39 +94,48 @@ bool DialogActionHandler::isItYouAction(DialogMessage::Action action) const
          A::KEY_VERIFICATION == action || A::VERIFY_KEY == action;
 }
 
-void DialogActionHandler::removeDialog(const std::string& dialogId) {
+void DialogActionHandler::removeDialog(std::string_view dialogId) {
   closeDialog(dialogId);
-  auto wrapper = mDialogManager->wrapper(dialogId);
+  auto wrapper = mDialogStorage->wrapper(std::string(dialogId));
   wrapper.remove();
 }
 
-void DialogActionHandler::createDialog(
-    const std::shared_ptr<const Contact>& contact) {
-  auto dialog = mDialogManager->make(contact);
-  sendRequest(
-      dialog, DialogMessage::Action::CREATE_DIALOG,
-      make_delivery_handler_for_create_dialog_request(
-          mMessageDispatcher, mDialogManager->wrapper(dialog), mNotifier));
+void DialogActionHandler::createDialog(const Contact& contact) {
+  auto dialog = Dialog(std::string(contact.id()));
+  mDialogStorage->add(dialog);
+  auto deliveryHandler = make_delivery_handler_for_create_dialog_request(
+      mMessageDispatcher,
+      mDialogStorage->wrapper(std::string(dialog.getDialogId())), mNotifier,
+      std::string(contact.adress()), std::string(contact.channelMoniker()));
+  sendRequest(std::string(dialog.getDialogId()),
+              DialogMessage::Action::CREATE_DIALOG, std::move(deliveryHandler));
 }
 
-void DialogActionHandler::abortDialog(const std::string& dialogId) {
-  auto dialog = mDialogManager->wrapper(dialogId);
+void DialogActionHandler::abortDialog(std::string_view dialogId) {
+  auto dialog = mDialogStorage->wrapper(std::string(dialogId));
+  auto contact = mContactStorage->get(std::string(dialog->getContactId()));
   if (auto lock = mMessageDispatcher.lock()) {
     if (dialog->isMessageActionAllowed(DialogMessage::Action::ABORT)) {
-      lock->sendAndForget(dialog->makeAbort(), dialog->getChannelMoniker());
+      auto mess = make_abort(std::string(dialog->getDialogId()),
+                             std::string(contact.adress()),
+                             dialog->makeNextSequental());
+      lock->sendAndForget(std::move(mess), contact.channelMoniker());
       dialog->setStatus(Dialog::Status::ABORTED);
       dialog.save();
     }
   }
 }
 
-void DialogActionHandler::closeDialog(const std::string& dialogId) {
-  auto status = mDialogManager->get(dialogId)->getStatus();
+void DialogActionHandler::closeDialog(std::string_view dialogId) {
+  auto wrapper = mDialogStorage->wrapper(std::string(dialogId));
+  auto status = wrapper->getStatus();
   if (status == Dialog::Status::ACTIVE) {
-    sendRequest(
-        dialogId, DialogMessage::Action::CLOSE_DIALOG,
-        make_delivery_handler_for_close_dialog_request(
-            mMessageDispatcher, mDialogManager->wrapper(dialogId), mNotifier));
+    auto contact = mContactStorage->get(std::string(wrapper->getContactId()));
+    auto handler = make_delivery_handler_for_close_dialog_request(
+        mMessageDispatcher, std::move(wrapper), mNotifier,
+        std::string(contact.adress()), std::string(contact.channelMoniker()));
+    sendRequest(std::string(dialogId), DialogMessage::Action::CLOSE_DIALOG,
+                std::move(handler));
   } else {
     abortDialog(dialogId);
   }
@@ -142,15 +150,18 @@ void DialogActionHandler::closeDialog(const std::string& dialogId) {
 void DialogActionHandler::sendRequest(
     const std::string& dialogId,
     DialogMessage::Action action,
-    const std::shared_ptr<DeliveryHandler>& handler,
-    const std::string& content) {
-  auto dialog = mDialogManager->get(dialogId);
-  auto message = dialog->makeMessage(action, content);
+    std::shared_ptr<DeliveryHandler>&& handler,
+    std::string&& content) {
+  auto dialog = mDialogStorage->wrapper(dialogId);
+  auto contact = mContactStorage->get(std::string(dialog->getContactId()));
+  auto [msg, channel] =
+      make_message(action, dialog, contact, std::move(content));
   if (auto lock = mMessageDispatcher.lock()) {
-    lock->sendMessage(message, dialog->getChannelMoniker(), handler);
+    lock->sendMessage(std::move(msg), channel, std::move(handler));
+    dialog.save();
   } else {
     throw std::runtime_error("Не удалось отправить сообщение для контакта " +
-                             dialog->getDialogId());
+                             std::string(dialog->getDialogId()));
   }
 }
 
@@ -160,38 +171,50 @@ void DialogActionHandler::prepareNotFoundDialog(const DialogMessage& message,
   if (A::ABORT == message.action()) {
     return;
   }
-  try {
-    if (A::CREATE_DIALOG == message.action()) {
-      auto contact = mContactContainer->getContactByAdress(message.adress());
-      auto dialog = std::make_shared<Dialog>(contact, message.dialogId(),
-                                             message.sequential(),
-                                             Dialog::Status::CREATE_REQUEST);
-      mDialogManager->add(dialog);
-      auto sendMessage =
-          dialog->makeMessage(DialogMessage::Action::VERIFY_KEY,
-                              mCryptoSystem->generateAndExportKey(
-                                  message.dialogId(), dialog->getAdress()));
+
+  if (A::CREATE_DIALOG == message.action()) {
+    auto contacts =
+        mContactStorage->get_if([address = message.adress()](
+                                    const ContactStorage::element& el) -> bool {
+          return el.adress() == address;
+        });
+    if (contacts.empty()) {
+      mNotifier->notify(
+          AbstractUserNotifier::Severity::ERROR,
+          "Адресат '" + std::string(message.adress()) +
+              "' прислал запрос на добавление диалога, но контакт "
+              "с таким адрсом не найден");
+    } else {
+      auto contact = contacts.front();
+      auto dialog =
+          Dialog(std::string(contact.id()), std::string(message.dialogId()),
+                 message.sequential(), Dialog::Status::CREATE_REQUEST);
+      mDialogStorage->add(dialog);
+      auto wrapper = mDialogStorage->wrapper(std::string(message.dialogId()));
+      auto [msg, channel] =
+          make_message(DialogMessage::Action::VERIFY_KEY, wrapper, contact,
+                       mCryptoSystem->generateAndExportKey(message.dialogId(),
+                                                           contact.adress()));
+
       if (auto lock = mMessageDispatcher.lock()) {
-        lock->sendMessage(
-            sendMessage, dialog->getChannelMoniker(),
+        auto handler =
             make_delivery_handler_for_wait_verification_dialog_request(
-                mMessageDispatcher, mDialogManager->wrapper(message.dialogId()),
-                mNotifier));
+                mMessageDispatcher, std::move(wrapper), mNotifier,
+                std::string(contact.adress()),
+                std::string(contact.channelMoniker()));
+        lock->sendMessage(std::move(msg), channel, std::move(handler));
       } else {
         mNotifier->notify(AbstractUserNotifier::Severity::ERROR,
                           "Не удалось отправить сообщение для контакта " +
-                              dialog->getDialogId());
+                              std::string(dialog.getDialogId()));
       }
       return;
     }
-  } catch (std::range_error&) {
-    mNotifier->notify(AbstractUserNotifier::Severity::ERROR,
-                      "Адресат '" + message.adress() +
-                          "' прислал запрос на добавление диалога, но контакт "
-                          "с таким адрсом не найден");
   }
+
   if (auto lock = mMessageDispatcher.lock()) {
-    lock->sendAndForget(make_abort(message.dialogId(), message.adress(),
+    lock->sendAndForget(make_abort(std::string(message.dialogId()),
+                                   std::string(message.adress()),
                                    std::numeric_limits<unsigned long>::max()),
                         channel);
     spdlog::get("root_logger")
@@ -207,33 +230,42 @@ void DialogActionHandler::prepareNotFoundDialog(const DialogMessage& message,
 void DialogActionHandler::prepareForFoundDialog(const DialogMessage& message,
                                                 const std::string& channel) {
   if (message.action() == DialogMessage::Action::VERIFY_KEY) {
+    auto contact =
+        mContactStorage->get(std::string(std::string(message.dialogId())));
     auto res = mCryptoSystem->importKey(message.dialogId(), message.content());
-    sendRequest(message.dialogId(), DialogMessage::Action::KEY_VERIFICATION,
-                make_delivery_handler_for_create_dialog_request(
-                    mMessageDispatcher,
-                    mDialogManager->wrapper(message.dialogId()), mNotifier),
-                res);
+    auto handler = make_delivery_handler_for_create_dialog_request(
+        mMessageDispatcher,
+        mDialogStorage->wrapper(std::string(message.dialogId())), mNotifier,
+        std::string(contact.adress()), std::string(contact.channelMoniker()));
+    sendRequest(std::string(message.dialogId()),
+                DialogMessage::Action::KEY_VERIFICATION, std::move(handler),
+                std::move(res));
   } else if (message.action() == DialogMessage::Action::KEY_VERIFICATION) {
     if (mCryptoSystem->checkVerificationString(message.dialogId(),
                                                message.content())) {
-      sendRequest(message.dialogId(), DialogMessage::Action::ACCEPT_DIALOG,
-                  make_delivery_handler_for_active_dialog_request(
-                      mMessageDispatcher,
-                      mDialogManager->wrapper(message.dialogId()), mNotifier));
+      auto contact =
+          mContactStorage->get(std::string(std::string(message.dialogId())));
+      auto handler = make_delivery_handler_for_active_dialog_request(
+          mMessageDispatcher,
+          mDialogStorage->wrapper(std::string(message.dialogId())), mNotifier,
+          std::string(contact.adress()), std::string(contact.channelMoniker()));
+      sendRequest(std::string(message.dialogId()),
+                  DialogMessage::Action::ACCEPT_DIALOG, std::move(handler));
     } else {
       abortDialog(message.dialogId());
       mNotifier->notify(
           AbstractUserNotifier::Severity::INFO,
           "Не удалось произвести верификацию сеансового ключа с контактом " +
-              message.adress() + " диалог завершен");
+              std::string(message.adress()) + " диалог завершен");
     }
 
   } else {
-    auto dialog = mDialogManager->wrapper(message.dialogId());
+    auto dialog = mDialogStorage->wrapper(std::string(message.dialogId()));
+    auto contact = mContactStorage->get(std::string(dialog->getDialogId()));
     dialog->setStatus(map(message.action()));
     dialog.save();
     mNotifier->notify(AbstractUserNotifier::Severity::INFO,
-                      dialog_to_string(dialog.get()));
+                      dialog_to_string(dialog.get(), contact));
   }
 }
 
@@ -266,12 +298,13 @@ void DialogActionHandler::prepareHandleException(
     spdlog::get("root_logger")
         ->warn("dialog {0} from {1} makes error {2}", message.dialogId(),
                channel, ex.what());
-    if (mDialogManager->has(message.dialogId())) {
+    if (mDialogStorage->has(std::string(message.dialogId()))) {
       abortDialog(message.dialogId());
     } else {
       if (auto lock = mMessageDispatcher.lock()) {
         lock->sendAndForget(
-            make_abort(message.dialogId(), message.adress(),
+            make_abort(std::string(message.dialogId()),
+                       std::string(message.adress()),
                        std::numeric_limits<unsigned long>::max()),
             channel);
       }

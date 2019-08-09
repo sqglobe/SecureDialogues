@@ -1,6 +1,4 @@
 #include "dialogactiondeliveryhandler.h"
-#include "containers/containerelementwrapper.h"
-#include "containers/dialogmanager.h"
 #include "interfaces/abstractmessagedespatcher.h"
 
 #include "interfaces/abstractusernotifier.h"
@@ -13,11 +11,13 @@
 class DialogActionDeliveryHandler : public DeliveryHandler {
  public:
   DialogActionDeliveryHandler(
-      std::weak_ptr<AbstractMessageDespatcher> dispatcher,
-      DialogManager::wrapper_type&& wrapper,
+      std::weak_ptr<AbstractMessageDespatcher>&& dispatcher,
+      DialogStorage::wrapper_type&& wrapper,
       Dialog::Status nextStatus,
       bool abortNeed,
-      std::shared_ptr<AbstractUserNotifier> notifier);
+      std::shared_ptr<AbstractUserNotifier>&& notifier,
+      std::string&& address,
+      std::string&& channel);
 
  public:
   void removed() override;
@@ -25,20 +25,25 @@ class DialogActionDeliveryHandler : public DeliveryHandler {
 
  protected:
   std::shared_ptr<AbstractUserNotifier> mNotifier;
-  DialogManager::wrapper_type mWrapper;
+  DialogStorage::wrapper_type mWrapper;
   std::weak_ptr<AbstractMessageDespatcher> mDispatcher;
+  std::string mAddress;
+  std::string mChannel;
   Dialog::Status mNext;
   bool mAbortNeed;
 };
 
 DialogActionDeliveryHandler::DialogActionDeliveryHandler(
-    std::weak_ptr<AbstractMessageDespatcher> dispatcher,
-    DialogManager::wrapper_type&& wrapper,
+    std::weak_ptr<AbstractMessageDespatcher>&& dispatcher,
+    DialogStorage::wrapper_type&& wrapper,
     Dialog::Status nextStatus,
     bool abortNeed,
-    std::shared_ptr<AbstractUserNotifier> notifier) :
+    std::shared_ptr<AbstractUserNotifier>&& notifier,
+    std::string&& address,
+    std::string&& channel) :
     mNotifier(std::move(notifier)),
     mWrapper(std::move(wrapper)), mDispatcher(std::move(dispatcher)),
+    mAddress(std::move(address)), mChannel(std::move(channel)),
     mNext(nextStatus), mAbortNeed(abortNeed)
 
 {}
@@ -50,56 +55,71 @@ void DialogActionDeliveryHandler::removed() {
 }
 
 void DialogActionDeliveryHandler::timeouted() {
+  mWrapper.reload();
   if (mAbortNeed) {
     if (auto lock = mDispatcher.lock()) {
       spdlog::get("root_logger")
           ->warn(
               " ACK for dialog {0} and adress {1} not recieved. ABORT sended ",
-              mWrapper->getDialogId(), mWrapper->getAdress());
-      lock->sendAndForget(mWrapper->makeAbort(), mWrapper->getChannelMoniker());
+              mWrapper->getDialogId(), mAddress);
+
+      lock->sendAndForget(
+          make_abort(std::string(mWrapper->getDialogId()),
+                     std::string(mAddress), mWrapper->makeNextSequental()),
+          mChannel);
     }
   }
   mNotifier->notify(AbstractUserNotifier::Severity::ERROR,
-                    "Диалог для " + mWrapper->getAdress() +
+                    "Диалог для " + mAddress +
                         " удален, потому что удаленная сторона не отвечает");
-  mWrapper.reload();
   mWrapper->setStatus(Dialog::Status::ABORTED);
   mWrapper.save();
 }
 
 std::shared_ptr<DeliveryHandler>
 make_delivery_handler_for_create_dialog_request(
-    const std::weak_ptr<AbstractMessageDespatcher>& dispatcher,
-    DialogManager::wrapper_type&& wrapper,
-    const std::shared_ptr<AbstractUserNotifier>& notifier) {
+    std::weak_ptr<AbstractMessageDespatcher> dispatcher,
+    DialogStorage::wrapper_type&& wrapper,
+    std::shared_ptr<AbstractUserNotifier>& notifier,
+    std::string&& address,
+    std::string&& channel) {
   return std::make_shared<DialogActionDeliveryHandler>(
-      dispatcher, std::move(wrapper), Dialog::Status::WAIT_CONFIRM, false,
-      notifier);
+      std::move(dispatcher), std::move(wrapper), Dialog::Status::WAIT_CONFIRM,
+      false, std::move(notifier), std::move(address), std::move(channel));
 }
 
 std::shared_ptr<DeliveryHandler>
 make_delivery_handler_for_wait_verification_dialog_request(
-    const std::weak_ptr<AbstractMessageDespatcher>& dispatcher,
-    DialogManager::wrapper_type&& wrapper,
-    const std::shared_ptr<AbstractUserNotifier>& notifier) {
+    std::weak_ptr<AbstractMessageDespatcher> dispatcher,
+    DialogStorage::wrapper_type&& wrapper,
+    std::shared_ptr<AbstractUserNotifier> notifier,
+    std::string&& address,
+    std::string&& channel) {
   return std::make_shared<DialogActionDeliveryHandler>(
-      dispatcher, std::move(wrapper), Dialog::Status::WAIT_KEY_VERIFICAION,
-      true, notifier);
+      std::move(dispatcher), std::move(wrapper),
+      Dialog::Status::WAIT_KEY_VERIFICAION, true, std::move(notifier),
+      std::move(address), std::move(channel));
 }
 
 std::shared_ptr<DeliveryHandler> make_delivery_handler_for_close_dialog_request(
-    const std::weak_ptr<AbstractMessageDespatcher>& dispatcher,
-    DialogManager::wrapper_type&& wrapper,
-    const std::shared_ptr<AbstractUserNotifier>& notifier) {
+    std::weak_ptr<AbstractMessageDespatcher> dispatcher,
+    DialogStorage::wrapper_type&& wrapper,
+    std::shared_ptr<AbstractUserNotifier> notifier,
+    std::string&& address,
+    std::string&& channel) {
   return std::make_shared<DialogActionDeliveryHandler>(
-      dispatcher, std::move(wrapper), Dialog::Status::CLOSED, false, notifier);
+      std::move(dispatcher), std::move(wrapper), Dialog::Status::CLOSED, false,
+      std::move(notifier), std::move(address), std::move(channel));
 }
 
 std::shared_ptr<DeliveryHandler>
 make_delivery_handler_for_active_dialog_request(
-    const std::weak_ptr<AbstractMessageDespatcher>& dispatcher,
-    DialogManager::wrapper_type&& wrapper,
-    const std::shared_ptr<AbstractUserNotifier>& notifier) {
+    std::weak_ptr<AbstractMessageDespatcher> dispatcher,
+    DialogStorage::wrapper_type&& wrapper,
+    std::shared_ptr<AbstractUserNotifier> notifier,
+    std::string&& address,
+    std::string&& channel) {
   return std::make_shared<DialogActionDeliveryHandler>(
-      dispatcher, std::move(wrapper), Dialog::Status::ACTIVE, true, notifier);
+      std::move(dispatcher), std::move(wrapper), Dialog::Status::ACTIVE, true,
+      std::move(notifier), std::move(address), std::move(channel));
 }

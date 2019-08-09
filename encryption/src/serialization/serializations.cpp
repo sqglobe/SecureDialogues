@@ -72,3 +72,25 @@ std::string serialize(const CryptoPP::RSA::PublicKey& object) {
   encoder.MessageEnd();
   return res;
 }
+
+void deserialize(const std::shared_ptr<const Decryptor>& decryptor,
+                 std::string_view message,
+                 AesKeyStruct& object) {
+  std::stringstream ss(decryptor->decrypt(message));
+  object.key = readBlock(ss);
+  object.iv = readBlock(ss);
+}
+
+void deserialize(std::string_view message, CryptoPP::RSA::PublicKey& object) {
+  CryptoPP::ByteQueue bt;
+  CryptoPP::StringSource ss(
+      reinterpret_cast<const unsigned char*>(message.data()), message.size(),
+      true /*pumpAll*/, new CryptoPP::Base64Decoder());
+  ss.TransferTo(bt);
+  bt.MessageEnd();
+  object.Load(bt);
+  CryptoPP::AutoSeededRandomPool rng;
+  if (!object.Validate(rng, 3)) {
+    throw std::runtime_error("RSA key not valid!");
+  }
+}

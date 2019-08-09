@@ -28,10 +28,7 @@ CryptoSystemImpl::CryptoSystemImpl(
 
 bool CryptoSystemImpl::isSignatureOk(const DialogMessage& message) const
     noexcept(false) {
-  DialogMessage mess(message.action(), message.content(), message.dialogId(),
-                     message.adress(), message.sequential(), "",
-                     message.timestamp());
-  auto strRepr = mMarshaller->marshall(mess);
+  auto strRepr = mMarshaller->marshallExceptSignature(message);
 
   auto elem = getRemoteByAdress(message.adress());
   return elem->isValid(strRepr, message.sign());
@@ -45,8 +42,8 @@ std::string CryptoSystemImpl::createSignature(
 }
 
 std::string CryptoSystemImpl::generateAndExportKey(
-    const std::string& dialogId,
-    const std::string& addres) noexcept(false) {
+    std::string_view dialogId,
+    std::string_view addres) noexcept(false) {
   std::string messBody;
 
   CryptoPP::SecByteBlock genBlock(100);
@@ -73,45 +70,54 @@ std::string CryptoSystemImpl::generateAndExportKey(
 }
 
 std::string CryptoSystemImpl::importKey(
-    const std::string& dialogId,
-    const std::string& message) noexcept(false) {
-  std::string line;
-  std::stringstream ss(message);
-  std::getline(ss, line, ',');
-
+    std::string_view dialogId,
+    std::string_view message) noexcept(false) {
+  auto pos = message.find(',');
   {
+    std::string_view key(message.substr(0, pos)),
+        verification(message.substr(pos + 1));
+
     std::unique_lock<std::shared_mutex> guard(mMutex);
     mCiphers.emplace(
-        dialogId, DialogElement{createSymmetricalCipherFrom(line, mLocal), ""});
-    std::getline(ss, line, ',');
-    auto decr = mLocal->decrypt(line);
-    return mCiphers.at(dialogId).cipher->encrypt(decr);
+        dialogId, DialogElement{createSymmetricalCipherFrom(key, mLocal), ""});
+    auto decr = mLocal->decrypt(verification);
+    if (auto iter = mCiphers.find(dialogId); iter != mCiphers.end()) {
+      return iter->second.cipher->encrypt(decr);
+    } else {
+      throw std::out_of_range(
+          "out of range for the CryptoSystemImpl::importKey");
+    }
   }
 }
 
-bool CryptoSystemImpl::checkVerificationString(const std::string& dialogId,
-                                               const std::string& message) {
+bool CryptoSystemImpl::checkVerificationString(std::string_view dialogId,
+                                               std::string_view message) {
   std::shared_lock<std::shared_mutex> guard(mMutex);
-  auto str = mCiphers.at(dialogId).myString;
-  auto decr = mCiphers.at(dialogId).cipher->decrypt(message);
+  if (auto iter = mCiphers.find(dialogId); iter != mCiphers.end()) {
+    auto str = iter->second.myString;
+    auto decr = iter->second.cipher->decrypt(message);
 
-  return decr == str;
+    return decr == str;
+  }
+  return false;
 }
 
-std::string CryptoSystemImpl::encryptMessageBody(
-    const std::string& dialogId,
-    const std::string& message) const noexcept(false) {
+std::string CryptoSystemImpl::encryptMessageBody(std::string_view dialogId,
+                                                 std::string_view message) const
+    noexcept(false) {
   std::shared_lock<std::shared_mutex> guard(mMutex);
-
-  return mCiphers.at(dialogId).cipher->encrypt(message);
+  if (auto iter = mCiphers.find(dialogId); iter != mCiphers.end()) {
+    return iter->second.cipher->encrypt(message);
+  }
 }
 
-std::string CryptoSystemImpl::decryptMessageBody(
-    const std::string& dialogId,
-    const std::string& message) const noexcept(false) {
+std::string CryptoSystemImpl::decryptMessageBody(std::string_view dialogId,
+                                                 std::string_view message) const
+    noexcept(false) {
   std::shared_lock<std::shared_mutex> guard(mMutex);
-
-  return mCiphers.at(dialogId).cipher->decrypt(message);
+  if (auto iter = mCiphers.find(dialogId); iter != mCiphers.end()) {
+    return iter->second.cipher->decrypt(message);
+  }
 }
 
 std::string CryptoSystemImpl::exportPublicKey() const noexcept(false) {
@@ -127,31 +133,30 @@ bool CryptoSystemImpl::generateAsymetricKeys() noexcept(false) {
   return false;
 }
 
-void CryptoSystemImpl::updateContact(
-    const std::shared_ptr<const Contact>& contact) noexcept(false) {
+void CryptoSystemImpl::updateContact(const Contact& contact) noexcept(false) {
   std::unique_lock<std::shared_mutex> guard(mMutex);
 
   CryptoPP::RSA::PublicKey pub;
-  deserialize(contact->publicKey(), pub);
-  mRemote[contact->id()] = {contact->adress(),
-                            std::make_shared<RemotePeerOperations>(pub)};
+  deserialize(contact.publicKey(), pub);
+  mRemote[std::string(contact.id())] = {
+      std::string(contact.adress()),
+      std::make_shared<RemotePeerOperations>(pub)};
 }
 
-void CryptoSystemImpl::removeContact(
-    const std::shared_ptr<const Contact>& contact) noexcept(false) {
+void CryptoSystemImpl::removeContact(const Contact& contact) noexcept(false) {
   std::unique_lock<std::shared_mutex> guard(mMutex);
-  mRemote.erase(contact->id());
+  mRemote.erase(std::string(contact.id()));
 }
 
-void CryptoSystemImpl::dialogRemoved(const std::string& dialogId) noexcept(
+void CryptoSystemImpl::dialogRemoved(std::string_view dialogId) noexcept(
     false) {
   std::unique_lock<std::shared_mutex> guard(mMutex);
 
-  mCiphers.erase(dialogId);
+  mCiphers.erase(std::string(dialogId));
 }
 
 std::shared_ptr<RemotePeerOperations> CryptoSystemImpl::getRemoteByAdress(
-    const std::string& adress) const noexcept(false) {
+    std::string_view adress) const noexcept(false) {
   std::shared_lock<std::shared_mutex> guard(mMutex);
   auto it = std::find_if(
       mRemote.cbegin(), mRemote.cend(),
@@ -163,5 +168,6 @@ std::shared_ptr<RemotePeerOperations> CryptoSystemImpl::getRemoteByAdress(
     return it->second.mOperation;
   }
 
-  throw std::range_error("not found contact with adress " + adress);
+  throw std::range_error("not found contact with adress " +
+                         std::string(adress));
 }

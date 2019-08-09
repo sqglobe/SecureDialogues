@@ -1,8 +1,8 @@
 #include "connectionmarshaller.h"
 
-#include "persistent-storage/store_primitives.h"
-
 #include <cstring>
+#include "persistent-storage/utils/store_primitives.h"
+#include "store_helpers.h"
 
 /*
   std::string userName;
@@ -10,18 +10,6 @@
   bool tlsUsed;
   std::string from;
   */
-
-template <typename T>
-const void* restore_simple_type(T& t, const void* src) {
-  memcpy(&t, src, sizeof(t));
-  return static_cast<const char*>(src) + sizeof(t);
-}
-
-template <typename T>
-void* store_simple_type(T t, void* src) {
-  memcpy(src, &t, sizeof(t));
-  return static_cast<char*>(src) + sizeof(t);
-}
 
 void ConnectionMarshaller::restore(ConnectionHolder& elem, const void* src) {
   std::string connName;

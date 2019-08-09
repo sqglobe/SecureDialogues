@@ -98,6 +98,9 @@ class MessageContainer : public std::enable_shared_from_this<MessageContainer> {
       const std::string& message,
       bool isIncome);
 
+  std::unique_ptr<Wrapper> addToActiveDialogWithWrapper(std::string&& message,
+                                                        bool isIncome);
+
   /**
    * @brief Добавляет сообщение к активному диалогу
    * @param message - текст сообщения

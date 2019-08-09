@@ -32,6 +32,8 @@ class AbstractMessageMarshaller {
    * @return строковое представление сообщения
    */
   virtual std::string marshall(const DialogMessage& message) = 0;
+
+  virtual std::string marshallExceptSignature(const DialogMessage& message) = 0;
 };
 
 #endif  // ABSTRACTMESSAGEMARSHALLER_H

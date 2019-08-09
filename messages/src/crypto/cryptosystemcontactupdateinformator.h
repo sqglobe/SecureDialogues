@@ -2,7 +2,6 @@
 #define CRYPTOSYSTEMCONTACTUPDATEINFORMATOR_H
 
 #include <memory>
-#include "containers/contactcontainer.h"
 #include "interfaces/changewatcher.h"
 
 class CryptoSystemImpl;

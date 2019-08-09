@@ -1,6 +1,5 @@
 #include "messageactionhandler.h"
 
-#include "containers/dialogmanager.h"
 #include "containers/messagecontainer.h"
 #include "delivery-handlers/deliveryhandler.h"
 #include "interfaces/abstractusernotifier.h"
@@ -9,6 +8,7 @@
 
 #include "interfaces/cryptosystem.h"
 
+#include "communication_helpers.h"
 #include "containers/usermessage.h"
 
 #include <spdlog/sinks/stdout_color_sinks.h>
@@ -43,12 +43,14 @@ void MessageNotDeliveriedHandler::timeouted() {
 }
 
 MessageActionHandler::MessageActionHandler(
-    std::shared_ptr<DialogManager> manager,
+    std::shared_ptr<DialogStorage> dialogs,
+    std::shared_ptr<ContactStorage> contacts,
     std::shared_ptr<MessageContainer> container,
     std::shared_ptr<const MessageDespatcher> despatcher,
     std::shared_ptr<AbstractUserNotifier> notifier,
     std::shared_ptr<const CryptoSystem> system) :
-    mDialogManager(std::move(manager)),
+    mDialogStorage(std::move(dialogs)),
+    mContactStorage(std::move(contacts)),
     mMessageContainer(std::move(container)), mDespatcher(std::move(despatcher)),
     mNotifier(std::move(notifier)), mCryptoSystem(std::move(system)) {}
 
@@ -56,7 +58,7 @@ MessageActionHandler::MessageActionHandler(
 void MessageActionHandler::handle(const DialogMessage& message,
                                   const std::string& channel) noexcept {
   try {
-    if (!mDialogManager->has(message.dialogId())) {
+    if (!mDialogStorage->has(std::string(message.dialogId()))) {
       std::string err("Получено сообщение от ");
       err.append(message.adress())
           .append(". С указанным пользователем отсутсвуют открытые диалоги");
@@ -68,14 +70,15 @@ void MessageActionHandler::handle(const DialogMessage& message,
                 "abort",
                 message.adress());
         despatcher->sendAndForget(
-            make_abort(message.dialogId(), message.adress(),
+            make_abort(std::string(message.dialogId()),
+                       std::string(message.adress()),
                        std::numeric_limits<unsigned long>::max()),
             channel);
       }
       return;
     }
-    if (auto dialog = mDialogManager->get(message.dialogId());
-        !dialog->isSequentalOk(message.sequential())) {
+    if (auto dialog = mDialogStorage->get(std::string(message.dialogId()));
+        !dialog.isSequentalOk(message.sequential())) {
       spdlog::get("root_logger")
           ->warn(
               "Get message with invalid sequential {0}, dialog id{1}, action: "
@@ -86,7 +89,8 @@ void MessageActionHandler::handle(const DialogMessage& message,
     }
     auto content = mCryptoSystem->decryptMessageBody(message.dialogId(),
                                                      message.content());
-    mMessageContainer->addMessage(message.dialogId(), content, true);
+    mMessageContainer->addMessage(std::string(message.dialogId()), content,
+                                  true);
   } catch (std::exception& ex) {
     abortOnException(message, channel);
     spdlog::get("root_logger")
@@ -100,22 +104,27 @@ bool MessageActionHandler::isItYouAction(DialogMessage::Action action) const
   return DialogMessage::Action::MESSAGE == action;
 }
 
-void MessageActionHandler::sendMessage(const std::string& message) {
+void MessageActionHandler::sendMessage(std::string&& message) {
   std::string dialogId = mMessageContainer->getActiveDialog();
   if (dialogId.empty()) {
     mNotifier->notify(AbstractUserNotifier::Severity::ERROR,
                       "Выберите один диалог для отправки сообщения");
   }
   try {
-    auto dialog = mDialogManager->get(dialogId);
-    auto msg = dialog->makeMessage(DialogMessage::Action::MESSAGE, message);
+    auto dialog = mDialogStorage->wrapper(dialogId);
+    auto contact = mContactStorage->get(std::string(dialog->getContactId()));
+    std::string textMess = message;
+    auto [msg, channel] =
+        make_text_message(dialog, contact, std::move(message));
+    dialog.save();
     msg.setContent(
         mCryptoSystem->encryptMessageBody(msg.dialogId(), msg.content()));
     if (auto despatcher = mDespatcher.lock()) {
       despatcher->sendMessage(
-          msg, dialog->getChannelMoniker(),
+          std::move(msg), channel,
           std::make_shared<MessageNotDeliveriedHandler>(
-              mMessageContainer->addToActiveDialogWithWrapper(message, false)));
+              mMessageContainer->addToActiveDialogWithWrapper(
+                  std::move(textMess), false)));
     } else {
       mNotifier->notify(AbstractUserNotifier::Severity::ERROR,
                         "Не удалось отправить сообщение");
@@ -138,22 +147,28 @@ void MessageActionHandler::abortOnException(
     const std::string& channel) noexcept {
   try {
     mMessageContainer->addMessage(
-        message.dialogId(),
+        std::string(message.dialogId()),
         std::make_shared<UserMessage>(
             UserMessage::Status::ERROR, UserMessage::Type::SYSTEM,
-            "При обработке сообщения от пользователя " + message.adress() +
+            "При обработке сообщения от пользователя " +
+                std::string(message.adress()) +
                 " произошла ошибка. Диалог удален"));
-    if (mDialogManager->has(message.dialogId())) {
-      auto wrapper = mDialogManager->wrapper(message.dialogId());
-      auto mess = wrapper->makeAbort();
+    if (mDialogStorage->has(std::string(message.dialogId()))) {
+      auto wrapper = mDialogStorage->wrapper(std::string(message.dialogId()));
+      auto contact = mContactStorage->get(std::string(wrapper->getContactId()));
+      auto mess = make_abort(std::string(wrapper->getDialogId()),
+                             std::string(contact.adress()),
+                             wrapper->makeNextSequental());
+      wrapper->setStatus(Dialog::Status::ABORTED);
       if (auto despatcher = mDespatcher.lock()) {
-        despatcher->sendAndForget(mess, channel);
+        despatcher->sendAndForget(std::move(mess), channel);
       }
       wrapper.save();
     } else {
       if (auto despatcher = mDespatcher.lock()) {
         despatcher->sendAndForget(
-            make_abort(message.dialogId(), message.adress(),
+            make_abort(std::string(message.dialogId()),
+                       std::string(message.adress()),
                        std::numeric_limits<unsigned long>::max()),
             channel);
       }

@@ -17,8 +17,13 @@ class RemotePeerOperations : public Encryptor, public SignatureChecker {
 
  public:
   std::string encrypt(const std::string& sourc) const override;
+  std::string encrypt(std::string_view sourc) const override;
+
   bool isValid(const std::string& message,
                const std::string& signature) const override;
+
+  bool isValid(std::string_view message,
+               std::string_view signature) const override;
 
   void updateKey(const CryptoPP::RSA::PublicKey& key);
 

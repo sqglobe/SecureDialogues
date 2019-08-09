@@ -52,7 +52,7 @@ class Channel : public std::enable_shared_from_this<Channel> {
    */
   Channel(std::unique_ptr<AbstractChannelAdapter>&& adater,
           const std::shared_ptr<AbstractMessageDespatcher>& handler,
-          const std::shared_ptr<AbstractMessageMarshaller>& marshaller,
+          std::shared_ptr<AbstractMessageMarshaller> marshaller,
           const std::string& name,
           const std::shared_ptr<EventQueue>& eventQueue,
           std::chrono::seconds waitAck);
@@ -68,7 +68,7 @@ class Channel : public std::enable_shared_from_this<Channel> {
    */
   Channel(AbstractChannelAdapter* adapter,
           const std::shared_ptr<AbstractMessageDespatcher>& handler,
-          const std::shared_ptr<AbstractMessageMarshaller>& marshaller,
+          std::shared_ptr<AbstractMessageMarshaller> marshaller,
           const std::string& name,
           const std::shared_ptr<EventQueue>& eventQueue,
           std::chrono::seconds waitAck);

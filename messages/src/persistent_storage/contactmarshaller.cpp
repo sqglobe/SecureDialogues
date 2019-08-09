@@ -1,5 +1,6 @@
 #include "contactmarshaller.h"
-#include "persistent-storage/store_primitives.h"
+#include "persistent-storage/utils/store_primitives.h"
+#include "store_helpers.h"
 
 void ContactMarshaller::restore(Contact& elem, const void* src) {
   std::string channelMoniker, name, adress, contactId, publicKey;
@@ -22,9 +23,9 @@ size_t ContactMarshaller::size(const Contact& element) {
 }
 
 void ContactMarshaller::store(void* dest, const Contact& elem) {
-  dest = prstorage::save_str(elem.channelMoniker(), dest);
-  dest = prstorage::save_str(elem.name(), dest);
-  dest = prstorage::save_str(elem.adress(), dest);
-  dest = prstorage::save_str(elem.id(), dest);
-  dest = prstorage::save_str(elem.publicKey(), dest);
+  dest = save_str(elem.channelMoniker(), dest);
+  dest = save_str(elem.name(), dest);
+  dest = save_str(elem.adress(), dest);
+  dest = save_str(elem.id(), dest);
+  dest = save_str(elem.publicKey(), dest);
 }

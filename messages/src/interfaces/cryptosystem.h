@@ -37,8 +37,8 @@ class CryptoSystem {
    * @param message - тест сообщения, которое подлежит шифрованию
    * @return зашифрованый тест сообщения
    */
-  virtual std::string encryptMessageBody(const std::string& dialogId,
-                                         const std::string& message) const
+  virtual std::string encryptMessageBody(std::string_view dialogId,
+                                         std::string_view message) const
       noexcept(false) = 0;
 
   /**
@@ -47,8 +47,8 @@ class CryptoSystem {
    * @param message текст для дешифровки
    * @return текст сообщения после дишифрования
    */
-  virtual std::string decryptMessageBody(const std::string& dialogId,
-                                         const std::string& message) const
+  virtual std::string decryptMessageBody(std::string_view dialogId,
+                                         std::string_view message) const
       noexcept(false) = 0;
 
  public:
@@ -62,8 +62,8 @@ class CryptoSystem {
    * сети
    */
   virtual std::string generateAndExportKey(
-      const std::string& dialogId,
-      const std::string& addres) noexcept(false) = 0;
+      std::string_view dialogId,
+      std::string_view addres) noexcept(false) = 0;
 
   /**
    * @brief Импортирует сенсовый ключ.
@@ -73,8 +73,8 @@ class CryptoSystem {
    * @param message текст сообщения с зашифрованным сеансовым ключем
    * @return зашифрованная проверочная строка сеансовым ключем
    */
-  virtual std::string importKey(const std::string& dialogId,
-                                const std::string& message) noexcept(false) = 0;
+  virtual std::string importKey(std::string_view dialogId,
+                                std::string_view message) noexcept(false) = 0;
 
   /**
    * @brief Выполняется контроль проверочной строки.
@@ -84,8 +84,8 @@ class CryptoSystem {
    * отправленной, false - в любом другом случае.
    */
   virtual bool checkVerificationString(
-      const std::string& dialogId,
-      const std::string& message) noexcept(false) = 0;
+      std::string_view dialogId,
+      std::string_view message) noexcept(false) = 0;
 };
 
 #endif  // CRYPTOSYSTEM_H

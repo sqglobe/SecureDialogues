@@ -22,6 +22,10 @@ std::unique_ptr<SymetricalCipher> createSymmetricalCipherFrom(
     const std::string& message,
     const std::shared_ptr<const Decryptor>& decryptor);
 
+std::unique_ptr<SymetricalCipher> createSymmetricalCipherFrom(
+    std::string_view message,
+    const std::shared_ptr<const Decryptor>& decryptor);
+
 /**
  * @brief Генерирует случайный ключ для симметричного шифратора/дешифратора,
  * шифрует его и записывает в строку, возвращает созданный шифратор/дешифратор.

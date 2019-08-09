@@ -30,15 +30,15 @@ DialogMessage::Action DialogMessage::action() const noexcept {
   return mAction;
 }
 
-std::string DialogMessage::content() const noexcept {
+std::string_view DialogMessage::content() const noexcept {
   return mContent;
 }
 
-std::string DialogMessage::dialogId() const noexcept {
+std::string_view DialogMessage::dialogId() const noexcept {
   return mDialogId;
 }
 
-std::string DialogMessage::adress() const noexcept {
+std::string_view DialogMessage::adress() const noexcept {
   return mAdress;
 }
 
@@ -46,7 +46,7 @@ unsigned long DialogMessage::sequential() const noexcept {
   return mSequentialNumber;
 }
 
-std::string DialogMessage::sign() const {
+std::string_view DialogMessage::sign() const noexcept {
   return mSign;
 }
 
@@ -58,22 +58,23 @@ void DialogMessage::setSequentialNumber(unsigned long number) noexcept {
   mSequentialNumber = number;
 }
 
-void DialogMessage::setSignature(const std::string& signature) {
-  mSign = signature;
+void DialogMessage::setSignature(std::string signature) {
+  mSign = std::move(signature);
 }
 
-void DialogMessage::setContent(const std::string& content) {
-  mContent = content;
+void DialogMessage::setContent(std::string content) {
+  mContent = std::move(content);
 }
 
-DialogMessage make_abort(const std::string& dialogId,
-                         const std::string& contact,
+DialogMessage make_abort(std::string&& dialogId,
+                         std::string&& contact,
                          unsigned long number) {
-  return DialogMessage(DialogMessage::Action::ABORT, "", dialogId, contact,
-                       number);
+  return DialogMessage(DialogMessage::Action::ABORT, "", std::move(dialogId),
+                       std::move(contact), number);
 }
 
 DialogMessage make_ack(const DialogMessage& mess) {
-  return DialogMessage(DialogMessage::Action::ACK, "", mess.dialogId(),
-                       mess.adress(), mess.sequential(), " ");
+  return DialogMessage(DialogMessage::Action::ACK, "",
+                       std::string(mess.dialogId()), std::string(mess.adress()),
+                       mess.sequential(), " ");
 }

@@ -17,23 +17,23 @@
 
 Channel::Channel(std::unique_ptr<AbstractChannelAdapter>&& adater,
                  const std::shared_ptr<AbstractMessageDespatcher>& handler,
-                 const std::shared_ptr<AbstractMessageMarshaller>& marshaller,
+                 std::shared_ptr<AbstractMessageMarshaller> marshaller,
                  const std::string& name,
                  const std::shared_ptr<EventQueue>& eventQueue,
                  std::chrono::seconds waitAck) :
     mAdapter(std::move(adater)),
-    mHandler(handler), mMarshaller(marshaller), mName(name),
+    mHandler(handler), mMarshaller(std::move(marshaller)), mName(name),
     mEventQueue(eventQueue), mWaitAckInterval(waitAck) {}
 
 Channel::Channel(AbstractChannelAdapter* adapter,
                  const std::shared_ptr<AbstractMessageDespatcher>& handler,
-                 const std::shared_ptr<AbstractMessageMarshaller>& marshaller,
+                 std::shared_ptr<AbstractMessageMarshaller> marshaller,
                  const std::string& name,
                  const std::shared_ptr<EventQueue>& eventQueue,
                  std::chrono::seconds waitAck) :
     Channel(std::unique_ptr<AbstractChannelAdapter>(adapter),
             handler,
-            marshaller,
+            std::move(marshaller),
             name,
             eventQueue,
             waitAck) {}
@@ -67,7 +67,7 @@ void Channel::messsageCycle() {
       if (auto dialogMessage = mMarshaller->unmarshall(msg.second, msg.first)) {
         if (auto hLock = mHandler.lock()) {
           try {
-            hLock->dispatch(dialogMessage.value(), mName);
+            hLock->dispatch(std::move(dialogMessage).value(), mName);
           } catch (std::exception& ex) {
             spdlog::get("root_logger")
                 ->error(
@@ -97,7 +97,8 @@ void Channel::messsageCycle() {
 void Channel::sendMessage(const DialogMessage& message) {
   try {
     [[maybe_unused]] std::lock_guard<std::mutex> guard(mMutex);
-    mAdapter->send(mMarshaller->marshall(message), message.adress());
+    mAdapter->send(mMarshaller->marshall(message),
+                   std::string(message.adress()));
   } catch (const DisconectedException& ex) {
     mEventQueue->enqueue(ChannelStatus::FAILED_CONNECT, mName,
                          std::string(ex.what()));

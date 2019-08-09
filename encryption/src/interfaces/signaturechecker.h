@@ -20,6 +20,8 @@ class SignatureChecker {
    */
   virtual bool isValid(const std::string& message,
                        const std::string& signature) const = 0;
+  virtual bool isValid(std::string_view message,
+                       std::string_view signature) const = 0;
 };
 
 #endif  // SIGNATURECHECKER_H

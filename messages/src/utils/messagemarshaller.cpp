@@ -103,6 +103,27 @@ std::string MessageMarshaller::marshall(const DialogMessage& message) {
   return ss.str();
 }
 
+std::string MessageMarshaller::marshallExceptSignature(
+    const DialogMessage& message) {
+  std::stringstream ss;
+  std::string content(message.content());
+  for (auto it = content.rbegin(); std::isspace(*it) && it != content.rend();
+       ++it) {
+    *it = 0x00;
+  }
+
+  ss << HEADER << '\n'
+     << FIELD_VERSION << ':' << DialogMessage::VERSION << '\n'
+     << FIELD_ACTION << ':' << convertAction(message.action()) << '\n'
+     << FIELD_SEQUENTAL_NUMBER << ':' << message.sequential() << '\n'
+     << FIELD_DIALOG_ID << ':' << message.dialogId() << '\n'
+     << FIELD_TIMESTAMP << ':' << message.timestamp() << '\n'
+     << FIELD_SIGN << ":" << '\n'
+     << BODY_DELITIMER << '\n'
+     << content.c_str();
+  return ss.str();
+}
+
 bool MessageMarshaller::splitKeyVal(const std::string& source,
                                     std::string& key,
                                     std::string& val,

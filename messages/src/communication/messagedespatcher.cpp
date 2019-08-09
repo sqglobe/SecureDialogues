@@ -29,11 +29,11 @@ MessageDespatcher::MessageDespatcher(
               make(std::chrono::seconds(WAIT_ACK),
                    std::chrono::milliseconds(CHECK_IDLE_ACK))) {}
 
-void MessageDespatcher::dispatch(const DialogMessage& message,
+void MessageDespatcher::dispatch(DialogMessage&& message,
                                  const std::string& channelName) noexcept {
   if (DialogMessage::Action::ACK == message.action()) {
-    if (!mRepo->remove(
-            std::make_pair(message.dialogId(), message.sequential()))) {
+    if (!mRepo->remove(std::make_pair(std::string(message.dialogId()),
+                                      message.sequential()))) {
       spdlog::get("root_logger")
           ->warn(
               "Get message from {0} with action {1} sequental {2}. Not found "
@@ -66,34 +66,32 @@ void MessageDespatcher::dispatch(const DialogMessage& message,
 }
 
 void MessageDespatcher::sendMessage(
-    const DialogMessage& message,
-    const std::string& channelName,
-    const std::shared_ptr<DeliveryHandler>& deliveryHandler) const {
+    DialogMessage&& message,
+    std::string_view channelName,
+    std::shared_ptr<DeliveryHandler>&& deliveryHandler) const {
   std::shared_lock<std::shared_mutex> guard(mMutex);
 
-  if (mChannels.count(channelName) == 0) {
+  auto iter = mChannels.find(channelName);
+
+  if (iter == mChannels.end()) {
     spdlog::get("root_logger")->warn("Not found channel {0}", channelName);
     return;
   }
 
-  DialogMessage mess(message.action(), message.content(), message.dialogId(),
-                     message.adress(), message.sequential());
-
-  mess.setSignature(mCryptoSystem->createSignature(mess));
-  mRepo->store(deliveryHandler,
-               std::make_pair(mess.dialogId(), mess.sequential()),
-               mChannels.at(channelName)->getWaitAckInterval());
-  mChannels.at(channelName)->sendMessage(mess);
+  message.setSignature(mCryptoSystem->createSignature(message));
+  mRepo->store(
+      std::move(deliveryHandler),
+      std::make_pair(std::string(message.dialogId()), message.sequential()),
+      iter->second->getWaitAckInterval());
+  iter->second->sendMessage(std::move(message));
 }
 
-void MessageDespatcher::sendAndForget(const DialogMessage& message,
-                                      const std::string& channelName) const {
+void MessageDespatcher::sendAndForget(DialogMessage&& message,
+                                      std::string_view channelName) const {
   std::shared_lock<std::shared_mutex> guard(mMutex);
-  DialogMessage mess(message.action(), message.content(), message.dialogId(),
-                     message.adress(), message.sequential());
-  mess.setSignature(mCryptoSystem->createSignature(mess));
-  if (mChannels.count(channelName) > 0) {
-    mChannels.at(channelName)->sendMessage(mess);
+  message.setSignature(mCryptoSystem->createSignature(message));
+  if (auto iter = mChannels.find(channelName); iter != mChannels.end()) {
+    iter->second->sendMessage(std::move(message));
   }
 }
 
@@ -138,8 +136,7 @@ void MessageDespatcher::sendAck(const DialogMessage& message,
                                 const std::string& channel) {
   if (message.action() != DialogMessage::Action::ABORT &&
       message.sequential() > 0 && mChannels.count(channel) > 0) {
-    auto ack = make_ack(message);
-    sendAndForget(ack, channel);
+    sendAndForget(make_ack(message), channel);
   }
 }
 

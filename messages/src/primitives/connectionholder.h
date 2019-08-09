@@ -63,12 +63,12 @@ class ConnectionHolder {
  public:
   template <class C>
   ConnectionHolder(const C& conn, std::string name);
+  ConnectionHolder() = default;
   explicit ConnectionHolder(std::string name);
   ConnectionHolder(ConnectionHolder&& holder) noexcept = default;
   ConnectionHolder(const ConnectionHolder& holder) = default;
   ConnectionHolder& operator=(const ConnectionHolder& holder) = default;
 
- public:
  public:
   template <class C>
   void setConnection(const C& conn);

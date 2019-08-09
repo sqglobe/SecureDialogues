@@ -16,6 +16,7 @@ class Signer {
    * @return строковое представление цифровой подписи
    */
   virtual std::string createSign(const std::string& message) const = 0;
+  virtual std::string createSign(std::string_view message) const = 0;
 };
 
 #endif  // SIGNER_H

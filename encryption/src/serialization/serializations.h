@@ -17,10 +17,17 @@ class BadFormatException : public std::runtime_error {
 void deserialize(const std::shared_ptr<const Decryptor>& decryptor,
                  const std::string& message,
                  AesKeyStruct& object) noexcept(false);
+
+void deserialize(const std::shared_ptr<const Decryptor>& decryptor,
+                 std::string_view message,
+                 AesKeyStruct& object) noexcept(false);
+
 std::string serialize(const std::shared_ptr<const Encryptor>& encryptor,
                       const AesKeyStruct& object) noexcept(false);
 
 void deserialize(const std::string& message,
+                 CryptoPP::RSA::PublicKey& object) noexcept(false);
+void deserialize(std::string_view message,
                  CryptoPP::RSA::PublicKey& object) noexcept(false);
 std::string serialize(const CryptoPP::RSA::PublicKey& object) noexcept(false);
 
