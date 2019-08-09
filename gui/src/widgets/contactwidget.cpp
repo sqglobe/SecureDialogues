@@ -8,6 +8,9 @@
 #include "models/channelslistmodel.h"
 #include "primitives/contact.h"
 #include "widgetsutils.h"
+
+#include "gui_helpers.h"
+
 Q_DECLARE_METATYPE(ChannelsListModel::ListItem);
 
 ContactWidget::ContactWidget(std::shared_ptr<ChannelsListModel> model,
@@ -44,21 +47,21 @@ ContactWidget::~ContactWidget() {
   delete ui;
 }
 
-void ContactWidget::setElement(const std::shared_ptr<const Contact>& info) {
+void ContactWidget::setElement(const Contact& info) {
   auto userAdress = findChild<QLineEdit*>("contactAdress");
   auto userName = findChild<QLineEdit*>("contactName");
   auto connNames = findChild<QComboBox*>("channelMonikers");
   auto pubKey = findChild<QTextEdit*>("publicKey");
 
-  userAdress->setText(info->adress().c_str());
-  userName->setText(info->name().c_str());
-  connNames->setCurrentText(info->channelMoniker().c_str());
-  pubKey->setText(info->publicKey().c_str());
+  userAdress->setText(make_qstring(info.adress()));
+  userName->setText(make_qstring(info.name()));
+  connNames->setCurrentText(make_qstring(info.channelMoniker()));
+  pubKey->setText(make_qstring(info.publicKey()));
 
   mContact = info;
 }
 
-std::shared_ptr<Contact> ContactWidget::getElement() {
+Contact ContactWidget::getElement() {
   std::vector<std::pair<std::string, std::function<bool(void)> > > checks;
 
   auto userAdress = findChild<QLineEdit*>("contactAdress");
@@ -112,18 +115,16 @@ std::shared_ptr<Contact> ContactWidget::getElement() {
     }
   }
 
-  std::shared_ptr<Contact> res(
-      mContact
-          ? std::make_shared<Contact>(
-                connNames->currentText().toStdString(),
-                userName->text().trimmed().toStdString(),
-                userAddressText.toStdString(),
-                pubKey->toPlainText().trimmed().toStdString(), mContact->id())
-          : std::make_shared<Contact>(
-                connNames->currentText().toStdString(),
-                userName->text().trimmed().toStdString(),
-                userAddressText.toStdString(),
-                pubKey->toPlainText().trimmed().toStdString()));
+  Contact res(mContact
+                  ? Contact(connNames->currentText().toStdString(),
+                            userName->text().trimmed().toStdString(),
+                            userAddressText.toStdString(),
+                            pubKey->toPlainText().trimmed().toStdString(),
+                            std::string(mContact->id()))
+                  : Contact(connNames->currentText().toStdString(),
+                            userName->text().trimmed().toStdString(),
+                            userAddressText.toStdString(),
+                            pubKey->toPlainText().trimmed().toStdString()));
 
   mContact.reset();
 

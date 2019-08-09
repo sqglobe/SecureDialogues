@@ -1,26 +1,18 @@
 #include "connectioninfomodel.h"
-
 #include <QBrush>
 #include <QColor>
-QString to_qstring(const ConnectionInfoContainer::const_element& el) {
-  return QString(el.getConnectionName().c_str());
-}
+#include "primitives/connectionholder.h"
 
-ConnectionInfoModel::ConnectionInfoModel(
-    std::shared_ptr<ConnectionInfoContainer> cont) :
-    mContainer(std::move(cont)) {}
-
-int ConnectionInfoModel::rowCount([
-    [maybe_unused]] const QModelIndex& parent) const {
-  return mContainer->size();
+int ConnectionInfoModel::rowCount(const QModelIndex&) const {
+  return static_cast<int>(mData.size());
 }
 
 QVariant ConnectionInfoModel::data(const QModelIndex& index, int role) const {
   if (Qt::DisplayRole == role && index.row() >= 0 && index.row() < rowCount()) {
-    return to_qstring(mContainer->at(index.row()));
+    return mData[static_cast<std::size_t>(index.row())].connName;
   } else if (Qt::BackgroundRole == role) {
     using S = Channel::ChannelStatus;
-    switch (mContainer->at(index.row()).getStatus()) {
+    switch (mData[static_cast<std::size_t>(index.row())].status) {
       case S::UNDEFINED:
         return QBrush(QColor(192, 192, 192));
       case S::CONNECTED:
@@ -43,6 +35,14 @@ void ConnectionInfoModel::added(const ChangeWatcher::element& obj) {
 void ConnectionInfoModel::changed(const ChangeWatcher::element& obj) {
   auto newPos = mContainer->posOf(get_id(obj));
   emit dataChanged(createIndex(newPos, 0), createIndex(newPos, 0));
+}
+
+void ConnectionInfoModel::operator()(prstorage::EnqueuedEvents event,
+                                     const ConnectionHolder& holder) {
+  if (event == prstorage::EnqueuedEvents::ADDED) {
+    beginInsertRows(QModelIndex(), mData.size(), mData.size());
+    endInsertRows();
+  }
 }
 
 void ConnectionInfoModel::removed([

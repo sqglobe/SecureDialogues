@@ -3,8 +3,8 @@
 
 #include <QWidget>
 #include <memory>
+#include "primitives/contact.h"
 
-class Contact;
 class ChannelsListModel;
 
 namespace Ui {
@@ -32,13 +32,13 @@ class ContactWidget : public QWidget {
    * @brief Передает виджету контакт, который необходимо отобразить
    * @param info контакт для отображения
    */
-  void setElement(const std::shared_ptr<const Contact>& info);
+  void setElement(const Contact& info);
 
   /**
    * @brief Получает отредактированный пользователем контакт
    * @return отредактированный контакт
    */
-  std::shared_ptr<Contact> getElement() noexcept(false);
+  Contact getElement() noexcept(false);
 
  public slots:
   /**
@@ -68,7 +68,7 @@ class ContactWidget : public QWidget {
 
  private:
   std::shared_ptr<ChannelsListModel> mModel;
-  std::shared_ptr<const Contact> mContact;
+  std::optional<Contact> mContact;
 };
 
 #endif  // CONTACTWIDGET_H

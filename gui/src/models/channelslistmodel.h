@@ -8,16 +8,15 @@
 #include <vector>
 
 #include "communication/channel.h"
-#include "interfaces/changewatcher.h"
 #include "primitives/connectionholder.h"
 
+#include <persistent-storage/watchers/enqueuedevents.h>
 /**
  * с Модель отображает список существующих подключений.
  * Используется в диалоге управления контактами для выбора подключения,
  * через которое будет осуществляться общение с пользователем
  */
-class ChannelsListModel : public QAbstractListModel,
-                          public ChangeWatcher<ConnectionHolder> {
+class ChannelsListModel : public QAbstractListModel {
  public:
   struct ListItem {
     QString name;
@@ -35,9 +34,8 @@ class ChannelsListModel : public QAbstractListModel,
                 int role = Qt::DisplayRole) const override;
 
  public:
-  void added(const element& obj) override;
-  void changed(const element& obj) override;
-  void removed(const element& obj) override;
+  void operator()(prstorage::EnqueuedEvents event,
+                  const ConnectionHolder& holder);
 
  private:
   QVector<ListItem> mChannelNames;

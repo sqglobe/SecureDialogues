@@ -6,7 +6,7 @@
 class DialogMarshaller {
  public:
   static void restore(Dialog& elem, const void* src);
-  static size_t size(const Dialog& element);
+  static u_int32_t size(const Dialog& element);
   static void store(void* dest, const Dialog& elem);
 };
 

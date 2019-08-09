@@ -13,8 +13,11 @@ class ContactMarshallingTest : public QObject {
 };
 
 void ContactMarshallingTest::testMarshalling() {
-  Contact standard = {"standart moniker", "standart name", "standart address",
-                      "standart key", "standart id"};
+  Contact standard = Contact(static_cast<const char*>("standart moniker"),
+                             static_cast<const char*>("standart name"),
+                             static_cast<const char*>("standart address"),
+                             static_cast<const char*>("standart key"),
+                             static_cast<const char*>("standart id"));
   std::string buff(ContactMarshaller::size(standard), '\0');
   ContactMarshaller::store(&buff[0], standard);
 

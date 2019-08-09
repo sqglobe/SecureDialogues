@@ -1,8 +1,6 @@
 #include <QTest>
 #include <memory>
 #include "communication/dialogactionhandler.h"
-#include "containers/contactcontainer.h"
-#include "containers/dialogmanager.h"
 #include "fakemessagedespather.h"
 #include "fakenotifier.h"
 #include "primitives/contact.h"

@@ -55,6 +55,7 @@ set(GUI_MODULE_HEADERS
     models/dialogs-list/dialogsortmodel.h
     models/active-dialog-messages/usermessagemodeldelegate.h
     models/active-dialog-messages/activedialogmessagemodel.h
+    gui_helpers.h
 )
 
 set(GUI_UI

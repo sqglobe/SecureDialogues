@@ -8,16 +8,16 @@ class FakeMessageDespather : public AbstractMessageDespatcher {
  public:
   FakeMessageDespather() :
       mMessage(DialogMessage::Action::ACCEPT_DIALOG, "", "") {}
-  void dispatch(const DialogMessage& message,
+  void dispatch(DialogMessage&& message,
                 const std::string& channelName) noexcept override {
-    mMessage = message;
+    mMessage = std::move(message);
     mChannelName = channelName;
   }
-  void sendMessage(const DialogMessage&,
-                   const std::string&,
-                   const std::shared_ptr<DeliveryHandler>&) const override {}
+  void sendMessage(DialogMessage&&,
+                   std::string_view,
+                   std::shared_ptr<DeliveryHandler>&&) const override {}
 
-  void sendAndForget(const DialogMessage&, const std::string&) const override {}
+  void sendAndForget(DialogMessage&&, std::string_view) const override {}
 
  public:
   DialogMessage mMessage;
@@ -36,12 +36,12 @@ class FakeMessageSendDespatcher : public AbstractMessageDespatcher {
       mMessage(DialogMessage::Action::ACCEPT_DIALOG, "", ""),
       mResolve(resolve) {}
 
-  void dispatch(const DialogMessage&, const std::string&) noexcept override {}
+  void dispatch(DialogMessage&&, const std::string&) noexcept override {}
   void sendMessage(
-      const DialogMessage& message,
-      const std::string& channelName,
-      const std::shared_ptr<DeliveryHandler>& deliveryHandler) const override {
-    mMessage = message;
+      DialogMessage&& message,
+      std::string_view channelName,
+      std::shared_ptr<DeliveryHandler>&& deliveryHandler) const override {
+    mMessage = std::move(message);
     mChannel = channelName;
     mSendFunction = "sendMessage";
 
@@ -52,9 +52,9 @@ class FakeMessageSendDespatcher : public AbstractMessageDespatcher {
     }
   }
 
-  void sendAndForget(const DialogMessage& message,
-                     const std::string& channelName) const override {
-    mMessage = message;
+  void sendAndForget(DialogMessage&& message,
+                     std::string_view channelName) const override {
+    mMessage = std::move(message);
     mChannel = channelName;
     mSendFunction = "sendAndForget";
   }

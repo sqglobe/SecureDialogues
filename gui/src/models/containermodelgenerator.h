@@ -3,7 +3,6 @@
 
 #include <QAbstractListModel>
 #include <memory>
-#include "interfaces/changewatcher.h"
 
 /**
  * Макрос для генерации класса-модели. Используется для инкапсуляции

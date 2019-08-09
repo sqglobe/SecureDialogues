@@ -4,7 +4,6 @@
 #include "communication/channel.h"
 #include "communication/messageactionhandler.h"
 #include "communication/messagedespatcher.h"
-#include "containers/dialogmanager.h"
 #include "containers/messagecontainer.h"
 #include "interfaces/abstractusernotifier.h"
 #include "primitives/contact.h"

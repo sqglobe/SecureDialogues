@@ -50,8 +50,8 @@ void ConnectionMarshaller::restore(ConnectionHolder& elem, const void* src) {
   }
 }
 
-size_t ConnectionMarshaller::size(const ConnectionHolder& element) {
-  size_t size = 0;
+u_int32_t ConnectionMarshaller::size(const ConnectionHolder& element) {
+  u_int32_t size = 0;
   size += sizeof(std::string::size_type) + element.getConnectionName().length();
   size += sizeof(element.getType());
 

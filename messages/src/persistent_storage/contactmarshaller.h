@@ -7,7 +7,7 @@
 class ContactMarshaller {
  public:
   static void restore(Contact& elem, const void* src);
-  static size_t size(const Contact& element);
+  static u_int32_t size(const Contact& element);
   static void store(void* dest, const Contact& elem);
 };
 

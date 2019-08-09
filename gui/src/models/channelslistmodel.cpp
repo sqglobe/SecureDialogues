@@ -50,38 +50,37 @@ QVariant ChannelsListModel::data(const QModelIndex& index, int role) const {
   return QVariant();
 }
 
-void ChannelsListModel::added(const ChangeWatcher::element& obj) {
+void ChannelsListModel::operator()(prstorage::EnqueuedEvents event,
+                                   const ConnectionHolder& holder) {
   std::lock_guard<std::recursive_mutex> guard(mMutex);
-  beginInsertRows(QModelIndex(), mChannelNames.size(), mChannelNames.size());
-  mChannelNames.append({obj.getConnectionName().c_str(),
-                        "Подключение на данный момент не установлено",
-                        Channel::ChannelStatus::UNDEFINED, obj.getType()});
-  endInsertRows();
-}
-
-void ChannelsListModel::changed(const ChangeWatcher::element& obj) {
-  std::lock_guard<std::recursive_mutex> guard(mMutex);
-  auto it = std::find_if(mChannelNames.begin(), mChannelNames.end(),
-                         [search = QString(obj.getConnectionName().c_str())](
-                             auto const& name) { return name.name == search; });
-  if (mChannelNames.end() != it) {
-    int dst = static_cast<int>(std::distance(mChannelNames.begin(), it));
-    it->status = obj.getStatus();
-    it->message = obj.getMessage().c_str();
-    it->connectionType = obj.getType();
-    emit dataChanged(createIndex(dst, 0), createIndex(dst, 0));
-  }
-}
-
-void ChannelsListModel::removed(const ChangeWatcher::element& obj) {
-  std::lock_guard<std::recursive_mutex> guard(mMutex);
-  auto it = std::find_if(mChannelNames.begin(), mChannelNames.end(),
-                         [search = QString(obj.getConnectionName().c_str())](
-                             auto const& name) { return name.name == search; });
-  if (mChannelNames.end() != it) {
-    int dst = static_cast<int>(std::distance(mChannelNames.begin(), it));
-    beginRemoveRows(QModelIndex(), dst, dst);
-    mChannelNames.erase(it);
-    endRemoveRows();
+  if (event == prstorage::EnqueuedEvents::ADDED) {
+    beginInsertRows(QModelIndex(), mChannelNames.size(), mChannelNames.size());
+    mChannelNames.append({holder.getConnectionName().c_str(),
+                          "Подключение на данный момент не установлено",
+                          Channel::ChannelStatus::UNDEFINED, holder.getType()});
+    endInsertRows();
+  } else if (event == prstorage::EnqueuedEvents::UPDATED) {
+    auto it =
+        std::find_if(mChannelNames.begin(), mChannelNames.end(),
+                     [search = QString(holder.getConnectionName().c_str())](
+                         auto const& name) { return name.name == search; });
+    if (mChannelNames.end() != it) {
+      int dst = static_cast<int>(std::distance(mChannelNames.begin(), it));
+      it->status = holder.getStatus();
+      it->message = holder.getMessage().c_str();
+      it->connectionType = holder.getType();
+      emit dataChanged(createIndex(dst, 0), createIndex(dst, 0));
+    }
+  } else if (event == prstorage::EnqueuedEvents::DELETED) {
+    auto it =
+        std::find_if(mChannelNames.begin(), mChannelNames.end(),
+                     [search = QString(holder.getConnectionName().c_str())](
+                         auto const& name) { return name.name == search; });
+    if (mChannelNames.end() != it) {
+      int dst = static_cast<int>(std::distance(mChannelNames.begin(), it));
+      beginRemoveRows(QModelIndex(), dst, dst);
+      mChannelNames.erase(it);
+      endRemoveRows();
+    }
   }
 }
