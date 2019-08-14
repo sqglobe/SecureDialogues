@@ -2,6 +2,7 @@
 #define GUIINITIALIZER_H
 
 #include <memory>
+#include "communication/channel.h"
 
 class MainWindow;
 class CoreInitializer;
@@ -17,7 +18,8 @@ class GuiInitializer {
   GuiInitializer(MainWindow* parent,
                  const std::shared_ptr<CoreInitializer>& coreInit,
                  const std::shared_ptr<AbstractUserAsk>& userAsk,
-                 const std::shared_ptr<AbstractUserNotifier>& userNotifier);
+                 const std::shared_ptr<AbstractUserNotifier>& userNotifier,
+                 const std::shared_ptr<Channel::EventQueue>& eventQueue);
 
  private:
   void initMessageWrapper(

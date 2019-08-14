@@ -56,6 +56,8 @@ set(GUI_MODULE_HEADERS
     models/active-dialog-messages/usermessagemodeldelegate.h
     models/active-dialog-messages/activedialogmessagemodel.h
     gui_helpers.h
+    models/contactmodel.cpp
+    models/identifiedlistmodel.h
 )
 
 set(GUI_UI

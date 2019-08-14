@@ -15,7 +15,7 @@ void* store_simple_type(T t, void* src) {
   return static_cast<char*>(src) + sizeof(t);
 }
 
-void* save_str(const std::string_view& str, void* dest) {
+inline void* save_str(const std::string_view& str, void* dest) {
   auto size = str.length();
   memcpy(dest, &size, sizeof(size));
   char* charDest = static_cast<char*>(dest) + sizeof(size);

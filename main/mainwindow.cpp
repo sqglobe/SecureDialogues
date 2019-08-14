@@ -15,13 +15,15 @@ MainWindow::MainWindow(const std::string& pass, QWidget* parent) :
     mUserInformator(std::make_shared<UserInformator>(this)) {
   ui->setupUi(this);
 
-  mCore =
-      std::make_shared<CoreInitializer>(mUserInformator, pass, mEventHolder);
+  mCore = std::make_shared<CoreInitializer>(mUserInformator, pass);
 
   mGui = std::make_shared<GuiInitializer>(this, mCore, mUserInformator,
-                                          mUserInformator);
+                                          mUserInformator,
+                                          mEventHolder.channelEventQueue());
   on_badDialogSelected(
       "Для начала отправки сообщений выберите один диалог из списка");
+  mCore->startMessagesHandling(mUserInformator,
+                               mEventHolder.channelEventQueue());
 }
 
 MainWindow::~MainWindow() {

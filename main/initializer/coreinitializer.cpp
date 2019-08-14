@@ -1,24 +1,18 @@
 #include "coreinitializer.h"
 #include "interfaces/abstractusernotifier.h"
 
-#include "containers/connectioninfocontainer.h"
-#include "containers/contactcontainer.h"
-#include "containers/dialogmanager.h"
 #include "containers/messagecontainer.h"
 
 #include "communication/dialogactionhandler.h"
 #include "communication/messageactionhandler.h"
 #include "communication/messagedespatcher.h"
 
-#include "containers/connectcontainerwatcher.h"
 #include "interfaces/abstractchanneladapter.h"
 
 #include "chaneladapterfactory.h"
 #include "utils/messagemarshaller.h"
 
 #include "utils/fileutils.h"
-
-#include "builders/builders.h"
 
 #include "utils/systemmessagegenerator.h"
 
@@ -37,45 +31,50 @@
 #include "interfaces/symetricalcipher.h"
 #include "symetrical/symetricalsystemfactories.h"
 
+#include <db_cxx.h>
+#include "containers/connectstoragelistener.h"
 #include "eventqueueholder.h"
 
-#include "containers/consistentwatchers.h"
-
-template <typename Container>
-void saveToFile(const std::string& name,
-                Container& container,
-                const std::shared_ptr<const Encryptor>& encryptor) {
-  std::stringstream ss;
-  auto builder = make_builder(ss, container);
-  builder.serialize();
-
-  std::fstream outFile(name, std::ios_base::out);
-  outFile << encryptor->encrypt(ss.str()) << std::flush;
-}
-
-template <typename Container>
-void loadFromFile(const std::string& name,
-                  Container& container,
-                  const std::shared_ptr<const Decryptor>& decryptor) {
-  std::fstream outFile(name, std::ios_base::in);
-
-  std::string str((std::istreambuf_iterator<char>(outFile)),
-                  std::istreambuf_iterator<char>());
-
-  std::stringstream ss;
-
-  ss << decryptor->decrypt(str);
-
-  auto tst = ss.str();
-
-  auto builder = make_builder(ss, container);
-  builder.unserialize();
-}
-
-static const std::string FILE_CONTACT = "conf/contacts.usr";
-static const std::string FILE_DIALOGS = "conf/dialogs.usr";
-static const std::string FILE_CONNECTIONS = "conf/connections.usr";
 static const std::string FILE_KEY = "conf/keys";
+
+DbEnv* make_db_env(const std::string& path, const std::string& pass) {
+  dbstl::dbstl_startup();
+  auto penv = new DbEnv(DB_CXX_NO_EXCEPTIONS);
+  penv->set_encrypt(pass.c_str(), DB_ENCRYPT_AES);
+  auto res = penv->open(path.c_str(),
+                        DB_INIT_LOCK | DB_INIT_MPOOL | DB_INIT_TXN | DB_CREATE |
+                            DB_PRIVATE | DB_RECOVER | DB_THREAD | DB_REGISTER |
+                            DB_FAILCHK,
+                        0600);
+  if (res) {
+    delete penv;
+    throw std::runtime_error(
+        std::string("Error occur during system intialisation ").append(path));
+  }
+  dbstl::register_db_env(penv);
+  return penv;
+}
+
+Db* make_db(const std::string& file,
+            const std::string& name,
+            DbEnv* penv,
+            u_int32_t flags = 0) {
+  auto db = new Db(penv, DB_CXX_NO_EXCEPTIONS);
+  db->set_flags(flags | DB_ENCRYPT);
+  auto res = db->open(nullptr, file.c_str(), name.c_str(), DB_BTREE,
+                      DB_CREATE | DB_THREAD | DB_AUTO_COMMIT, 0600);
+
+  if (res) {
+    delete db;
+    throw std::runtime_error(
+        std::string("Error occur during database intialisation ")
+            .append(file)
+            .append(" name ")
+            .append(name));
+  }
+  dbstl::register_db(db);
+  return db;
+}
 
 std::shared_ptr<AsymetricalKeyStore> loadKeys(
     const std::string& fileTempl,
@@ -100,19 +99,16 @@ void saveKeys(const std::string& fileTempl,
 
 CoreInitializer::CoreInitializer(
     const std::shared_ptr<AbstractUserNotifier>& notifier,
-    const std::string& pass,
-    const EventQueueHolder& eventHolder) :
-    mConnectionInfoContainer(std::make_shared<ConnectionInfoContainer>()),
-    mContactContainer(std::make_shared<ContactContainer>()),
-    mDialogManager(std::make_shared<DialogManager>()),
+    const std::string& pass) :
     mMessageContainer(std::make_shared<MessageContainer>()),
     mPassCipher(makeForStringPass(pass)) {
   qRegisterMetaType<AbstractUserNotifier::Severity>(
       "AbstractUserNotifier::Severity");
   qRegisterMetaType<QVector<int>>("QVector<int>");
   qRegisterMetaType<std::string>("std::string");
-  qRegisterMetaType<std::shared_ptr<const Contact>>(
-      "std::shared_ptr<const Contact>");
+  qRegisterMetaType<Contact>("Contact");
+
+  initDatabases(pass);
 
   mAsymetricalKeyStore = loadKeys(FILE_KEY, mPassCipher);
 
@@ -121,59 +117,24 @@ CoreInitializer::CoreInitializer(
 
   mMessageDispatcher =
       std::make_shared<MessageDespatcher>(mCryptoSystem, notifier);
+
   mMessageActionHandler = std::make_shared<MessageActionHandler>(
-      mDialogManager, mMessageContainer, mMessageDispatcher, notifier,
-      mCryptoSystem);
+      mDialogStorage, mContactStorage, mMessageContainer, mMessageDispatcher,
+      notifier, mCryptoSystem);
   mDialogActionHandler = std::make_shared<DialogActionHandler>(
-      mDialogManager, mMessageDispatcher, notifier, mContactContainer,
+      mDialogStorage, mMessageDispatcher, notifier, mContactStorage,
       mCryptoSystem);
 
   mMessageDispatcher->add(mMessageActionHandler);
   mMessageDispatcher->add(mDialogActionHandler);
 
-  auto channelEventListener = [connContainer = mConnectionInfoContainer](
-                                  Channel::ChannelStatus newStatus,
-                                  const std::string& channelName,
-                                  const std::string& message) mutable {
-    if (!connContainer->has(channelName)) {
-      return;
-    }
-
-    auto wrp = connContainer->wrapper(channelName);
-    wrp->setStatus(newStatus);
-    wrp->setMessage(message);
-    wrp.save();
-  };
-
-  eventHolder.channelEventQueue()->appendListener(
-      Channel::ChannelStatus::CONNECTED, channelEventListener);
-  eventHolder.channelEventQueue()->appendListener(
-      Channel::ChannelStatus::FAILED_CONNECT, channelEventListener);
-  eventHolder.channelEventQueue()->appendListener(
-      Channel::ChannelStatus::AUTHORIZATION_FAILED, channelEventListener);
-
-  auto connWatcher = std::make_shared<ConnectContainerWatcher>(
-      mMessageDispatcher,
-      std::function<std::unique_ptr<AbstractChannelAdapter>(
-          const ConnectionHolder&)>(ChanelAdapterFactory(notifier)),
-      std::make_shared<MessageMarshaller>(), eventHolder.channelEventQueue());
-  mConnectionInfoContainer->registerWatcher(connWatcher);
-  mContactContainer->registerWatcher(
+  mContactStorage->appendPermanentListener(
       std::make_shared<CryptoSystemContactUpdateInformator>(mCryptoSystem));
 
-  mDialogManager->registerWatcher(
+  mDialogStorage->appendPermanentListener(
       std::make_shared<SystemMessageGenerator>(mMessageContainer));
-  mDialogManager->registerWatcher(
+  mDialogStorage->appendPermanentListener(
       std::make_shared<CryptoSystemDialogRemoveInformator>(mCryptoSystem));
-
-  loadFromFiles(FILE_CONNECTIONS, FILE_CONTACT, mPassCipher);
-
-  mConnectionInfoContainer->registerWatcher(
-      std::make_shared<ContactConsistentWatcher>(mContactContainer));
-  mContactContainer->registerWatcher(
-      std::make_shared<DialogConsistentWatcher>(mDialogManager));
-  mDialogManager->registerWatcher(
-      std::make_shared<MessagesConsistentWatcher>(mMessageContainer));
 }
 
 std::shared_ptr<MessageActionHandler> CoreInitializer::getMessageActionHandler()
@@ -186,45 +147,52 @@ std::shared_ptr<DialogActionHandler> CoreInitializer::getDialogActionHandler()
   return mDialogActionHandler;
 }
 
-std::shared_ptr<ConnectionInfoContainer>
-CoreInitializer::getConnectionInfocontainer() const {
-  return mConnectionInfoContainer;
+std::shared_ptr<ConnectionStorage> CoreInitializer::getConnectionStorage()
+    const {
+  return mConnectionStorage;
 }
 
-std::shared_ptr<DialogManager> CoreInitializer::getDialogManager() const {
-  return mDialogManager;
+std::shared_ptr<DialogStorage> CoreInitializer::getDialogStorage() const {
+  return mDialogStorage;
 }
 
 std::shared_ptr<MessageContainer> CoreInitializer::getMessageContainer() const {
   return mMessageContainer;
 }
 
-std::shared_ptr<ContactContainer> CoreInitializer::getContactContainer() const {
-  return mContactContainer;
+std::shared_ptr<ContactStorage> CoreInitializer::getContactStorage() const {
+  return mContactStorage;
 }
 
 std::shared_ptr<CryptoSystemImpl> CoreInitializer::getCryptoSystem() const {
   return mCryptoSystem;
 }
 
-void CoreInitializer::saveFiles() {
-  saveToFiles(FILE_CONNECTIONS, FILE_CONTACT, mPassCipher);
+void CoreInitializer::startMessagesHandling(
+    const std::shared_ptr<AbstractUserNotifier>& notifier,
+    const std::shared_ptr<Channel::EventQueue>& eventQueue) {
+  auto connWatcher = std::make_shared<ConnectStorageListener>(
+      mMessageDispatcher,
+      std::function<std::unique_ptr<AbstractChannelAdapter>(
+          const ConnectionHolder&)>(ChanelAdapterFactory(notifier)),
+      std::make_shared<MessageMarshaller>(), eventQueue,
+      mConnectionStorage->getAllElements());
+  mConnectionStorage->appendPermanentListener(connWatcher);
+}
 
+void CoreInitializer::saveFiles() {
   saveKeys(FILE_KEY, mAsymetricalKeyStore, mPassCipher);
 }
 
-void CoreInitializer::loadFromFiles(
-    const std::string& connFile,
-    const std::string& contactFile,
-    const std::shared_ptr<const Decryptor>& decryptor) {
-  loadFromFile(connFile, *(mConnectionInfoContainer.get()), decryptor);
-  loadFromFile(contactFile, *(mContactContainer.get()), decryptor);
-}
+void CoreInitializer::initDatabases(const std::string& pass) {
+  auto penv = make_db_env("conf", pass);
 
-void CoreInitializer::saveToFiles(
-    const std::string& connFile,
-    const std::string& contactFile,
-    const std::shared_ptr<const Encryptor>& encryptor) {
-  saveToFile(connFile, *(mConnectionInfoContainer.get()), encryptor);
-  saveToFile(contactFile, *(mContactContainer.get()), encryptor);
+  mDialogStorage = make_dialog_storage(
+      make_db("dialogs.db", "primary", penv),
+      make_db("dialogs.db", "secondary", penv, DB_DUP), penv);
+  mContactStorage = make_contact_storage(
+      make_db("cotnacts.db", "primary", penv),
+      make_db("contacts.db", "secondary", penv, DB_DUP), penv, mDialogStorage);
+  mConnectionStorage = make_connection_storage(
+      make_db("connections.db", "primary", penv), penv, mContactStorage);
 }

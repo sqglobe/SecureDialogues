@@ -51,10 +51,10 @@ class Channel : public std::enable_shared_from_this<Channel> {
    * @param name - идентификатор текущего канала
    */
   Channel(std::unique_ptr<AbstractChannelAdapter>&& adater,
-          const std::shared_ptr<AbstractMessageDespatcher>& handler,
+          std::shared_ptr<AbstractMessageDespatcher> handler,
           std::shared_ptr<AbstractMessageMarshaller> marshaller,
-          const std::string& name,
-          const std::shared_ptr<EventQueue>& eventQueue,
+          std::string&& name,
+          std::shared_ptr<EventQueue> eventQueue,
           std::chrono::seconds waitAck);
 
   /**
@@ -67,10 +67,10 @@ class Channel : public std::enable_shared_from_this<Channel> {
    * @param name - идентификатор текущего канала
    */
   Channel(AbstractChannelAdapter* adapter,
-          const std::shared_ptr<AbstractMessageDespatcher>& handler,
+          std::shared_ptr<AbstractMessageDespatcher> handler,
           std::shared_ptr<AbstractMessageMarshaller> marshaller,
-          const std::string& name,
-          const std::shared_ptr<EventQueue>& eventQueue,
+          std::string&& name,
+          std::shared_ptr<EventQueue> eventQueue,
           std::chrono::seconds waitAck);
   ~Channel();
 

@@ -7,7 +7,6 @@
 #include <type_traits>
 #include "dialogmessage.h"
 #include "utils.h"
-class Contact;
 
 class invalid_dialog_action : public std::runtime_error {
  public:

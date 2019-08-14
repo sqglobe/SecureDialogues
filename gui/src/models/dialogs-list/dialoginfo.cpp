@@ -1,5 +1,7 @@
 #include "dialoginfo.h"
 
+#include "primitives/contact.h"
+
 std::string DialogInfo::name() const {
   return mName;
 }
@@ -16,6 +18,10 @@ std::string DialogInfo::dialogId() const {
   return mDialogId;
 }
 
+std::string DialogInfo::contactId() const {
+  return mContactId;
+}
+
 Dialog::Status DialogInfo::status() const {
   return mStatus;
 }
@@ -28,11 +34,11 @@ std::chrono::system_clock::time_point DialogInfo::lastUpdated() const {
   return mLastUpdated;
 }
 
-DialogInfo::DialogInfo(const std::shared_ptr<const Dialog>& elem) :
-    mName(elem->getName()), mAddress(elem->getAdress()),
-    mMoniker(elem->getChannelMoniker()), mDialogId(elem->getDialogId()),
-    mStatus(elem->getStatus()), mLastUpdated(std::chrono::system_clock::now()) {
-}
+DialogInfo::DialogInfo(const Dialog& elem, const Contact& contact) :
+    mName(contact.name()), mAddress(contact.adress()),
+    mMoniker(contact.channelMoniker()), mDialogId(elem.getDialogId()),
+    mContactId(contact.id()), mStatus(elem.getStatus()),
+    mLastUpdated(std::chrono::system_clock::now()) {}
 
 DialogInfo& DialogInfo::operator=(const DialogInfo& info) {
   this->mAddress = info.mAddress;
@@ -41,18 +47,24 @@ DialogInfo& DialogInfo::operator=(const DialogInfo& info) {
   this->mName = info.mName;
   this->mStatus = info.mStatus;
   this->mUnreadMessages = info.mUnreadMessages;
+  this->mContactId = info.mContactId;
   this->mLastUpdated = std::chrono::system_clock::now();
   return *this;
 }
 
-DialogInfo& DialogInfo::operator=(const std::shared_ptr<const Dialog>& info) {
-  this->mAddress = info->getAdress();
-  this->mDialogId = info->getDialogId();
-  this->mMoniker = info->getChannelMoniker();
-  this->mName = info->getName();
-  this->mStatus = info->getStatus();
-  this->mUnreadMessages = 0;
+DialogInfo& DialogInfo::operator=(const Dialog& info) {
+  this->mStatus = info.getStatus();
+  this->mDialogId = info.getDialogId();
+  this->mContactId = info.getContactId();
   this->mLastUpdated = std::chrono::system_clock::now();
+  return *this;
+}
+
+DialogInfo& DialogInfo::operator=(const Contact& info) {
+  this->mAddress = info.adress();
+  this->mMoniker = info.channelMoniker();
+  this->mName = info.name();
+  this->mContactId = info.id();
   return *this;
 }
 

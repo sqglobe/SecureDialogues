@@ -35,6 +35,7 @@ persistent_storage/dialogmarshaller.cpp
 persistent_storage/connectionmarshaller.cpp
 containers/storages.cpp
 communication/communication_helpers.cpp
+containers/connectstoragelistener.cpp
 )
 
 
@@ -83,6 +84,9 @@ persistent_storage/connectionmarshaller.h
 persistent_storage/store_helpers.h
 containers/storages.h
 communication/communication_helpers.h
+containers/eventwatchers.h
+interfaces/changelistener.h
+containers/connectstoragelistener.h
 )
 
 add_library(messages STATIC ${SOURCES} ${HEADERS})

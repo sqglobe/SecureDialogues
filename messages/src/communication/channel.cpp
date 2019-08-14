@@ -16,26 +16,27 @@
 #include "exception/notauthorizedexception.h"
 
 Channel::Channel(std::unique_ptr<AbstractChannelAdapter>&& adater,
-                 const std::shared_ptr<AbstractMessageDespatcher>& handler,
+                 std::shared_ptr<AbstractMessageDespatcher> handler,
                  std::shared_ptr<AbstractMessageMarshaller> marshaller,
-                 const std::string& name,
-                 const std::shared_ptr<EventQueue>& eventQueue,
+                 std::string&& name,
+                 std::shared_ptr<EventQueue> eventQueue,
                  std::chrono::seconds waitAck) :
     mAdapter(std::move(adater)),
-    mHandler(handler), mMarshaller(std::move(marshaller)), mName(name),
-    mEventQueue(eventQueue), mWaitAckInterval(waitAck) {}
+    mHandler(std::move(handler)), mMarshaller(std::move(marshaller)),
+    mName(std::move(name)), mEventQueue(std::move(eventQueue)),
+    mWaitAckInterval(waitAck) {}
 
 Channel::Channel(AbstractChannelAdapter* adapter,
-                 const std::shared_ptr<AbstractMessageDespatcher>& handler,
+                 std::shared_ptr<AbstractMessageDespatcher> handler,
                  std::shared_ptr<AbstractMessageMarshaller> marshaller,
-                 const std::string& name,
-                 const std::shared_ptr<EventQueue>& eventQueue,
+                 std::string&& name,
+                 std::shared_ptr<EventQueue> eventQueue,
                  std::chrono::seconds waitAck) :
     Channel(std::unique_ptr<AbstractChannelAdapter>(adapter),
-            handler,
+            std::move(handler),
             std::move(marshaller),
-            name,
-            eventQueue,
+            std::move(name),
+            std::move(eventQueue),
             waitAck) {}
 
 Channel::~Channel() {

@@ -3,7 +3,6 @@
 
 #include <persistent-storage/storages/childstorage.h>
 #include <persistent-storage/storages/storage.h>
-#include <persistent-storage/watchers/eventqueuewatcher.h>
 
 #include <persistent-storage/deleters/childthatisparentdeleter.h>
 #include <persistent-storage/deleters/defaultchilddeleter.h>
@@ -12,6 +11,7 @@
 
 #include <memory>
 
+#include "eventwatchers.h"
 #include "persistent_storage/connectionmarshaller.h"
 #include "persistent_storage/contactmarshaller.h"
 #include "persistent_storage/dialogmarshaller.h"
@@ -30,7 +30,7 @@ using DialogStorage =
     prstorage::ChildStorage<Dialog,
                             Contact,
                             DialogMarshaller,
-                            prstorage::EventQueueWatcher<Dialog>,
+                            EventListeners<Dialog>,
                             prstorage::RegisterTransactionManager>;
 
 using ContactDeleterType =
@@ -43,7 +43,7 @@ using ContactStorage =
     prstorage::ChildStorage<Contact,
                             ConnectionHolder,
                             ContactMarshaller,
-                            prstorage::EventQueueWatcher<Contact>,
+                            EventListeners<Contact>,
                             prstorage::RegisterTransactionManager,
                             ContactDeleterType>;
 
@@ -55,7 +55,7 @@ using ConnectionDeleter =
 using ConnectionStorage =
     prstorage::Storage<ConnectionHolder,
                        ConnectionMarshaller,
-                       prstorage::EventQueueWatcher<ConnectionHolder>,
+                       EventListeners<ConnectionHolder>,
                        prstorage::RegisterTransactionManager,
                        ConnectionDeleter>;
 

@@ -4,8 +4,10 @@
 #include <QAbstractListModel>
 #include <memory>
 #include "dialoginfo.h"
-#include "interfaces/changewatcher.h"
+#include "interfaces/changelistener.h"
 #include "interfaces/messageconteinereventhandler.h"
+
+#include "containers/storages.h"
 
 class DialogManager;
 
@@ -15,12 +17,14 @@ class DialogManager;
  * все сообщения для него.
  */
 class DialogUserModel : public QAbstractListModel,
-                        public ChangeWatcher<std::shared_ptr<const Dialog>>,
+                        public ChangeListener<Dialog>,
+                        public ChangeListener<Contact>,
                         public MessageContainerEventHandler {
   Q_OBJECT
 
  public:
-  explicit DialogUserModel(const std::shared_ptr<DialogManager>& dialogs);
+  DialogUserModel(std::shared_ptr<ContactStorage> contacts,
+                  const std::vector<Dialog>& dialogs);
 
  public:
   int rowCount(const QModelIndex& = QModelIndex()) const override;
@@ -28,9 +32,13 @@ class DialogUserModel : public QAbstractListModel,
                 int role = Qt::DisplayRole) const override;
 
  public:
-  void added(const element& obj) override;
-  void changed(const element& obj) override;
-  void removed(const element& obj) override;
+  void added(const Dialog& obj) override;
+  void changed(const Dialog& obj) override;
+  void removed(const Dialog& obj) override;
+
+  void added(const Contact&) override;
+  void changed(const Contact& obj) override;
+  void removed(const Contact&) override;
 
  public:
   void messageAdded(const std::string& dialogId,
@@ -57,6 +65,7 @@ class DialogUserModel : public QAbstractListModel,
  private:
   std::vector<DialogInfo> mDialogsInfo;
   std::string activeDialog;
+  std::shared_ptr<ContactStorage> mContacts;
 };
 
 #endif  // DIALOGUSERMODEL_H

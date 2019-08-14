@@ -2,8 +2,9 @@
 #define BASESETTINGSDIALOG_H
 
 #include <QDialog>
+#include <memory>
 
-class QAbstractItemModel;
+class IdentifiedListModel;
 class QSortFilterProxyModel;
 
 class QModelIndex;
@@ -30,7 +31,7 @@ class BaseSettingsDialog : public QDialog {
   enum class State { ADD, CHANGE, VIEW };
 
  public:
-  explicit BaseSettingsDialog(QAbstractItemModel* model,
+  explicit BaseSettingsDialog(std::shared_ptr<IdentifiedListModel> model,
                               QWidget* dataWidget,
                               QWidget* parent = nullptr);
   ~BaseSettingsDialog() override;
@@ -45,19 +46,19 @@ class BaseSettingsDialog : public QDialog {
    * @brief Сигнал генерируется, когда пользователь выбирает элемент из списка
    * @param pos позиция элемента
    */
-  void actionViewAt(int pos);
+  void actionViewAt(std::string id);
 
   /**
    * @brief Команда на удаление элемента по указанной позиции
    * @param pos позиция элемента, по которой должен быть удален элемент
    */
-  void actionRemoveAt(int pos);
+  void actionRemoveAt(std::string id);
 
   /**
    * @brief Сигнал на обновление существующего элемента по указанной позиции
    * @param pos позиция элемента, который должен быть обновлен
    */
-  void actionUpdateAt(int pos);
+  void actionUpdateAt(std::string id);
 
   /**
    * @brief Команда на добавление нового элемента
@@ -100,9 +101,10 @@ class BaseSettingsDialog : public QDialog {
   Ui::BaseSettingsDialog* ui;
 
  private:
-  int mSelectedRow{-1};
+  std::optional<std::string> mSelectedId;
   State mCurrentState{State::ADD};
   QSortFilterProxyModel* mProxyModel;
+  std::shared_ptr<IdentifiedListModel> mModel;
 };
 
 #endif  // BASESETTINGSDIALOG_H

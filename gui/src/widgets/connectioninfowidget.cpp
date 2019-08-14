@@ -7,7 +7,7 @@
 #include <sstream>
 #include <utility>
 #include "correctnessinputerror.h"
-#include "primitives/connectionholder.h"
+
 #include "widgetsutils.h"
 
 #include "oauth-agents/agents/gmailoauth.h"
@@ -102,6 +102,55 @@ ConnectionInfoWidget::~ConnectionInfoWidget() {
   delete ui;
 }
 
+ConnectionInfoWidget::Element ConnectionInfoWidget::getChannelInfo(
+    const std::string& channelName) const {
+  auto it = mCachedElements.find(channelName);
+  if (it == mCachedElements.cend()) {
+    return {Channel::ChannelStatus::UNDEFINED, ""};
+  }
+  return it->second;
+}
+
+void ConnectionInfoWidget::displayStatus(
+    const ConnectionInfoWidget::Element& element) {
+  auto connStatus = findChild<QLabel*>("statusText");
+  auto lastMessage = findChild<QLabel*>("lastMessage");
+  QPalette palette = connStatus->palette();
+
+  switch (element.status) {
+    case Channel::ChannelStatus::UNDEFINED: {
+      connStatus->setText("Подключение не подтверждено");
+      lastMessage->setText("");
+      palette.setColor(connStatus->backgroundRole(), QColor(192, 192, 192));
+      lastMessage->hide();
+      break;
+    }
+    case Channel::ChannelStatus::CONNECTED: {
+      connStatus->setText("Подключение выполнено успешно");
+      palette.setColor(connStatus->backgroundRole(), QColor(152, 251, 152));
+      lastMessage->setText("");
+      lastMessage->hide();
+
+      break;
+    }
+    case Channel::ChannelStatus::FAILED_CONNECT: {
+      connStatus->setText("Подключение не успешно");
+      lastMessage->setText(element.message);
+      palette.setColor(connStatus->backgroundRole(), QColor(255, 192, 203));
+      lastMessage->show();
+      break;
+    }
+    case Channel::ChannelStatus::AUTHORIZATION_FAILED: {
+      connStatus->setText("Необходимо выполнить авторизацию");
+      lastMessage->setText(element.message);
+      palette.setColor(connStatus->backgroundRole(), QColor(250, 128, 114));
+      lastMessage->show();
+    }
+  }
+  connStatus->setAutoFillBackground(true);
+  connStatus->setPalette(palette);
+}
+
 void ConnectionInfoWidget::setElement(const ConnectionHolder& info) {
   auto conn_name = findChild<QLineEdit*>("connectionName");
   auto login = findChild<QLineEdit*>("login");
@@ -128,46 +177,12 @@ void ConnectionInfoWidget::setElement(const ConnectionHolder& info) {
   auto connType = findChild<QComboBox*>("connectionType");
   connType->setCurrentIndex(static_cast<int>(info.getType()));
 
-  mInfo = std::make_unique<ConnectionHolder>(info);
+  auto statusInfo = getChannelInfo(info.getConnectionName());
+  displayStatus(statusInfo);
+
+  mInfo = info;
 
   activatedConnectionType(static_cast<int>(info.getType()));
-
-  auto connStatus = findChild<QLabel*>("statusText");
-  auto lastMessage = findChild<QLabel*>("lastMessage");
-  QPalette palette = connStatus->palette();
-  switch (info.getStatus()) {
-    case Channel::ChannelStatus::UNDEFINED: {
-      connStatus->setText("Подключение не подтверждено");
-      lastMessage->setText("");
-      palette.setColor(connStatus->backgroundRole(), QColor(192, 192, 192));
-      lastMessage->hide();
-      break;
-    }
-    case Channel::ChannelStatus::CONNECTED: {
-      connStatus->setText("Подключение выполнено успешно");
-      palette.setColor(connStatus->backgroundRole(), QColor(152, 251, 152));
-      lastMessage->setText("");
-      lastMessage->hide();
-
-      break;
-    }
-    case Channel::ChannelStatus::FAILED_CONNECT: {
-      connStatus->setText("Подключение не успешно");
-      lastMessage->setText(info.getMessage().c_str());
-      palette.setColor(connStatus->backgroundRole(), QColor(255, 192, 203));
-      lastMessage->show();
-      break;
-    }
-    case Channel::ChannelStatus::AUTHORIZATION_FAILED: {
-      connStatus->setText("Необходимо выполнить авторизацию");
-      lastMessage->setText(info.getMessage().c_str());
-      palette.setColor(connStatus->backgroundRole(), QColor(250, 128, 114));
-      lastMessage->show();
-    }
-  }
-  connStatus->setAutoFillBackground(true);
-  connStatus->setPalette(palette);
-
   findChild<QWidget*>("satusWidget")->show();
 }
 
@@ -295,15 +310,30 @@ ConnectionHolder ConnectionInfoWidget::getElement() noexcept(false) {
   } else {
     connHolder.setConnection(UdpConnection{});
   }
-  mInfo.release();
+  mInfo.reset();
   return connHolder;
+}
+
+void ConnectionInfoWidget::updateChannelStatus(Channel::ChannelStatus status,
+                                               const std::string& channelName,
+                                               const std::string& message) {
+  auto it = mCachedElements.find(channelName);
+  Element elem{status, QString(message.c_str())};
+  if (it == mCachedElements.end()) {
+    mCachedElements.emplace(channelName, elem);
+  } else {
+    it->second = elem;
+  }
+  if (mInfo && mInfo->getConnectionName() == channelName) {
+    displayStatus(elem);
+  }
 }
 
 void ConnectionInfoWidget::actionCleare() {
   emit cleareVal();
   auto connType = findChild<QComboBox*>("connectionType");
   connType->setCurrentIndex(1);
-  mInfo.release();
+  mInfo.reset();
   findChild<QWidget*>("satusWidget")->hide();
 }
 

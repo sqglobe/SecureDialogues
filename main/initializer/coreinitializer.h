@@ -2,14 +2,12 @@
 #define COREINITIALIZER_H
 
 #include <memory>
+#include "containers/storages.h"
 
 // gui implementations
 class AbstractUserNotifier;
 
 // containers
-class ConnectionInfoContainer;
-class ContactContainer;
-class DialogManager;
 class MessageContainer;
 
 // messages core
@@ -27,33 +25,30 @@ class EventQueueHolder;
 class CoreInitializer {
  public:
   CoreInitializer(const std::shared_ptr<AbstractUserNotifier>& notifier,
-                  const std::string& pass,
-                  const EventQueueHolder& eventHolder);
+                  const std::string& pass);
 
   // getters for core objects
  public:
   std::shared_ptr<MessageActionHandler> getMessageActionHandler() const;
   std::shared_ptr<DialogActionHandler> getDialogActionHandler() const;
-  std::shared_ptr<ConnectionInfoContainer> getConnectionInfocontainer() const;
-  std::shared_ptr<DialogManager> getDialogManager() const;
+  std::shared_ptr<ConnectionStorage> getConnectionStorage() const;
+  std::shared_ptr<DialogStorage> getDialogStorage() const;
   std::shared_ptr<MessageContainer> getMessageContainer() const;
-  std::shared_ptr<ContactContainer> getContactContainer() const;
+  std::shared_ptr<ContactStorage> getContactStorage() const;
   std::shared_ptr<CryptoSystemImpl> getCryptoSystem() const;
 
+  void startMessagesHandling(
+      const std::shared_ptr<AbstractUserNotifier>& notifier,
+      const std::shared_ptr<Channel::EventQueue>& eventQueue);
   void saveFiles();
 
  private:
-  void loadFromFiles(const std::string& connFile,
-                     const std::string& contactFile,
-                     const std::shared_ptr<const Decryptor>& decryptor);
-  void saveToFiles(const std::string& connFile,
-                   const std::string& contactFile,
-                   const std::shared_ptr<const Encryptor>& encryptor);
+  void initDatabases(const std::string& pass);
 
  private:
-  std::shared_ptr<ConnectionInfoContainer> mConnectionInfoContainer;
-  std::shared_ptr<ContactContainer> mContactContainer;
-  std::shared_ptr<DialogManager> mDialogManager;
+  std::shared_ptr<ConnectionStorage> mConnectionStorage;
+  std::shared_ptr<ContactStorage> mContactStorage;
+  std::shared_ptr<DialogStorage> mDialogStorage;
   std::shared_ptr<MessageContainer> mMessageContainer;
   std::shared_ptr<AsymetricalKeyStore> mAsymetricalKeyStore;
 
