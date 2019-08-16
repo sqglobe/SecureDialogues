@@ -7,7 +7,6 @@
 #include <functional>
 #include "communication/channel.h"
 #include "communication/messagedespatcher.h"
-#include "containers/contactcontainer.h"
 #include "interfaces/abstractchanneladapter.h"
 #include "primitives/connectionholder.h"
 #include "primitives/contact.h"
@@ -22,6 +21,10 @@
 #include <QTextEdit>
 
 #include <memory>
+
+#include "containers/storages.h"
+
+#include "utils/dbfactory.h"
 
 #include <iostream>
 
@@ -41,6 +44,8 @@ class TestContactWidget : public QObject {
   explicit TestContactWidget(QObject* parent = nullptr);
 
  private slots:
+  void initTestCase();
+  void cleanupTestCase();
   void init();
   void testViewAt();
   void testViewAt_data();

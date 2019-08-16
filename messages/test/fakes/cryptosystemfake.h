@@ -10,22 +10,22 @@ class CryptoSystemFake : public CryptoSystem {
   std::string createSignature(const DialogMessage& message) const
       noexcept(false) override;
 
-  std::string encryptMessageBody(const std::string& dialogId,
-                                 const std::string& message) const
+  std::string encryptMessageBody(std::string_view dialogId,
+                                 std::string_view message) const
       noexcept(false) override;
-  std::string decryptMessageBody(const std::string& dialogId,
-                                 const std::string& message) const
+  std::string decryptMessageBody(std::string_view dialogId,
+                                 std::string_view message) const
       noexcept(false) override;
 
  public:
   std::string generateAndExportKey(
-      const std::string& dialogId,
-      const std::string& addres) noexcept(false) override;
-  std::string importKey(const std::string& dialogId,
-                        const std::string& message) noexcept(false) override;
+      std::string_view dialogId,
+      std::string_view addres) noexcept(false) override;
+  std::string importKey(std::string_view dialogId,
+                        std::string_view message) noexcept(false) override;
   bool checkVerificationString(
-      const std::string& dialogId,
-      const std::string& message) noexcept(false) override;
+      std::string_view dialogId,
+      std::string_view message) noexcept(false) override;
 };
 
 inline bool CryptoSystemFake::isSignatureOk([
@@ -39,32 +39,29 @@ inline std::string CryptoSystemFake::createSignature([
 }
 
 inline std::string CryptoSystemFake::encryptMessageBody(
-    [[maybe_unused]] const std::string& dialogId,
-    [[maybe_unused]] const std::string& message) const {
-  return message;
+    std::string_view,
+    std::string_view message) const {
+  return std::string(message);
 }
 
 inline std::string CryptoSystemFake::decryptMessageBody(
-    [[maybe_unused]] const std::string& dialogId,
-    [[maybe_unused]] const std::string& message) const {
-  return message;
+    std::string_view,
+    std::string_view message) const {
+  return std::string(message);
 }
 
-inline std::string CryptoSystemFake::generateAndExportKey(
-    [[maybe_unused]] const std::string& dialogId,
-    [[maybe_unused]] const std::string& addres) {
+inline std::string CryptoSystemFake::generateAndExportKey(std::string_view,
+                                                          std::string_view) {
   return "1";
 }
 
-inline std::string CryptoSystemFake::importKey(
-    [[maybe_unused]] const std::string& dialogId,
-    [[maybe_unused]] const std::string& message) {
+inline std::string CryptoSystemFake::importKey(std::string_view,
+                                               std::string_view) {
   return "1";
 }
 
-inline bool CryptoSystemFake::checkVerificationString(
-    [[maybe_unused]] const std::string& dialogId,
-    [[maybe_unused]] const std::string& message) {
+inline bool CryptoSystemFake::checkVerificationString(std::string_view,
+                                                      std::string_view) {
   return true;
 }
 

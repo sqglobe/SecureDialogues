@@ -35,46 +35,9 @@
 #include "containers/connectstoragelistener.h"
 #include "eventqueueholder.h"
 
+#include "utils/dbfactory.h"
+
 static const std::string FILE_KEY = "conf/keys";
-
-DbEnv* make_db_env(const std::string& path, const std::string& pass) {
-  dbstl::dbstl_startup();
-  auto penv = new DbEnv(DB_CXX_NO_EXCEPTIONS);
-  penv->set_encrypt(pass.c_str(), DB_ENCRYPT_AES);
-  auto res = penv->open(path.c_str(),
-                        DB_INIT_LOCK | DB_INIT_MPOOL | DB_INIT_TXN | DB_CREATE |
-                            DB_PRIVATE | DB_RECOVER | DB_THREAD | DB_REGISTER |
-                            DB_FAILCHK,
-                        0600);
-  if (res) {
-    delete penv;
-    throw std::runtime_error(
-        std::string("Error occur during system intialisation ").append(path));
-  }
-  dbstl::register_db_env(penv);
-  return penv;
-}
-
-Db* make_db(const std::string& file,
-            const std::string& name,
-            DbEnv* penv,
-            u_int32_t flags = 0) {
-  auto db = new Db(penv, DB_CXX_NO_EXCEPTIONS);
-  db->set_flags(flags | DB_ENCRYPT);
-  auto res = db->open(nullptr, file.c_str(), name.c_str(), DB_BTREE,
-                      DB_CREATE | DB_THREAD | DB_AUTO_COMMIT, 0600);
-
-  if (res) {
-    delete db;
-    throw std::runtime_error(
-        std::string("Error occur during database intialisation ")
-            .append(file)
-            .append(" name ")
-            .append(name));
-  }
-  dbstl::register_db(db);
-  return db;
-}
 
 std::shared_ptr<AsymetricalKeyStore> loadKeys(
     const std::string& fileTempl,

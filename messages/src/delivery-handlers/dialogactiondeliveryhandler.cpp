@@ -80,7 +80,7 @@ std::shared_ptr<DeliveryHandler>
 make_delivery_handler_for_create_dialog_request(
     std::weak_ptr<AbstractMessageDespatcher> dispatcher,
     DialogStorage::wrapper_type&& wrapper,
-    std::shared_ptr<AbstractUserNotifier>& notifier,
+    std::shared_ptr<AbstractUserNotifier> notifier,
     std::string&& address,
     std::string&& channel) {
   return std::make_shared<DialogActionDeliveryHandler>(

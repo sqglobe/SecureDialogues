@@ -14,7 +14,7 @@ BaseSettingsDialog::BaseSettingsDialog(
 
 {
   ui->setupUi(this);
-  mProxyModel->setSourceModel(model.get());
+  mProxyModel->setSourceModel(mModel.get());
   ui->elementsView->setModel(mProxyModel);
   ui->vidgetLayout->addWidget(dataWidget);
   dataWidget->setParent(this);

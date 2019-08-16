@@ -6,7 +6,6 @@
 
 ConnectionInfoModel::ConnectionInfoModel(
     const std::vector<ChangeListener::element>& elements) {
-  [[maybe_unused]] std::lock_guard<std::mutex> lock(mMutex);
   std::transform(std::cbegin(elements), std::cend(elements),
                  std::back_inserter(mData),
                  [](const ChangeListener::element& element) -> ConnData {
@@ -16,12 +15,12 @@ ConnectionInfoModel::ConnectionInfoModel(
 }
 
 int ConnectionInfoModel::rowCount(const QModelIndex&) const {
-  [[maybe_unused]] std::lock_guard<std::mutex> lock(mMutex);
+  [[maybe_unused]] std::lock_guard<std::recursive_mutex> lock(mMutex);
   return simpleRowCount();
 }
 
 QVariant ConnectionInfoModel::data(const QModelIndex& index, int role) const {
-  [[maybe_unused]] std::lock_guard<std::mutex> lock(mMutex);
+  [[maybe_unused]] std::lock_guard<std::recursive_mutex> lock(mMutex);
   if (Qt::DisplayRole == role && index.row() >= 0 && index.row() < rowCount()) {
     return mData[static_cast<std::size_t>(index.row())].connName;
   } else if (Qt::BackgroundRole == role) {
@@ -49,7 +48,7 @@ std::optional<std::string> ConnectionInfoModel::getId(
 }
 
 void ConnectionInfoModel::added(const ChangeListener::element& element) {
-  [[maybe_unused]] std::lock_guard<std::mutex> lock(mMutex);
+  [[maybe_unused]] std::lock_guard<std::recursive_mutex> lock(mMutex);
   beginInsertRows(QModelIndex(), simpleRowCount(), simpleRowCount());
   mData.push_back({QString(element.getConnectionName().c_str()),
                    Channel::ChannelStatus::UNDEFINED});
@@ -59,7 +58,7 @@ void ConnectionInfoModel::added(const ChangeListener::element& element) {
 void ConnectionInfoModel::changed(const ChangeListener::element&) {}
 
 void ConnectionInfoModel::removed(const ChangeListener::element& element) {
-  [[maybe_unused]] std::lock_guard<std::mutex> lock(mMutex);
+  [[maybe_unused]] std::lock_guard<std::recursive_mutex> lock(mMutex);
   auto connName = QString(element.getConnectionName().c_str());
   auto it = std::find_if(
       std::begin(mData), std::end(mData),
@@ -75,7 +74,7 @@ void ConnectionInfoModel::removed(const ChangeListener::element& element) {
 void ConnectionInfoModel::updateChannelStatus(Channel::ChannelStatus status,
                                               const std::string& channelName,
                                               const std::string&) {
-  [[maybe_unused]] std::lock_guard<std::mutex> lock(mMutex);
+  [[maybe_unused]] std::lock_guard<std::recursive_mutex> lock(mMutex);
   auto it =
       std::find_if(std::begin(mData), std::end(mData),
                    [connName = QString(channelName.c_str())](const auto& conn) {

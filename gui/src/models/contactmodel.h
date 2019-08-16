@@ -38,7 +38,7 @@ class ContactModel : public IdentifiedListModel,
   };
 
  private:
-  mutable std::mutex mMutex;
+  mutable std::recursive_mutex mMutex;
   std::vector<Element> mData;
 };
 

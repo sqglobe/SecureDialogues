@@ -49,7 +49,7 @@ class ConnectionInfoModel : public IdentifiedListModel,
 
  private:
   std::vector<ConnData> mData;
-  mutable std::mutex mMutex;
+  mutable std::recursive_mutex mMutex;
 };
 
 int ConnectionInfoModel::simpleRowCount() const {

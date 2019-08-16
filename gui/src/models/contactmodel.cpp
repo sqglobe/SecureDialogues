@@ -13,12 +13,12 @@ ContactModel::ContactModel(const std::vector<Contact>& contacts) {
 }
 
 int ContactModel::rowCount(const QModelIndex&) const {
-  [[maybe_unused]] std::lock_guard<std::mutex> lock(mMutex);
+  [[maybe_unused]] std::lock_guard<std::recursive_mutex> lock(mMutex);
   return size();
 }
 
 QVariant ContactModel::data(const QModelIndex& index, int role) const {
-  [[maybe_unused]] std::lock_guard<std::mutex> lock(mMutex);
+  [[maybe_unused]] std::lock_guard<std::recursive_mutex> lock(mMutex);
 
   if (!index.isValid())
     return QVariant();
@@ -30,7 +30,7 @@ QVariant ContactModel::data(const QModelIndex& index, int role) const {
 }
 
 std::optional<std::string> ContactModel::getId(const QModelIndex& index) const {
-  [[maybe_unused]] std::lock_guard<std::mutex> lock(mMutex);
+  [[maybe_unused]] std::lock_guard<std::recursive_mutex> lock(mMutex);
   if (index.isValid()) {
     return mData.at(static_cast<std::size_t>(index.row())).id;
   }
@@ -38,7 +38,7 @@ std::optional<std::string> ContactModel::getId(const QModelIndex& index) const {
 }
 
 void ContactModel::added(const ChangeListener::element& element) {
-  [[maybe_unused]] std::lock_guard<std::mutex> lock(mMutex);
+  [[maybe_unused]] std::lock_guard<std::recursive_mutex> lock(mMutex);
   beginInsertRows(QModelIndex(), size(), size());
   mData.push_back(
       {std::string(element.id()), format.arg(make_qstring(element.name()),
