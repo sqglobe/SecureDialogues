@@ -86,7 +86,8 @@ TestContactChangeWatcher::TestContactChangeWatcher(QObject* parent) :
 
 void TestContactChangeWatcher::initTestCase() {
   dbstl::dbstl_startup();
-  auto penv = make_db_env("TestDialogChangeWatcher_env", "test");
+  QDir().mkdir("TestContactChangeWatcher_env");
+  auto penv = make_db_env("TestContactChangeWatcher_env", "test");
   primary = make_db("test_contacts.db", "primary", penv);
   secondary = make_db("test_contacts.db", "secondary", penv, DB_DUP);
 
@@ -100,6 +101,7 @@ void TestContactChangeWatcher::initTestCase() {
 
 void TestContactChangeWatcher::cleanupTestCase() {
   dbstl::dbstl_exit();
+  QDir().rmdir("TestContactChangeWatcher_env");
 }
 
 void TestContactChangeWatcher::testAddWatcher() {
@@ -173,6 +175,7 @@ void TestContactChangeWatcher::testChangeWatcher_data() {
   QTest::newRow("2") << std::string("added channel 3")
                      << std::string("fake name 3")
                      << std::string("fake address 3") << std::string("id 3");
+
   QTest::newRow("3") << std::string("added channel 4")
                      << std::string("fake name 4")
                      << std::string("fake address 4") << std::string("id 4");
@@ -183,6 +186,8 @@ void TestContactChangeWatcher::testRemoveWatcher() {
   QFETCH(std::string, name);
   QFETCH(std::string, adress);
   QFETCH(std::string, contact_id);
+
+  std::cout << mDialogStorage->size() << std::endl;
 
   mContactStorage->remove(contact_id);
 
@@ -211,7 +216,6 @@ void TestContactChangeWatcher::testRemoveWatcher_data() {
 
 void TestContactChangeWatcher::init() {
   primary->truncate(nullptr, nullptr, 0);
-  secondary->truncate(nullptr, nullptr, 0);
 
   mContactStorage->add(
       make_contact("channel 1", "name 1", "adress 1", "no pass", "id 1"));

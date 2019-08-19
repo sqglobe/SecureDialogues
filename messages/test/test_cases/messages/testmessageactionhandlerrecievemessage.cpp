@@ -56,6 +56,7 @@ class TestMessageActionHandlerRecieveMessage : public QObject {
 TestMessageActionHandlerRecieveMessage::TestMessageActionHandlerRecieveMessage(
     QObject* parent) :
     QObject(parent) {
+  dbstl::dbstl_startup();
   mMessageDispatcher = std::make_shared<MessageDespatcher>(
       std::make_shared<CryptoSystemFake>(), std::make_shared<FakeNotifier>());
 
@@ -63,6 +64,7 @@ TestMessageActionHandlerRecieveMessage::TestMessageActionHandlerRecieveMessage(
       std::make_shared<FakeMessageContainerHandlerOnlyMesssageAdded>();
   mFakeNotifier = std::make_shared<FakeNotifier>();
 
+  QDir().mkdir("TestMessageActionHandlerRecieveMessage_env");
   auto penv = make_db_env("TestMessageActionHandlerRecieveMessage_env", "test");
   {
     auto primary = make_db("test_dialogs.db", "primary", penv);
@@ -91,12 +93,11 @@ TestMessageActionHandlerRecieveMessage::TestMessageActionHandlerRecieveMessage(
   mMessageDispatcher->add(mMessageActionHandler);
 }
 
-void TestMessageActionHandlerRecieveMessage::initTestCase() {
-  dbstl::dbstl_startup();
-}
+void TestMessageActionHandlerRecieveMessage::initTestCase() {}
 
 void TestMessageActionHandlerRecieveMessage::cleanupTestCase() {
   dbstl::dbstl_exit();
+  QDir().rmdir("TestMessageActionHandlerRecieveMessage_env");
 }
 
 void TestMessageActionHandlerRecieveMessage::testMessageRecieveOk() {
@@ -191,7 +192,7 @@ TIMESTAMP:" + std::to_string(get_timestamp()) +
                             "\n\
 SIGNATURE: 1\n\
 --------------------------------------------------------------\n\
-                                        long long data");
+long long data");
 }
 
 QTEST_APPLESS_MAIN(TestMessageActionHandlerRecieveMessage)

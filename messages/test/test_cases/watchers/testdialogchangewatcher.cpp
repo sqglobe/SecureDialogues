@@ -73,6 +73,7 @@ TestDialogChangeWatcher::TestDialogChangeWatcher(QObject* parent) :
 
 void TestDialogChangeWatcher::initTestCase() {
   dbstl::dbstl_startup();
+  QDir().mkdir("TestDialogChangeWatcher_env");
   auto penv = make_db_env("TestDialogChangeWatcher_env", "test");
   primary = make_db("test_dialogs.db", "primary", penv);
   secondary = make_db("test_dialogs.db", "secondary", penv, DB_DUP);
@@ -82,6 +83,7 @@ void TestDialogChangeWatcher::initTestCase() {
 
 void TestDialogChangeWatcher::cleanupTestCase() {
   dbstl::dbstl_exit();
+  QDir().rmdir("TestDialogChangeWatcher_env");
 }
 
 void TestDialogChangeWatcher::testAddWatcher() {
@@ -89,7 +91,8 @@ void TestDialogChangeWatcher::testAddWatcher() {
   QFETCH(std::string, dialog_id);
   QFETCH(Dialog::Status, status);
 
-  mDialogStorage->add(Dialog(contact_id, dialog_id, 0, 0, status));
+  mDialogStorage->add(
+      Dialog(std::string(contact_id), std::string(dialog_id), 0, 0, status));
 
   QCOMPARE(mWatcher->mContactId, contact_id);
   QCOMPARE(mWatcher->mDialogId, dialog_id);
@@ -123,7 +126,8 @@ void TestDialogChangeWatcher::testChangeWatcher() {
   QFETCH(std::string, dialog_id);
   QFETCH(Dialog::Status, status);
 
-  mDialogStorage->update(Dialog(contact_id, dialog_id, 0, 0, status));
+  mDialogStorage->update(
+      Dialog(std::string(contact_id), std::string(dialog_id), 0, 0, status));
 
   QCOMPARE(mWatcher->mDialogId, dialog_id);
   QCOMPARE(mWatcher->mContactId, contact_id);
@@ -167,20 +171,18 @@ void TestDialogChangeWatcher::testRemoveWatcher_data() {
   QTest::addColumn<std::string>("contact_id");
   QTest::addColumn<std::string>("dialog_id");
 
-  QTest::newRow("0") << std::string("channel 3") << std::string("name created1")
-                     << std::string("adress created1")
+  QTest::newRow("0") << std::string("name created1")
                      << std::string("created dialog 1");
-  QTest::newRow("1") << std::string("channel 3") << std::string("name created2")
-                     << std::string("adress created2")
+
+  QTest::newRow("1") << std::string("name created2")
                      << std::string("created dialog 2");
-  QTest::newRow("2") << std::string("channel 3") << std::string("name created3")
-                     << std::string("adress created3")
+
+  QTest::newRow("2") << std::string("name created3")
                      << std::string("created dialog 3");
 }
 
 void TestDialogChangeWatcher::init() {
   primary->truncate(nullptr, nullptr, 0);
-  secondary->truncate(nullptr, nullptr, 0);
   mDialogStorage->add(Dialog(std::string("test contact"),
                              std::string("new dialog 1"), 0, 0,
                              Dialog::Status::NEW));
@@ -212,7 +214,7 @@ void TestDialogChangeWatcher::init() {
                              Dialog::Status::WAIT_CONFIRM));
 
   mWatcher = std::make_shared<FakeDialogWather>();
-  mDialogStorage->appendPermanentListener(mWatcher);
+  mDialogStorage->appendListener(mWatcher);
 }
 QTEST_APPLESS_MAIN(TestDialogChangeWatcher)
 #include "testdialogchangewatcher.moc"

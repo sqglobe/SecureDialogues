@@ -84,6 +84,8 @@ add_subdirectory(doc)
 add_subdirectory(curl-wrapper)
 add_subdirectory(email-agent)
 
-
+if (BUILD_TESTING)
+  add_subdirectory( regression )
+endif()
 
 
