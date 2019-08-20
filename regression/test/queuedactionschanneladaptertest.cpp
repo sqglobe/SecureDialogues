@@ -1,5 +1,5 @@
 #include <QtTest>
-#include "stand/queuedactionschanneladapter.h"
+#include "stand-helpers/queuedactionschanneladapter.h"
 
 Q_DECLARE_METATYPE(std::string);
 

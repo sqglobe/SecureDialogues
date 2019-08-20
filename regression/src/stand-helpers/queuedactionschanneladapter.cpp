@@ -2,6 +2,8 @@
 #include <condition_variable>
 #include <mutex>
 
+#include <iostream>
+
 class QueuedActionsChannelAdapter::Sender {
  public:
   void sendToApplication(const MessageData& data);
@@ -23,6 +25,11 @@ void QueuedActionsChannelAdapter::Sender::sendToApplication(
 std::pair<std::string, std::string>
 QueuedActionsChannelAdapter::Sender::recieve() {
   std::unique_lock<std::mutex> lock(mMutex);
+  if (mData) {
+    auto res = std::make_pair(mData->address, mData->message);
+    mData.reset();
+    return res;
+  }
   mVar.wait_for(lock, std::chrono::milliseconds(1000));
   if (!mData) {
     return std::make_pair(std::string(), std::string());
@@ -47,12 +54,21 @@ std::optional<QueuedActionsChannelAdapter::MessageData>
 QueuedActionsChannelAdapter::Reciever::recieveFromApplication(
     int milliseconds) {
   std::unique_lock<std::mutex> lock(mMutex);
-  auto res = mVar.wait_for(lock, std::chrono::milliseconds(milliseconds),
-                           [this]() -> bool { return mData.has_value(); });
-  if (res) {
+  if (mData.has_value()) {
     std::optional<MessageData> copy = mData;
     mData.reset();
     return copy;
+  }
+  std::chrono::time_point<std::chrono::system_clock> waitPoint =
+      std::chrono::system_clock::now() +
+      std::chrono::milliseconds(milliseconds);
+
+  while (std::cv_status::timeout != mVar.wait_until(lock, waitPoint)) {
+    if (mData.has_value()) {
+      std::optional<MessageData> copy = mData;
+      mData.reset();
+      return copy;
+    }
   }
   return {};
 }

@@ -14,13 +14,15 @@ add_definitions(${Qt5Widgets_DEFINITIONS})
 
 
 set(SOURCES
-    stand/queuedactionschanneladapter.cpp
+    stand-helpers/queuedactionschanneladapter.cpp
+    stand/dialogcreationandmessagesexchangecorestand.cpp
     )
 set(HEADERS
-    stand/queuedactionschanneladapter.h
+    stand-helpers/queuedactionschanneladapter.h
+    stand/dialogcreationandmessagesexchangecorestand.h
     )
 
 
 add_library(stand STATIC ${SOURCES} ${HEADERS})
 target_include_directories(stand PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(stand Qt5::Core Qt5::Gui  Qt5::Widgets gui)
+target_link_libraries(stand Qt5::Core Qt5::Gui  Qt5::Widgets gui messages-fakes)

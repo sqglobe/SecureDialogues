@@ -1,4 +1,4 @@
-project(fakes)
+project(messages-fakes)
 
 FIND_PACKAGE(Qt5Core)
 
@@ -25,7 +25,7 @@ set(HEADERS
 )
 
 
-add_library(fakes ${SOURCES} ${HEADERS})
-target_include_directories(fakes PUBLIC   ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(fakes messages ${Qt5Core_LIBRARIES})
+add_library(messages-fakes ${SOURCES} ${HEADERS})
+target_include_directories(messages-fakes PUBLIC   ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(messages-fakes messages ${Qt5Core_LIBRARIES})
 

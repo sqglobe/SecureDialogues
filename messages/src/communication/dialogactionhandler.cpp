@@ -174,9 +174,9 @@ void DialogActionHandler::prepareNotFoundDialog(const DialogMessage& message,
 
   if (A::CREATE_DIALOG == message.action()) {
     auto contacts =
-        mContactStorage->get_if([address = message.adress()](
+        mContactStorage->get_if([address = message.adress(), &channel](
                                     const ContactStorage::element& el) -> bool {
-          return el.adress() == address;
+          return el.adress() == address && el.channelMoniker() == channel;
         });
     if (contacts.empty()) {
       mNotifier->notify(
@@ -230,12 +230,11 @@ void DialogActionHandler::prepareNotFoundDialog(const DialogMessage& message,
 void DialogActionHandler::prepareForFoundDialog(const DialogMessage& message,
                                                 const std::string& channel) {
   if (message.action() == DialogMessage::Action::VERIFY_KEY) {
-    auto contact =
-        mContactStorage->get(std::string(std::string(message.dialogId())));
+    auto wrapper = mDialogStorage->wrapper(std::string(message.dialogId()));
+    auto contact = mContactStorage->get(std::string(wrapper->getContactId()));
     auto res = mCryptoSystem->importKey(message.dialogId(), message.content());
     auto handler = make_delivery_handler_for_create_dialog_request(
-        mMessageDispatcher,
-        mDialogStorage->wrapper(std::string(message.dialogId())), mNotifier,
+        mMessageDispatcher, std::move(wrapper), mNotifier,
         std::string(contact.adress()), std::string(contact.channelMoniker()));
     sendRequest(std::string(message.dialogId()),
                 DialogMessage::Action::KEY_VERIFICATION, std::move(handler),
@@ -243,11 +242,10 @@ void DialogActionHandler::prepareForFoundDialog(const DialogMessage& message,
   } else if (message.action() == DialogMessage::Action::KEY_VERIFICATION) {
     if (mCryptoSystem->checkVerificationString(message.dialogId(),
                                                message.content())) {
-      auto contact =
-          mContactStorage->get(std::string(std::string(message.dialogId())));
+      auto wrapper = mDialogStorage->wrapper(std::string(message.dialogId()));
+      auto contact = mContactStorage->get(std::string(wrapper->getContactId()));
       auto handler = make_delivery_handler_for_active_dialog_request(
-          mMessageDispatcher,
-          mDialogStorage->wrapper(std::string(message.dialogId())), mNotifier,
+          mMessageDispatcher, std::move(wrapper), mNotifier,
           std::string(contact.adress()), std::string(contact.channelMoniker()));
       sendRequest(std::string(message.dialogId()),
                   DialogMessage::Action::ACCEPT_DIALOG, std::move(handler));
@@ -261,7 +259,7 @@ void DialogActionHandler::prepareForFoundDialog(const DialogMessage& message,
 
   } else {
     auto dialog = mDialogStorage->wrapper(std::string(message.dialogId()));
-    auto contact = mContactStorage->get(std::string(dialog->getDialogId()));
+    auto contact = mContactStorage->get(std::string(dialog->getContactId()));
     dialog->setStatus(map(message.action()));
     dialog.save();
     mNotifier->notify(AbstractUserNotifier::Severity::INFO,
