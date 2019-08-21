@@ -57,7 +57,9 @@ void TestChannelListModel::initTestCase() {
 
 void TestChannelListModel::cleanupTestCase() {
   dbstl::dbstl_exit();
-  QDir().rmdir("TestChannelListModel_env");
+  QDir curr;
+  if (curr.cd("TestChannelListModel_env"))
+    curr.removeRecursively();
 }
 
 void TestChannelListModel::init() {

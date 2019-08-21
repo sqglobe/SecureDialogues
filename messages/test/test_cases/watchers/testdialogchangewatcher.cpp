@@ -83,7 +83,9 @@ void TestDialogChangeWatcher::initTestCase() {
 
 void TestDialogChangeWatcher::cleanupTestCase() {
   dbstl::dbstl_exit();
-  QDir().rmdir("TestDialogChangeWatcher_env");
+  QDir curr;
+  if (curr.cd("TestDialogChangeWatcher_env"))
+    curr.removeRecursively();
 }
 
 void TestDialogChangeWatcher::testAddWatcher() {

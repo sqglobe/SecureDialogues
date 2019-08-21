@@ -16,10 +16,12 @@ add_definitions(${Qt5Widgets_DEFINITIONS})
 set(SOURCES
     stand-helpers/queuedactionschanneladapter.cpp
     stand/dialogcreationandmessagesexchangecorestand.cpp
+    stand/onechannelcoreinitializer.cpp
     )
 set(HEADERS
     stand-helpers/queuedactionschanneladapter.h
     stand/dialogcreationandmessagesexchangecorestand.h
+    stand/onechannelcoreinitializer.h
     )
 
 

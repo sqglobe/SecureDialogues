@@ -60,8 +60,9 @@ void DialogActionDeliveryHandler::timeouted() {
     if (auto lock = mDispatcher.lock()) {
       spdlog::get("root_logger")
           ->warn(
-              " ACK for dialog {0} and adress {1} not recieved. ABORT sended ",
-              mWrapper->getDialogId(), mAddress);
+              " ACK for dialog {0} and adress {1} not recieved. ABORT sended. "
+              "Next {2}",
+              mWrapper->getDialogId(), mAddress, static_cast<int>(mNext));
 
       lock->sendAndForget(
           make_abort(std::string(mWrapper->getDialogId()),

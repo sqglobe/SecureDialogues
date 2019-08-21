@@ -101,7 +101,9 @@ void TestContactWidget::initTestCase() {
 
 void TestContactWidget::cleanupTestCase() {
   dbstl::dbstl_exit();
-  QDir().rmdir("TestContactWidget_env");
+  QDir curr;
+  if (curr.cd("TestContactWidget_env"))
+    curr.removeRecursively();
 }
 
 void TestContactWidget::init() {

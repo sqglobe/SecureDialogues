@@ -1,6 +1,6 @@
 #include "guiinitializer.h"
 
-#include "coreinitializer.h"
+#include "interfaces/abstractcoreinitializer.h"
 #include "mainwindow.h"
 
 #include "interfaces/abstractuserask.h"
@@ -33,7 +33,7 @@
 /// dialogsViews
 GuiInitializer::GuiInitializer(
     MainWindow* parent,
-    const std::shared_ptr<CoreInitializer>& coreInit,
+    const std::shared_ptr<AbstractCoreInitializer>& coreInit,
     const std::shared_ptr<AbstractUserAsk>& userAsk,
     const std::shared_ptr<AbstractUserNotifier>& userNotifier,
     const std::shared_ptr<Channel::EventQueue>& eventQueue) :
@@ -82,7 +82,7 @@ GuiInitializer::GuiInitializer(
 }
 
 void GuiInitializer::initMessageWrapper(
-    const std::shared_ptr<CoreInitializer>& coreInit,
+    const std::shared_ptr<AbstractCoreInitializer>& coreInit,
     MainWindow* parent,
     const std::shared_ptr<AbstractUserNotifier>&,
     QThread* messageThread) {
@@ -126,7 +126,7 @@ void GuiInitializer::initMessageWrapper(
 }
 
 void GuiInitializer::initDialogWrapper(
-    const std::shared_ptr<CoreInitializer>& coreInit,
+    const std::shared_ptr<AbstractCoreInitializer>& coreInit,
     MainWindow* parent,
     const std::shared_ptr<AbstractUserNotifier>& userNotifier,
     QThread* messageThread) {

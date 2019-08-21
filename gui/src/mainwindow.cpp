@@ -1,8 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include "initializer/coreinitializer.h"
-#include "initializer/guiinitializer.h"
+#include "gui-initializer/guiinitializer.h"
+#include "interfaces/abstractcoreinitializer.h"
 
 #include <QInputDialog>
 #include "dialogs/userinformator.h"
@@ -10,12 +10,20 @@
 
 enum MESSAGE_SWITCH_PAGES { OK_DIALOG_PAGE = 0, BAD_DIALOG_PAGE = 1 };
 
-MainWindow::MainWindow(const std::string& pass, QWidget* parent) :
-    QMainWindow(parent), ui(new Ui::MainWindow),
-    mUserInformator(std::make_shared<UserInformator>(this)) {
+MainWindow::MainWindow(std::unique_ptr<AbstractCoreInitializer>&& coreInit,
+                       QWidget* parent) :
+    QMainWindow(parent),
+    ui(new Ui::MainWindow),
+    mUserInformator(std::make_shared<UserInformator>(this)),
+    mCore(std::move(coreInit)) {
+  qRegisterMetaType<AbstractUserNotifier::Severity>(
+      "AbstractUserNotifier::Severity");
+  qRegisterMetaType<QVector<int>>("QVector<int>");
+  qRegisterMetaType<std::string>("std::string");
+  qRegisterMetaType<Contact>("Contact");
   ui->setupUi(this);
 
-  mCore = std::make_shared<CoreInitializer>(mUserInformator, pass);
+  mCore->init(mUserInformator);
 
   mGui = std::make_shared<GuiInitializer>(this, mCore, mUserInformator,
                                           mUserInformator,

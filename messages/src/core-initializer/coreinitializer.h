@@ -3,6 +3,7 @@
 
 #include <memory>
 #include "containers/storages.h"
+#include "interfaces/abstractcoreinitializer.h"
 
 // gui implementations
 class AbstractUserNotifier;
@@ -22,25 +23,28 @@ class Encryptor;
 class SymetricalCipher;
 class EventQueueHolder;
 
-class CoreInitializer {
+class CoreInitializer : public AbstractCoreInitializer {
  public:
-  CoreInitializer(const std::shared_ptr<AbstractUserNotifier>& notifier,
-                  const std::string& pass);
+  CoreInitializer(const std::string& pass);
+
+ public:
+  void init(const std::shared_ptr<AbstractUserNotifier>& notifier) override;
 
   // getters for core objects
  public:
-  std::shared_ptr<MessageActionHandler> getMessageActionHandler() const;
-  std::shared_ptr<DialogActionHandler> getDialogActionHandler() const;
-  std::shared_ptr<ConnectionStorage> getConnectionStorage() const;
-  std::shared_ptr<DialogStorage> getDialogStorage() const;
-  std::shared_ptr<MessageContainer> getMessageContainer() const;
-  std::shared_ptr<ContactStorage> getContactStorage() const;
-  std::shared_ptr<CryptoSystemImpl> getCryptoSystem() const;
+  std::shared_ptr<MessageActionHandler> getMessageActionHandler()
+      const override;
+  std::shared_ptr<DialogActionHandler> getDialogActionHandler() const override;
+  std::shared_ptr<ConnectionStorage> getConnectionStorage() const override;
+  std::shared_ptr<DialogStorage> getDialogStorage() const override;
+  std::shared_ptr<MessageContainer> getMessageContainer() const override;
+  std::shared_ptr<ContactStorage> getContactStorage() const override;
+  std::shared_ptr<CryptoSystemImpl> getCryptoSystem() const override;
 
   void startMessagesHandling(
       const std::shared_ptr<AbstractUserNotifier>& notifier,
-      const std::shared_ptr<Channel::EventQueue>& eventQueue);
-  void saveFiles();
+      const std::shared_ptr<Channel::EventQueue>& eventQueue) override;
+  void saveFiles() override;
 
  private:
   void initDatabases(const std::string& pass);

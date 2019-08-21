@@ -29,7 +29,10 @@ class SuccessDialogCreationTest : public QObject {
 };
 
 void SuccessDialogCreationTest::initTestCase() {
-  QDir().rmdir("SuccessDialogCreationTest_env");
+  QDir curr;
+  if (curr.cd("SuccessDialogCreationTest_env"))
+    curr.removeRecursively();
+
   spdlog::set_level(spdlog::level::debug);  // Set global log level to info
   spdlog::rotating_logger_mt("root_logger", "SuccessDialogCreationTest.log",
                              1048576 * 5, 3);

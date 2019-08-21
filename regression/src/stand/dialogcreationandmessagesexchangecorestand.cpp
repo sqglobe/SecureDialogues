@@ -55,7 +55,10 @@ DialogCreationAndMessagesExchangeCoreStand::
 DialogCreationAndMessagesExchangeCoreStand::
     ~DialogCreationAndMessagesExchangeCoreStand() {
   dbstl::dbstl_exit();
-  QDir().rmdir(mFolder.c_str());
+
+  QDir curr;
+  if (curr.cd(mFolder.c_str()))
+    curr.removeRecursively();
 }
 
 void DialogCreationAndMessagesExchangeCoreStand::addChannelAdapter(

@@ -16,9 +16,6 @@
 
 #include "utils/systemmessagegenerator.h"
 
-#include <QMetaType>
-#include <QVector>
-
 #include "crypto/cryptosystemcontactupdateinformator.h"
 #include "crypto/cryptosystemdialogremoveinformator.h"
 #include "crypto/cryptosystemimpl.h"
@@ -33,7 +30,6 @@
 
 #include <db_cxx.h>
 #include "containers/connectstoragelistener.h"
-#include "eventqueueholder.h"
 
 #include "utils/dbfactory.h"
 
@@ -60,24 +56,19 @@ void saveKeys(const std::string& fileTempl,
   deserializer.serialize(*(keyStore.get()));
 }
 
-CoreInitializer::CoreInitializer(
-    const std::shared_ptr<AbstractUserNotifier>& notifier,
-    const std::string& pass) :
+CoreInitializer::CoreInitializer(const std::string& pass) :
     mMessageContainer(std::make_shared<MessageContainer>()),
     mPassCipher(makeForStringPass(pass)) {
-  qRegisterMetaType<AbstractUserNotifier::Severity>(
-      "AbstractUserNotifier::Severity");
-  qRegisterMetaType<QVector<int>>("QVector<int>");
-  qRegisterMetaType<std::string>("std::string");
-  qRegisterMetaType<Contact>("Contact");
-
   initDatabases(pass);
 
   mAsymetricalKeyStore = loadKeys(FILE_KEY, mPassCipher);
 
   mCryptoSystem = std::make_shared<CryptoSystemImpl>(
       mAsymetricalKeyStore, std::make_shared<MessageMarshaller>());
+}
 
+void CoreInitializer::init(
+    const std::shared_ptr<AbstractUserNotifier>& notifier) {
   mMessageDispatcher =
       std::make_shared<MessageDespatcher>(mCryptoSystem, notifier);
 

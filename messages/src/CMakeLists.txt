@@ -36,6 +36,9 @@ persistent_storage/connectionmarshaller.cpp
 containers/storages.cpp
 communication/communication_helpers.cpp
 containers/connectstoragelistener.cpp
+
+core-initializer/chaneladapterfactory.cpp
+core-initializer/coreinitializer.cpp
 )
 
 
@@ -87,6 +90,10 @@ communication/communication_helpers.h
 containers/eventwatchers.h
 interfaces/changelistener.h
 containers/connectstoragelistener.h
+interfaces/abstractcoreinitializer.h
+
+core-initializer/chaneladapterfactory.h
+core-initializer/coreinitializer.h
 )
 
 add_library(messages STATIC ${SOURCES} ${HEADERS})

@@ -97,7 +97,9 @@ void TestMessageActionHandlerRecieveMessage::initTestCase() {}
 
 void TestMessageActionHandlerRecieveMessage::cleanupTestCase() {
   dbstl::dbstl_exit();
-  QDir().rmdir("TestMessageActionHandlerRecieveMessage_env");
+  QDir curr;
+  if (curr.cd("TestMessageActionHandlerRecieveMessage_env"))
+    curr.removeRecursively();
 }
 
 void TestMessageActionHandlerRecieveMessage::testMessageRecieveOk() {

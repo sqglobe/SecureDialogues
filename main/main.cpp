@@ -10,6 +10,8 @@
 #include <db_cxx.h>
 #include <dbstl_common.h>
 
+#include "core-initializer/coreinitializer.h"
+
 static const std::string FILE_DIGEST = "conf/pass.digest";
 
 int main(int argc, char* argv[]) {
@@ -32,7 +34,7 @@ int main(int argc, char* argv[]) {
   try {
     auto pass = getPassword(FILE_DIGEST);
 
-    MainWindow w(pass);
+    MainWindow w(std::make_unique<CoreInitializer>(pass));
     w.show();
 
     auto res = a.exec();

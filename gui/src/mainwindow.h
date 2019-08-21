@@ -4,10 +4,10 @@
 #include <QMainWindow>
 #include <memory>
 
-#include "initializer/eventqueueholder.h"
+#include "gui-initializer/eventqueueholder.h"
 
 class GuiInitializer;
-class CoreInitializer;
+class AbstractCoreInitializer;
 
 class UserInformator;
 
@@ -19,7 +19,8 @@ class MainWindow : public QMainWindow {
   Q_OBJECT
 
  public:
-  explicit MainWindow(const std::string& pass, QWidget* parent = nullptr);
+  explicit MainWindow(std::unique_ptr<AbstractCoreInitializer>&& coreInit,
+                      QWidget* parent = nullptr);
   ~MainWindow() override;
 
  public:
@@ -47,7 +48,7 @@ class MainWindow : public QMainWindow {
 
   std::shared_ptr<UserInformator> mUserInformator;
 
-  std::shared_ptr<CoreInitializer> mCore;
+  std::shared_ptr<AbstractCoreInitializer> mCore;
   std::shared_ptr<GuiInitializer> mGui;
   EventQueueHolder mEventHolder;
 };

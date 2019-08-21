@@ -101,7 +101,9 @@ void TestContactChangeWatcher::initTestCase() {
 
 void TestContactChangeWatcher::cleanupTestCase() {
   dbstl::dbstl_exit();
-  QDir().rmdir("TestContactChangeWatcher_env");
+  QDir curr;
+  if (curr.cd("TestContactChangeWatcher_env"))
+    curr.removeRecursively();
 }
 
 void TestContactChangeWatcher::testAddWatcher() {
