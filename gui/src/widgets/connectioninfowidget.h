@@ -2,8 +2,10 @@
 #define CONNECTIONINFOWIDGET_H
 
 #include <QWidget>
-#include <memory>
-class ConnectionHolder;
+#include <optional>
+#include "communication/channel.h"
+#include "primitives/connectionholder.h"
+
 namespace Ui {
 class ConnectionInfoWidget;
 }
@@ -36,6 +38,10 @@ class ConnectionInfoWidget : public QWidget {
    */
   ConnectionHolder getElement() noexcept(false);
 
+ public:
+  void updateChannelStatus(Channel::ChannelStatus status,
+                           const std::string& channelName,
+                           const std::string& message);
  public slots:
 
   /**
@@ -67,7 +73,17 @@ class ConnectionInfoWidget : public QWidget {
   Ui::ConnectionInfoWidget* ui;
 
  private:
-  std::unique_ptr<ConnectionHolder> mInfo;
+  struct Element {
+    Channel::ChannelStatus status;
+    QString message;
+  };
+
+  Element getChannelInfo(const std::string& channelName) const;
+  void displayStatus(const Element& element);
+
+ private:
+  std::optional<ConnectionHolder> mInfo;
+  std::map<std::string, Element> mCachedElements;
 };
 
 #endif  // CONNECTIONINFOWIDGET_H

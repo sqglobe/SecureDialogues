@@ -3,7 +3,8 @@
 
 #include <memory>
 
-#include <persistent-storage/watchers/enqueuedevents.h>
+#include "interfaces/changelistener.h"
+#include "primitives/dialog.h"
 
 class CryptoSystemImpl;
 class Dialog;
@@ -11,13 +12,15 @@ class Dialog;
  * @brief  Отслеживает изменения в контейнере диалогов, используется для
  * актуализации данных в CryptoSystemImpl
  */
-class CryptoSystemDialogRemoveInformator {
+class CryptoSystemDialogRemoveInformator : public ChangeListener<Dialog> {
  public:
   explicit CryptoSystemDialogRemoveInformator(
       std::shared_ptr<CryptoSystemImpl> system);
 
  public:
-  void operator()(prstorage::EnqueuedEvents event, const Dialog& dialog);
+  void added(const element&) override {}
+  void changed(const element&) override {}
+  void removed(const element& obj) override;
 
  private:
   std::shared_ptr<CryptoSystemImpl> mSystem;

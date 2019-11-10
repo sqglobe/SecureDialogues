@@ -4,7 +4,7 @@
 #include <QObject>
 #include <memory>
 
-#include "containers/connectioninfocontainer.h"
+#include "containers/storages.h"
 #include "dialogwidgetgasket.h"
 #include "widgets/connectioninfowidget.h"
 
@@ -18,19 +18,18 @@ class ConnectionInfoGasket : public QObject {
 
  public:
   ConnectionInfoGasket(
-      std::unique_ptr<DialogWidgetGasket<ConnectionInfoContainer,
-                                         ConnectionInfoWidget>>&& gasket,
+      std::unique_ptr<
+          DialogWidgetGasket<ConnectionStorage, ConnectionInfoWidget>>&& gasket,
       QObject* parent = nullptr);
 
  public slots:
-  void onActionViewAt(int pos);
-  void onActionRemoveAt(int pos);
-  void onActionUpdateAt(int);
+  void onActionViewAt(std::string id);
+  void onActionRemoveAt(std::string id);
+  void onActionUpdateAt(std::string);
   void onActionAdd();
 
  private:
-  std::unique_ptr<
-      DialogWidgetGasket<ConnectionInfoContainer, ConnectionInfoWidget>>
+  std::unique_ptr<DialogWidgetGasket<ConnectionStorage, ConnectionInfoWidget>>
       mGasket;
 };
 

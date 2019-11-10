@@ -22,13 +22,10 @@
 #include <memory>
 #include <thread>
 
-Q_DECLARE_METATYPE(std::string);
+#include "containers/storages.h"
+#include "utils/dbfactory.h"
 
-class MessageDespatcher;
-class DialogManager;
-class MessageActionHandler;
-class FakeMessageContainerHandlerOnlyMesssageAdded;
-class FakeNotifier;
+Q_DECLARE_METATYPE(std::string);
 
 class TestMessageActionHandlerRecieveMessage : public QObject {
   Q_OBJECT
@@ -38,12 +35,18 @@ class TestMessageActionHandlerRecieveMessage : public QObject {
  signals:
 
  private slots:
+  void initTestCase();
+  void cleanupTestCase();
   void testMessageRecieveOk();
   void testMessageRecieveOk_data();
 
  private:
+  void createAndFillStorages();
+
+ private:
   std::shared_ptr<MessageDespatcher> mMessageDispatcher;
-  std::shared_ptr<DialogManager> mDialogManager;
+  std::shared_ptr<DialogStorage> mDialogStorage;
+  std::shared_ptr<ContactStorage> mContactStorage;
   std::shared_ptr<MessageActionHandler> mMessageActionHandler;
   std::shared_ptr<FakeMessageContainerHandlerOnlyMesssageAdded>
       mFakeMessageContHandler;
@@ -53,20 +56,50 @@ class TestMessageActionHandlerRecieveMessage : public QObject {
 TestMessageActionHandlerRecieveMessage::TestMessageActionHandlerRecieveMessage(
     QObject* parent) :
     QObject(parent) {
+  dbstl::dbstl_startup();
   mMessageDispatcher = std::make_shared<MessageDespatcher>(
       std::make_shared<CryptoSystemFake>(), std::make_shared<FakeNotifier>());
-  mDialogManager = std::make_shared<DialogManager>();
+
   mFakeMessageContHandler =
       std::make_shared<FakeMessageContainerHandlerOnlyMesssageAdded>();
   mFakeNotifier = std::make_shared<FakeNotifier>();
+
+  QDir().mkdir("TestMessageActionHandlerRecieveMessage_env");
+  auto penv = make_db_env("TestMessageActionHandlerRecieveMessage_env", "test");
+  {
+    auto primary = make_db("test_dialogs.db", "primary", penv);
+    primary->truncate(nullptr, nullptr, 0);
+    auto seconddary = make_db("test_dialogs.db", "secondary", penv, DB_DUP);
+    seconddary->truncate(nullptr, nullptr, 0);
+    mDialogStorage = make_dialog_storage(primary, seconddary, penv);
+  }
+
+  {
+    auto primary = make_db("test_cotnacts.db", "primary", penv);
+    primary->truncate(nullptr, nullptr, 0);
+    auto seconddary = make_db("test_cotnacts.db", "secondary", penv, DB_DUP);
+    seconddary->truncate(nullptr, nullptr, 0);
+    mContactStorage =
+        make_contact_storage(primary, seconddary, penv, mDialogStorage);
+  }
+
   auto messageContainer = std::make_shared<MessageContainer>();
   messageContainer->registerHandler(mFakeMessageContHandler);
 
   mMessageActionHandler =
       std::shared_ptr<MessageActionHandler>(new MessageActionHandler(
-          mDialogManager, messageContainer, mMessageDispatcher, mFakeNotifier,
-          std::make_shared<CryptoSystemFake>()));
+          mDialogStorage, mContactStorage, messageContainer, mMessageDispatcher,
+          mFakeNotifier, std::make_shared<CryptoSystemFake>()));
   mMessageDispatcher->add(mMessageActionHandler);
+}
+
+void TestMessageActionHandlerRecieveMessage::initTestCase() {}
+
+void TestMessageActionHandlerRecieveMessage::cleanupTestCase() {
+  dbstl::dbstl_exit();
+  QDir curr;
+  if (curr.cd("TestMessageActionHandlerRecieveMessage_env"))
+    curr.removeRecursively();
 }
 
 void TestMessageActionHandlerRecieveMessage::testMessageRecieveOk() {
@@ -76,15 +109,17 @@ void TestMessageActionHandlerRecieveMessage::testMessageRecieveOk() {
   QFETCH(std::string, content);
   QFETCH(std::string, message);
 
-  auto contact = std::make_shared<Contact>(channel, "fake_name", adress, "");
-  auto dialog =
-      std::make_shared<Dialog>(contact, dialog_id, Dialog::Status::ACTIVE);
-  mDialogManager->add(dialog);
+  auto contact = Contact(std::string(channel), std::string("fake_name"),
+                         std::string(adress), std::string(""));
+  mContactStorage->add(contact);
+  auto dialog = Dialog(std::string(contact.id()), std::string(dialog_id), 0, 0,
+                       Dialog::Status::ACTIVE);
+  mDialogStorage->add(dialog);
 
   mMessageDispatcher->add(
       std::unique_ptr<Channel>(new Channel(
           new FakeChannelAdapter(message), mMessageDispatcher,
-          std::make_shared<MessageMarshaller>(), channel,
+          std::make_shared<MessageMarshaller>(), std::string(channel),
           std::make_shared<Channel::EventQueue>(), std::chrono::seconds(5))),
       channel);
 

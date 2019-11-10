@@ -1,6 +1,6 @@
 #include "guiinitializer.h"
 
-#include "coreinitializer.h"
+#include "interfaces/abstractcoreinitializer.h"
 #include "mainwindow.h"
 
 #include "interfaces/abstractuserask.h"
@@ -30,17 +30,21 @@
 #include "widgets/dialogactionmenu.h"
 #include "wrappers/dialoguserviewwrapper.h"
 
+#include "containers/storages.h"
+
 /// dialogsViews
 GuiInitializer::GuiInitializer(
     MainWindow* parent,
-    const std::shared_ptr<CoreInitializer>& coreInit,
+    const std::shared_ptr<AbstractCoreInitializer>& coreInit,
     const std::shared_ptr<AbstractUserAsk>& userAsk,
-    const std::shared_ptr<AbstractUserNotifier>& userNotifier) :
-    mChannelSettingsDialog(make_dialog(coreInit->getConnectionInfocontainer())),
-    mContactsSettingsDialog(
-        make_dialog(coreInit->getContactContainer(),
-                    coreInit->getConnectionInfocontainer())),
-    mDialogCreation(make_creation_dialog(coreInit->getContactContainer()))
+    const std::shared_ptr<AbstractUserNotifier>& userNotifier,
+    const std::shared_ptr<Channel::EventQueue>& eventQueue) :
+    mChannelSettingsDialog(
+        make_dialog(coreInit->getConnectionStorage(), eventQueue)),
+    mContactsSettingsDialog(make_dialog(coreInit->getContactStorage(),
+                                        coreInit->getConnectionStorage(),
+                                        eventQueue)),
+    mDialogCreation(make_creation_dialog(coreInit->getContactStorage()))
 
 {
   auto* pubDialog = new PublicKeyDialog(coreInit->getCryptoSystem(),
@@ -77,7 +81,7 @@ GuiInitializer::GuiInitializer(
 }
 
 void GuiInitializer::initMessageWrapper(
-    const std::shared_ptr<CoreInitializer>& coreInit,
+    const std::shared_ptr<AbstractCoreInitializer>& coreInit,
     MainWindow* parent,
     const std::shared_ptr<AbstractUserNotifier>&,
     QThread* messageThread) {
@@ -85,9 +89,10 @@ void GuiInitializer::initMessageWrapper(
   auto messageWraper =
       new MessageHandlerWrapper(coreInit->getMessageActionHandler());
 
-  auto dialogUserModel =
-      std::make_shared<DialogUserModel>(coreInit->getDialogManager());
-  coreInit->getDialogManager()->registerWatcher(dialogUserModel);
+  auto dialogUserModel = std::make_shared<DialogUserModel>(
+      coreInit->getContactStorage(),
+      coreInit->getDialogStorage()->getAllElements());
+  coreInit->getDialogStorage()->appendPermanentListener(dialogUserModel);
   coreInit->getMessageContainer()->registerHandler(dialogUserModel);
 
   auto dialogsView = parent->findChild<QListView*>("dialogsViews");
@@ -120,7 +125,7 @@ void GuiInitializer::initMessageWrapper(
 }
 
 void GuiInitializer::initDialogWrapper(
-    const std::shared_ptr<CoreInitializer>& coreInit,
+    const std::shared_ptr<AbstractCoreInitializer>& coreInit,
     MainWindow* parent,
     const std::shared_ptr<AbstractUserNotifier>& userNotifier,
     QThread* messageThread) {

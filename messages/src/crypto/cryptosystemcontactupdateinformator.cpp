@@ -6,13 +6,17 @@ CryptoSystemContactUpdateInformator::CryptoSystemContactUpdateInformator(
     std::shared_ptr<CryptoSystemImpl> system) :
     mSystem(std::move(system)) {}
 
-void CryptoSystemContactUpdateInformator::operator()(
-    prstorage::EnqueuedEvents event,
-    const Contact& contact) {
-  if (event == prstorage::EnqueuedEvents::ADDED ||
-      event == prstorage::EnqueuedEvents::UPDATED) {
-    mSystem->updateContact(contact);
-  } else {
-    mSystem->removeContact(contact);
-  }
+void CryptoSystemContactUpdateInformator::added(
+    const ChangeListener::element& element) {
+  mSystem->updateContact(element);
+}
+
+void CryptoSystemContactUpdateInformator::changed(
+    const ChangeListener::element& element) {
+  mSystem->updateContact(element);
+}
+
+void CryptoSystemContactUpdateInformator::removed(
+    const ChangeListener::element& element) {
+  mSystem->removeContact(element);
 }

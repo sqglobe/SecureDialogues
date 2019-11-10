@@ -10,13 +10,15 @@
 #include "communication/channel.h"
 #include "primitives/connectionholder.h"
 
-#include <persistent-storage/watchers/enqueuedevents.h>
+#include "interfaces/changelistener.h"
+
 /**
  * с Модель отображает список существующих подключений.
  * Используется в диалоге управления контактами для выбора подключения,
  * через которое будет осуществляться общение с пользователем
  */
-class ChannelsListModel : public QAbstractListModel {
+class ChannelsListModel : public QAbstractListModel,
+                          public ChangeListener<ConnectionHolder> {
  public:
   struct ListItem {
     QString name;
@@ -34,8 +36,14 @@ class ChannelsListModel : public QAbstractListModel {
                 int role = Qt::DisplayRole) const override;
 
  public:
-  void operator()(prstorage::EnqueuedEvents event,
-                  const ConnectionHolder& holder);
+  void added(const element& element) override;
+  void changed(const element& element) override;
+  void removed(const element& element) override;
+
+ public:
+  void updateChannelStatus(Channel::ChannelStatus status,
+                           const std::string& channelName,
+                           const std::string& message);
 
  private:
   QVector<ListItem> mChannelNames;

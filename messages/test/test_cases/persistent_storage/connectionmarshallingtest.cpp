@@ -35,7 +35,7 @@ bool operator==(const ConnectionHolder& lh, const ConnectionHolder& rh) {
     return lhConn.email == rhConn.email &&
            lhConn.accessToken == rhConn.accessToken;
   }
-  return false;
+  return true;
 }
 
 class ConnectionMarshallingTest : public QObject {

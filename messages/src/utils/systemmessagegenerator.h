@@ -1,18 +1,20 @@
 #ifndef SYSTEMMESSAGEGENERATOR_H
 #define SYSTEMMESSAGEGENERATOR_H
 
-#include <persistent-storage/watchers/enqueuedevents.h>
 #include <memory>
+#include "interfaces/changelistener.h"
 
 class Dialog;
 class MessageContainer;
 
-class SystemMessageGenerator {
+class SystemMessageGenerator : public ChangeListener<Dialog> {
  public:
   explicit SystemMessageGenerator(std::weak_ptr<MessageContainer> container);
 
  public:
-  void operator()(prstorage::EnqueuedEvents event, const Dialog& dialog);
+  void added(const element&) override;
+  void changed(const element& obj) override;
+  void removed(const element&) override;
 
  private:
   std::weak_ptr<MessageContainer> mMessageContainer;

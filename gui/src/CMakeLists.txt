@@ -26,6 +26,10 @@ set(GUI_MODULE_SOURCES
     models/active-dialog-messages/usermessagemodeldelegate.cpp
     models/active-dialog-messages/activedialogmessagemodel.cpp
     dialogs/publickeydialog.cpp
+    gui-initializer/eventqueueholder.cpp
+    gui-initializer/guiinitializer.cpp
+    models/contactmodel.cpp
+    mainwindow.cpp
 )
 
 set(GUI_MODULE_HEADERS
@@ -56,6 +60,11 @@ set(GUI_MODULE_HEADERS
     models/active-dialog-messages/activedialogmessagemodel.h
     gui_helpers.h
     dialogs/publickeydialog.h
+    models/identifiedlistmodel.h
+
+    gui-initializer/eventqueueholder.h
+    gui-initializer/guiinitializer.h
+    mainwindow.h
 )
 
 set(GUI_UI
@@ -64,6 +73,7 @@ set(GUI_UI
     widgets/connectioninfowidget.ui
     dialogs/dialogcreation.ui
     dialogs/publickeydialog.ui
+    mainwindow.ui
 )
 
 set(
@@ -83,6 +93,7 @@ set(
   dialogs/contactgasket.h
   models/connectioninfomodel.h
   dialogs/publickeydialog.h
+  mainwindow.h
 )
 
 qt5_wrap_cpp(WRAP_MOC_GUI ${GUI_MOC})

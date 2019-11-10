@@ -3,14 +3,14 @@
 
 #include <QDialog>
 #include <memory>
-
+#include "containers/storages.h"
+#include "primitives/contact.h"
 namespace Ui {
 class DialogCreation;
 }
 
 class ContactModel;
 class QSortFilterProxyModel;
-class Contact;
 
 /**
  * @brief Отображает пользователю список контактов, чтобы он мог выбрать один из
@@ -21,6 +21,7 @@ class DialogCreation : public QDialog {
 
  public:
   explicit DialogCreation(std::shared_ptr<ContactModel> model,
+                          std::shared_ptr<ContactStorage> storage,
                           QWidget* parent = nullptr);
   ~DialogCreation() override;
 
@@ -33,12 +34,13 @@ class DialogCreation : public QDialog {
   void on_buttonBox_rejected();
 
  signals:
-  void createNewDialog(std::shared_ptr<const Contact> contact);
+  void createNewDialog(Contact contact);
 
  private:
   Ui::DialogCreation* ui;
   std::shared_ptr<ContactModel> mModel;
   QSortFilterProxyModel* mProxy;
+  std::shared_ptr<ContactStorage> mStorage;
 };
 
 #endif  // DIALOGCREATION_H

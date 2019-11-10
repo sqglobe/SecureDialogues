@@ -23,7 +23,7 @@ class DialogWidgetGasket {
    * виджет для отображения
    * @param pos позиция элемента в контейнере
    */
-  void viewAt(int pos);
+  void viewAt(std::string id);
 
   /**
    * @brief Получает из виджета элемент и обновляет его в контейнере
@@ -34,7 +34,7 @@ class DialogWidgetGasket {
    * @brief Удаляет элемент из контейнера по указанной позиции
    * @param pos позиция элемента в контейнере для удаления
    */
-  void removeAt(int pos);
+  void removeAt(std::string id);
 
   /**
    * @brief Получает из виджета элемент и сохраняет его в контейнере как новый
@@ -59,9 +59,9 @@ DialogWidgetGasket<Container, Widget>::DialogWidgetGasket(
     mUserNotifier(std::move(notifier)) {}
 
 template <typename Container, typename Widget>
-void DialogWidgetGasket<Container, Widget>::viewAt(int pos) {
+void DialogWidgetGasket<Container, Widget>::viewAt(std::string id) {
   try {
-    auto element = mContainer->at(pos);
+    auto element = mContainer->get(id);
     mWidget->setElement(element);
   } catch (std::exception& ex) {
     mUserNotifier->notify(AbstractUserNotifier::Severity::ERROR, ex.what());
@@ -79,9 +79,9 @@ void DialogWidgetGasket<Container, Widget>::update() {
 }
 
 template <typename Container, typename Widget>
-void DialogWidgetGasket<Container, Widget>::removeAt(int pos) {
+void DialogWidgetGasket<Container, Widget>::removeAt(std::string id) {
   if (mUserAsk->ask("Вы действительно хотите удалить текущий элемент?")) {
-    mContainer->remove(pos);
+    mContainer->remove(id);
   }
 }
 

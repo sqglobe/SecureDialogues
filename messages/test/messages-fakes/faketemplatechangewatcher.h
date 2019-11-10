@@ -1,12 +1,12 @@
 #ifndef FAKETEMPLATECHANGEWATCHER_H
 #define FAKETEMPLATECHANGEWATCHER_H
 
-#include <memory>
+#include <optional>
 #include <string>
-#include "interfaces/changewatcher.h"
+#include "interfaces/changelistener.h"
 
 template <typename T>
-class FakeTemplateChangeWatcher : public ChangeWatcher<T> {
+class FakeTemplateChangeListener : public ChangeListener<T> {
  public:
   void added(const T& obj) override;
   void changed(const T& obj) override;
@@ -14,23 +14,23 @@ class FakeTemplateChangeWatcher : public ChangeWatcher<T> {
 
  public:
   std::string mMethod;
-  std::unique_ptr<T> mVal;
+  std::optional<T> mVal;
 };
 template <typename T>
-void FakeTemplateChangeWatcher<T>::added(const T& obj) {
+void FakeTemplateChangeListener<T>::added(const T& obj) {
   mMethod = "added";
-  mVal.reset(new T(obj));
+  mVal = obj;
 }
 
 template <typename T>
-void FakeTemplateChangeWatcher<T>::changed(const T& obj) {
+void FakeTemplateChangeListener<T>::changed(const T& obj) {
   mMethod = "changed";
-  mVal.reset(new T(obj));
+  mVal = obj;
 }
 
 template <typename T>
-void FakeTemplateChangeWatcher<T>::removed(const T& obj) {
+void FakeTemplateChangeListener<T>::removed(const T& obj) {
   mMethod = "removed";
-  mVal.reset(new T(obj));
+  mVal = obj;
 }
 #endif  // FAKETEMPLATECHANGEWATCHER_H
