@@ -20,12 +20,12 @@ set(GUI_MODULE_SOURCES
     dialogs/dialogcreation.cpp
     widgets/dialogactionmenu.cpp
     wrappers/dialoguserviewwrapper.cpp
-    widgets/publickeyobject.cpp
     models/dialogs-list/dialoginfo.cpp
     models/dialogs-list/dialoginfodelegate.cpp
     models/dialogs-list/dialogsortmodel.cpp
     models/active-dialog-messages/usermessagemodeldelegate.cpp
     models/active-dialog-messages/activedialogmessagemodel.cpp
+    dialogs/publickeydialog.cpp
 )
 
 set(GUI_MODULE_HEADERS
@@ -49,13 +49,13 @@ set(GUI_MODULE_HEADERS
     dialogs/dialogcreation.h
     widgets/dialogactionmenu.h
     wrappers/dialoguserviewwrapper.h
-    widgets/publickeyobject.h
     models/dialogs-list/dialoginfo.h
     models/dialogs-list/dialoginfodelegate.h
     models/dialogs-list/dialogsortmodel.h
     models/active-dialog-messages/usermessagemodeldelegate.h
     models/active-dialog-messages/activedialogmessagemodel.h
     gui_helpers.h
+    dialogs/publickeydialog.h
 )
 
 set(GUI_UI
@@ -63,6 +63,7 @@ set(GUI_UI
     widgets/contactwidget.ui
     widgets/connectioninfowidget.ui
     dialogs/dialogcreation.ui
+    dialogs/publickeydialog.ui
 )
 
 set(
@@ -74,7 +75,6 @@ set(
   widgets/dialogactionmenu.h
   widgets/connectioninfowidget.h
   widgets/contactwidget.h
-  widgets/publickeyobject.h
   models/dialogs-list/dialogusermodel.h
   models/dialogs-list/dialoginfodelegate.h
   dialogs/connectioninfogasket.h
@@ -82,6 +82,7 @@ set(
   dialogs/userinformator.h
   dialogs/contactgasket.h
   models/connectioninfomodel.h
+  dialogs/publickeydialog.h
 )
 
 qt5_wrap_cpp(WRAP_MOC_GUI ${GUI_MOC})

@@ -6,6 +6,7 @@
 #include "interfaces/abstractuserask.h"
 #include "interfaces/abstractusernotifier.h"
 
+#include <QCommandLinkButton>
 #include "containers/dialogmanager.h"
 #include "containers/messagecontainer.h"
 
@@ -21,12 +22,12 @@
 #include "wrappers/messagehandlerwrapper.h"
 
 #include <QListView>
+#include "dialogs/publickeydialog.h"
 #include "models/active-dialog-messages/activedialogmessagemodel.h"
 #include "models/active-dialog-messages/usermessagemodeldelegate.h"
 #include "models/dialogs-list/dialoginfodelegate.h"
 #include "models/dialogs-list/dialogusermodel.h"
 #include "widgets/dialogactionmenu.h"
-#include "widgets/publickeyobject.h"
 #include "wrappers/dialoguserviewwrapper.h"
 
 /// dialogsViews
@@ -42,21 +43,18 @@ GuiInitializer::GuiInitializer(
     mDialogCreation(make_creation_dialog(coreInit->getContactContainer()))
 
 {
-  PublicKeyObject* pubObject = new PublicKeyObject(
-      coreInit->getCryptoSystem(), userNotifier, userAsk, parent);
-  QObject::connect(parent->findChild<QAction*>("actionChannels"),
-                   &QAction::triggered, mChannelSettingsDialog.get(),
+  auto* pubDialog = new PublicKeyDialog(coreInit->getCryptoSystem(),
+                                        userNotifier, userAsk, parent);
+  QObject::connect(parent->findChild<QCommandLinkButton*>("connectionButton"),
+                   &QCommandLinkButton::pressed, mChannelSettingsDialog.get(),
                    &BaseSettingsDialog::show);
-  QObject::connect(parent->findChild<QAction*>("actionContacts"),
-                   &QAction::triggered, mContactsSettingsDialog.get(),
+  QObject::connect(parent->findChild<QCommandLinkButton*>("contactBurtton"),
+                   &QCommandLinkButton::pressed, mContactsSettingsDialog.get(),
                    &BaseSettingsDialog::show);
 
-  QObject::connect(parent->findChild<QAction*>("generatePublicKeyAction"),
-                   &QAction::triggered, pubObject,
-                   &PublicKeyObject::generateNewKey);
-  QObject::connect(parent->findChild<QAction*>("showPublicKeyAction"),
-                   &QAction::triggered, pubObject,
-                   &PublicKeyObject::showCurrentPublicKey);
+  QObject::connect(parent->findChild<QCommandLinkButton*>("publicKeyButton"),
+                   &QCommandLinkButton::pressed, pubDialog,
+                   &PublicKeyDialog::show);
 
   auto messageWorkThread = new QThread(parent);
 
