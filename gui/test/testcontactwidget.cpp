@@ -209,10 +209,11 @@ void TestContactWidget::testUpdate() {
   mGasket->update();
 
   QCOMPARE(mChangeWatcher->mMethod, std::string("changed"));
-  QCOMPARE(mChangeWatcher->mVal.value().adress(), new_adress);
-  QCOMPARE(mChangeWatcher->mVal.value().channelMoniker(), new_connection);
-  QCOMPARE(mChangeWatcher->mVal.value().name(), new_name);
-  QCOMPARE(mChangeWatcher->mVal.value().id(), old_id);
+  QCOMPARE(mChangeWatcher->mVal.value().adress(), std::string_view(new_adress));
+  QCOMPARE(mChangeWatcher->mVal.value().channelMoniker(),
+           std::string_view(new_connection));
+  QCOMPARE(mChangeWatcher->mVal.value().name(), std::string_view(new_name));
+  QCOMPARE(mChangeWatcher->mVal.value().id(), std::string_view(old_id));
 }
 
 void TestContactWidget::testUpdate_data() {
@@ -273,9 +274,10 @@ void TestContactWidget::testAdd() {
 
   mGasket->add();
   QCOMPARE(mChangeWatcher->mMethod, std::string("added"));
-  QCOMPARE(mChangeWatcher->mVal.value().adress(), new_adress);
-  QCOMPARE(mChangeWatcher->mVal.value().channelMoniker(), new_connection);
-  QCOMPARE(mChangeWatcher->mVal.value().name(), new_name);
+  QCOMPARE(mChangeWatcher->mVal.value().adress(), std::string_view(new_adress));
+  QCOMPARE(mChangeWatcher->mVal.value().channelMoniker(),
+           std::string_view(new_connection));
+  QCOMPARE(mChangeWatcher->mVal.value().name(), std::string_view(new_name));
 }
 
 void TestContactWidget::testAdd_data() {

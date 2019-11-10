@@ -74,15 +74,15 @@ void SuccessDialogCreationTest::
   messageFromApp = mAdapter->recieveMessageFromApplication(2000);
   {
     QVERIFY(messageFromApp.has_value());
-    QCOMPARE(messageFromApp->address, "address 1");
+    QCOMPARE(messageFromApp->address, std::string("address 1"));
 
     parsedMessageFromApp =
         marshaller.unmarshall(messageFromApp->message, messageFromApp->address);
 
     QVERIFY(parsedMessageFromApp.has_value());
     QCOMPARE(parsedMessageFromApp->action(), DialogMessage::Action::ACK);
-    QCOMPARE(parsedMessageFromApp->sequential(), 1);
-    QCOMPARE(parsedMessageFromApp->dialogId(), "23434_12312");
+    QCOMPARE(parsedMessageFromApp->sequential(), 1UL);
+    QCOMPARE(parsedMessageFromApp->dialogId(), std::string_view("23434_12312"));
   }
 
   std::this_thread::sleep_for(std::chrono::milliseconds(200));
@@ -90,22 +90,24 @@ void SuccessDialogCreationTest::
     QVERIFY(mDialogChange->mVal.has_value());
     QCOMPARE(mDialogChange->mMethod, std::string("added"));
     QCOMPARE(mDialogChange->mVal->getStatus(), Dialog::Status::CREATE_REQUEST);
-    QCOMPARE(mDialogChange->mVal->getDialogId(), std::string("23434_12312"));
-    QCOMPARE(mDialogChange->mVal->getContactId(), std::string("contact 1"));
+    QCOMPARE(mDialogChange->mVal->getDialogId(),
+             std::string_view("23434_12312"));
+    QCOMPARE(mDialogChange->mVal->getContactId(),
+             std::string_view("contact 1"));
   }
 
   messageFromApp = mAdapter->recieveMessageFromApplication(2000);
   {
     QVERIFY(messageFromApp.has_value());
-    QCOMPARE(messageFromApp->address, "address 1");
+    QCOMPARE(messageFromApp->address, std::string("address 1"));
 
     parsedMessageFromApp =
         marshaller.unmarshall(messageFromApp->message, messageFromApp->address);
 
     QVERIFY(parsedMessageFromApp.has_value());
     QCOMPARE(parsedMessageFromApp->action(), DialogMessage::Action::VERIFY_KEY);
-    QCOMPARE(parsedMessageFromApp->dialogId(), "23434_12312");
-    QCOMPARE(parsedMessageFromApp->content(), std::string("1"));
+    QCOMPARE(parsedMessageFromApp->dialogId(), std::string_view("23434_12312"));
+    QCOMPARE(parsedMessageFromApp->content(), std::string_view("1"));
   }
 
   mAdapter->sendMessageToApplication(
@@ -130,8 +132,10 @@ void SuccessDialogCreationTest::
     QVERIFY(mDialogChange->mVal.has_value());
     QCOMPARE(mDialogChange->mVal->getStatus(),
              Dialog::Status::WAIT_KEY_VERIFICAION);
-    QCOMPARE(mDialogChange->mVal->getDialogId(), std::string("23434_12312"));
-    QCOMPARE(mDialogChange->mVal->getContactId(), std::string("contact 1"));
+    QCOMPARE(mDialogChange->mVal->getDialogId(),
+             std::string_view("23434_12312"));
+    QCOMPARE(mDialogChange->mVal->getContactId(),
+             std::string_view("contact 1"));
   }
 
   mAdapter->sendMessageToApplication(
@@ -151,21 +155,21 @@ void SuccessDialogCreationTest::
   messageFromApp = mAdapter->recieveMessageFromApplication(200);
   {
     QVERIFY(messageFromApp.has_value());
-    QCOMPARE(messageFromApp->address, "address 1");
+    QCOMPARE(messageFromApp->address, std::string("address 1"));
 
     parsedMessageFromApp =
         marshaller.unmarshall(messageFromApp->message, messageFromApp->address);
 
     QVERIFY(parsedMessageFromApp.has_value());
     QCOMPARE(parsedMessageFromApp->action(), DialogMessage::Action::ACK);
-    QCOMPARE(parsedMessageFromApp->sequential(), 2);
-    QCOMPARE(parsedMessageFromApp->dialogId(), "23434_12312");
+    QCOMPARE(parsedMessageFromApp->sequential(), 2UL);
+    QCOMPARE(parsedMessageFromApp->dialogId(), std::string_view("23434_12312"));
   }
 
   messageFromApp = mAdapter->recieveMessageFromApplication(2000);
   {
     QVERIFY(messageFromApp.has_value());
-    QCOMPARE(messageFromApp->address, "address 1");
+    QCOMPARE(messageFromApp->address, std::string("address 1"));
 
     parsedMessageFromApp =
         marshaller.unmarshall(messageFromApp->message, messageFromApp->address);
@@ -173,7 +177,7 @@ void SuccessDialogCreationTest::
     QVERIFY(parsedMessageFromApp.has_value());
     QCOMPARE(parsedMessageFromApp->action(),
              DialogMessage::Action::ACCEPT_DIALOG);
-    QCOMPARE(parsedMessageFromApp->dialogId(), "23434_12312");
+    QCOMPARE(parsedMessageFromApp->dialogId(), std::string_view("23434_12312"));
   }
 
   mAdapter->sendMessageToApplication(
@@ -197,8 +201,10 @@ void SuccessDialogCreationTest::
     QCOMPARE(mDialogChange->mMethod, std::string("changed"));
     QVERIFY(mDialogChange->mVal.has_value());
     QCOMPARE(mDialogChange->mVal->getStatus(), Dialog::Status::ACTIVE);
-    QCOMPARE(mDialogChange->mVal->getDialogId(), std::string("23434_12312"));
-    QCOMPARE(mDialogChange->mVal->getContactId(), std::string("contact 1"));
+    QCOMPARE(mDialogChange->mVal->getDialogId(),
+             std::string_view("23434_12312"));
+    QCOMPARE(mDialogChange->mVal->getContactId(),
+             std::string_view("contact 1"));
   }
 
   mAdapter->sendMessageToApplication(
@@ -218,23 +224,23 @@ void SuccessDialogCreationTest::
   messageFromApp = mAdapter->recieveMessageFromApplication(200);
   {
     QVERIFY(messageFromApp.has_value());
-    QCOMPARE(messageFromApp->address, "address 1");
+    QCOMPARE(messageFromApp->address, std::string("address 1"));
 
     parsedMessageFromApp =
         marshaller.unmarshall(messageFromApp->message, messageFromApp->address);
 
     QVERIFY(parsedMessageFromApp.has_value());
     QCOMPARE(parsedMessageFromApp->action(), DialogMessage::Action::ACK);
-    QCOMPARE(parsedMessageFromApp->sequential(), 3);
-    QCOMPARE(parsedMessageFromApp->dialogId(), "23434_12312");
+    QCOMPARE(parsedMessageFromApp->sequential(), 3UL);
+    QCOMPARE(parsedMessageFromApp->dialogId(), std::string_view("23434_12312"));
   }
 
   std::this_thread::sleep_for(std::chrono::milliseconds(200));
   {
     QVERIFY(mMessageAdded->mIsIncomming);
 
-    QCOMPARE(mMessageAdded->mDialogId, "23434_12312");
-    QCOMPARE(mMessageAdded->mMessage, "test message");
+    QCOMPARE(mMessageAdded->mDialogId, std::string("23434_12312"));
+    QCOMPARE(mMessageAdded->mMessage, std::string("test message"));
   }
 
   mAdapter->sendMessageToApplication(
@@ -254,15 +260,15 @@ void SuccessDialogCreationTest::
   messageFromApp = mAdapter->recieveMessageFromApplication(200);
   {
     QVERIFY(messageFromApp.has_value());
-    QCOMPARE(messageFromApp->address, "address 1");
+    QCOMPARE(messageFromApp->address, std::string("address 1"));
 
     parsedMessageFromApp =
         marshaller.unmarshall(messageFromApp->message, messageFromApp->address);
 
     QVERIFY(parsedMessageFromApp.has_value());
     QCOMPARE(parsedMessageFromApp->action(), DialogMessage::Action::ACK);
-    QCOMPARE(parsedMessageFromApp->sequential(), 4);
-    QCOMPARE(parsedMessageFromApp->dialogId(), "23434_12312");
+    QCOMPARE(parsedMessageFromApp->sequential(), 4UL);
+    QCOMPARE(parsedMessageFromApp->dialogId(), std::string_view("23434_12312"));
   }
 
   std::this_thread::sleep_for(std::chrono::milliseconds(200));
@@ -270,8 +276,10 @@ void SuccessDialogCreationTest::
     QCOMPARE(mDialogChange->mMethod, std::string("changed"));
     QVERIFY(mDialogChange->mVal.has_value());
     QCOMPARE(mDialogChange->mVal->getStatus(), Dialog::Status::CLOSED);
-    QCOMPARE(mDialogChange->mVal->getDialogId(), std::string("23434_12312"));
-    QCOMPARE(mDialogChange->mVal->getContactId(), std::string("contact 1"));
+    QCOMPARE(mDialogChange->mVal->getDialogId(),
+             std::string_view("23434_12312"));
+    QCOMPARE(mDialogChange->mVal->getContactId(),
+             std::string_view("contact 1"));
   }
 }
 
@@ -291,9 +299,10 @@ void SuccessDialogCreationTest::
     QVERIFY(mDialogChange->mVal.has_value());
     QCOMPARE(mDialogChange->mMethod, std::string("changed"));
     QCOMPARE(mDialogChange->mVal->getStatus(), Dialog::Status::NEW);
-    QCOMPARE(mDialogChange->mVal->getContactId(), std::string("contact 2"));
+    QCOMPARE(mDialogChange->mVal->getContactId(),
+             std::string_view("contact 2"));
     QVERIFY(messageFromApp.has_value());
-    QCOMPARE(messageFromApp->address, "address 2");
+    QCOMPARE(messageFromApp->address, std::string("address 2"));
 
     parsedMessageFromApp =
         marshaller.unmarshall(messageFromApp->message, messageFromApp->address);
@@ -328,8 +337,9 @@ void SuccessDialogCreationTest::
     QCOMPARE(mDialogChange->mMethod, std::string("changed"));
     QVERIFY(mDialogChange->mVal.has_value());
     QCOMPARE(mDialogChange->mVal->getStatus(), Dialog::Status::WAIT_CONFIRM);
-    QCOMPARE(mDialogChange->mVal->getContactId(), std::string("contact 2"));
-    QCOMPARE(mDialogChange->mVal->getDialogId(), dialogId);
+    QCOMPARE(mDialogChange->mVal->getContactId(),
+             std::string_view("contact 2"));
+    QCOMPARE(mDialogChange->mVal->getDialogId(), std::string_view(dialogId));
   }
 
   mAdapter->sendMessageToApplication(
@@ -351,15 +361,15 @@ void SuccessDialogCreationTest::
   messageFromApp = mAdapter->recieveMessageFromApplication(2000);
   {
     QVERIFY(messageFromApp.has_value());
-    QCOMPARE(messageFromApp->address, "address 2");
+    QCOMPARE(messageFromApp->address, std::string("address 2"));
 
     parsedMessageFromApp =
         marshaller.unmarshall(messageFromApp->message, messageFromApp->address);
 
     QVERIFY(parsedMessageFromApp.has_value());
     QCOMPARE(parsedMessageFromApp->action(), DialogMessage::Action::ACK);
-    QCOMPARE(parsedMessageFromApp->sequential(), 1);
-    QCOMPARE(parsedMessageFromApp->dialogId(), dialogId);
+    QCOMPARE(parsedMessageFromApp->sequential(), 1UL);
+    QCOMPARE(parsedMessageFromApp->dialogId(), std::string_view(dialogId));
   }
 
   std::this_thread::sleep_for(std::chrono::milliseconds(200));
@@ -367,14 +377,15 @@ void SuccessDialogCreationTest::
     QCOMPARE(mDialogChange->mMethod, std::string("changed"));
     QVERIFY(mDialogChange->mVal.has_value());
     QCOMPARE(mDialogChange->mVal->getStatus(), Dialog::Status::WAIT_CONFIRM);
-    QCOMPARE(mDialogChange->mVal->getContactId(), std::string("contact 2"));
-    QCOMPARE(mDialogChange->mVal->getDialogId(), dialogId);
+    QCOMPARE(mDialogChange->mVal->getContactId(),
+             std::string_view("contact 2"));
+    QCOMPARE(mDialogChange->mVal->getDialogId(), std::string_view(dialogId));
   }
 
   messageFromApp = mAdapter->recieveMessageFromApplication(2000);
   {
     QVERIFY(messageFromApp.has_value());
-    QCOMPARE(messageFromApp->address, "address 2");
+    QCOMPARE(messageFromApp->address, std::string("address 2"));
 
     parsedMessageFromApp =
         marshaller.unmarshall(messageFromApp->message, messageFromApp->address);
@@ -382,7 +393,7 @@ void SuccessDialogCreationTest::
     QVERIFY(parsedMessageFromApp.has_value());
     QCOMPARE(parsedMessageFromApp->action(),
              DialogMessage::Action::KEY_VERIFICATION);
-    QCOMPARE(parsedMessageFromApp->dialogId(), dialogId);
+    QCOMPARE(parsedMessageFromApp->dialogId(), std::string_view(dialogId));
   }
 
   mAdapter->sendMessageToApplication(
@@ -408,8 +419,9 @@ void SuccessDialogCreationTest::
     QCOMPARE(mDialogChange->mMethod, std::string("changed"));
     QVERIFY(mDialogChange->mVal.has_value());
     QCOMPARE(mDialogChange->mVal->getStatus(), Dialog::Status::WAIT_CONFIRM);
-    QCOMPARE(mDialogChange->mVal->getContactId(), std::string("contact 2"));
-    QCOMPARE(mDialogChange->mVal->getDialogId(), dialogId);
+    QCOMPARE(mDialogChange->mVal->getContactId(),
+             std::string_view("contact 2"));
+    QCOMPARE(mDialogChange->mVal->getDialogId(), std::string_view(dialogId));
   }
 
   mAdapter->sendMessageToApplication(
@@ -431,15 +443,15 @@ void SuccessDialogCreationTest::
   messageFromApp = mAdapter->recieveMessageFromApplication(2000);
   {
     QVERIFY(messageFromApp.has_value());
-    QCOMPARE(messageFromApp->address, "address 2");
+    QCOMPARE(messageFromApp->address, std::string("address 2"));
 
     parsedMessageFromApp =
         marshaller.unmarshall(messageFromApp->message, messageFromApp->address);
 
     QVERIFY(parsedMessageFromApp.has_value());
     QCOMPARE(parsedMessageFromApp->action(), DialogMessage::Action::ACK);
-    QCOMPARE(parsedMessageFromApp->sequential(), 2);
-    QCOMPARE(parsedMessageFromApp->dialogId(), dialogId);
+    QCOMPARE(parsedMessageFromApp->sequential(), 2UL);
+    QCOMPARE(parsedMessageFromApp->dialogId(), std::string_view(dialogId));
   }
 
   std::this_thread::sleep_for(std::chrono::milliseconds(200));
@@ -447,8 +459,9 @@ void SuccessDialogCreationTest::
     QCOMPARE(mDialogChange->mMethod, std::string("changed"));
     QVERIFY(mDialogChange->mVal.has_value());
     QCOMPARE(mDialogChange->mVal->getStatus(), Dialog::Status::ACTIVE);
-    QCOMPARE(mDialogChange->mVal->getContactId(), std::string("contact 2"));
-    QCOMPARE(mDialogChange->mVal->getDialogId(), dialogId);
+    QCOMPARE(mDialogChange->mVal->getContactId(),
+             std::string_view("contact 2"));
+    QCOMPARE(mDialogChange->mVal->getDialogId(), std::string_view(dialogId));
   }
 
   mStand->messageActionHandler()->setActiveDialog(dialogId);
@@ -456,21 +469,21 @@ void SuccessDialogCreationTest::
   {
     QVERIFY(!mMessageAdded->mIsIncomming);
     QCOMPARE(mMessageAdded->mDialogId, dialogId);
-    QCOMPARE(mMessageAdded->mMessage, "test message");
+    QCOMPARE(mMessageAdded->mMessage, std::string("test message"));
   }
 
   messageFromApp = mAdapter->recieveMessageFromApplication(2000);
   {
     QVERIFY(messageFromApp.has_value());
-    QCOMPARE(messageFromApp->address, "address 2");
+    QCOMPARE(messageFromApp->address, std::string("address 2"));
 
     parsedMessageFromApp =
         marshaller.unmarshall(messageFromApp->message, messageFromApp->address);
 
     QVERIFY(parsedMessageFromApp.has_value());
     QCOMPARE(parsedMessageFromApp->action(), DialogMessage::Action::MESSAGE);
-    QCOMPARE(parsedMessageFromApp->dialogId(), dialogId);
-    QCOMPARE(parsedMessageFromApp->content(), "test message");
+    QCOMPARE(parsedMessageFromApp->dialogId(), std::string_view(dialogId));
+    QCOMPARE(parsedMessageFromApp->content(), std::string_view("test message"));
   }
 
   mAdapter->sendMessageToApplication(
@@ -496,7 +509,7 @@ void SuccessDialogCreationTest::
   messageFromApp = mAdapter->recieveMessageFromApplication(2000);
   {
     QVERIFY(messageFromApp.has_value());
-    QCOMPARE(messageFromApp->address, "address 2");
+    QCOMPARE(messageFromApp->address, std::string("address 2"));
 
     parsedMessageFromApp =
         marshaller.unmarshall(messageFromApp->message, messageFromApp->address);
@@ -504,7 +517,7 @@ void SuccessDialogCreationTest::
     QVERIFY(parsedMessageFromApp.has_value());
     QCOMPARE(parsedMessageFromApp->action(),
              DialogMessage::Action::CLOSE_DIALOG);
-    QCOMPARE(parsedMessageFromApp->dialogId(), dialogId);
+    QCOMPARE(parsedMessageFromApp->dialogId(), std::string_view(dialogId));
   }
 
   mAdapter->sendMessageToApplication(
@@ -530,8 +543,9 @@ void SuccessDialogCreationTest::
     QCOMPARE(mDialogChange->mMethod, std::string("changed"));
     QVERIFY(mDialogChange->mVal.has_value());
     QCOMPARE(mDialogChange->mVal->getStatus(), Dialog::Status::CLOSED);
-    QCOMPARE(mDialogChange->mVal->getContactId(), std::string("contact 2"));
-    QCOMPARE(mDialogChange->mVal->getDialogId(), dialogId);
+    QCOMPARE(mDialogChange->mVal->getContactId(),
+             std::string_view("contact 2"));
+    QCOMPARE(mDialogChange->mVal->getDialogId(), std::string_view(dialogId));
   }
 }
 

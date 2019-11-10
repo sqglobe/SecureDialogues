@@ -7,7 +7,6 @@
 #include "interfaces/abstractusernotifier.h"
 
 #include <QCommandLinkButton>
-#include "containers/dialogmanager.h"
 #include "containers/messagecontainer.h"
 
 #include "basesettingsdialog.h"

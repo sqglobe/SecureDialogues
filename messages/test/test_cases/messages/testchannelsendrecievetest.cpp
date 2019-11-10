@@ -42,8 +42,8 @@ void TestChannelSendRecieveTest::testReceieveMessage() {
   DialogMessage m = dsp->mMessage;
 
   QCOMPARE(m.action(), action);
-  QCOMPARE(m.content(), content);
-  QCOMPARE(m.dialogId(), dialog_id);
+  QCOMPARE(m.content(), std::string_view(content));
+  QCOMPARE(m.dialogId(), std::string_view(dialog_id));
 }
 
 void TestChannelSendRecieveTest::testReceieveMessage_data() {

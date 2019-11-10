@@ -72,7 +72,7 @@
          </property>
          <property name="icon">
           <iconset>
-           <normaloff>../gui/src/icons/link-button.png</normaloff>../gui/src/icons/link-button.png</iconset>
+           <normaloff>icons/address-book.png</normaloff>icons/address-book.png</iconset>
          </property>
          <property name="iconSize">
           <size>
