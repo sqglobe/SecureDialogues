@@ -22,11 +22,11 @@ class PublicKeyDialog : public QDialog {
                            QWidget* parent = nullptr);
   ~PublicKeyDialog() override;
 
- public slots:
-  void open() override;
-
  private slots:
   void generateKey();
+
+ protected:
+  void showEvent(QShowEvent* event) override;
 
  private:
   Ui::PublicKeyDialog* ui;

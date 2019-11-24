@@ -1,12 +1,17 @@
 project(main)
 
+find_package(Qt5Widgets REQUIRED)
+
 set(MAIN_SOURCE
     main.cpp
     passask.cpp
 )
 
 
-add_executable(SecureDialogues ${MAIN_SOURCE} secure-dialogues.rc)
+
+set(CMAKE_AUTORCC ON)
+
+add_executable(SecureDialogues ${MAIN_SOURCE} project_icons.qrc secure-dialogues.rc)
 target_link_libraries(SecureDialogues gui messages )
 
 if(MSVC)

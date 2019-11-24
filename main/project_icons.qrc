@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icons/address-book.png</file>
+        <file>icons/document-with-folded-corner.png</file>
+        <file>icons/link-button.png</file>
+        <file>icons/old-key.png</file>
+    </qresource>
+</RCC>

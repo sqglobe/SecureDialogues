@@ -23,11 +23,6 @@ PublicKeyDialog::~PublicKeyDialog() {
   delete ui;
 }
 
-void PublicKeyDialog::open() {
-  ui->publicKeyValue->setPlainText(mSystem->exportPublicKey().c_str());
-  QDialog::open();
-}
-
 void PublicKeyDialog::generateKey() {
   if (mAsk->ask(
           "Вы уверены, что хотите произвести генерацию ключей? В этом случае "
@@ -42,4 +37,10 @@ void PublicKeyDialog::generateKey() {
                         "шифрования. попытайтесь еще раз позже");
     }
   }
+}
+
+void PublicKeyDialog::showEvent(QShowEvent* event) {
+  QDialog::showEvent(event);
+  QCoreApplication::processEvents();
+  ui->publicKeyValue->setPlainText(mSystem->exportPublicKey().c_str());
 }

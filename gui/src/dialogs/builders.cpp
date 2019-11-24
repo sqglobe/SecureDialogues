@@ -80,6 +80,7 @@ std::shared_ptr<BaseSettingsDialog> make_dialog(
       dialog.get());
 
   contact_for_dialog(dialog, gasket, widget);
+  dialog->setWindowTitle("Добавление/редактирование контактов");
 
   return dialog;
 }
@@ -128,6 +129,8 @@ std::shared_ptr<BaseSettingsDialog> make_dialog(
       dialog.get());
 
   contact_for_dialog(dialog, gasket, widget);
+
+  dialog->setWindowTitle("Настойка подключений");
 
   return dialog;
 }

@@ -71,8 +71,8 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset>
-           <normaloff>icons/address-book.png</normaloff>icons/address-book.png</iconset>
+          <iconset resource="../../main/project_icons.qrc">
+           <normaloff>:/icons/link-button.png</normaloff>:/icons/link-button.png</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -118,8 +118,8 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset>
-           <normaloff>../gui/src/icons/address-book.png</normaloff>../gui/src/icons/address-book.png</iconset>
+          <iconset resource="../../main/project_icons.qrc">
+           <normaloff>:/icons/address-book.png</normaloff>:/icons/address-book.png</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -165,8 +165,8 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset>
-           <normaloff>../gui/src/icons/old-key.png</normaloff>../gui/src/icons/old-key.png</iconset>
+          <iconset resource="../../main/project_icons.qrc">
+           <normaloff>:/icons/old-key.png</normaloff>:/icons/old-key.png</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -206,8 +206,8 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset>
-           <normaloff>../gui/src/icons/document-with-folded-corner.png</normaloff>../gui/src/icons/document-with-folded-corner.png</iconset>
+          <iconset resource="../../main/project_icons.qrc">
+           <normaloff>:/icons/document-with-folded-corner.png</normaloff>:/icons/document-with-folded-corner.png</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -355,22 +355,6 @@
      <height>22</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menu">
-    <property name="title">
-     <string>Контроль</string>
-    </property>
-    <addaction name="actionContacts"/>
-    <addaction name="actionChannels"/>
-   </widget>
-   <widget class="QMenu" name="menu_2">
-    <property name="title">
-     <string>Публичный ключ</string>
-    </property>
-    <addaction name="generatePublicKeyAction"/>
-    <addaction name="showPublicKeyAction"/>
-   </widget>
-   <addaction name="menu"/>
-   <addaction name="menu_2"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -403,6 +387,8 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="../../main/project_icons.qrc"/>
+ </resources>
  <connections/>
 </ui>

@@ -100,7 +100,6 @@ qt5_wrap_cpp(WRAP_MOC_GUI ${GUI_MOC})
 
 qt5_wrap_ui(UI_WRAP ${GUI_UI})
 
-
 add_library(gui STATIC ${GUI_MODULE_SOURCES} ${GUI_MODULE_HEADERS} ${UI_WRAP} ${WRAP_MOC_GUI})
 
 target_include_directories(gui PUBLIC  ${CMAKE_CURRENT_SOURCE_DIR})
