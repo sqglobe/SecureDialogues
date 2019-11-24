@@ -2,6 +2,8 @@
 #define BUILDERS_H
 
 #include <memory>
+#include "communication/channel.h"
+#include "containers/storages.h"
 
 /**
  * @brief Содержит функции, которые создают диалоги для управления такими
@@ -9,8 +11,6 @@
  */
 
 class BaseSettingsDialog;
-class ConnectionInfoContainer;
-class ContactContainer;
 class DialogCreation;
 
 /**
@@ -21,8 +21,9 @@ class DialogCreation;
  * своими контактами
  */
 std::shared_ptr<BaseSettingsDialog> make_dialog(
-    const std::shared_ptr<ContactContainer>& contact,
-    const std::shared_ptr<ConnectionInfoContainer>& connInfo);
+    const std::shared_ptr<ContactStorage>& contact,
+    const std::shared_ptr<ConnectionStorage>& connInfo,
+    const std::shared_ptr<Channel::EventQueue>& queue);
 
 /**
  * @brief Создает диалог для управления информацией о подключениях для каналов
@@ -31,7 +32,8 @@ std::shared_ptr<BaseSettingsDialog> make_dialog(
  * @return диалог для управления каналами связи.
  */
 std::shared_ptr<BaseSettingsDialog> make_dialog(
-    const std::shared_ptr<ConnectionInfoContainer>& connInfo);
+    const std::shared_ptr<ConnectionStorage>& connInfo,
+    const std::shared_ptr<Channel::EventQueue>& queue);
 
 /**
  * @brief Создает пользовательский диалог для начала общения с удаленным
@@ -41,6 +43,6 @@ std::shared_ptr<BaseSettingsDialog> make_dialog(
  * удаленным контактом
  */
 std::shared_ptr<DialogCreation> make_creation_dialog(
-    const std::shared_ptr<ContactContainer>& contact);
+    const std::shared_ptr<ContactStorage>& contact);
 
 #endif  // BUILDERS_H

@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <memory>
-class Contact;
+#include "primitives/contact.h"
 class DialogActionHandler;
 class AbstractUserNotifier;
 
@@ -22,7 +22,7 @@ class DialogActionHandlerWrapper : public QObject {
  signals:
 
  public slots:
-  void createDialogAction(std::shared_ptr<const Contact> contact);
+  void createDialogAction(Contact contact);
   void closeDialogAction(std::string dialogId);
   void abortDialogAction(std::string dialogId);
   void removeDialogAction(std::string dialogId);

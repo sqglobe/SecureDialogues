@@ -3,7 +3,7 @@
 
 #include <stdexcept>
 #include <string>
-
+#include <string_view>
 /**
  * @brief Класс представляет из себя внутреннее для системы представление
  * сообщения, которое подлежит передачи, либо уже принято Сообщение используется
@@ -78,17 +78,17 @@ class DialogMessage {
 
  public:
   Action action() const noexcept;
-  std::string content() const noexcept;
-  std::string dialogId() const noexcept;
-  std::string adress() const noexcept;
+  std::string_view content() const noexcept;
+  std::string_view dialogId() const noexcept;
+  std::string_view adress() const noexcept;
   unsigned long sequential() const noexcept;
-  std::string sign() const;
+  std::string_view sign() const noexcept;
   long timestamp() const;
 
  public:
   void setSequentialNumber(unsigned long number) noexcept;
-  void setSignature(const std::string& signature);
-  void setContent(const std::string& content);
+  void setSignature(std::string signature);
+  void setContent(std::string content);
 
  private:
   Action mAction;
@@ -109,8 +109,8 @@ class DialogMessage {
  * @param contact - кому отправить сообщение
  * @return новое сообщение с типом abort для указанного диалога.
  */
-DialogMessage make_abort(const std::string& dialogId,
-                         const std::string& contact,
+DialogMessage make_abort(std::string&& dialogId,
+                         std::string&& contact,
                          unsigned long number);
 
 /**

@@ -1,17 +1,21 @@
 #include "basesettingsdialog.h"
 #include <QSortFilterProxyModel>
 #include <cassert>
+#include "models/identifiedlistmodel.h"
 #include "ui_basesettingsdialog.h"
 
-BaseSettingsDialog::BaseSettingsDialog(QAbstractItemModel* model,
-                                       QWidget* dataWidget,
-                                       QWidget* parent) :
+BaseSettingsDialog::BaseSettingsDialog(
+    std::shared_ptr<IdentifiedListModel> model,
+    QWidget* dataWidget,
+    QWidget* parent) :
     QDialog(parent),
-    ui(new Ui::BaseSettingsDialog), mProxyModel(new QSortFilterProxyModel(this))
+    ui(new Ui::BaseSettingsDialog),
+    mProxyModel(new QSortFilterProxyModel(this)), mModel(std::move(model))
 
 {
   ui->setupUi(this);
-  mProxyModel->setSourceModel(model);
+
+  mProxyModel->setSourceModel(mModel.get());
   ui->elementsView->setModel(mProxyModel);
   ui->vidgetLayout->addWidget(dataWidget);
   dataWidget->setParent(this);
@@ -44,14 +48,15 @@ BaseSettingsDialog::~BaseSettingsDialog() {
 void BaseSettingsDialog::on_elementsView_doubleClicked(
     const QModelIndex& index) {
   auto sourceIndx = mProxyModel->mapToSource(index);
-  mSelectedRow = sourceIndx.row();
-  moveToState(State::VIEW);
-  emit actionDisable();
-  emit actionViewAt(mSelectedRow);
+  if (sourceIndx.isValid() && (mSelectedId = mModel->getId(sourceIndx))) {
+    moveToState(State::VIEW);
+    emit actionDisable();
+    emit actionViewAt(mSelectedId.value());
+  }
 }
 
 void BaseSettingsDialog::on_elementsAdd_clicked() {
-  mSelectedRow = -1;
+  mSelectedId.reset();
   moveToState(State::ADD);
   emit actionCleare();
   emit actionEnable();
@@ -62,15 +67,15 @@ void BaseSettingsDialog::moveToState(BaseSettingsDialog::State newState) {
 }
 
 void BaseSettingsDialog::on_changeAction_clicked() {
-  assert(mSelectedRow >= 0);
+  assert(mSelectedId);
   moveToState(State::CHANGE);
   emit actionEnable();
 }
 
 void BaseSettingsDialog::on_deleteAction_clicked() {
-  assert(mSelectedRow >= 0);
+  assert(mSelectedId);
   moveToState(State::ADD);
-  emit actionRemoveAt(mSelectedRow);
+  emit actionRemoveAt(mSelectedId.value());
   emit actionCleare();
   emit actionEnable();
 }
@@ -80,8 +85,8 @@ void BaseSettingsDialog::on_cancelAction_clicked() {
     emit actionCleare();
   } else if (State::CHANGE == mCurrentState) {
     moveToState(State::VIEW);
-    assert(mSelectedRow >= 0);
-    emit actionViewAt(mSelectedRow);
+    assert(mSelectedId);
+    emit actionViewAt(mSelectedId.value());
     emit actionDisable();
   }
 }
@@ -92,8 +97,8 @@ void BaseSettingsDialog::on_saveAction_clicked() {
     emit actionCleare();
   } else if (State::CHANGE == mCurrentState) {
     moveToState(State::VIEW);
-    assert(mSelectedRow >= 0);
-    emit actionUpdateAt(mSelectedRow);
+    assert(mSelectedId);
+    emit actionUpdateAt(mSelectedId.value());
     emit actionDisable();
   }
 }

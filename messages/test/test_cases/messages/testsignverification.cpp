@@ -168,9 +168,10 @@ void TestSignVerification::testSignVerificcation() {
 
   auto message = unmMessage.value();
 
-  DialogMessage messWithoutSign(message.action(), message.content(),
-                                message.dialogId(), message.adress(),
-                                message.sequential(), "", message.timestamp());
+  DialogMessage messWithoutSign(
+      message.action(), std::string(message.content()),
+      std::string(message.dialogId()), std::string(message.adress()),
+      message.sequential(), "", message.timestamp());
   auto strRepr = mm.marshall(messWithoutSign);
 
   QVERIFY(oper.isValid(strRepr, message.sign()));

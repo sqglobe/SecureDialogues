@@ -15,5 +15,5 @@ void MessageHandlerWrapper::cleareActiveDialog(std::string) {
 }
 
 void MessageHandlerWrapper::sendMessage(std::string messageText) {
-  mMessageHandler->sendMessage(messageText);
+  mMessageHandler->sendMessage(std::move(messageText));
 }

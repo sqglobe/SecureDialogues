@@ -67,12 +67,12 @@ void TestMessageDispatchTest::testDispatchMessageForActionMessage() {
   std::this_thread::sleep_for(std::chrono::seconds(1));
 
   QCOMPARE(notUsedDialog.action(), DialogMessage::Action::ACCEPT_DIALOG);
-  QCOMPARE(notUsedDialog.content(), std::string("FAKE"));
-  QCOMPARE(notUsedDialog.dialogId(), std::string("FAKE_ID"));
+  QCOMPARE(notUsedDialog.content(), std::string_view("FAKE"));
+  QCOMPARE(notUsedDialog.dialogId(), std::string_view("FAKE_ID"));
 
   QCOMPARE(outMessage.action(), action);
-  QCOMPARE(outMessage.content(), content);
-  QCOMPARE(outMessage.dialogId(), dialog_id);
+  QCOMPARE(outMessage.content(), std::string_view(content));
+  QCOMPARE(outMessage.dialogId(), std::string_view(dialog_id));
 }
 
 void TestMessageDispatchTest::testDispatchMessageForActionMessage_data() {

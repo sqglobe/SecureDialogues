@@ -1,47 +1,42 @@
 #include <QTest>
-#include "containers/dialogmanager.h"
-#include "interfaces/changewatcher.h"
 #include "primitives/contact.h"
 #include "primitives/dialog.h"
 
-Q_DECLARE_METATYPE(std::string)
+#include "containers/storages.h"
+#include "interfaces/changelistener.h"
+#include "utils/dbfactory.h"
 
+#include <dbstl_common.h>
 #include <memory>
 
-std::shared_ptr<Dialog> mk_dialog(const std::string& channel,
-                                  const std::string& name,
-                                  const std::string& adress,
-                                  const std::string& dialog_id,
-                                  Dialog::Status st) {
-  return std::make_shared<Dialog>(
-      std::make_shared<Contact>(channel, name, adress, ""), dialog_id, st);
-}
+Q_DECLARE_METATYPE(std::string)
+Q_DECLARE_METATYPE(Dialog::Status)
 
-class FakeDialogWather : public ChangeWatcher<DialogManager::const_element> {
+class FakeDialogWather : public ChangeListener<Dialog> {
  public:
-  void added(const DialogManager::const_element& obj) override {
+  void added(const element& obj) override {
     mMethod = "added";
-    mDialogId = obj->getDialogId();
-    mChannel = obj->getChannelMoniker();
-    mStatus = obj->getStatus();
+    mDialogId = obj.getDialogId();
+    mContactId = obj.getContactId();
+    mStatus = obj.getStatus();
   }
-  void changed(const DialogManager::const_element& obj) override {
+  void changed(const element& obj) override {
     mMethod = "changed";
-    mDialogId = obj->getDialogId();
-    mChannel = obj->getChannelMoniker();
-    mStatus = obj->getStatus();
+    mDialogId = obj.getDialogId();
+    mContactId = obj.getContactId();
+    mStatus = obj.getStatus();
   }
-  void removed(const DialogManager::const_element& obj) override {
+  void removed(const element& obj) override {
     mMethod = "removed";
-    mDialogId = obj->getDialogId();
-    mChannel = obj->getChannelMoniker();
-    mStatus = obj->getStatus();
+    mDialogId = obj.getDialogId();
+    mContactId = obj.getContactId();
+    mStatus = obj.getStatus();
   }
 
  public:
   std::string mMethod;
   std::string mDialogId;
-  std::string mChannel;
+  std::string mContactId;
   Dialog::Status mStatus;
 };
 
@@ -53,6 +48,8 @@ class TestDialogChangeWatcher : public QObject {
  signals:
 
  private slots:
+  void initTestCase();
+  void cleanupTestCase();
   void testAddWatcher();
   void testAddWatcher_data();
 
@@ -65,148 +62,161 @@ class TestDialogChangeWatcher : public QObject {
   void init();
 
  private:
-  std::shared_ptr<DialogManager> mDialogManager;
+  std::shared_ptr<DialogStorage> mDialogStorage;
   std::shared_ptr<FakeDialogWather> mWatcher;
+  Db* primary;
+  Db* secondary;
 };
 
 TestDialogChangeWatcher::TestDialogChangeWatcher(QObject* parent) :
     QObject(parent) {}
 
+void TestDialogChangeWatcher::initTestCase() {
+  dbstl::dbstl_startup();
+  QDir().mkdir("TestDialogChangeWatcher_env");
+  auto penv = make_db_env("TestDialogChangeWatcher_env", "test");
+  primary = make_db("test_dialogs.db", "primary", penv);
+  secondary = make_db("test_dialogs.db", "secondary", penv, DB_DUP);
+
+  mDialogStorage = make_dialog_storage(primary, secondary, penv);
+}
+
+void TestDialogChangeWatcher::cleanupTestCase() {
+  dbstl::dbstl_exit();
+  QDir curr;
+  if (curr.cd("TestDialogChangeWatcher_env"))
+    curr.removeRecursively();
+}
+
 void TestDialogChangeWatcher::testAddWatcher() {
-  QFETCH(std::string, channel);
-  QFETCH(std::string, name);
-  QFETCH(std::string, adress);
+  QFETCH(std::string, contact_id);
   QFETCH(std::string, dialog_id);
+  QFETCH(Dialog::Status, status);
 
-  mDialogManager->add(mk_dialog(channel, name, adress, dialog_id,
-                                Dialog::Status::WAIT_CONFIRM));
+  mDialogStorage->add(
+      Dialog(std::string(contact_id), std::string(dialog_id), 0, 0, status));
 
-  QCOMPARE(mWatcher->mChannel, channel);
+  QCOMPARE(mWatcher->mContactId, contact_id);
   QCOMPARE(mWatcher->mDialogId, dialog_id);
   QCOMPARE(mWatcher->mMethod, std::string("added"));
-  QCOMPARE(mWatcher->mStatus, Dialog::Status::WAIT_CONFIRM);
+  QCOMPARE(mWatcher->mStatus, status);
 }
 
 void TestDialogChangeWatcher::testAddWatcher_data() {
-  QTest::addColumn<std::string>("channel");
-  QTest::addColumn<std::string>("name");
-  QTest::addColumn<std::string>("adress");
+  QTest::addColumn<std::string>("contact_id");
   QTest::addColumn<std::string>("dialog_id");
+  QTest::addColumn<Dialog::Status>("status");
 
-  QTest::newRow("0") << std::string("added channel 1")
-                     << std::string("fake name 1")
-                     << std::string("fake address 1")
-                     << std::string("fake added id 1");
-  QTest::newRow("1") << std::string("added channel 2")
-                     << std::string("fake name 2")
-                     << std::string("fake address 2")
-                     << std::string("fake added id 2");
-  QTest::newRow("2") << std::string("added channel 3")
-                     << std::string("fake name 3")
-                     << std::string("fake address 3")
-                     << std::string("fake added id 3");
-  QTest::newRow("3") << std::string("added channel 4")
-                     << std::string("fake name 4")
-                     << std::string("fake address 4")
-                     << std::string("fake added id 4");
+  QTest::newRow("0") << std::string("fake name 1")
+                     << std::string("fake added id 1") << Dialog::Status::NEW;
+
+  QTest::newRow("1") << std::string("fake name 2")
+                     << std::string("fake active dialog id")
+                     << Dialog::Status::ACTIVE;
+
+  QTest::newRow("2") << std::string("fake name 3")
+                     << std::string("fake closed dialog")
+                     << Dialog::Status::CLOSED;
+
+  QTest::newRow("3") << std::string("fake name 4")
+                     << std::string("fake wait confirm id")
+                     << Dialog::Status::WAIT_CONFIRM;
 }
 
 void TestDialogChangeWatcher::testChangeWatcher() {
-  QFETCH(std::string, channel);
-  QFETCH(std::string, name);
-  QFETCH(std::string, adress);
+  QFETCH(std::string, contact_id);
   QFETCH(std::string, dialog_id);
+  QFETCH(Dialog::Status, status);
 
-  mDialogManager->update(
-      mk_dialog(channel, name, adress, dialog_id, Dialog::Status::ACTIVE));
+  mDialogStorage->update(
+      Dialog(std::string(contact_id), std::string(dialog_id), 0, 0, status));
 
-  QCOMPARE(mWatcher->mChannel, channel);
   QCOMPARE(mWatcher->mDialogId, dialog_id);
+  QCOMPARE(mWatcher->mContactId, contact_id);
   QCOMPARE(mWatcher->mMethod, std::string("changed"));
-  QCOMPARE(mWatcher->mStatus, Dialog::Status::ACTIVE);
+  QCOMPARE(mWatcher->mStatus, status);
 }
 
 void TestDialogChangeWatcher::testChangeWatcher_data() {
-  QTest::addColumn<std::string>("channel");
-  QTest::addColumn<std::string>("name");
-  QTest::addColumn<std::string>("adress");
+  QTest::addColumn<std::string>("contact_id");
   QTest::addColumn<std::string>("dialog_id");
+  QTest::addColumn<Dialog::Status>("status");
 
-  QTest::newRow("0") << std::string("channel 1") << std::string("name new1")
-                     << std::string("adress new1")
-                     << std::string("new dialog 1");
-  QTest::newRow("1") << std::string("channel 1") << std::string("name new2")
-                     << std::string("adress new2")
-                     << std::string("new dialog 2");
-  QTest::newRow("2") << std::string("channel 1") << std::string("name new3")
-                     << std::string("adress new3")
-                     << std::string("new dialog 3");
-  QTest::newRow("3") << std::string("channel 1") << std::string("name new4")
-                     << std::string("adress new4")
-                     << std::string("new dialog 4");
+  QTest::newRow("0") << std::string("new name 21")
+                     << std::string("new dialog 1")
+                     << Dialog::Status::WAIT_CONFIRM;
+  QTest::newRow("1") << std::string("new name 21")
+                     << std::string("new dialog 2") << Dialog::Status::ABORTED;
+
+  QTest::newRow("2") << std::string("name active1")
+                     << std::string("active dialog 1")
+                     << Dialog::Status::ABORTED;
+
+  QTest::newRow("2") << std::string("name active2")
+                     << std::string("active dialog 2")
+                     << Dialog::Status::CLOSED;
 }
 
 void TestDialogChangeWatcher::testRemoveWatcher() {
-  QFETCH(std::string, channel);
-  QFETCH(std::string, name);
-  QFETCH(std::string, adress);
+  QFETCH(std::string, contact_id);
   QFETCH(std::string, dialog_id);
 
-  mDialogManager->remove(dialog_id);
+  mDialogStorage->remove(dialog_id);
 
-  QCOMPARE(mWatcher->mChannel, channel);
+  QCOMPARE(mWatcher->mContactId, contact_id);
   QCOMPARE(mWatcher->mDialogId, dialog_id);
   QCOMPARE(mWatcher->mMethod, std::string("removed"));
   QCOMPARE(mWatcher->mStatus, Dialog::Status::WAIT_CONFIRM);
 }
 
 void TestDialogChangeWatcher::testRemoveWatcher_data() {
-  QTest::addColumn<std::string>("channel");
-  QTest::addColumn<std::string>("name");
-  QTest::addColumn<std::string>("adress");
+  QTest::addColumn<std::string>("contact_id");
   QTest::addColumn<std::string>("dialog_id");
 
-  QTest::newRow("0") << std::string("channel 3") << std::string("name created1")
-                     << std::string("adress created1")
+  QTest::newRow("0") << std::string("name created1")
                      << std::string("created dialog 1");
-  QTest::newRow("1") << std::string("channel 3") << std::string("name created2")
-                     << std::string("adress created2")
+
+  QTest::newRow("1") << std::string("name created2")
                      << std::string("created dialog 2");
-  QTest::newRow("2") << std::string("channel 3") << std::string("name created3")
-                     << std::string("adress created3")
+
+  QTest::newRow("2") << std::string("name created3")
                      << std::string("created dialog 3");
 }
 
 void TestDialogChangeWatcher::init() {
-  mDialogManager = std::make_shared<DialogManager>();
-  mDialogManager->add(mk_dialog("channel 1", "name new1", "adress new1",
-                                "new dialog 1", Dialog::Status::NEW));
-  mDialogManager->add(mk_dialog("channel 1", "name new2", "adress new2",
-                                "new dialog 2", Dialog::Status::NEW));
-  mDialogManager->add(mk_dialog("channel 1", "name new3", "adress new3",
-                                "new dialog 3", Dialog::Status::NEW));
-  mDialogManager->add(mk_dialog("channel 1", "name new4", "adress new4",
-                                "new dialog 4", Dialog::Status::NEW));
+  primary->truncate(nullptr, nullptr, 0);
+  mDialogStorage->add(Dialog(std::string("test contact"),
+                             std::string("new dialog 1"), 0, 0,
+                             Dialog::Status::NEW));
+  mDialogStorage->add(Dialog(std::string("test contact"),
+                             std::string("new dialog 2"), 0, 0,
+                             Dialog::Status::NEW));
+  mDialogStorage->add(Dialog(std::string("test contact"),
+                             std::string("new dialog 4"), 0, 0,
+                             Dialog::Status::NEW));
 
-  mDialogManager->add(mk_dialog("channel 2", "name active1", "adress active1",
-                                "active dialog 1", Dialog::Status::ACTIVE));
-  mDialogManager->add(mk_dialog("channel 2", "name active2", "adress active2",
-                                "active dialog 2", Dialog::Status::ACTIVE));
-  mDialogManager->add(mk_dialog("channel 2", "name active3", "adress active3",
-                                "active dialog 3", Dialog::Status::ACTIVE));
+  mDialogStorage->add(Dialog(std::string("name active1"),
+                             std::string("active dialog 1"), 0, 0,
+                             Dialog::Status::ACTIVE));
+  mDialogStorage->add(Dialog(std::string("name active2"),
+                             std::string("active dialog 2"), 0, 0,
+                             Dialog::Status::ACTIVE));
+  mDialogStorage->add(Dialog(std::string("name active2"),
+                             std::string("active dialog 2"), 0, 0,
+                             Dialog::Status::ACTIVE));
 
-  mDialogManager->add(mk_dialog("channel 3", "name created1", "adress created1",
-                                "created dialog 1",
-                                Dialog::Status::WAIT_CONFIRM));
-  mDialogManager->add(mk_dialog("channel 3", "name created2", "adress created2",
-                                "created dialog 2",
-                                Dialog::Status::WAIT_CONFIRM));
-  mDialogManager->add(mk_dialog("channel 3", "name created3", "adress created3",
-                                "created dialog 3",
-                                Dialog::Status::WAIT_CONFIRM));
+  mDialogStorage->add(Dialog(std::string("name created1"),
+                             std::string("created dialog 1"), 0, 0,
+                             Dialog::Status::WAIT_CONFIRM));
+  mDialogStorage->add(Dialog(std::string("name created2"),
+                             std::string("created dialog 2"), 0, 0,
+                             Dialog::Status::WAIT_CONFIRM));
+  mDialogStorage->add(Dialog(std::string("name created3"),
+                             std::string("created dialog 3"), 0, 0,
+                             Dialog::Status::WAIT_CONFIRM));
 
   mWatcher = std::make_shared<FakeDialogWather>();
-  mDialogManager->registerWatcher(mWatcher);
+  mDialogStorage->appendListener(mWatcher);
 }
 QTEST_APPLESS_MAIN(TestDialogChangeWatcher)
 #include "testdialogchangewatcher.moc"

@@ -66,8 +66,8 @@ void DialogMessageCreationFromSourceTest::testDialogCreatedOk() {
   auto str = message->content();
   QVERIFY(message);
   QCOMPARE(message->action(), action);
-  QCOMPARE(message->content(), content);
-  QCOMPARE(message->dialogId(), dialog_id);
+  QCOMPARE(message->content(), std::string_view(content));
+  QCOMPARE(message->dialogId(), std::string_view(dialog_id));
 }
 
 QTEST_APPLESS_MAIN(DialogMessageCreationFromSourceTest)

@@ -9,14 +9,10 @@ add_executable(TestChannelSendRecieveTest testchannelsendrecievetest.cpp)
 add_test(NAME TestChannelSendRecieveTest COMMAND TestChannelSendRecieveTest)
 target_link_libraries(TestChannelSendRecieveTest PRIVATE ${MY_TEST_LIBS} )
 
-add_executable(TestDialogActionHandler testdialogactionhandler.cpp)
-add_test(NAME TestDialogActionHandler COMMAND TestDialogActionHandler)
-target_link_libraries(TestDialogActionHandler PRIVATE ${MY_TEST_LIBS} )
+#add_executable(TestDialogActionHandler testdialogactionhandler.cpp)
+#add_test(NAME TestDialogActionHandler COMMAND TestDialogActionHandler)
+#target_link_libraries(TestDialogActionHandler PRIVATE ${MY_TEST_LIBS} )
 
-
-add_executable(TestDialogTest testdialogtest.cpp)
-add_test(NAME TestDialogTest COMMAND TestDialogTest)
-target_link_libraries(TestDialogTest PRIVATE ${MY_TEST_LIBS} )
 
 add_executable(TestMessageActionHandlerRecieveMessage testmessageactionhandlerrecievemessage.cpp)
 add_test(NAME TestMessageActionHandlerRecieveMessage COMMAND TestMessageActionHandlerRecieveMessage)

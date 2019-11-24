@@ -10,8 +10,7 @@ DialogActionHandlerWrapper::DialogActionHandlerWrapper(
     QObject(parent),
     mHandler(std::move(handler)), mNotifier(std::move(notifier)) {}
 
-void DialogActionHandlerWrapper::createDialogAction(
-    std::shared_ptr<const Contact> contact) {
+void DialogActionHandlerWrapper::createDialogAction(Contact contact) {
   try {
     mHandler->createDialog(contact);
   } catch (const std::exception&) {

@@ -10,3 +10,6 @@
 [submodule "submodules/eventpp"]
 	path = submodules/eventpp
 	url = https://github.com/wqking/eventpp.git
+[submodule "submodules/cmake/FindBerkeleyDB"]
+	path = submodules/cmake/FindBerkeleyDB
+	url = https://gitlab.com/sum01/FindBerkeleyDB.git

@@ -35,3 +35,11 @@ std::unique_ptr<SymetricalCipher> makeForStringPass(const std::string& pass) {
                  pass.size(), nullptr, 0, nullptr, 0);
   return std::make_unique<AesCipher>(key, CryptoPP::SecByteBlock());
 }
+
+std::unique_ptr<SymetricalCipher> createSymmetricalCipherFrom(
+    std::string_view message,
+    const std::shared_ptr<const Decryptor>& decryptor) {
+  AesKeyStruct key;
+  deserialize(decryptor, message, key);
+  return std::make_unique<AesCipher>(key.key, key.iv);
+}

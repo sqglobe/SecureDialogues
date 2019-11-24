@@ -1,17 +1,21 @@
 #include "dialogusermodel.h"
-#include "containers/dialogmanager.h"
+#include "containers/storages.h"
 
 #include <QColor>
 #include <QString>
 
 Q_DECLARE_METATYPE(DialogInfo);
 
-DialogUserModel::DialogUserModel(
-    const std::shared_ptr<DialogManager>& dialogs) {
-  for (int i = 0; i < dialogs->size(); i++) {
-    const auto& dialog = dialogs->at(0);
-    mDialogsInfo.emplace_back(dialog);
-  }
+DialogUserModel::DialogUserModel(std::shared_ptr<ContactStorage> contacts,
+                                 const std::vector<Dialog>& dialogs) :
+    mContacts(std::move(contacts)) {
+  std::transform(std::cbegin(dialogs), std::cend(dialogs),
+                 std::back_inserter(mDialogsInfo),
+                 [&contacts](const Dialog& dialog) -> DialogInfo {
+                   auto contact =
+                       contacts->get(std::string(dialog.getContactId()));
+                   return DialogInfo(dialog, contact);
+                 });
 }
 
 int DialogUserModel::rowCount(const QModelIndex&) const {
@@ -28,21 +32,22 @@ QVariant DialogUserModel::data(const QModelIndex& index, int role) const {
   return QVariant();
 }
 
-void DialogUserModel::added(const ChangeWatcher::element& obj) {
+void DialogUserModel::added(const Dialog& obj) {
   auto newPos = static_cast<int>(mDialogsInfo.size());
+  auto contact = mContacts->get(std::string(obj.getContactId()));
   beginInsertRows(QModelIndex(), newPos, newPos);
-  mDialogsInfo.emplace_back(obj);
+  mDialogsInfo.emplace_back(obj, contact);
   endInsertRows();
 
   if (rowCount() == 1) {
-    updateActiveDialog(DialogInfo(obj));
+    updateActiveDialog(DialogInfo(obj, contact));
   }
 }
 
-void DialogUserModel::changed(const ChangeWatcher::element& obj) {
+void DialogUserModel::changed(const Dialog& obj) {
   auto it = std::find_if(mDialogsInfo.begin(), mDialogsInfo.end(),
-                         [&obj](const auto& elem) {
-                           return obj->getDialogId() == elem.dialogId();
+                         [id = obj.getDialogId()](const auto& elem) {
+                           return id == elem.dialogId();
                          });
   if (it == mDialogsInfo.end()) {
     return;
@@ -50,16 +55,16 @@ void DialogUserModel::changed(const ChangeWatcher::element& obj) {
   *it = obj;
   auto newPos = static_cast<int>(std::distance(mDialogsInfo.begin(), it));
   emit dataChanged(createIndex(newPos, 0), createIndex(newPos, 0));
-  if (activeDialog == obj->getDialogId()) {
+  if (activeDialog == obj.getDialogId()) {
     updateActiveDialog(*it);
     it->messagesReaded();
   }
 }
 
-void DialogUserModel::removed(const ChangeWatcher::element& obj) {
+void DialogUserModel::removed(const Dialog& obj) {
   auto it = std::find_if(mDialogsInfo.cbegin(), mDialogsInfo.cend(),
-                         [&obj](const auto& elem) {
-                           return obj->getDialogId() == elem.dialogId();
+                         [id = obj.getDialogId()](const auto& elem) {
+                           return id == elem.dialogId();
                          });
   if (it == mDialogsInfo.cend()) {
     return;
@@ -69,7 +74,7 @@ void DialogUserModel::removed(const ChangeWatcher::element& obj) {
   mDialogsInfo.erase(it);
   endResetModel();
 
-  if (activeDialog == obj->getDialogId()) {
+  if (activeDialog == obj.getDialogId()) {
     if (mDialogsInfo.empty()) {
       activeDialog = "";
       emit notValidDialogWasSelected(activeDialog);
@@ -79,6 +84,20 @@ void DialogUserModel::removed(const ChangeWatcher::element& obj) {
     }
   }
 }
+
+void DialogUserModel::added(const Contact&) {}
+
+void DialogUserModel::changed(const Contact& obj) {
+  beginResetModel();
+  for (auto& dialogInfo : mDialogsInfo) {
+    if (dialogInfo.contactId() == obj.id()) {
+      dialogInfo = obj;
+    }
+  }
+  endResetModel();
+}
+
+void DialogUserModel::removed(const Contact&) {}
 
 void DialogUserModel::messageAdded(const std::string& dialogId,
                                    const std::shared_ptr<const UserMessage>&) {

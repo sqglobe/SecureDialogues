@@ -41,7 +41,7 @@ class MessageDespatcher : public AbstractMessageDespatcher {
    * @param message класс полученного сообщения
    * @param mChannelName идентификатор канала, для которого получено сообщение
    */
-  void dispatch(const DialogMessage& message,
+  void dispatch(DialogMessage&& message,
                 const std::string& channelName) noexcept override;
 
   /**
@@ -51,12 +51,12 @@ class MessageDespatcher : public AbstractMessageDespatcher {
    * @param channelName имя канала, по которому необходимо отправить сообщение
    */
   void sendMessage(
-      const DialogMessage& message,
-      const std::string& channelName,
-      const std::shared_ptr<DeliveryHandler>& deliveryHandler) const override;
+      DialogMessage&& message,
+      std::string_view channelName,
+      std::shared_ptr<DeliveryHandler>&& deliveryHandler) const override;
 
-  void sendAndForget(const DialogMessage& message,
-                     const std::string& channelName) const override;
+  void sendAndForget(DialogMessage&& message,
+                     std::string_view channelName) const override;
 
  public:
   /**
@@ -112,7 +112,7 @@ class MessageDespatcher : public AbstractMessageDespatcher {
 
  private:
   std::vector<std::shared_ptr<AbstractMessageHandler>> mHandlers;
-  std::map<std::string, std::shared_ptr<Channel>> mChannels;
+  std::map<std::string, std::shared_ptr<Channel>, std::less<>> mChannels;
   mutable std::shared_mutex mMutex;
   std::shared_ptr<const CryptoSystem> mCryptoSystem;
   std::shared_ptr<AbstractUserNotifier> mNotifier;

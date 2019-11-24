@@ -2,6 +2,8 @@ project(messages)
 
 find_package (Threads)
 find_package(Boost  REQUIRED system)
+find_package(BerkeleyDB REQUIRED)
+find_package(persistent-storage REQUIRED)
 
 set(SOURCES 
 primitives/dialogmessage.cpp
@@ -15,11 +17,7 @@ communication/messageactionhandler.cpp
 communication/channel.cpp
 communication/dialogactionhandler.cpp
 utils.cpp 
-containers/contactcontainer.cpp 
-containers/dialogmanager.cpp 
-containers/connectioninfocontainer.cpp 
 adapters/udpadapter.cpp
-containers/connectcontainerwatcher.cpp 
 utils/fileutils.cpp
 utils/messagemarshaller.cpp
 delivery-handlers/deliveryhandler.cpp
@@ -31,8 +29,16 @@ crypto/cryptosystemimpl.cpp
 crypto/cryptosystemcontactupdateinformator.cpp
 crypto/cryptosystemdialogremoveinformator.cpp
 adapters/oauthadapter.cpp
-containers/consistentwatchers.cpp
 adapters/emailadapter.cpp
+persistent_storage/contactmarshaller.cpp
+persistent_storage/dialogmarshaller.cpp
+persistent_storage/connectionmarshaller.cpp
+containers/storages.cpp
+communication/communication_helpers.cpp
+containers/connectstoragelistener.cpp
+
+core-initializer/chaneladapterfactory.cpp
+core-initializer/coreinitializer.cpp
 )
 
 
@@ -50,27 +56,11 @@ containers/messagecontainer.h
 interfaces/messageconteinereventhandler.h 
 communication/messageactionhandler.h
 interfaces/abstractmessagedespatcher.h 
-builders/builders.h 
-builders/filebuilders.h 
-builders/file_builder/filebuilder.h
-builders/file_builder/dialogsavestrategy.h
-builders/file_builder/contactsavestrategy.h
 utils.h 
-interfaces/changewatcher.h 
 interfaces/cryptosystem.h
 communication/dialogactionhandler.h
-builders/file_builder/connectionsavestrategy.h
-builders/file_builder/connectionsavestrategy.cpp
-builders/file_builder/contactsavestrategy.cpp
-builders/file_builder/dialogsavestrategy.cpp
 interfaces/abstractuserask.h 
-containers/basecontainer.h 
-containers/contactcontainer.h 
-containers/dialogmanager.h 
-containers/connectioninfocontainer.h 
-containers/containerelementwrapper.h
 adapters/udpadapter.h 
-containers/connectcontainerwatcher.h 
 utils/fileutils.h 
 exception/receiveexception.h 
 exception/sendexception.h 
@@ -83,7 +73,6 @@ delivery-handlers/dialogactiondeliveryhandler.h
 containers/usermessage.h
 utils/systemmessagegenerator.h
 primitives/dialogstatemachine.h
-containers/transparentcontainerelementwrapper.h
 crypto/cryptosystemimpl.h
 crypto/cryptosystemcontactupdateinformator.h
 crypto/cryptosystemdialogremoveinformator.h
@@ -91,13 +80,24 @@ constants.h
 adapters/oauthadapter.h
 exception/notauthorizedexception.h
 exception/disconectedexception.h
-containers/consistentwatchers.h
 adapters/emailadapter.h
-)
+persistent_storage/contactmarshaller.h
+persistent_storage/dialogmarshaller.h
+persistent_storage/connectionmarshaller.h
+persistent_storage/store_helpers.h
+containers/storages.h
+communication/communication_helpers.h
+containers/eventwatchers.h
+interfaces/changelistener.h
+containers/connectstoragelistener.h
+interfaces/abstractcoreinitializer.h
 
+core-initializer/chaneladapterfactory.h
+core-initializer/coreinitializer.h
+)
 
 add_library(messages STATIC ${SOURCES} ${HEADERS})
 
-target_include_directories(messages PUBLIC   ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries( messages ${PROJ_CRYPTOPP_LIB} xg encryption oauth-agents email-agent ${CMAKE_THREAD_LIBS_INIT} ${Boost_SYSTEM_LIBRARY})
+target_include_directories(messages PUBLIC   ${CMAKE_CURRENT_SOURCE_DIR} ${PERSISTENT-STORAGE_INCLUDE_DIRS})
+target_link_libraries( messages ${PROJ_CRYPTOPP_LIB} xg encryption oauth-agents email-agent Oracle::BerkeleyDB ${CMAKE_THREAD_LIBS_INIT} ${Boost_SYSTEM_LIBRARY} pthread persistent-storage)
 

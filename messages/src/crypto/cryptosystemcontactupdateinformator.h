@@ -2,25 +2,26 @@
 #define CRYPTOSYSTEMCONTACTUPDATEINFORMATOR_H
 
 #include <memory>
-#include "containers/contactcontainer.h"
-#include "interfaces/changewatcher.h"
+
+#include "interfaces/changelistener.h"
+#include "primitives/contact.h"
 
 class CryptoSystemImpl;
+class Contact;
 
 /**
  * @brief Отслеживает изменения в контейнере контактов, используется для
  * актуализации данных в CryptoSystemImpl
  */
-class CryptoSystemContactUpdateInformator
-    : public ChangeWatcher<ContactContainer::const_element> {
+class CryptoSystemContactUpdateInformator : public ChangeListener<Contact> {
  public:
   explicit CryptoSystemContactUpdateInformator(
       std::shared_ptr<CryptoSystemImpl> system);
 
  public:
-  void added(const element& obj) override;
-  void changed(const element& obj) override;
-  void removed(const element& obj) override;
+  void added(const element& element) override;
+  void changed(const element& element) override;
+  void removed(const element& element) override;
 
  private:
   std::shared_ptr<CryptoSystemImpl> mSystem;

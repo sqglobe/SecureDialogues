@@ -17,5 +17,6 @@ class Encryptor {
    * @return результат шифрования
    */
   virtual std::string encrypt(const std::string& source) const = 0;
+  virtual std::string encrypt(std::string_view source) const = 0;
 };
 #endif  // ENCRYPTOR_H

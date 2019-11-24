@@ -40,22 +40,22 @@ class CryptoSystemImpl : public CryptoSystem {
   std::string createSignature(const DialogMessage& message) const
       noexcept(false) override;
 
-  std::string encryptMessageBody(const std::string& dialogId,
-                                 const std::string& message) const
+  std::string encryptMessageBody(std::string_view dialogId,
+                                 std::string_view message) const
       noexcept(false) override;
-  std::string decryptMessageBody(const std::string& dialogId,
-                                 const std::string& message) const
+  std::string decryptMessageBody(std::string_view dialogId,
+                                 std::string_view message) const
       noexcept(false) override;
 
  public:
   std::string generateAndExportKey(
-      const std::string& dialogId,
-      const std::string& addres) noexcept(false) override;
-  std::string importKey(const std::string& dialogId,
-                        const std::string& message) noexcept(false) override;
+      std::string_view dialogId,
+      std::string_view addres) noexcept(false) override;
+  std::string importKey(std::string_view dialogId,
+                        std::string_view message) noexcept(false) override;
   bool checkVerificationString(
-      const std::string& dialogId,
-      const std::string& message) noexcept(false) override;
+      std::string_view dialogId,
+      std::string_view message) noexcept(false) override;
 
   /**
    * @brief Экспортирует текущее значение публичного ключа пользователя
@@ -77,35 +77,33 @@ class CryptoSystemImpl : public CryptoSystem {
    * собеседнике нет. Вызывается при добавлении/изменении контакта в контейнере.
    * @param contact собеседник, для которого произошло обновление
    */
-  void updateContact(const std::shared_ptr<const Contact>& contact) noexcept(
-      false);
+  void updateContact(const Contact& contact) noexcept(false);
 
   /**
    * @brief Удалает данные (публичный ключ), которые ассоциированы с указанным
    * контактом Вызывается, когда диалог удаляется из контейнера
    * @param contact контакт, для которого необходимо удалить данные
    */
-  void removeContact(const std::shared_ptr<const Contact>& contact) noexcept(
-      false);
+  void removeContact(const Contact& contact) noexcept(false);
 
   /**
    * @brief Используется для удалении информации (сеансового ключа) для
    * указанного диалога. Вызывается, когда диалог удаляется из контейнера
    * @param dialogId диалог, для которого необходимо произвести очистку.
    */
-  void dialogRemoved(const std::string& dialogId) noexcept(false);
+  void dialogRemoved(std::string_view dialogId) noexcept(false);
 
  private:
   std::shared_ptr<RemotePeerOperations> getRemoteByAdress(
-      const std::string& adress) const noexcept(false);
+      std::string_view adress) const noexcept(false);
 
  private:
   std::shared_ptr<AsymetricalKeyStore> mAsymKeys;
   std::shared_ptr<AbstractMessageMarshaller> mMarshaller;
   std::shared_ptr<LocalPeerOperations> mLocal;
 
-  std::map<std::string, RemoteElement> mRemote;
-  std::map<std::string, DialogElement> mCiphers;
+  std::map<std::string, RemoteElement, std::less<>> mRemote;
+  std::map<std::string, DialogElement, std::less<>> mCiphers;
   mutable std::shared_mutex mMutex;
 };
 

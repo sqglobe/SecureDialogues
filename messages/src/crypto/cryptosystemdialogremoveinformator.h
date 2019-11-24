@@ -1,24 +1,25 @@
 #ifndef CRYPTOSYSTEMDIALOGREMOVEINFORMATOR_H
 #define CRYPTOSYSTEMDIALOGREMOVEINFORMATOR_H
 
-#include "containers/dialogmanager.h"
-#include "interfaces/changewatcher.h"
+#include <memory>
+
+#include "interfaces/changelistener.h"
+#include "primitives/dialog.h"
 
 class CryptoSystemImpl;
-
+class Dialog;
 /**
  * @brief  Отслеживает изменения в контейнере диалогов, используется для
  * актуализации данных в CryptoSystemImpl
  */
-class CryptoSystemDialogRemoveInformator
-    : public ChangeWatcher<DialogManager::const_element> {
+class CryptoSystemDialogRemoveInformator : public ChangeListener<Dialog> {
  public:
   explicit CryptoSystemDialogRemoveInformator(
       std::shared_ptr<CryptoSystemImpl> system);
 
  public:
-  void added(const element&) override;
-  void changed(const element&) override;
+  void added(const element&) override {}
+  void changed(const element&) override {}
   void removed(const element& obj) override;
 
  private:

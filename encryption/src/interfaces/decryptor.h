@@ -17,6 +17,7 @@ class Decryptor {
    * @throws Может выбрасывать исключения, если дешифрование не удалось
    */
   virtual std::string decrypt(const std::string& data) const = 0;
+  virtual std::string decrypt(std::string_view data) const = 0;
 };
 
 #endif  // DECRYPTOR_H

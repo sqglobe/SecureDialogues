@@ -9,12 +9,10 @@
 #include <functional>
 #include "communication/channel.h"
 #include "communication/messagedespatcher.h"
-#include "containers/connectioninfocontainer.h"
 #include "interfaces/abstractchanneladapter.h"
 #include "primitives/connectionholder.h"
 
 #include <string>
-#include "containers/connectioninfocontainer.h"
 #include "dialogwidgetgasket.h"
 
 #include <qmetatype.h>
@@ -23,6 +21,10 @@
 #include <QTest>
 
 #include <memory>
+
+#include <db_cxx.h>
+#include "containers/storages.h"
+#include "utils/dbfactory.h"
 
 Q_DECLARE_METATYPE(std::string)
 
@@ -37,6 +39,8 @@ class TestConnectionWidget : public QObject {
  signals:
 
  private slots:
+  void initTestCase();
+  void cleanupTestCase();
   void init();
   void testViewAt();
   void testViewAt_data();
@@ -54,20 +58,44 @@ class TestConnectionWidget : public QObject {
   void testDisable();
 
  private:
-  std::shared_ptr<ConnectionInfoContainer> mContainer;
+  std::shared_ptr<ConnectionStorage> mContainer;
   std::shared_ptr<FakeConnectionInfoWidget> mWidget;
-  std::shared_ptr<FakeTemplateChangeWatcher<ConnectionHolder>> mChangeWatcher;
+  std::shared_ptr<FakeTemplateChangeListener<ConnectionHolder>> mChangeWatcher;
   std::shared_ptr<
-      DialogWidgetGasket<ConnectionInfoContainer, FakeConnectionInfoWidget>>
+      DialogWidgetGasket<ConnectionStorage, FakeConnectionInfoWidget>>
       mGasket;
+  Db* primary;
+  std::shared_ptr<ContactStorage> mContactStorage;
+  std::shared_ptr<DialogStorage> mDialogs;
 };
 
 TestConnectionWidget::TestConnectionWidget(QObject* parent) : QObject(parent) {}
 
+void TestConnectionWidget::initTestCase() {
+  dbstl::dbstl_startup();
+  QDir().mkdir("TestConnectionWidget_env");
+  auto penv = make_db_env("TestConnectionWidget_env", "test");
+  primary = make_db("test_connections.db", "primary", penv);
+
+  mDialogs = make_dialog_storage(
+      make_db("test_dialogs.db", "primary", penv),
+      make_db("test_dialogs.db", "secondary", penv, DB_DUP), penv);
+
+  mContactStorage = make_contact_storage(
+      make_db("test_contacts.db", "primary", penv),
+      make_db("test_contacts.db", "secondary", penv, DB_DUP), penv, mDialogs);
+
+  mContainer = make_connection_storage(primary, penv, mContactStorage);
+}
+
+void TestConnectionWidget::cleanupTestCase() {
+  dbstl::dbstl_exit();
+}
+
 void TestConnectionWidget::init() {
+  primary->truncate(nullptr, nullptr, 0);
   auto messageDispatcher = std::make_shared<MessageDespatcher>(
       std::make_shared<CryptoSystemFake>(), std::make_shared<FakeNotifier>());
-  mContainer = std::make_shared<ConnectionInfoContainer>();
   mContainer->add(ConnectionHolder(
       GmailConnection{"test1@gmail.com", "09asdkvju"}, "conn 1"));
   mContainer->add(ConnectionHolder(
@@ -82,13 +110,13 @@ void TestConnectionWidget::init() {
   mWidget = std::make_shared<FakeConnectionInfoWidget>();
 
   mChangeWatcher =
-      std::make_shared<FakeTemplateChangeWatcher<ConnectionHolder>>();
-  mContainer->registerWatcher(mChangeWatcher);
+      std::make_shared<FakeTemplateChangeListener<ConnectionHolder>>();
+  mContainer->appendPermanentListener(mChangeWatcher);
   // DialogWidgetGasket(const std::shared_ptr<Container> &container, Widget
   // *widget, const std::shared_ptr<AbstractUserAsk> &userAsk,
   // std::shared_ptr<AbstractUserNotifier> notifier);
   mGasket = std::make_shared<
-      DialogWidgetGasket<ConnectionInfoContainer, FakeConnectionInfoWidget>>(
+      DialogWidgetGasket<ConnectionStorage, FakeConnectionInfoWidget>>(
       mContainer, mWidget.get(), std::make_shared<FakeUserAsk>(true),
       std::make_shared<FakeNotifier>());
 }
@@ -97,7 +125,7 @@ void TestConnectionWidget::testViewAt() {
   QFETCH(std::string, connection);
   QFETCH(std::string, login);
   QFETCH(std::string, pass);
-  QFETCH(int, viewPos);
+  QFETCH(std::string, viewPos);
 
   mGasket->viewAt(viewPos);
   auto conn_name_field = mWidget->findChild<QLineEdit*>("connectionName");
@@ -113,24 +141,28 @@ void TestConnectionWidget::testViewAt_data() {
   QTest::addColumn<std::string>("connection");
   QTest::addColumn<std::string>("login");
   QTest::addColumn<std::string>("pass");
-  QTest::addColumn<int>("viewPos");
+  QTest::addColumn<std::string>("viewPos");
 
   QTest::newRow("0") << std::string("conn 1") << std::string("test1@gmail.com")
-                     << std::string("") << 0;
+                     << std::string("") << std::string("conn 1");
+
   QTest::newRow("1") << std::string("conn 2") << std::string("test2@gmail.com")
-                     << std::string("") << 1;
+                     << std::string("") << std::string("conn 2");
+
   QTest::newRow("2") << std::string("conn 3") << std::string("test3@gmail.com")
-                     << std::string("") << 2;
+                     << std::string("") << std::string("conn 3");
+
   QTest::newRow("3") << std::string("conn 4") << std::string("test4@gmail.com")
-                     << std::string("") << 3;
+                     << std::string("") << std::string("conn 4");
+
   QTest::newRow("4") << std::string("conn 5") << std::string("test5@gmail.com")
-                     << std::string("") << 4;
+                     << std::string("") << std::string("conn 5");
 }
 
 void TestConnectionWidget::testUpdate() {
   QFETCH(std::string, new_login);
   QFETCH(std::string, new_pass);
-  QFETCH(int, viewPos);
+  QFETCH(std::string, viewPos);
 
   mGasket->viewAt(viewPos);
   auto login_field = mWidget->findChild<QLineEdit*>("login");
@@ -152,13 +184,18 @@ void TestConnectionWidget::testUpdate() {
 void TestConnectionWidget::testUpdate_data() {
   QTest::addColumn<std::string>("new_login");
   QTest::addColumn<std::string>("new_pass");
-  QTest::addColumn<int>("viewPos");
+  QTest::addColumn<std::string>("viewPos");
 
-  QTest::newRow("0") << std::string("login 212") << std::string("pass 1") << 0;
-  QTest::newRow("1") << std::string("login 2") << std::string("pass 2312") << 1;
-  QTest::newRow("2") << std::string("login 3") << std::string("pass 3231") << 2;
-  QTest::newRow("3") << std::string("login 4") << std::string("pass 41") << 3;
-  QTest::newRow("4") << std::string("login 5312") << std::string("pass 5") << 4;
+  QTest::newRow("0") << std::string("login 212") << std::string("pass 1")
+                     << std::string("conn 1");
+  QTest::newRow("1") << std::string("login 2") << std::string("pass 2312")
+                     << std::string("conn 2");
+  QTest::newRow("2") << std::string("login 3") << std::string("pass 3231")
+                     << std::string("conn 3");
+  QTest::newRow("3") << std::string("login 4") << std::string("pass 41")
+                     << std::string("conn 4");
+  QTest::newRow("4") << std::string("login 5312") << std::string("pass 5")
+                     << std::string("conn 5");
 }
 
 void TestConnectionWidget::testAdd() {
@@ -205,7 +242,7 @@ void TestConnectionWidget::testEnable() {
 }
 
 void TestConnectionWidget::testEnableVsViewAtPos() {
-  mGasket->viewAt(0);
+  mGasket->viewAt("conn 1");
   auto conn_name_field = mWidget->findChild<QLineEdit*>("connectionName");
   auto login_field = mWidget->findChild<QLineEdit*>("login");
   auto pass_field = mWidget->findChild<QLineEdit*>("pass");
@@ -220,7 +257,7 @@ void TestConnectionWidget::testEnableVsViewAtPos() {
 }
 
 void TestConnectionWidget::testCleare() {
-  mGasket->viewAt(0);
+  mGasket->viewAt("conn 1");
   auto conn_name_field = mWidget->findChild<QLineEdit*>("connectionName");
   auto login_field = mWidget->findChild<QLineEdit*>("login");
   auto pass_field = mWidget->findChild<QLineEdit*>("pass");

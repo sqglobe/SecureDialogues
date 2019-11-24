@@ -1,0 +1,63 @@
+#include "mainwindow.h"
+#include "ui_mainwindow.h"
+
+#include "gui-initializer/guiinitializer.h"
+#include "interfaces/abstractcoreinitializer.h"
+
+#include <QInputDialog>
+#include "dialogs/userinformator.h"
+#include "wrappers/dialoguserviewwrapper.h"
+
+enum MESSAGE_SWITCH_PAGES { OK_DIALOG_PAGE = 0, BAD_DIALOG_PAGE = 1 };
+
+MainWindow::MainWindow(std::unique_ptr<AbstractCoreInitializer>&& coreInit,
+                       QWidget* parent) :
+    QMainWindow(parent),
+    ui(new Ui::MainWindow),
+    mUserInformator(std::make_shared<UserInformator>(this)),
+    mCore(std::move(coreInit)) {
+  qRegisterMetaType<AbstractUserNotifier::Severity>(
+      "AbstractUserNotifier::Severity");
+  qRegisterMetaType<QVector<int>>("QVector<int>");
+  qRegisterMetaType<std::string>("std::string");
+  qRegisterMetaType<Contact>("Contact");
+  ui->setupUi(this);
+
+  mCore->init(mUserInformator);
+
+  mGui = std::make_shared<GuiInitializer>(this, mCore, mUserInformator,
+                                          mUserInformator,
+                                          mEventHolder.channelEventQueue());
+  on_badDialogSelected(
+      "Для начала отправки сообщений выберите один диалог из списка");
+  mCore->startMessagesHandling(mUserInformator,
+                               mEventHolder.channelEventQueue());
+}
+
+MainWindow::~MainWindow() {
+  delete ui;
+}
+
+void MainWindow::on_commandLinkButton_clicked() {
+  auto text = ui->senderText->document()->toPlainText().toStdString();
+  if (!text.empty()) {
+    emit sendMessage(text);
+  }
+  ui->senderText->document()->clear();
+}
+
+void MainWindow::on_badDialogSelected(std::string) {
+  ui->messageContainerSwitch->setCurrentIndex(OK_DIALOG_PAGE);
+  ui->commandLinkButton->setDisabled(true);
+}
+
+void MainWindow::on_goodDialogSelected(std::string) {
+  ui->messageContainerSwitch->setCurrentIndex(OK_DIALOG_PAGE);
+  ui->commandLinkButton->setDisabled(false);
+}
+
+void MainWindow::closeEvent(QCloseEvent* event) {
+  mCore->saveFiles();
+  emit closed();
+  QMainWindow::closeEvent(event);
+}

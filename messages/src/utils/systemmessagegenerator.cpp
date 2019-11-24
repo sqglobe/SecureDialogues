@@ -25,17 +25,21 @@ bool isInSystemMessageState(Dialog::Status status) {
 }
 
 SystemMessageGenerator::SystemMessageGenerator(
-    const std::shared_ptr<MessageContainer>& container) :
-    mMessageContainer(container) {}
+    std::weak_ptr<MessageContainer> container) :
+    mMessageContainer(std::move(container)) {}
 
-void SystemMessageGenerator::changed(const ChangeWatcher::element& obj) {
-  if (isInSystemMessageState(obj->getStatus())) {
-    auto text = get_message(obj->getStatus());
+void SystemMessageGenerator::added(const ChangeListener::element&) {}
+
+void SystemMessageGenerator::changed(const ChangeListener::element& obj) {
+  if (isInSystemMessageState(obj.getStatus())) {
+    auto text = get_message(obj.getStatus());
     if (auto lock = mMessageContainer.lock()) {
       lock->addMessage(
-          obj->getDialogId(),
+          std::string(obj.getDialogId()),
           std::make_shared<UserMessage>(UserMessage::Status::DELIVERIED,
                                         UserMessage::Type::SYSTEM, text));
     }
   }
 }
+
+void SystemMessageGenerator::removed(const ChangeListener::element&) {}

@@ -1,22 +1,24 @@
 #ifndef CONNECTIONINFOMODEL_H
 #define CONNECTIONINFOMODEL_H
 
-#include <QAbstractListModel>
 #include <memory>
+#include <mutex>
+#include <vector>
+#include "communication/channel.h"
 #include "containermodelgenerator.h"
-#include "containers/connectioninfocontainer.h"
-#include "interfaces/changewatcher.h"
+#include "identifiedlistmodel.h"
+#include "interfaces/changelistener.h"
 /**
  * @brief Сгенерированный класс, который отображает список подключений.
  * Используется в диалоге управления подключениями
  */
 
-class ConnectionInfoModel
-    : public QAbstractListModel,
-      public ChangeWatcher<ConnectionInfoContainer::const_element> {
+class ConnectionHolder;
+
+class ConnectionInfoModel : public IdentifiedListModel,
+                            public ChangeListener<ConnectionHolder> {
  public:
-  explicit ConnectionInfoModel(std::shared_ptr<ConnectionInfoContainer> cont);
-  ConnectionInfoContainer::const_element getAt(const QModelIndex& pos) const;
+  explicit ConnectionInfoModel(const std::vector<element>& elements);
 
  public:
   int rowCount(const QModelIndex& parent = QModelIndex()) const override;
@@ -24,12 +26,34 @@ class ConnectionInfoModel
                 int role = Qt::DisplayRole) const override;
 
  public:
-  void added(const element& obj) override;
-  void changed(const element& obj) override;
-  void removed(const element& obj) override;
+  std::optional<std::string> getId(const QModelIndex& index) const override;
+
+ public:
+  void added(const element& element) override;
+  void changed(const element&) override;
+  void removed(const element& element) override;
+
+ public:
+  void updateChannelStatus(Channel::ChannelStatus status,
+                           const std::string& channelName,
+                           const std::string&);
 
  private:
-  std::shared_ptr<ConnectionInfoContainer> mContainer;
+  inline int simpleRowCount() const;
+
+ private:
+  struct ConnData {
+    QString connName;
+    Channel::ChannelStatus status;
+  };
+
+ private:
+  std::vector<ConnData> mData;
+  mutable std::recursive_mutex mMutex;
 };
+
+int ConnectionInfoModel::simpleRowCount() const {
+  return static_cast<int>(mData.size());
+}
 
 #endif  // CONNECTIONINFOMODEL_H

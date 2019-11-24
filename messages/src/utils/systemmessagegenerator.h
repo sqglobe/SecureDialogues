@@ -2,21 +2,19 @@
 #define SYSTEMMESSAGEGENERATOR_H
 
 #include <memory>
-#include "interfaces/changewatcher.h"
+#include "interfaces/changelistener.h"
 
 class Dialog;
 class MessageContainer;
 
-class SystemMessageGenerator
-    : public ChangeWatcher<std::shared_ptr<const Dialog>> {
+class SystemMessageGenerator : public ChangeListener<Dialog> {
  public:
-  explicit SystemMessageGenerator(
-      const std::shared_ptr<MessageContainer>& container);
+  explicit SystemMessageGenerator(std::weak_ptr<MessageContainer> container);
 
  public:
-  void added(const element&) override {}
+  void added(const element&) override;
   void changed(const element& obj) override;
-  void removed(const element&) override {}
+  void removed(const element&) override;
 
  private:
   std::weak_ptr<MessageContainer> mMessageContainer;

@@ -3,9 +3,10 @@
 
 #include <exception>
 #include <memory>
+#include <string_view>
+#include <type_traits>
 #include "dialogmessage.h"
-
-class Contact;
+#include "utils.h"
 
 class invalid_dialog_action : public std::runtime_error {
  public:
@@ -41,6 +42,7 @@ class Dialog {
   };
 
  public:
+  Dialog() = default;
   /**
    * @brief Конструктор диалога, вызывается при условии, что мы восстанавливаем
    * ранее сохраненный диалог
@@ -48,9 +50,10 @@ class Dialog {
    * @param dialogId - id диалога, должно быть уникальным
    * @param status - текущий статус диалога
    */
-  Dialog(std::shared_ptr<const Contact> contact,
-         std::string dialogId,
-         Status status = Status::NEW);
+  template <typename S,
+            class = typename std::enable_if<
+                std::is_constructible<std::string, S>::value>::type>
+  explicit Dialog(S&& contactId);
 
   /**
    * @brief Конструктор класса
@@ -59,54 +62,37 @@ class Dialog {
    * @param sequental порядковый номер инициирующего диалог сообщения
    * @param status статус диалога
    */
-  Dialog(std::shared_ptr<const Contact> contact,
-         std::string dialogId,
-         unsigned long sequental,
-         Status status = Status::NEW);
+  template <typename S,
+            class = typename std::enable_if<
+                std::is_constructible<std::string, S>::value>::type>
+  Dialog(S&& contactId,
+         S&& dialogId,
+         unsigned long peerSequental,
+         unsigned long thisSequental,
+         Status status);
 
   /**
    * @brief Конструктор, создает новый диалог в статусе Status::NEW, а так же
    * генерирует id диалога
    * @param contact - контакт, с которым создается диалог
    */
-  Dialog(std::shared_ptr<const Contact> contact);
+  template <typename S,
+            class = typename std::enable_if<
+                std::is_constructible<std::string, S>::value>::type>
+  Dialog(S&& contactId, S&& dialogId, unsigned long sequental, Status status);
 
  public:
-  std::string getDialogId() const;
-  std::string getChannelMoniker() const;
-
-  /**
-   * @brief Создает сообщение с указанным содержимым и указанным типом
-   * @param action - тип сообщения
-   * @param content - содержимое сообщения
-   * @return сообщение для передачи
-   * @throws выбрасывает исключение, если action не соответствует состоянию
-   * диалога
-   */
-  DialogMessage makeMessage(DialogMessage::Action action,
-                            const std::string& content) const noexcept(false);
-
-  /**
-   * @brief Создает сообщение для аварийного завершения диалога
-   * @return сообщение с типом abort
-   */
-  DialogMessage makeAbort();
+  std::string_view getDialogId() const noexcept;
 
   /**
    * @brief Возвращает текущий статус диалога
    * @return статус диалога
    */
   Status getStatus() const noexcept;
+  std::string_view getContactId() const noexcept;
 
-  /**
-   * @brief Переводит диалог в новое состояние
-   * @param status - новое состояние диалога
-   */
-  void setStatus(Status status) noexcept(false);
-  std::string getContactId() const;
-  std::string getAdress() const;
-  std::string getName() const;
-
+  unsigned long getPeerSequental() const noexcept;
+  unsigned long getThisSequental() const noexcept;
   /**
    * @brief Выполняет проверку и обновление последнего порядкового номера
    * сообщения. Если указанный в параметре порядковый номер меньше или равен
@@ -118,6 +104,11 @@ class Dialog {
    * принято, в противном случае - false
    */
   bool isSequentalOk(unsigned long sequental);
+  /**
+   * @brief Переводит диалог в новое состояние
+   * @param status - новое состояние диалога
+   */
+  void setStatus(Status status) noexcept(false);
 
   /**
    * @brief Выполняет проверку, является ли допустимым создать сообщение с
@@ -127,16 +118,48 @@ class Dialog {
    * с указанным типом, в противном случае -  false.
    */
   bool isMessageActionAllowed(DialogMessage::Action action) const noexcept;
+  unsigned long makeNextSequental();
 
  private:
-  unsigned long getNextSequental() const;
-
- private:
-  std::shared_ptr<const Contact> mContact;
   std::string mDialogId;
+  std::string mContactId;
   Status mStatus;
-  unsigned long mLastSequental;
-  mutable unsigned long mThisSequental;
+  unsigned long mPeerSequental;
+  unsigned long mThisSequental;
 };
+
+unsigned long init_sequental();
+
+template <typename S, class>
+Dialog::Dialog(S&& contactId,
+               S&& dialogId,
+               unsigned long sequental,
+               Dialog::Status status) :
+    Dialog(std::forward<std::string>(contactId),
+           std::forward<std::string>(dialogId),
+           sequental,
+           init_sequental(),
+           status) {}
+
+template <typename S, class>
+Dialog::Dialog(S&& contactId) :
+    Dialog(std::forward<std::string>(contactId),
+           make_uiid(),
+           0,
+           init_sequental(),
+           Dialog::Status::NEW) {}
+
+template <typename S, class>
+Dialog::Dialog(S&& contactId,
+               S&& dialogId,
+               unsigned long peerSequental,
+               unsigned long thisSequental,
+               Dialog::Status status) :
+    mDialogId(std::forward<std::string>(dialogId)),
+    mContactId(std::forward<std::string>(contactId)), mStatus(status),
+    mPeerSequental(peerSequental), mThisSequental(thisSequental) {
+  static_assert(std::is_constructible<std::string, S>::value,
+                "Type parameter for Dialog must be a string");
+}
 
 #endif  // DIALOG_H

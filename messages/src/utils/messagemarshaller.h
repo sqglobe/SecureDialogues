@@ -12,6 +12,7 @@ class MessageMarshaller : public AbstractMessageMarshaller {
   std::optional<DialogMessage> unmarshall(const std::string& message,
                                           const std::string& address) override;
   std::string marshall(const DialogMessage& message) override;
+  std::string marshallExceptSignature(const DialogMessage& message) override;
 
  private:
   /**

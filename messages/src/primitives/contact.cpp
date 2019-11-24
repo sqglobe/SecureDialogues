@@ -1,55 +1,37 @@
 #include "contact.h"
-#include "utils.h"
 
-Contact::Contact(std::string channelMoniker,
-                 std::string name,
-                 std::string adress,
-                 std::string key) :
-    mChannelMoniker(std::move(channelMoniker)),
-    mName(std::move(name)), mAdress(std::move(adress)), mContactId(make_uiid()),
-    mPublicKey(std::move(key)) {}
-
-Contact::Contact(std::string channelMoniker,
-                 std::string name,
-                 std::string adress,
-                 std::string key,
-                 std::string id) :
-    mChannelMoniker(std::move(channelMoniker)),
-    mName(std::move(name)), mAdress(std::move(adress)),
-    mContactId(std::move(id)), mPublicKey(std::move(key)) {}
-
-std::string Contact::name() const {
+std::string_view Contact::name() const noexcept {
   return mName;
 }
 
-std::string Contact::channelMoniker() const {
+std::string_view Contact::channelMoniker() const noexcept {
   return mChannelMoniker;
 }
 
-std::string Contact::adress() const {
+std::string_view Contact::adress() const noexcept {
   return mAdress;
 }
 
-std::string Contact::id() const {
+std::string_view Contact::id() const noexcept {
   return mContactId;
 }
 
-std::string Contact::publicKey() const {
+std::string_view Contact::publicKey() const noexcept {
   return mPublicKey;
 }
 
-void Contact::name(const std::string& name) {
-  mName = name;
+void Contact::name(std::string name) {
+  mName = std::move(name);
 }
 
-void Contact::channelMoniker(const std::string& moniker) {
-  mChannelMoniker = moniker;
+void Contact::channelMoniker(std::string moniker) {
+  mChannelMoniker = std::move(moniker);
 }
 
-void Contact::adress(const std::string& adress) {
-  mAdress = adress;
+void Contact::adress(std::string adress) {
+  mAdress = std::move(adress);
 }
 
-void Contact::publicKey(const std::string& key) {
-  mPublicKey = key;
+void Contact::publicKey(std::string key) {
+  mPublicKey = std::move(key);
 }

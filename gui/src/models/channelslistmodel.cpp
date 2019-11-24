@@ -50,38 +50,53 @@ QVariant ChannelsListModel::data(const QModelIndex& index, int role) const {
   return QVariant();
 }
 
-void ChannelsListModel::added(const ChangeWatcher::element& obj) {
-  std::lock_guard<std::recursive_mutex> guard(mMutex);
+void ChannelsListModel::added(const ChangeListener::element& element) {
+  [[maybe_unused]] std::lock_guard<std::recursive_mutex> guard(mMutex);
   beginInsertRows(QModelIndex(), mChannelNames.size(), mChannelNames.size());
-  mChannelNames.append({obj.getConnectionName().c_str(),
+  mChannelNames.append({element.getConnectionName().c_str(),
                         "Подключение на данный момент не установлено",
-                        Channel::ChannelStatus::UNDEFINED, obj.getType()});
+                        Channel::ChannelStatus::UNDEFINED, element.getType()});
   endInsertRows();
 }
 
-void ChannelsListModel::changed(const ChangeWatcher::element& obj) {
-  std::lock_guard<std::recursive_mutex> guard(mMutex);
-  auto it = std::find_if(mChannelNames.begin(), mChannelNames.end(),
-                         [search = QString(obj.getConnectionName().c_str())](
-                             auto const& name) { return name.name == search; });
+void ChannelsListModel::changed(const ChangeListener::element& element) {
+  [[maybe_unused]] std::lock_guard<std::recursive_mutex> guard(mMutex);
+  auto it =
+      std::find_if(mChannelNames.begin(), mChannelNames.end(),
+                   [search = QString(element.getConnectionName().c_str())](
+                       auto const& name) { return name.name == search; });
   if (mChannelNames.end() != it) {
     int dst = static_cast<int>(std::distance(mChannelNames.begin(), it));
-    it->status = obj.getStatus();
-    it->message = obj.getMessage().c_str();
-    it->connectionType = obj.getType();
+    it->connectionType = element.getType();
     emit dataChanged(createIndex(dst, 0), createIndex(dst, 0));
   }
 }
 
-void ChannelsListModel::removed(const ChangeWatcher::element& obj) {
-  std::lock_guard<std::recursive_mutex> guard(mMutex);
-  auto it = std::find_if(mChannelNames.begin(), mChannelNames.end(),
-                         [search = QString(obj.getConnectionName().c_str())](
-                             auto const& name) { return name.name == search; });
+void ChannelsListModel::removed(const ChangeListener::element& element) {
+  [[maybe_unused]] std::lock_guard<std::recursive_mutex> guard(mMutex);
+  auto it =
+      std::find_if(mChannelNames.begin(), mChannelNames.end(),
+                   [search = QString(element.getConnectionName().c_str())](
+                       auto const& name) { return name.name == search; });
   if (mChannelNames.end() != it) {
     int dst = static_cast<int>(std::distance(mChannelNames.begin(), it));
     beginRemoveRows(QModelIndex(), dst, dst);
     mChannelNames.erase(it);
     endRemoveRows();
+  }
+}
+
+void ChannelsListModel::updateChannelStatus(Channel::ChannelStatus status,
+                                            const std::string& channelName,
+                                            const std::string& message) {
+  [[maybe_unused]] std::lock_guard<std::recursive_mutex> guard(mMutex);
+  auto it = std::find_if(mChannelNames.begin(), mChannelNames.end(),
+                         [search = QString(channelName.c_str())](
+                             auto const& name) { return name.name == search; });
+  if (mChannelNames.end() != it) {
+    int dst = static_cast<int>(std::distance(mChannelNames.begin(), it));
+    it->status = status;
+    it->message = message.c_str();
+    emit dataChanged(createIndex(dst, 0), createIndex(dst, 0));
   }
 }

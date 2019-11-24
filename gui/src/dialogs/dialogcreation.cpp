@@ -6,11 +6,14 @@
 #include <QMessageBox>
 #include <QSortFilterProxyModel>
 
+#include "gui_helpers.h"
+
 DialogCreation::DialogCreation(std::shared_ptr<ContactModel> model,
+                               std::shared_ptr<ContactStorage> storage,
                                QWidget* parent) :
     QDialog(parent),
     ui(new Ui::DialogCreation), mModel(std::move(model)),
-    mProxy(new QSortFilterProxyModel(this)) {
+    mProxy(new QSortFilterProxyModel(this)), mStorage(std::move(storage)) {
   ui->setupUi(this);
   mProxy->setSourceModel(mModel.get());
   ui->contactsView->setModel(mProxy);
@@ -28,11 +31,19 @@ void DialogCreation::on_buttonBox_accepted() {
   } else {
     try {
       auto sIndex = mProxy->mapToSource(index);
-      auto contact = mModel->getAt(sIndex);
+      auto id = mModel->getId(sIndex);
+
+      if (!id)
+        return;
+
+      auto contact = mStorage->get(id.value());
       auto res = QMessageBox::question(
           this, "Необходим выбор",
           QString("Вы действительно хотите начать диалог с ")
-              .append(to_qstring(contact)),
+              .append(make_qstring(contact.name()))
+              .append("(")
+              .append(make_qstring(contact.adress()))
+              .append(")"),
           QMessageBox::Apply | QMessageBox::Cancel);
       if (QMessageBox::Apply == res) {
         emit createNewDialog(contact);

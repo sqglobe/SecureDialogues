@@ -17,7 +17,9 @@ class LocalPeerOperations : public Decryptor, public Signer {
 
  public:
   std::string decrypt(const std::string& data) const override;
+  std::string decrypt(std::string_view data) const override;
   std::string createSign(const std::string& message) const override;
+  std::string createSign(std::string_view message) const override;
 
   void updateKey(const CryptoPP::RSA::PrivateKey& key);
 
