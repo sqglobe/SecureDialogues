@@ -7,8 +7,3 @@ target_link_libraries(TestContactChangeWatcher PRIVATE ${MY_TEST_LIBS} )
 add_executable(TestDialogChangeWatcher testdialogchangewatcher.cpp)
 add_test(NAME TestDialogChangeWatcher COMMAND TestDialogChangeWatcher)
 target_link_libraries(TestDialogChangeWatcher PRIVATE ${MY_TEST_LIBS} )
-
-add_executable(DiscoveredContactWatcherTest discoveredcontactwatchertest.cpp)
-add_test(NAME DiscoveredContactWatcherTest COMMAND DiscoveredContactWatcherTest)
-target_link_libraries(DiscoveredContactWatcherTest PRIVATE ${MY_TEST_LIBS} )
-
