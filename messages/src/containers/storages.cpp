@@ -73,3 +73,13 @@ std::shared_ptr<ConnectionStorage> make_connection_storage(
   return std::make_shared<ConnectionStorage>(
       primary, penv, ConnectionDeleter(std::move(contacts)));
 }
+
+std::string get_id(const DiscoveredContact& holder) {
+  return std::string(holder.dialog_id());
+}
+
+std::shared_ptr<DiscoveredContactStorage> make_discovered_contact_storage(
+    Db* primary,
+    DbEnv* penv) {
+  return std::make_shared<DiscoveredContactStorage>(primary, penv);
+}

@@ -15,13 +15,16 @@
 #include "persistent_storage/connectionmarshaller.h"
 #include "persistent_storage/contactmarshaller.h"
 #include "persistent_storage/dialogmarshaller.h"
+#include "persistent_storage/discoveredcontactmarshaller.h"
 #include "primitives/connectionholder.h"
 #include "primitives/contact.h"
 #include "primitives/dialog.h"
+#include "primitives/discoveredcontact.h"
 
 std::string get_id(const ConnectionHolder& holder);
 std::string get_id(const Dialog& holder);
 std::string get_id(const Contact& holder);
+std::string get_id(const DiscoveredContact& holder);
 
 // Make be better for compile time to replace using with inheritance
 // becouse class may be declared in header and defined in cpp
@@ -59,6 +62,12 @@ using ConnectionStorage =
                        prstorage::RegisterTransactionManager,
                        ConnectionDeleter>;
 
+using DiscoveredContactStorage =
+    prstorage::Storage<DiscoveredContact,
+                       DiscoveredContactMarshaller,
+                       EventListeners<DiscoveredContact>,
+                       prstorage::RegisterTransactionManager>;
+
 std::shared_ptr<DialogStorage> make_dialog_storage(Db* primary,
                                                    Db* secondary,
                                                    DbEnv* penv);
@@ -71,5 +80,9 @@ std::shared_ptr<ConnectionStorage> make_connection_storage(
     Db* primary,
     DbEnv* penv,
     std::shared_ptr<ContactStorage> contacts);
+
+std::shared_ptr<DiscoveredContactStorage> make_discovered_contact_storage(
+    Db* primary,
+    DbEnv* penv);
 
 #endif  // STORAGES_H
