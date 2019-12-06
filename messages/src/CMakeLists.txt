@@ -39,6 +39,8 @@ containers/connectstoragelistener.cpp
 
 core-initializer/chaneladapterfactory.cpp
 core-initializer/coreinitializer.cpp
+primitives/discoveredcontact.cpp
+persistent_storage/discoveredcontactmarshaller.cpp
 )
 
 
@@ -94,6 +96,8 @@ interfaces/abstractcoreinitializer.h
 
 core-initializer/chaneladapterfactory.h
 core-initializer/coreinitializer.h
+primitives/discoveredcontact.h
+persistent_storage/discoveredcontactmarshaller.h
 )
 
 add_library(messages STATIC ${SOURCES} ${HEADERS})
