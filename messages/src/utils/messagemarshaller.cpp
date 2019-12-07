@@ -12,6 +12,7 @@ const std::string ACTION_ACK = "ACK";
 const std::string ACTION_ABORT = "ABORT";
 const std::string ACTION_VERIFY_KEY = "VERIFY_KEY";
 const std::string ACTION_KEY_VERIFICATION = "KEY_VERIFICATION";
+const std::string ACTION_CONTACT_DISCOVER = "CONTACT_DISCOVER";
 
 const std::string FIELD_ACTION = "ACTION";
 const std::string FIELD_DIALOG_ID = "DIALOG";
@@ -70,7 +71,7 @@ std::optional<DialogMessage> MessageMarshaller::unmarshall(
       }
       lineNumber += 1;
     }
-  } catch (std::exception& ex) {
+  } catch (std::exception&) {
     return {};
   }
 
@@ -158,6 +159,8 @@ DialogMessage::Action MessageMarshaller::convertAction(
     return DialogMessage::Action::KEY_VERIFICATION;
   } else if (action == ACTION_VERIFY_KEY) {
     return DialogMessage::Action::VERIFY_KEY;
+  } else if (action == ACTION_CONTACT_DISCOVER) {
+    return DialogMessage::Action::CONTACT_DISCOVER;
   } else {
     throw bad_action("Undefined action " + action);
   }
@@ -181,6 +184,8 @@ std::string MessageMarshaller::convertAction(DialogMessage::Action action) {
     return ACTION_KEY_VERIFICATION;
   } else if (Action::VERIFY_KEY == action) {
     return ACTION_VERIFY_KEY;
+  } else if (Action::CONTACT_DISCOVER == action) {
+    return ACTION_CONTACT_DISCOVER;
   }
   throw(std::runtime_error("Invalid action"));
 }

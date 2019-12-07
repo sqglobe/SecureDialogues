@@ -31,7 +31,8 @@ class DialogMessage {
    * на CREATE_DIALOG) CLOSE_DIALOG - отправляется, когда пользователь закрывает
    * ранее созданный диалог. CANCEL_DIALOG - отмена создания нового диалога
    * (ответ на CREATE_DIALOG) ACK - подтверждает ранее полученное сообщение
-   * Каждое сообщение отправляется в рамках диалога.
+   * CONTACT_DISCOVER - содержит имя и публичный ключ адресата, служит для
+   * упроения добавления новых контактов. Отправляется вне диалога
    */
   enum class Action {
     MESSAGE,
@@ -41,7 +42,8 @@ class DialogMessage {
     ACK,
     ABORT,
     VERIFY_KEY,
-    KEY_VERIFICATION
+    KEY_VERIFICATION,
+    CONTACT_DISCOVER
   };
   // constractors
  public:
