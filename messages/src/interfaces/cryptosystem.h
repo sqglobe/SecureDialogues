@@ -86,6 +86,12 @@ class CryptoSystem {
   virtual bool checkVerificationString(
       std::string_view dialogId,
       std::string_view message) noexcept(false) = 0;
+
+  /**
+   * @brief Экспортирует текущее значение публичного ключа пользователя
+   * @return строковое представление публичного ключа пользователя
+   */
+  virtual std::string exportPublicKey() const noexcept(false) = 0;
 };
 
 #endif  // CRYPTOSYSTEM_H

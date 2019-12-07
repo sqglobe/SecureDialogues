@@ -57,11 +57,7 @@ class CryptoSystemImpl : public CryptoSystem {
       std::string_view dialogId,
       std::string_view message) noexcept(false) override;
 
-  /**
-   * @brief Экспортирует текущее значение публичного ключа пользователя
-   * @return строковое представление публичного ключа пользователя
-   */
-  std::string exportPublicKey() const noexcept(false);
+  std::string exportPublicKey() const noexcept(false) override;
 
   /**
    * @brief Выполняет генерацию открытого и закрытого ключей пользователя

@@ -109,6 +109,7 @@ std::string CryptoSystemImpl::encryptMessageBody(std::string_view dialogId,
   if (auto iter = mCiphers.find(dialogId); iter != mCiphers.end()) {
     return iter->second.cipher->encrypt(message);
   }
+  throw std::runtime_error("Cant find dialog");
 }
 
 std::string CryptoSystemImpl::decryptMessageBody(std::string_view dialogId,
@@ -118,6 +119,7 @@ std::string CryptoSystemImpl::decryptMessageBody(std::string_view dialogId,
   if (auto iter = mCiphers.find(dialogId); iter != mCiphers.end()) {
     return iter->second.cipher->decrypt(message);
   }
+  throw std::runtime_error("Cant find dialog");
 }
 
 std::string CryptoSystemImpl::exportPublicKey() const noexcept(false) {
