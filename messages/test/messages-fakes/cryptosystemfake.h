@@ -26,6 +26,8 @@ class CryptoSystemFake : public CryptoSystem {
   bool checkVerificationString(
       std::string_view dialogId,
       std::string_view message) noexcept(false) override;
+
+  virtual std::string exportPublicKey() const noexcept(false) override;
 };
 
 inline bool CryptoSystemFake::isSignatureOk([
@@ -63,6 +65,10 @@ inline std::string CryptoSystemFake::importKey(std::string_view,
 inline bool CryptoSystemFake::checkVerificationString(std::string_view,
                                                       std::string_view) {
   return true;
+}
+
+std::string CryptoSystemFake::exportPublicKey() const {
+  return "public key 1";
 }
 
 #endif  // CRYPTOSYSTEMFAKE_H

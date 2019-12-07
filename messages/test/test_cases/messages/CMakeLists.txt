@@ -26,3 +26,7 @@ target_link_libraries(TestMessageDispatchTest PRIVATE ${MY_TEST_LIBS} )
 add_executable(TestSignVerification testsignverification.cpp)
 add_test(NAME TestSignVerification COMMAND TestSignVerification)
 target_link_libraries(TestSignVerification PRIVATE ${MY_TEST_LIBS} )
+
+add_executable(DiscoverContactAgentTest discovercontactagenttest.cpp)
+add_test(NAME DiscoverContactAgentTest COMMAND DiscoverContactAgentTest)
+target_link_libraries(DiscoverContactAgentTest PRIVATE ${MY_TEST_LIBS} )
