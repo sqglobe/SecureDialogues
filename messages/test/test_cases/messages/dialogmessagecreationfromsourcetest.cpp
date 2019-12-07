@@ -63,7 +63,6 @@ void DialogMessageCreationFromSourceTest::testDialogCreatedOk() {
   auto marshaller = MessageMarshaller();
 
   auto message = marshaller.unmarshall(check, "test");
-  auto str = message->content();
   QVERIFY(message);
   QCOMPARE(message->action(), action);
   QCOMPARE(message->content(), std::string_view(content));
