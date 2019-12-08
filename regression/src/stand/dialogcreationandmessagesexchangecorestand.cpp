@@ -6,6 +6,7 @@
 #include <db_cxx.h>
 
 #include "cryptosystemfake.h"
+#include "despatcherrorsinkfake.h"
 #include "fakenotifier.h"
 
 #include "utils/systemmessagegenerator.h"
@@ -33,8 +34,8 @@ DialogCreationAndMessagesExchangeCoreStand::
 
   mMessageContainer = std::make_shared<MessageContainer>();
 
-  mMessageDispatcher =
-      std::make_shared<MessageDespatcher>(cryptoSystem, notifier);
+  mMessageDispatcher = std::make_shared<MessageDespatcher>(
+      cryptoSystem, notifier, std::make_shared<DespatchErrorSinkFake>());
 
   mMessageActionHandler = std::make_shared<MessageActionHandler>(
       mDialogStorage, mContactStorage, mMessageContainer, mMessageDispatcher,

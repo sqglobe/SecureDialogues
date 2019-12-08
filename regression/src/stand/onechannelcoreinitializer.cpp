@@ -9,7 +9,9 @@
 
 #include "asymetrical/asymetricalkeygenerator.h"
 #include "asymetrical/asymetricalkeystore.h"
+#include "communication/despatcherrorssink.h"
 #include "communication/dialogactionhandler.h"
+#include "communication/discovercontactagent.h"
 #include "communication/messageactionhandler.h"
 #include "communication/messagedespatcher.h"
 #include "containers/messagecontainer.h"
@@ -78,14 +80,17 @@ OneChannelCoreInitializer::OneChannelCoreInitializer(
   mConnectionStorage = make_connection_storage(
       make_db("connections.db", "primary", penv), penv, mContactStorage);
   mCryptoSystemImpl = std::make_shared<FakeCryptoSystemImpl>();
+  mDiscoveredContactStorage = make_discovered_contact_storage(
+      make_db("discover_contacts.db", "primary", penv), penv);
 }
 
 void OneChannelCoreInitializer::init(
     const std::shared_ptr<AbstractUserNotifier>& notifier) {
   mMessageContainer = std::make_shared<MessageContainer>();
   auto cryptoSystem = std::make_shared<CryptoSystemFake>();
-  mMessageDispatcher =
-      std::make_shared<MessageDespatcher>(cryptoSystem, notifier);
+  mMessageDispatcher = std::make_shared<MessageDespatcher>(
+      cryptoSystem, notifier,
+      std::make_shared<DespatchErrorsSink>(mDiscoveredContactStorage));
 
   mMessageActionHandler = std::make_shared<MessageActionHandler>(
       mDialogStorage, mContactStorage, mMessageContainer, mMessageDispatcher,
@@ -99,6 +104,8 @@ void OneChannelCoreInitializer::init(
 
   mDialogStorage->appendPermanentListener(
       std::make_shared<SystemMessageGenerator>(mMessageContainer));
+  mDiscoverContactAgent = std::make_shared<DiscoverContactAgent>(
+      mCryptoSystemImpl, mMessageDispatcher);
 }
 
 void OneChannelCoreInitializer::saveFiles() {}
@@ -142,6 +149,16 @@ OneChannelCoreInitializer::getMessageActionHandler() const {
 std::shared_ptr<MessageContainer>
 OneChannelCoreInitializer::getMessageContainer() const {
   return mMessageContainer;
+}
+
+std::shared_ptr<DiscoverContactAgent>
+OneChannelCoreInitializer::getDiscoverContactAgent() const {
+  return mDiscoverContactAgent;
+}
+
+std::shared_ptr<DiscoveredContactStorage>
+OneChannelCoreInitializer::getDiscoveredContactStorage() const {
+  return mDiscoveredContactStorage;
 }
 
 std::pair<QueuedActionsChannelAdapter*, int>

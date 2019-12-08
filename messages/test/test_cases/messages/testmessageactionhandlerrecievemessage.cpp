@@ -23,6 +23,7 @@
 #include <thread>
 
 #include "containers/storages.h"
+#include "despatcherrorsinkfake.h"
 #include "utils/dbfactory.h"
 
 Q_DECLARE_METATYPE(std::string);
@@ -58,7 +59,8 @@ TestMessageActionHandlerRecieveMessage::TestMessageActionHandlerRecieveMessage(
     QObject(parent) {
   dbstl::dbstl_startup();
   mMessageDispatcher = std::make_shared<MessageDespatcher>(
-      std::make_shared<CryptoSystemFake>(), std::make_shared<FakeNotifier>());
+      std::make_shared<CryptoSystemFake>(), std::make_shared<FakeNotifier>(),
+      std::make_shared<DespatchErrorSinkFake>());
 
   mFakeMessageContHandler =
       std::make_shared<FakeMessageContainerHandlerOnlyMesssageAdded>();

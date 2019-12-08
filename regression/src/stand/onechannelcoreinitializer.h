@@ -35,6 +35,10 @@ class OneChannelCoreInitializer : public AbstractCoreInitializer {
   std::shared_ptr<MessageActionHandler> getMessageActionHandler()
       const override;
   std::shared_ptr<MessageContainer> getMessageContainer() const override;
+  virtual std::shared_ptr<DiscoverContactAgent> getDiscoverContactAgent()
+      const override;
+  virtual std::shared_ptr<DiscoveredContactStorage>
+  getDiscoveredContactStorage() const override;
 
  public:
   std::pair<QueuedActionsChannelAdapter*, int> make_dialog(
@@ -54,6 +58,8 @@ class OneChannelCoreInitializer : public AbstractCoreInitializer {
   std::shared_ptr<MessageActionHandler> mMessageActionHandler;
   std::shared_ptr<DialogActionHandler> mDialogActionHandler;
   std::shared_ptr<CryptoSystemImpl> mCryptoSystemImpl;
+  std::shared_ptr<DiscoveredContactStorage> mDiscoveredContactStorage;
+  std::shared_ptr<DiscoverContactAgent> mDiscoverContactAgent;
 };
 
 void OneChannelCoreInitializer::fill() {

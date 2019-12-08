@@ -42,6 +42,7 @@ core-initializer/coreinitializer.cpp
 primitives/discoveredcontact.cpp
 persistent_storage/discoveredcontactmarshaller.cpp
 communication/discovercontactagent.cpp
+communication/despatcherrorssink.cpp
 )
 
 
@@ -100,6 +101,8 @@ core-initializer/coreinitializer.h
 primitives/discoveredcontact.h
 persistent_storage/discoveredcontactmarshaller.h
 communication/discovercontactagent.h
+interfaces/abstractdespatcherrorssink.h
+communication/despatcherrorssink.h
 )
 
 add_library(messages STATIC ${SOURCES} ${HEADERS})

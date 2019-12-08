@@ -17,6 +17,7 @@
 #include "utils/messagemarshaller.h"
 
 #include "cryptosystemfake.h"
+#include "despatcherrorsinkfake.h"
 #include "fakenotifier.h"
 #include "utils.h"
 
@@ -42,7 +43,8 @@ void TestMessageDispatchTest::testDispatchMessageForActionMessage() {
   QFETCH(std::string, content);
   QFETCH(std::string, check);
   std::shared_ptr<MessageDespatcher> dsp(new MessageDespatcher(
-      std::make_shared<CryptoSystemFake>(), std::make_shared<FakeNotifier>()));
+      std::make_shared<CryptoSystemFake>(), std::make_shared<FakeNotifier>(),
+      std::make_shared<DespatchErrorSinkFake>()));
 
   DialogMessage notUsedDialog(DialogMessage::Action::ACCEPT_DIALOG, "FAKE",
                               "FAKE_ID", "non");

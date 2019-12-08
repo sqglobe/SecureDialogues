@@ -10,6 +10,7 @@ class CryptoSystemImpl;
 class DialogActionHandler;
 class MessageActionHandler;
 class MessageContainer;
+class DiscoverContactAgent;
 
 class AbstractCoreInitializer {
  public:
@@ -32,6 +33,10 @@ class AbstractCoreInitializer {
   virtual std::shared_ptr<MessageActionHandler> getMessageActionHandler()
       const = 0;
   virtual std::shared_ptr<MessageContainer> getMessageContainer() const = 0;
+  virtual std::shared_ptr<DiscoverContactAgent> getDiscoverContactAgent()
+      const = 0;
+  virtual std::shared_ptr<DiscoveredContactStorage>
+  getDiscoveredContactStorage() const = 0;
 };
 
 #endif  // ABSTRACTCOREINITIALIZER_H

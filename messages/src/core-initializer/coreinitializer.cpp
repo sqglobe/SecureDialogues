@@ -33,6 +33,9 @@
 
 #include "utils/dbfactory.h"
 
+#include "communication/despatcherrorssink.h"
+#include "communication/discovercontactagent.h"
+
 static const std::string FILE_KEY = "conf/keys";
 
 std::shared_ptr<AsymetricalKeyStore> loadKeys(
@@ -69,8 +72,9 @@ CoreInitializer::CoreInitializer(const std::string& pass) :
 
 void CoreInitializer::init(
     const std::shared_ptr<AbstractUserNotifier>& notifier) {
-  mMessageDispatcher =
-      std::make_shared<MessageDespatcher>(mCryptoSystem, notifier);
+  mMessageDispatcher = std::make_shared<MessageDespatcher>(
+      mCryptoSystem, notifier,
+      std::make_shared<DespatchErrorsSink>(mDiscoveredContactStorage));
 
   mMessageActionHandler = std::make_shared<MessageActionHandler>(
       mDialogStorage, mContactStorage, mMessageContainer, mMessageDispatcher,
@@ -81,6 +85,9 @@ void CoreInitializer::init(
 
   mMessageDispatcher->add(mMessageActionHandler);
   mMessageDispatcher->add(mDialogActionHandler);
+
+  mDiscoverContactAgent =
+      std::make_shared<DiscoverContactAgent>(mCryptoSystem, mMessageDispatcher);
 
   mContactStorage->appendPermanentListener(
       std::make_shared<CryptoSystemContactUpdateInformator>(mCryptoSystem));
@@ -138,6 +145,16 @@ void CoreInitializer::saveFiles() {
   saveKeys(FILE_KEY, mAsymetricalKeyStore, mPassCipher);
 }
 
+std::shared_ptr<DiscoverContactAgent> CoreInitializer::getDiscoverContactAgent()
+    const {
+  return mDiscoverContactAgent;
+}
+
+std::shared_ptr<DiscoveredContactStorage>
+CoreInitializer::getDiscoveredContactStorage() const {
+  return mDiscoveredContactStorage;
+}
+
 void CoreInitializer::initDatabases(const std::string& pass) {
   auto penv = make_db_env("conf", pass);
 
@@ -149,4 +166,7 @@ void CoreInitializer::initDatabases(const std::string& pass) {
       make_db("contacts.db", "secondary", penv, DB_DUP), penv, mDialogStorage);
   mConnectionStorage = make_connection_storage(
       make_db("connections.db", "primary", penv), penv, mContactStorage);
+
+  mDiscoveredContactStorage = make_discovered_contact_storage(
+      make_db("discover_contacts.db", "primary", penv), penv);
 }

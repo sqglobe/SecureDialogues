@@ -18,12 +18,14 @@
 
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <iostream>
+#include "interfaces/abstractdespatcherrorssink.h"
 
 MessageDespatcher::MessageDespatcher(
     std::shared_ptr<const CryptoSystem> cryptoSystem,
-    std::shared_ptr<AbstractUserNotifier> notifier) :
+    std::shared_ptr<AbstractUserNotifier> notifier,
+    std::shared_ptr<AbstractDespatchErrorsSink> errorSink) :
     mCryptoSystem(std::move(cryptoSystem)),
-    mNotifier(std::move(notifier)),
+    mNotifier(std::move(notifier)), mErrorSink(errorSink),
     mRepo(TimeoutedRrepository<std::shared_ptr<DeliveryHandler>,
                                std::pair<std::string, unsigned long> >::
               make(std::chrono::seconds(WAIT_ACK),
@@ -44,16 +46,10 @@ void MessageDespatcher::dispatch(DialogMessage&& message,
     }
   } else {
     sendAck(message, channelName);
-    if (!isSignatureValid(message)) {
-      spdlog::get("root_logger")
-          ->error(
-              "Get invalid message signature for message {0} for address {1} "
-              "channel {2}",
-              message.content(), message.adress(), channelName);
+    if (!isSignatureValid(message, channelName)) {
+      mErrorSink->error(DespatchError::SignatureBroken, message, channelName);
     } else if (get_timestamp() - message.timestamp() > MAX_TIMESTAMP_DIFF) {
-      spdlog::get("root_logger")
-          ->error("Get old message {0} for address {1} channel {2}",
-                  message.content(), message.adress(), channelName);
+      mErrorSink->error(DespatchError::MessageExpired, message, channelName);
     } else {
       std::shared_lock<std::shared_mutex> guard(mMutex);
       for (auto& handler : mHandlers) {
@@ -140,26 +136,17 @@ void MessageDespatcher::sendAck(const DialogMessage& message,
   }
 }
 
-bool MessageDespatcher::isSignatureValid(const DialogMessage& message) const
+bool MessageDespatcher::isSignatureValid(const DialogMessage& message,
+                                         const std::string& channelName) const
     noexcept {
   try {
     if (mCryptoSystem->isSignatureOk(message)) {
       return true;
     }
-    spdlog::get("root_logger")
-        ->error(
-            "Подпись для адреса {0} не верна. Возможно публичный ключ "
-            "изменился "
-            "или это является следствием атаки",
-            message.adress());
   } catch (std::range_error&) {
-    spdlog::get("root_logger")
-        ->error("Не найден публичный ключ для пользователя {0} ",
-                message.adress());
-  } catch (std::exception& ex) {
-    spdlog::get("root_logger")
-        ->error("при проверки подписи сообщения от {0} произошла ошибка {1}",
-                message.adress(), ex.what());
+    mErrorSink->error(DespatchError::ContactNotFound, message, channelName);
+  } catch (std::exception&) {
+    mErrorSink->error(DespatchError::ExceptionThrown, message, channelName);
   }
   return false;
 }
