@@ -15,6 +15,7 @@ class CryptoSystem;
 class AbstractUserNotifier;
 template <typename T, typename K>
 class TimeoutedRrepository;
+class AbstractDespatchErrorsSink;
 
 namespace spdlog {
 class logger;
@@ -31,7 +32,8 @@ class logger;
 class MessageDespatcher : public AbstractMessageDespatcher {
  public:
   MessageDespatcher(std::shared_ptr<const CryptoSystem> cryptoSystem,
-                    std::shared_ptr<AbstractUserNotifier> notifier);
+                    std::shared_ptr<AbstractUserNotifier> notifier,
+                    std::shared_ptr<AbstractDespatchErrorsSink> errorSink);
 
  public:
   /**
@@ -108,7 +110,8 @@ class MessageDespatcher : public AbstractMessageDespatcher {
 
  private:
   void sendAck(const DialogMessage& message, const std::string& channel);
-  bool isSignatureValid(const DialogMessage& message) const noexcept;
+  bool isSignatureValid(const DialogMessage& message,
+                        const std::string& channelName) const noexcept;
 
  private:
   std::vector<std::shared_ptr<AbstractMessageHandler>> mHandlers;
@@ -116,6 +119,7 @@ class MessageDespatcher : public AbstractMessageDespatcher {
   mutable std::shared_mutex mMutex;
   std::shared_ptr<const CryptoSystem> mCryptoSystem;
   std::shared_ptr<AbstractUserNotifier> mNotifier;
+  std::shared_ptr<AbstractDespatchErrorsSink> mErrorSink;
 
   mutable std::shared_ptr<
       TimeoutedRrepository<std::shared_ptr<DeliveryHandler>,

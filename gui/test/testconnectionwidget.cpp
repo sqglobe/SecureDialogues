@@ -24,6 +24,7 @@
 
 #include <db_cxx.h>
 #include "containers/storages.h"
+#include "despatcherrorsinkfake.h"
 #include "utils/dbfactory.h"
 
 Q_DECLARE_METATYPE(std::string)
@@ -95,7 +96,8 @@ void TestConnectionWidget::cleanupTestCase() {
 void TestConnectionWidget::init() {
   primary->truncate(nullptr, nullptr, 0);
   auto messageDispatcher = std::make_shared<MessageDespatcher>(
-      std::make_shared<CryptoSystemFake>(), std::make_shared<FakeNotifier>());
+      std::make_shared<CryptoSystemFake>(), std::make_shared<FakeNotifier>(),
+      std::make_shared<DespatchErrorSinkFake>());
   mContainer->add(ConnectionHolder(
       GmailConnection{"test1@gmail.com", "09asdkvju"}, "conn 1"));
   mContainer->add(ConnectionHolder(

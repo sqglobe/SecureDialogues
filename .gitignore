@@ -1,6 +1,7 @@
 *.pro.user
 build-*/
 *.txt.user
+*.txt.user.*
 submodules/cryptopp/*
 docker/releases
 CMakeLists.txt.user.4.8-pre1

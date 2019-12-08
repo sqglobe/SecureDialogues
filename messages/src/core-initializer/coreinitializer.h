@@ -22,6 +22,7 @@ class Decryptor;
 class Encryptor;
 class SymetricalCipher;
 class EventQueueHolder;
+class AbstractDespatchErrorsSink;
 
 class CoreInitializer : public AbstractCoreInitializer {
  public:
@@ -45,6 +46,10 @@ class CoreInitializer : public AbstractCoreInitializer {
       const std::shared_ptr<AbstractUserNotifier>& notifier,
       const std::shared_ptr<Channel::EventQueue>& eventQueue) override;
   void saveFiles() override;
+  virtual std::shared_ptr<DiscoverContactAgent> getDiscoverContactAgent()
+      const override;
+  virtual std::shared_ptr<DiscoveredContactStorage>
+  getDiscoveredContactStorage() const override;
 
  private:
   void initDatabases(const std::string& pass);
@@ -61,6 +66,8 @@ class CoreInitializer : public AbstractCoreInitializer {
   std::shared_ptr<MessageActionHandler> mMessageActionHandler;
   std::shared_ptr<DialogActionHandler> mDialogActionHandler;
   std::shared_ptr<const SymetricalCipher> mPassCipher;
+  std::shared_ptr<DiscoveredContactStorage> mDiscoveredContactStorage;
+  std::shared_ptr<DiscoverContactAgent> mDiscoverContactAgent;
 };
 
 #endif  // COREINITIALIZER_H

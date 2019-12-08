@@ -11,8 +11,8 @@
 #include <db_cxx.h>
 #include <memory>
 #include "containers/storages.h"
+#include "despatcherrorsinkfake.h"
 #include "utils/dbfactory.h"
-
 class TestChannelListModel : public QObject {
   Q_OBJECT
  public:
@@ -65,7 +65,8 @@ void TestChannelListModel::cleanupTestCase() {
 void TestChannelListModel::init() {
   primary->truncate(nullptr, nullptr, 0);
   auto messageDispatcher = std::make_shared<MessageDespatcher>(
-      std::make_shared<CryptoSystemFake>(), std::make_shared<FakeNotifier>());
+      std::make_shared<CryptoSystemFake>(), std::make_shared<FakeNotifier>(),
+      std::make_shared<DespatchErrorSinkFake>());
 
   mContainer->add(ConnectionHolder(UdpConnection{}, "conn 1"));
   mContainer->add(ConnectionHolder(UdpConnection{}, "conn 2"));

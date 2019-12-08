@@ -22,6 +22,7 @@ set(HEADERS
     faketemplatechangewatcher.h
     fakeuserask.h
     cryptosystemfake.h
+    despatcherrorsinkfake.h
 )
 
 
