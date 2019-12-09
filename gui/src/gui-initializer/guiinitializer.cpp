@@ -21,6 +21,8 @@
 #include "wrappers/messagehandlerwrapper.h"
 
 #include <QListView>
+#include "containers/storages.h"
+#include "dialogs/contactdiscoverdialog.h"
 #include "dialogs/publickeydialog.h"
 #include "models/active-dialog-messages/activedialogmessagemodel.h"
 #include "models/active-dialog-messages/usermessagemodeldelegate.h"
@@ -28,8 +30,6 @@
 #include "models/dialogs-list/dialogusermodel.h"
 #include "widgets/dialogactionmenu.h"
 #include "wrappers/dialoguserviewwrapper.h"
-
-#include "containers/storages.h"
 
 /// dialogsViews
 GuiInitializer::GuiInitializer(
@@ -46,18 +46,7 @@ GuiInitializer::GuiInitializer(
     mDialogCreation(make_creation_dialog(coreInit->getContactStorage()))
 
 {
-  auto* pubDialog = new PublicKeyDialog(coreInit->getCryptoSystem(),
-                                        userNotifier, userAsk, parent);
-  QObject::connect(parent->findChild<QCommandLinkButton*>("connectionButton"),
-                   &QCommandLinkButton::pressed, mChannelSettingsDialog.get(),
-                   &BaseSettingsDialog::show);
-  QObject::connect(parent->findChild<QCommandLinkButton*>("contactBurtton"),
-                   &QCommandLinkButton::pressed, mContactsSettingsDialog.get(),
-                   &BaseSettingsDialog::show);
-
-  QObject::connect(parent->findChild<QCommandLinkButton*>("publicKeyButton"),
-                   &QCommandLinkButton::pressed, pubDialog,
-                   &PublicKeyDialog::show);
+  initSimpleDialogs(parent, coreInit, userAsk, userNotifier, eventQueue);
 
   auto messageWorkThread = new QThread(parent);
 
@@ -148,4 +137,31 @@ void GuiInitializer::initDialogWrapper(
                    &DialogActionHandlerWrapper::closeDialogAction);
   QObject::connect(dialogMenu, &DialogActionMenu::removeDialog, dialogWraper,
                    &DialogActionHandlerWrapper::removeDialogAction);
+}
+
+void GuiInitializer::initSimpleDialogs(
+    MainWindow* parent,
+    const std::shared_ptr<AbstractCoreInitializer>& coreInit,
+    const std::shared_ptr<AbstractUserAsk>& userAsk,
+    const std::shared_ptr<AbstractUserNotifier>& userNotifier,
+    const std::shared_ptr<Channel::EventQueue>& eventQueue) {
+  auto* pubDialog = new PublicKeyDialog(coreInit->getCryptoSystem(),
+                                        userNotifier, userAsk, parent);
+  QObject::connect(parent->findChild<QCommandLinkButton*>("connectionButton"),
+                   &QCommandLinkButton::pressed, mChannelSettingsDialog.get(),
+                   &BaseSettingsDialog::show);
+  QObject::connect(parent->findChild<QCommandLinkButton*>("contactBurtton"),
+                   &QCommandLinkButton::pressed, mContactsSettingsDialog.get(),
+                   &BaseSettingsDialog::show);
+
+  QObject::connect(parent->findChild<QCommandLinkButton*>("publicKeyButton"),
+                   &QCommandLinkButton::pressed, pubDialog,
+                   &PublicKeyDialog::show);
+
+  auto discoverDialog = make_discover_dialog(
+      coreInit->getConnectionStorage(), coreInit->getDiscoverContactAgent(),
+      userNotifier, eventQueue, parent);
+  QObject::connect(parent->findChild<QPushButton*>("makeContact"),
+                   &QCommandLinkButton::pressed, discoverDialog,
+                   &PublicKeyDialog::show);
 }
