@@ -116,4 +116,6 @@ void ConnectionHolder::setConnection(const C& conn) {
   mData = conn;
 }
 
+bool is_address_valid(const char* address, ConnectionType type);
+
 #endif  // CONNECTIONHOLDER_H
