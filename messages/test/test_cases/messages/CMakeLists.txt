@@ -30,3 +30,9 @@ target_link_libraries(TestSignVerification PRIVATE ${MY_TEST_LIBS} )
 add_executable(DiscoverContactAgentTest discovercontactagenttest.cpp)
 add_test(NAME DiscoverContactAgentTest COMMAND DiscoverContactAgentTest)
 target_link_libraries(DiscoverContactAgentTest PRIVATE ${MY_TEST_LIBS} )
+
+
+add_executable(AddressValidationTest addressvalidationtest.cpp)
+add_test(NAME AddressValidationTest COMMAND AddressValidationTest)
+target_link_libraries(AddressValidationTest PRIVATE ${MY_TEST_LIBS} )
+

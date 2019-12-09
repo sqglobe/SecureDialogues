@@ -88,19 +88,15 @@ Contact ContactWidget::getElement() {
       checks.emplace_back(
           "Поле 'Адрес' должно содержать vk id (например 123451) или ссылку на "
           "страницу пользователя",
-          [userAddressText]() -> bool {
-            QRegExp re("^(https://vk.com/id|id)?\\d+$");
-            return !userAddressText.isEmpty() &&
-                   re.indexIn(userAddressText) != -1;
+          [userAddressText, type = item.connectionType]() -> bool {
+            return is_address_valid(userAddressText.toUtf8().constData(), type);
           });
     } else if (item.connectionType == ConnectionType::GMAIL ||
                item.connectionType == ConnectionType::EMAIL) {
       checks.emplace_back(
-          "Поле 'Адрес' должно содержать e-mail", [userAddressText]() -> bool {
-            QRegExp re(
-                "^(\\S+)@([a-z0-9-]+)(\\.)([a-z]{2,4})(\\.?)([a-z]{0,4})+$");
-            return !userAddressText.isEmpty() &&
-                   re.indexIn(userAddressText) != -1;
+          "Поле 'Адрес' должно содержать e-mail",
+          [userAddressText, type = item.connectionType]() -> bool {
+            return is_address_valid(userAddressText.toUtf8().constData(), type);
           });
     }
   }
