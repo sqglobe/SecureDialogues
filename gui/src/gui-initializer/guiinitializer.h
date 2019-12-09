@@ -32,6 +32,12 @@ class GuiInitializer {
       MainWindow* parent,
       const std::shared_ptr<AbstractUserNotifier>& userNotifier,
       QThread* messageThread);
+  void initSimpleDialogs(
+      MainWindow* parent,
+      const std::shared_ptr<AbstractCoreInitializer>& coreInit,
+      const std::shared_ptr<AbstractUserAsk>& userAsk,
+      const std::shared_ptr<AbstractUserNotifier>& userNotifier,
+      const std::shared_ptr<Channel::EventQueue>& eventQueue);
 
  private:
   std::shared_ptr<BaseSettingsDialog> mChannelSettingsDialog;

@@ -30,6 +30,7 @@ set(GUI_MODULE_SOURCES
     gui-initializer/guiinitializer.cpp
     models/contactmodel.cpp
     mainwindow.cpp
+    dialogs/contactdiscoverdialog.cpp
 )
 
 set(GUI_MODULE_HEADERS
@@ -65,6 +66,7 @@ set(GUI_MODULE_HEADERS
     gui-initializer/eventqueueholder.h
     gui-initializer/guiinitializer.h
     mainwindow.h
+    dialogs/contactdiscoverdialog.h
 )
 
 set(GUI_UI
@@ -74,6 +76,7 @@ set(GUI_UI
     dialogs/dialogcreation.ui
     dialogs/publickeydialog.ui
     mainwindow.ui
+    dialogs/contactdiscoverdialog.ui
 )
 
 set(
@@ -94,6 +97,7 @@ set(
   models/connectioninfomodel.h
   dialogs/publickeydialog.h
   mainwindow.h
+  dialogs/contactdiscoverdialog.h
 )
 
 qt5_wrap_cpp(WRAP_MOC_GUI ${GUI_MOC})

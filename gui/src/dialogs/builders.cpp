@@ -15,7 +15,9 @@
 #include "connectioninfogasket.h"
 #include "contactgasket.h"
 
+#include "communication/discovercontactagent.h"
 #include "dialogcreation.h"
+#include "dialogs/contactdiscoverdialog.h"
 
 #include <persistent-storage/watchers/enqueuedevents.h>
 #include <persistent-storage/watchers/eventlistenerholder.h>
@@ -141,4 +143,32 @@ std::shared_ptr<DialogCreation> make_creation_dialog(
   contact->appendListener(contactModel);
   auto dialog = std::make_shared<DialogCreation>(contactModel, contact);
   return dialog;
+}
+
+ContactDiscoverDialog* make_discover_dialog(
+    const std::shared_ptr<ConnectionStorage>& connInfo,
+    std::shared_ptr<DiscoverContactAgent> agent,
+    std::shared_ptr<AbstractUserNotifier> notifier,
+    const std::shared_ptr<Channel::EventQueue>& queue,
+    QWidget* parent) {
+  auto channelList =
+      std::make_shared<ChannelsListModel>(connInfo->getAllElements());
+  auto channelEventListener = [channelList](
+                                  Channel::ChannelStatus newStatus,
+                                  const std::string& channelName,
+                                  const std::string& message) mutable {
+    channelList->updateChannelStatus(newStatus, channelName, message);
+  };
+
+  queue->appendListener(Channel::ChannelStatus::CONNECTED,
+                        channelEventListener);
+  queue->appendListener(Channel::ChannelStatus::FAILED_CONNECT,
+                        channelEventListener);
+  queue->appendListener(Channel::ChannelStatus::AUTHORIZATION_FAILED,
+                        channelEventListener);
+
+  connInfo->appendListener(channelList);
+
+  return new ContactDiscoverDialog(std::move(channelList), std::move(agent),
+                                   std::move(notifier), parent);
 }

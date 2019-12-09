@@ -12,6 +12,10 @@
 
 class BaseSettingsDialog;
 class DialogCreation;
+class ContactDiscoverDialog;
+class DiscoverContactAgent;
+class AbstractUserNotifier;
+class QWidget;
 
 /**
  * @brief Создает диалог для создания, удаления и редактирования контактов
@@ -44,5 +48,12 @@ std::shared_ptr<BaseSettingsDialog> make_dialog(
  */
 std::shared_ptr<DialogCreation> make_creation_dialog(
     const std::shared_ptr<ContactStorage>& contact);
+
+ContactDiscoverDialog* make_discover_dialog(
+    const std::shared_ptr<ConnectionStorage>& connInfo,
+    std::shared_ptr<DiscoverContactAgent> agent,
+    std::shared_ptr<AbstractUserNotifier> notifier,
+    const std::shared_ptr<Channel::EventQueue>& queue,
+    QWidget* parent);
 
 #endif  // BUILDERS_H
