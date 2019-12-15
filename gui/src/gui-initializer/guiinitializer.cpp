@@ -24,12 +24,16 @@
 #include "containers/storages.h"
 #include "dialogs/contactdiscoverdialog.h"
 #include "dialogs/publickeydialog.h"
+#include "dialogs/recieveddiscoveredcontactsdialog.h"
 #include "models/active-dialog-messages/activedialogmessagemodel.h"
 #include "models/active-dialog-messages/usermessagemodeldelegate.h"
 #include "models/dialogs-list/dialoginfodelegate.h"
 #include "models/dialogs-list/dialogusermodel.h"
+#include "models/discovered-contacts/discoveredcontactmodel.h"
 #include "widgets/dialogactionmenu.h"
+#include "widgets/recievedcontactsmenu.h"
 #include "wrappers/dialoguserviewwrapper.h"
+#include "wrappers/recievedcontactsstoragewrapper.h"
 
 /// dialogsViews
 GuiInitializer::GuiInitializer(
@@ -43,9 +47,17 @@ GuiInitializer::GuiInitializer(
     mContactsSettingsDialog(make_dialog(coreInit->getContactStorage(),
                                         coreInit->getConnectionStorage(),
                                         eventQueue)),
-    mDialogCreation(make_creation_dialog(coreInit->getContactStorage()))
+    mDialogCreation(make_creation_dialog(coreInit->getContactStorage())),
+    mDiscoveredContactModel(std::make_shared<DiscoveredContactModel>(
+        coreInit->getDiscoveredContactStorage()->getAllElements())),
+    mRecievedContactsStorageWrapper(
+        std::make_shared<RecievedContactsStorageWrapper>(
+            coreInit->getDiscoveredContactStorage(),
+            coreInit->getContactStorage()))
 
 {
+  coreInit->getDiscoveredContactStorage()->appendPermanentListener(
+      mDiscoveredContactModel);
   initSimpleDialogs(parent, coreInit, userAsk, userNotifier, eventQueue);
 
   auto messageWorkThread = new QThread(parent);
@@ -164,4 +176,20 @@ void GuiInitializer::initSimpleDialogs(
   QObject::connect(parent->findChild<QPushButton*>("makeContact"),
                    &QCommandLinkButton::pressed, discoverDialog,
                    &PublicKeyDialog::show);
+
+  auto* recievedDialog = new RecievedDiscoveredContactsDialog(
+      mDiscoveredContactModel.get(), mRecievedContactsStorageWrapper, parent);
+
+  QObject::connect(
+      parent->findChild<QCommandLinkButton*>("openRecievedContacts"),
+      &QCommandLinkButton::pressed, recievedDialog, &BaseSettingsDialog::show);
+
+  auto* menu = new RecievedContactsMenu(recievedDialog);
+
+  QObject::connect(recievedDialog,
+                   &RecievedDiscoveredContactsDialog::showDialogMenu, menu,
+                   &RecievedContactsMenu::showMenuAtPos);
+  QObject::connect(menu, &RecievedContactsMenu::removeRecievedContact,
+                   recievedDialog,
+                   &RecievedDiscoveredContactsDialog::removeRecievedContact);
 }

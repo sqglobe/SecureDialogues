@@ -29,9 +29,8 @@ void DialogActionMenu::removeAction() {
 }
 
 void DialogActionMenu::showMenuAtPos(QPoint pos,
-                                     Dialog::Status status,
+                                     Dialog::Status /*status*/,
                                      std::string dialogId) {
-  using S = Dialog::Status;
   mMenu->clear();
   QAction* act;
   mDialogId = dialogId;
