@@ -31,6 +31,10 @@ set(GUI_MODULE_SOURCES
     models/contactmodel.cpp
     mainwindow.cpp
     dialogs/contactdiscoverdialog.cpp
+    models/discovered-contacts/discoveredcontactmodel.cpp
+    dialogs/recieveddiscoveredcontactsdialog.cpp
+    wrappers/recievedcontactsstoragewrapper.cpp
+    widgets/recievedcontactsmenu.cpp
 )
 
 set(GUI_MODULE_HEADERS
@@ -67,6 +71,10 @@ set(GUI_MODULE_HEADERS
     gui-initializer/guiinitializer.h
     mainwindow.h
     dialogs/contactdiscoverdialog.h
+    models/discovered-contacts/discoveredcontactmodel.h
+    dialogs/recieveddiscoveredcontactsdialog.h
+    wrappers/recievedcontactsstoragewrapper.h
+    widgets/recievedcontactsmenu.h
 )
 
 set(GUI_UI
@@ -77,6 +85,7 @@ set(GUI_UI
     dialogs/publickeydialog.ui
     mainwindow.ui
     dialogs/contactdiscoverdialog.ui
+    dialogs/recieveddiscoveredcontactsdialog.ui
 )
 
 set(
@@ -98,6 +107,9 @@ set(
   dialogs/publickeydialog.h
   mainwindow.h
   dialogs/contactdiscoverdialog.h
+  models/discovered-contacts/discoveredcontactmodel.h
+  dialogs/recieveddiscoveredcontactsdialog.h
+  widgets/recievedcontactsmenu.h
 )
 
 qt5_wrap_cpp(WRAP_MOC_GUI ${GUI_MOC})

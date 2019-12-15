@@ -22,6 +22,9 @@ void DespatchErrorsSink::error(DespatchError error,
       m_DiscoveredStorage->add({channel_moniker, std::string(message.adress()),
                                 publicKey, name,
                                 std::string(message.dialogId())});
+      spdlog::get("root_logger")
+          ->info("Получены контактные данные от {0} ", message.adress());
+
     } else {
       spdlog::get("root_logger")
           ->error("Не найден контакт {0} ", message.adress());
