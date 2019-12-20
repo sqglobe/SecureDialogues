@@ -35,6 +35,8 @@
 #include "wrappers/dialoguserviewwrapper.h"
 #include "wrappers/recievedcontactsstoragewrapper.h"
 
+#include "dialogs/importdiscoveredcontactdialog.h"
+
 /// dialogsViews
 GuiInitializer::GuiInitializer(
     MainWindow* parent,
@@ -192,4 +194,12 @@ void GuiInitializer::initSimpleDialogs(
   QObject::connect(menu, &RecievedContactsMenu::removeRecievedContact,
                    recievedDialog,
                    &RecievedDiscoveredContactsDialog::removeRecievedContact);
+
+  auto* importDialog = make_import_contact_dialog(
+              mRecievedContactsStorageWrapper,
+              coreInit->getConnectionStorage(),
+              eventQueue, recievedDialog);
+  QObject::connect(menu, &RecievedContactsMenu::showRecievedContact,
+                   importDialog, &ImportDiscoveredContactDialog::onShowRecievedContact);
+
 }

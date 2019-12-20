@@ -18,6 +18,8 @@
 #include "communication/discovercontactagent.h"
 #include "dialogcreation.h"
 #include "dialogs/contactdiscoverdialog.h"
+#include "wrappers/recievedcontactsstoragewrapper.h"
+#include "dialogs/importdiscoveredcontactdialog.h"
 
 #include <persistent-storage/watchers/enqueuedevents.h>
 #include <persistent-storage/watchers/eventlistenerholder.h>
@@ -171,4 +173,36 @@ ContactDiscoverDialog* make_discover_dialog(
 
   return new ContactDiscoverDialog(std::move(channelList), std::move(agent),
                                    std::move(notifier), parent);
+}
+
+ImportDiscoveredContactDialog *make_import_contact_dialog(
+        std::shared_ptr<RecievedContactsStorageWrapper> wrapper,
+        const std::shared_ptr<ConnectionStorage> &connInfo,
+        const std::shared_ptr<Channel::EventQueue> &queue,
+        QWidget *parent)
+{
+    auto channelList =
+        std::make_shared<ChannelsListModel>(connInfo->getAllElements());
+    auto channelEventListener = [channelList](
+                                    Channel::ChannelStatus newStatus,
+                                    const std::string& channelName,
+                                    const std::string& message) mutable {
+      channelList->updateChannelStatus(newStatus, channelName, message);
+    };
+
+    queue->appendListener(Channel::ChannelStatus::CONNECTED,
+                          channelEventListener);
+    queue->appendListener(Channel::ChannelStatus::FAILED_CONNECT,
+                          channelEventListener);
+    queue->appendListener(Channel::ChannelStatus::AUTHORIZATION_FAILED,
+                          channelEventListener);
+
+    connInfo->appendListener(channelList);
+
+    auto widget = std::make_shared<ContactWidget>(channelList);
+
+    return new ImportDiscoveredContactDialog(
+                std::move(widget),
+                std::move(wrapper),
+                parent);
 }
