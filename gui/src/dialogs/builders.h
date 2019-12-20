@@ -16,6 +16,8 @@ class ContactDiscoverDialog;
 class DiscoverContactAgent;
 class AbstractUserNotifier;
 class QWidget;
+class ImportDiscoveredContactDialog;
+class RecievedContactsStorageWrapper;
 
 /**
  * @brief Создает диалог для создания, удаления и редактирования контактов
@@ -55,5 +57,12 @@ ContactDiscoverDialog* make_discover_dialog(
     std::shared_ptr<AbstractUserNotifier> notifier,
     const std::shared_ptr<Channel::EventQueue>& queue,
     QWidget* parent);
+
+ImportDiscoveredContactDialog *make_import_contact_dialog(
+        std::shared_ptr<RecievedContactsStorageWrapper> wrapper,
+        const std::shared_ptr<ConnectionStorage> &connInfo,
+        const std::shared_ptr<Channel::EventQueue>& queue,
+        QWidget *parent);
+
 
 #endif  // BUILDERS_H

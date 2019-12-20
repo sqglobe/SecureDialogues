@@ -10,7 +10,8 @@ class RecievedContactsStorageWrapper {
       std::shared_ptr<ContactStorage> contactStorage);
 
  public:
-  DiscoveredContact get(const std::string& dialog_id) const;
+  DiscoveredContact getDiscoveredContact(const std::string& dialog_id) const;
+  Contact getContact(const std::string& dialog_id) const;
 
  public:
   bool removeDiscoveredContact(const std::string& dialog_id);
