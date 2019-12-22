@@ -14,6 +14,7 @@ class DialogUserViewWrapper;
 class QThread;
 class DiscoveredContactModel;
 class RecievedContactsStorageWrapper;
+class ApplicationSettingsGuard;
 
 class GuiInitializer {
  public:
@@ -49,6 +50,7 @@ class GuiInitializer {
   std::shared_ptr<DiscoveredContactModel> mDiscoveredContactModel;
   std::shared_ptr<RecievedContactsStorageWrapper>
       mRecievedContactsStorageWrapper;
+  std::shared_ptr<ApplicationSettingsGuard> mApplicationSettingsGuard;
 };
 
 #endif  // GUIINITIALIZER_H
