@@ -7,6 +7,7 @@
 #include <QInputDialog>
 #include "dialogs/userinformator.h"
 #include "wrappers/dialoguserviewwrapper.h"
+#include "wrappers/toolboxwrapper.h"
 
 enum MESSAGE_SWITCH_PAGES { OK_DIALOG_PAGE = 0, BAD_DIALOG_PAGE = 1 };
 
@@ -21,7 +22,10 @@ MainWindow::MainWindow(std::unique_ptr<AbstractCoreInitializer>&& coreInit,
   qRegisterMetaType<QVector<int>>("QVector<int>");
   qRegisterMetaType<std::string>("std::string");
   qRegisterMetaType<Contact>("Contact");
+
   ui->setupUi(this);
+
+  mToolboxWrapper = new ToolboxWrapper(ui->mainToolBar, this);
 
   mCore->init(mUserInformator);
 
@@ -36,6 +40,10 @@ MainWindow::MainWindow(std::unique_ptr<AbstractCoreInitializer>&& coreInit,
 
 MainWindow::~MainWindow() {
   delete ui;
+}
+
+ToolboxWrapper* MainWindow::getToolBoxWrapper() const {
+  return mToolboxWrapper;
 }
 
 void MainWindow::on_commandLinkButton_clicked() {

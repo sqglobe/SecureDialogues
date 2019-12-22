@@ -8,6 +8,7 @@
 
 class GuiInitializer;
 class AbstractCoreInitializer;
+class ToolboxWrapper;
 
 class UserInformator;
 
@@ -26,6 +27,9 @@ class MainWindow : public QMainWindow {
  public:
   MainWindow(const MainWindow&) = delete;
   MainWindow& operator=(const MainWindow&) = delete;
+
+ public:
+  ToolboxWrapper* getToolBoxWrapper() const;
 
  public slots:
   void on_badDialogSelected(std::string);
@@ -51,6 +55,7 @@ class MainWindow : public QMainWindow {
   std::shared_ptr<AbstractCoreInitializer> mCore;
   std::shared_ptr<GuiInitializer> mGui;
   EventQueueHolder mEventHolder;
+  ToolboxWrapper* mToolboxWrapper;
 };
 
 #endif  // MAINWINDOW_H

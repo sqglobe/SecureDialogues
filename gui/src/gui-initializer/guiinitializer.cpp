@@ -36,6 +36,7 @@
 #include "wrappers/recievedcontactsstoragewrapper.h"
 
 #include "dialogs/importdiscoveredcontactdialog.h"
+#include "wrappers/toolboxwrapper.h"
 
 /// dialogsViews
 GuiInitializer::GuiInitializer(
@@ -159,17 +160,16 @@ void GuiInitializer::initSimpleDialogs(
     const std::shared_ptr<AbstractUserAsk>& userAsk,
     const std::shared_ptr<AbstractUserNotifier>& userNotifier,
     const std::shared_ptr<Channel::EventQueue>& eventQueue) {
+  auto* toolBox = parent->getToolBoxWrapper();
   auto* pubDialog = new PublicKeyDialog(coreInit->getCryptoSystem(),
                                         userNotifier, userAsk, parent);
-  QObject::connect(parent->findChild<QCommandLinkButton*>("connectionButton"),
-                   &QCommandLinkButton::pressed, mChannelSettingsDialog.get(),
-                   &BaseSettingsDialog::show);
-  QObject::connect(parent->findChild<QCommandLinkButton*>("contactBurtton"),
-                   &QCommandLinkButton::pressed, mContactsSettingsDialog.get(),
-                   &BaseSettingsDialog::show);
+  QObject::connect(toolBox, &ToolboxWrapper::connectionSettingsOpen,
+                   mChannelSettingsDialog.get(), &BaseSettingsDialog::show);
 
-  QObject::connect(parent->findChild<QCommandLinkButton*>("publicKeyButton"),
-                   &QCommandLinkButton::pressed, pubDialog,
+  QObject::connect(toolBox, &ToolboxWrapper::contactSettingsOpen,
+                   mContactsSettingsDialog.get(), &BaseSettingsDialog::show);
+
+  QObject::connect(toolBox, &ToolboxWrapper::publicKeySettingsOpen, pubDialog,
                    &PublicKeyDialog::show);
 
   auto discoverDialog = make_discover_dialog(
@@ -182,9 +182,8 @@ void GuiInitializer::initSimpleDialogs(
   auto* recievedDialog = new RecievedDiscoveredContactsDialog(
       mDiscoveredContactModel.get(), mRecievedContactsStorageWrapper, parent);
 
-  QObject::connect(
-      parent->findChild<QCommandLinkButton*>("openRecievedContacts"),
-      &QCommandLinkButton::pressed, recievedDialog, &BaseSettingsDialog::show);
+  QObject::connect(toolBox, &ToolboxWrapper::recievedContactsOpen,
+                   recievedDialog, &BaseSettingsDialog::show);
 
   auto* menu = new RecievedContactsMenu(recievedDialog);
 
@@ -196,10 +195,9 @@ void GuiInitializer::initSimpleDialogs(
                    &RecievedDiscoveredContactsDialog::removeRecievedContact);
 
   auto* importDialog = make_import_contact_dialog(
-              mRecievedContactsStorageWrapper,
-              coreInit->getConnectionStorage(),
-              eventQueue, recievedDialog);
+      mRecievedContactsStorageWrapper, coreInit->getConnectionStorage(),
+      eventQueue, recievedDialog);
   QObject::connect(menu, &RecievedContactsMenu::showRecievedContact,
-                   importDialog, &ImportDiscoveredContactDialog::onShowRecievedContact);
-
+                   importDialog,
+                   &ImportDiscoveredContactDialog::onShowRecievedContact);
 }
