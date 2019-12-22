@@ -37,6 +37,8 @@ set(GUI_MODULE_SOURCES
     widgets/recievedcontactsmenu.cpp
     dialogs/importdiscoveredcontactdialog.cpp
     wrappers/toolboxwrapper.cpp
+    dialogs/appsettingsdialog.cpp
+    applicationsettings.cpp
 )
 
 set(GUI_MODULE_HEADERS
@@ -80,6 +82,8 @@ set(GUI_MODULE_HEADERS
     widgets/recievedcontactsmenu.h
     dialogs/importdiscoveredcontactdialog.h
     wrappers/toolboxwrapper.h
+    dialogs/appsettingsdialog.h
+    applicationsettings.h
 )
 
 set(GUI_UI
@@ -92,6 +96,7 @@ set(GUI_UI
     dialogs/contactdiscoverdialog.ui
     dialogs/recieveddiscoveredcontactsdialog.ui
     dialogs/importdiscoveredcontactdialog.ui
+    dialogs/appsettingsdialog.ui
 )
 
 set(
@@ -118,6 +123,7 @@ set(
   widgets/recievedcontactsmenu.h
   dialogs/importdiscoveredcontactdialog.h
   wrappers/toolboxwrapper.h
+  dialogs/appsettingsdialog.h
 )
 
 qt5_wrap_cpp(WRAP_MOC_GUI ${GUI_MOC})

@@ -37,6 +37,8 @@
 
 #include "dialogs/importdiscoveredcontactdialog.h"
 #include "wrappers/toolboxwrapper.h"
+#include "dialogs/appsettingsdialog.h"
+#include "applicationsettings.h"
 
 /// dialogsViews
 GuiInitializer::GuiInitializer(
@@ -56,7 +58,8 @@ GuiInitializer::GuiInitializer(
     mRecievedContactsStorageWrapper(
         std::make_shared<RecievedContactsStorageWrapper>(
             coreInit->getDiscoveredContactStorage(),
-            coreInit->getContactStorage()))
+            coreInit->getContactStorage())),
+    mApplicationSettingsGuard(std::make_shared<ApplicationSettingsGuard>())
 
 {
   coreInit->getDiscoveredContactStorage()->appendPermanentListener(
@@ -200,4 +203,8 @@ void GuiInitializer::initSimpleDialogs(
   QObject::connect(menu, &RecievedContactsMenu::showRecievedContact,
                    importDialog,
                    &ImportDiscoveredContactDialog::onShowRecievedContact);
+
+  auto *appSettingsDialog = new AppSettingsDialog(mApplicationSettingsGuard,parent);
+  QObject::connect(toolBox, &ToolboxWrapper::appSettingsOpen,
+                   appSettingsDialog, &AppSettingsDialog::show);
 }
