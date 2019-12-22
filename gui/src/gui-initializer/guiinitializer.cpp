@@ -39,6 +39,7 @@
 #include "wrappers/toolboxwrapper.h"
 #include "dialogs/appsettingsdialog.h"
 #include "applicationsettings.h"
+#include "translation/translationmaster.h"
 
 /// dialogsViews
 GuiInitializer::GuiInitializer(
@@ -46,7 +47,9 @@ GuiInitializer::GuiInitializer(
     const std::shared_ptr<AbstractCoreInitializer>& coreInit,
     const std::shared_ptr<AbstractUserAsk>& userAsk,
     const std::shared_ptr<AbstractUserNotifier>& userNotifier,
-    const std::shared_ptr<Channel::EventQueue>& eventQueue) :
+    const std::shared_ptr<Channel::EventQueue>& eventQueue,
+    std::shared_ptr<ApplicationSettingsGuard> settingsGuard,
+    std::shared_ptr<TranslationMaster> translatorMaster) :
     mChannelSettingsDialog(
         make_dialog(coreInit->getConnectionStorage(), eventQueue)),
     mContactsSettingsDialog(make_dialog(coreInit->getContactStorage(),
@@ -59,7 +62,8 @@ GuiInitializer::GuiInitializer(
         std::make_shared<RecievedContactsStorageWrapper>(
             coreInit->getDiscoveredContactStorage(),
             coreInit->getContactStorage())),
-    mApplicationSettingsGuard(std::make_shared<ApplicationSettingsGuard>())
+    mApplicationSettingsGuard(std::move(settingsGuard)),
+    mTranslatorMaster(std::move(translatorMaster))
 
 {
   coreInit->getDiscoveredContactStorage()->appendPermanentListener(
