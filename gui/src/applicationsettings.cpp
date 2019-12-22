@@ -8,6 +8,11 @@ ApplicationSettings::ApplicationSettings(): mSettings("secure-dialogues", "app")
 
 QString ApplicationSettings::getLocale() const
 {
+    if(!mSettings.contains("language"))
+    {
+        return "en_EN.utf8";
+    }
+
     auto value = mSettings.value("language");
     if(value.canConvert<QString>())
     {

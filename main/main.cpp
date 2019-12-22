@@ -11,6 +11,9 @@
 #include <dbstl_common.h>
 
 #include "core-initializer/coreinitializer.h"
+#include "applicationsettings.h"
+#include "translation/translationmaster.h"
+#include "translation/gettexttranslator.h"
 
 static const std::string FILE_DIGEST = "conf/pass.digest";
 
@@ -33,8 +36,14 @@ int main(int argc, char* argv[]) {
 
   try {
     auto pass = getPassword(FILE_DIGEST);
+    std::shared_ptr<ApplicationSettingsGuard> settingsGuard = std::make_shared<ApplicationSettingsGuard>();
+    std::shared_ptr<TranslationMaster> translatorMaster = std::make_shared<TranslationMaster>(settingsGuard->getSettings(), "locale");
 
-    MainWindow w(std::make_unique<CoreInitializer>(pass));
+    GettextTranslator translator;
+
+    a.installTranslator(&translator);
+
+    MainWindow w(std::move(settingsGuard), std::move(translatorMaster), std::make_unique<CoreInitializer>(pass));
     w.show();
 
     auto res = a.exec();

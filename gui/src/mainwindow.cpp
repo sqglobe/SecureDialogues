@@ -8,11 +8,16 @@
 #include "dialogs/userinformator.h"
 #include "wrappers/dialoguserviewwrapper.h"
 #include "wrappers/toolboxwrapper.h"
+#include "applicationsettings.h"
+#include "translation/translationmaster.h"
 
 enum MESSAGE_SWITCH_PAGES { OK_DIALOG_PAGE = 0, BAD_DIALOG_PAGE = 1 };
 
-MainWindow::MainWindow(std::unique_ptr<AbstractCoreInitializer>&& coreInit,
-                       QWidget* parent) :
+MainWindow::MainWindow(
+        std::shared_ptr<ApplicationSettingsGuard> settingsGuard,
+        std::shared_ptr<TranslationMaster> translatorMaster,
+        std::unique_ptr<AbstractCoreInitializer>&& coreInit,
+        QWidget* parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     mUserInformator(std::make_shared<UserInformator>(this)),
@@ -31,7 +36,9 @@ MainWindow::MainWindow(std::unique_ptr<AbstractCoreInitializer>&& coreInit,
 
   mGui = std::make_shared<GuiInitializer>(this, mCore, mUserInformator,
                                           mUserInformator,
-                                          mEventHolder.channelEventQueue());
+                                          mEventHolder.channelEventQueue(),
+                                          std::move(settingsGuard),
+                                          std::move(translatorMaster));
   on_badDialogSelected(
       "Для начала отправки сообщений выберите один диалог из списка");
   mCore->startMessagesHandling(mUserInformator,

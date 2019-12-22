@@ -15,6 +15,7 @@ class QThread;
 class DiscoveredContactModel;
 class RecievedContactsStorageWrapper;
 class ApplicationSettingsGuard;
+class TranslationMaster;
 
 class GuiInitializer {
  public:
@@ -22,7 +23,9 @@ class GuiInitializer {
                  const std::shared_ptr<AbstractCoreInitializer>& coreInit,
                  const std::shared_ptr<AbstractUserAsk>& userAsk,
                  const std::shared_ptr<AbstractUserNotifier>& userNotifier,
-                 const std::shared_ptr<Channel::EventQueue>& eventQueue);
+                 const std::shared_ptr<Channel::EventQueue>& eventQueue,
+                 std::shared_ptr<ApplicationSettingsGuard> settingsGuard,
+                 std::shared_ptr<TranslationMaster> translatorMaster);
 
  private:
   void initMessageWrapper(
@@ -51,6 +54,7 @@ class GuiInitializer {
   std::shared_ptr<RecievedContactsStorageWrapper>
       mRecievedContactsStorageWrapper;
   std::shared_ptr<ApplicationSettingsGuard> mApplicationSettingsGuard;
+  std::shared_ptr<TranslationMaster> mTranslatorMaster;
 };
 
 #endif  // GUIINITIALIZER_H

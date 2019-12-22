@@ -39,6 +39,8 @@ set(GUI_MODULE_SOURCES
     wrappers/toolboxwrapper.cpp
     dialogs/appsettingsdialog.cpp
     applicationsettings.cpp
+    translation/gettexttranslator.cpp
+    translation/translationmaster.cpp
 )
 
 set(GUI_MODULE_HEADERS
@@ -84,6 +86,9 @@ set(GUI_MODULE_HEADERS
     wrappers/toolboxwrapper.h
     dialogs/appsettingsdialog.h
     applicationsettings.h
+    translation/gettexttranslator.h
+    translation/translationmaster.h
+
 )
 
 set(GUI_UI
@@ -124,6 +129,7 @@ set(
   dialogs/importdiscoveredcontactdialog.h
   wrappers/toolboxwrapper.h
   dialogs/appsettingsdialog.h
+  translation/translationmaster.h
 )
 
 qt5_wrap_cpp(WRAP_MOC_GUI ${GUI_MOC})
