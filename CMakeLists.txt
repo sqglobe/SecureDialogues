@@ -48,6 +48,8 @@ SET(JSON_Install OFF)
 SET(XG_TESTS OFF)
 
 
+list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/submodules/cmake/FindBerkeleyDB" "${PROJECT_SOURCE_DIR}/cmake")
+
 set(MCRYPTO_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/submodules)
 set(TOP_DIR ${PROJECT_SOURCE_DIR})
 
@@ -69,6 +71,8 @@ ENDIF()
 
 include_directories(${PROJECT_SOURCE_DIR}/submodules/spdlog/include)
 include_directories(${PROJECT_SOURCE_DIR}/submodules/eventpp/include)
+
+include(Gettext)
 
 add_subdirectory(submodules/crossguid)
 add_subdirectory(submodules/cryptopp)
