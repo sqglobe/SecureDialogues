@@ -11,26 +11,29 @@ class AppSettingsDialog;
 class ApplicationSettingsGuard;
 class ApplicationSettings;
 
-class AppSettingsDialog : public QDialog
-{
-    Q_OBJECT
+class AppSettingsDialog : public QDialog {
+  Q_OBJECT
 
-public:
-    explicit AppSettingsDialog(const std::shared_ptr<ApplicationSettingsGuard> &guard,
-                               QWidget *parent = nullptr);
-    ~AppSettingsDialog();
+ public:
+  explicit AppSettingsDialog(
+      const std::shared_ptr<ApplicationSettingsGuard>& guard,
+      QWidget* parent = nullptr);
+  ~AppSettingsDialog() override;
 
-signals:
-    void settingsChanged();
+ protected:
+  void changeEvent(QEvent* event) override;
 
-private slots:
-    void on_saveButton_clicked();
+ signals:
+  void settingsChanged();
 
-private:
-    Ui::AppSettingsDialog *ui;
+ private slots:
+  void on_saveButton_clicked();
 
-private:
-    std::shared_ptr<ApplicationSettings> mSettings;
+ private:
+  Ui::AppSettingsDialog* ui;
+
+ private:
+  std::shared_ptr<ApplicationSettings> mSettings;
 };
 
-#endif // APPSETTINGSDIALOG_H
+#endif  // APPSETTINGSDIALOG_H

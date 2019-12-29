@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Общие настройки приложений</string>
+   <string>Application settings</string>
   </property>
   <property name="windowIcon">
    <iconset>
@@ -26,14 +26,14 @@
      <item row="0" column="0">
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>Язык системы</string>
+        <string>System language</string>
        </property>
       </widget>
      </item>
      <item row="0" column="1">
       <widget class="QComboBox" name="languageSettings">
        <property name="toolTip">
-        <string>Укажите язык системы</string>
+        <string>Select application language</string>
        </property>
       </widget>
      </item>
@@ -57,20 +57,20 @@
      <item>
       <widget class="QPushButton" name="cancelButton">
        <property name="toolTip">
-        <string>Отменить сохранение настроек</string>
+        <string>Cancel saving application settings and close this dialog</string>
        </property>
        <property name="text">
-        <string>Отмена</string>
+        <string>Cancel</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="saveButton">
        <property name="toolTip">
-        <string>Сохранить настройки приложения</string>
+        <string>Save application settings</string>
        </property>
        <property name="text">
-        <string>Сохранить</string>
+        <string>Save</string>
        </property>
       </widget>
      </item>

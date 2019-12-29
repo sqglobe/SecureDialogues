@@ -1,28 +1,21 @@
 #include "applicationsettings.h"
 
+ApplicationSettings::ApplicationSettings() :
+    mSettings("secure-dialogues", "app") {}
 
-ApplicationSettings::ApplicationSettings(): mSettings("secure-dialogues", "app")
-{
+Language ApplicationSettings::getLocale() const {
+  if (!mSettings.contains("language")) {
+    return Language::EN;
+  }
 
+  auto value = mSettings.value("language");
+  if (value.canConvert<int>()) {
+    return static_cast<Language>(value.value<int>());
+  }
+  return Language::EN;
 }
 
-QString ApplicationSettings::getLocale() const
-{
-    if(!mSettings.contains("language"))
-    {
-        return "en_EN.utf8";
-    }
-
-    auto value = mSettings.value("language");
-    if(value.canConvert<QString>())
-    {
-        return value.value<QString>();
-    }
-    return "en_EN.utf8";
-}
-
-void ApplicationSettings::setLocale(const QString &locale)
-{
-    mSettings.setValue("language", locale);
-    mSettings.sync();
+void ApplicationSettings::setLocale(Language locale) {
+  mSettings.setValue("language", QVariant::fromValue(static_cast<int>(locale)));
+  mSettings.sync();
 }

@@ -35,11 +35,11 @@
 #include "wrappers/dialoguserviewwrapper.h"
 #include "wrappers/recievedcontactsstoragewrapper.h"
 
-#include "dialogs/importdiscoveredcontactdialog.h"
-#include "wrappers/toolboxwrapper.h"
-#include "dialogs/appsettingsdialog.h"
 #include "applicationsettings.h"
+#include "dialogs/appsettingsdialog.h"
+#include "dialogs/importdiscoveredcontactdialog.h"
 #include "translation/translationmaster.h"
+#include "wrappers/toolboxwrapper.h"
 
 /// dialogsViews
 GuiInitializer::GuiInitializer(
@@ -208,7 +208,11 @@ void GuiInitializer::initSimpleDialogs(
                    importDialog,
                    &ImportDiscoveredContactDialog::onShowRecievedContact);
 
-  auto *appSettingsDialog = new AppSettingsDialog(mApplicationSettingsGuard,parent);
-  QObject::connect(toolBox, &ToolboxWrapper::appSettingsOpen,
-                   appSettingsDialog, &AppSettingsDialog::show);
+  auto* appSettingsDialog =
+      new AppSettingsDialog(mApplicationSettingsGuard, parent);
+  QObject::connect(toolBox, &ToolboxWrapper::appSettingsOpen, appSettingsDialog,
+                   &AppSettingsDialog::show);
+  QObject::connect(appSettingsDialog, &AppSettingsDialog::settingsChanged,
+                   mTranslatorMaster.get(),
+                   &TranslationMaster::onSettingsChanged);
 }
