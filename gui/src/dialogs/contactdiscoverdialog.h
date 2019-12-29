@@ -6,7 +6,6 @@
 
 class DiscoverContactAgent;
 class ChannelsListModel;
-class AbstractUserNotifier;
 
 namespace Ui {
 class ContactDiscoverDialog;
@@ -18,7 +17,6 @@ class ContactDiscoverDialog : public QDialog {
  public:
   explicit ContactDiscoverDialog(std::shared_ptr<ChannelsListModel> model,
                                  std::shared_ptr<DiscoverContactAgent> agent,
-                                 std::shared_ptr<AbstractUserNotifier> notifier,
                                  QWidget* parent = nullptr);
   ~ContactDiscoverDialog() override;
 
@@ -34,7 +32,6 @@ class ContactDiscoverDialog : public QDialog {
  private:
   std::shared_ptr<ChannelsListModel> mModel;
   std::shared_ptr<DiscoverContactAgent> mAgent;
-  std::shared_ptr<AbstractUserNotifier> mNotifier;
 };
 
 #endif  // CONTACTDISCOVERDIALOG_H
