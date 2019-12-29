@@ -13,7 +13,7 @@ void UserInformator::notify(AbstractUserNotifier::Severity sev,
 }
 
 bool UserInformator::ask(const std::string& question) const {
-  auto res = QMessageBox::question(mParentWidget, "Необходим выбор",
+  auto res = QMessageBox::question(mParentWidget, tr("Choise required"),
                                    QString(question.c_str()),
                                    QMessageBox::Apply | QMessageBox::Cancel);
   return QMessageBox::Apply == res;
@@ -23,10 +23,10 @@ void UserInformator::showMessage(AbstractUserNotifier::Severity sev,
                                  QString message) {
   using S = AbstractUserNotifier::Severity;
   if (S::ERROR == sev) {
-    QMessageBox::critical(mParentWidget, "Ошибка!", message);
+    QMessageBox::critical(mParentWidget, tr("Error!"), message);
   } else if (S::WARNING == sev) {
-    QMessageBox::warning(mParentWidget, "Внимание!", message);
+    QMessageBox::warning(mParentWidget, tr("Attention!"), message);
   } else {
-    QMessageBox::information(mParentWidget, "Сообщение", message);
+    QMessageBox::information(mParentWidget, tr("Message"), message);
   }
 }

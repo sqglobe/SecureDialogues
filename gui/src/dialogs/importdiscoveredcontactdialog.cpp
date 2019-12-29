@@ -45,8 +45,8 @@ void ImportDiscoveredContactDialog::on_importButton_clicked()
      const auto contact = mWidget->getElement();
      mWrapper->saveToContact(contact, mDialogId.value());
      mDialogId.reset();
-     QMessageBox::information(this, "Импорт успешен", "Импорт контакта прошел успешно");
+     QMessageBox::information(this, tr("Import successed"), tr("Contact imported successfl"));
     } catch (const std::exception& ex) {
-        QMessageBox::warning(this, "Ошибка импорта!", ex.what());
+        QMessageBox::warning(this, tr("Import error!"), ex.what());
     }
 }

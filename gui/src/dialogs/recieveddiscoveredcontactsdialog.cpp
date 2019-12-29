@@ -44,17 +44,17 @@ void RecievedDiscoveredContactsDialog::requestToShowMenu(QPoint pos) {
 void RecievedDiscoveredContactsDialog::removeRecievedContact(
     std::string dialogId) {
   const auto res = QMessageBox::question(
-      this, "Удаление полученных контактных данных",
-      "Вы действительно хотите удалить полученные контактные данные?",
+      this, tr("Removing recieved contact information"),
+      tr("Are sure to remove recieved contact information?"),
       QMessageBox::Apply | QMessageBox::Cancel);
   if (QMessageBox::Apply == res) {
     if (mStorageWrapper->removeDiscoveredContact(dialogId)) {
-      QMessageBox::information(this, "Успешно!",
-                               "Данные были успешно удалены!");
+      QMessageBox::information(this, tr("Successful!"),
+                               tr("Information was removed successful!"));
     } else {
       QMessageBox::warning(
-          this, "Ошибка!",
-          "При удалении возникла ошибка, пожалуйста попытайтесь позже!");
+          this, tr("Error!"),
+          tr("Error occured during removing, please try later!"));
     }
   }
 }

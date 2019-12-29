@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Импорт полученных контактных данных</string>
+   <string>Import recieved contact information</string>
   </property>
   <property name="windowIcon">
    <iconset>
@@ -39,20 +39,20 @@
      <item>
       <widget class="QPushButton" name="closeDialog">
        <property name="toolTip">
-        <string>Отменить изменения и закрыть диалог</string>
+        <string>Cancel import and close dialog</string>
        </property>
        <property name="text">
-        <string>Отмена</string>
+        <string>Cancel</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="importButton">
        <property name="toolTip">
-        <string>Выполнить импорт полученного контакта</string>
+        <string>Perform import contact information</string>
        </property>
        <property name="text">
-        <string>Импорт</string>
+        <string>Import</string>
        </property>
       </widget>
      </item>

@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Полученные контактные данные</string>
+   <string>Recieved contact information</string>
   </property>
   <property name="windowIcon">
    <iconset>

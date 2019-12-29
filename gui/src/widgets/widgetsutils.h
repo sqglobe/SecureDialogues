@@ -4,6 +4,7 @@
 #include <functional>
 #include <utility>
 #include <vector>
+#include <QString>
 
 class QWidget;
 
@@ -14,7 +15,7 @@ namespace WigetUtils {
  * исключение с текстом ошибки.
  * @param checks список предикатов вместе с описанием ошибки
  */
-void test(const std::vector<std::pair<std::string, std::function<bool(void)>>>&
+void test(const std::vector<std::pair<QString, std::function<bool(void)>>>&
               checks) noexcept(false);
 }  // namespace WigetUtils
 

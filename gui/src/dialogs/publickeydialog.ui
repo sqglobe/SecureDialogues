@@ -14,7 +14,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Публичный ключ</string>
+   <string>Public key</string>
   </property>
   <property name="windowIcon">
    <iconset>
@@ -37,7 +37,7 @@
    <item>
     <widget class="QPushButton" name="generatePublickKey">
      <property name="text">
-      <string>Сгенерировать публичный ключ</string>
+      <string>Generate asymmetric keys</string>
      </property>
     </widget>
    </item>
@@ -60,7 +60,7 @@
       <item>
        <widget class="QPushButton" name="closeDialog">
         <property name="text">
-         <string>Закрыть</string>
+         <string>Close</string>
         </property>
        </widget>
       </item>

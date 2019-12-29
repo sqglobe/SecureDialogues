@@ -3,16 +3,12 @@
 
 #include "crypto/cryptosystemimpl.h"
 
-#include "interfaces/abstractuserask.h"
-#include "interfaces/abstractusernotifier.h"
+#include <QMessageBox>
 
 PublicKeyDialog::PublicKeyDialog(std::shared_ptr<CryptoSystemImpl> system,
-                                 std::shared_ptr<AbstractUserNotifier> notifier,
-                                 std::shared_ptr<const AbstractUserAsk> ask,
                                  QWidget* parent) :
     QDialog(parent),
-    ui(new Ui::PublicKeyDialog), mSystem(system), mNotifier(notifier),
-    mAsk(ask) {
+    ui(new Ui::PublicKeyDialog), mSystem(system) {
   ui->setupUi(this);
 
   connect(ui->generatePublickKey, &QPushButton::pressed, this,
@@ -23,18 +19,19 @@ PublicKeyDialog::~PublicKeyDialog() {
   delete ui;
 }
 
+
 void PublicKeyDialog::generateKey() {
-  if (mAsk->ask(
-          "Вы уверены, что хотите произвести генерацию ключей? В этом случае "
-          "Вам придется уведомить все свои контакты о произошедшей смене")) {
+  const auto res = QMessageBox::question(this, tr("Choise required"),
+                   tr("Are you sure to generate new keys?"
+                      "Your must notify your contacts about new keys."),
+                   QMessageBox::Apply | QMessageBox::Cancel);
+  if (QMessageBox::Apply == res) {
     if (mSystem->generateAsymetricKeys()) {
-      mNotifier->notify(
-          AbstractUserNotifier::Severity::INFO,
-          "Ключи для ассиметричного шифрования успешно сгенерированы");
+        QMessageBox::information(this, tr("Successful!"),
+                                 tr("Asymmetric keys successful generated"));
     } else {
-      mNotifier->notify(AbstractUserNotifier::Severity::INFO,
-                        "Не удалось сгенерирвоать ключи для ассиметричного "
-                        "шифрования. попытайтесь еще раз позже");
+        QMessageBox::information(this, tr("Error!"),
+                                 tr("Failed to generate asymmetric keys, please try later"));
     }
   }
 }

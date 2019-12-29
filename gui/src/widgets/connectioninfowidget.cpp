@@ -119,14 +119,14 @@ void ConnectionInfoWidget::displayStatus(
 
   switch (element.status) {
     case Channel::ChannelStatus::UNDEFINED: {
-      connStatus->setText("Подключение не подтверждено");
+      connStatus->setText(tr("Connection not confirmed"));
       lastMessage->setText("");
       palette.setColor(connStatus->backgroundRole(), QColor(192, 192, 192));
       lastMessage->hide();
       break;
     }
     case Channel::ChannelStatus::CONNECTED: {
-      connStatus->setText("Подключение выполнено успешно");
+      connStatus->setText("Connection established successed");
       palette.setColor(connStatus->backgroundRole(), QColor(152, 251, 152));
       lastMessage->setText("");
       lastMessage->hide();
@@ -134,14 +134,14 @@ void ConnectionInfoWidget::displayStatus(
       break;
     }
     case Channel::ChannelStatus::FAILED_CONNECT: {
-      connStatus->setText("Подключение не успешно");
+      connStatus->setText("Connection failed");
       lastMessage->setText(element.message);
       palette.setColor(connStatus->backgroundRole(), QColor(255, 192, 203));
       lastMessage->show();
       break;
     }
     case Channel::ChannelStatus::AUTHORIZATION_FAILED: {
-      connStatus->setText("Необходимо выполнить авторизацию");
+      connStatus->setText("Authorisation required");
       lastMessage->setText(element.message);
       palette.setColor(connStatus->backgroundRole(), QColor(250, 128, 114));
       lastMessage->show();
@@ -187,32 +187,32 @@ void ConnectionInfoWidget::setElement(const ConnectionHolder& info) {
 }
 
 ConnectionHolder ConnectionInfoWidget::getElement() noexcept(false) {
-  std::vector<std::pair<std::string, std::function<bool(void)> > > checks;
+  std::vector<std::pair<QString, std::function<bool(void)> > > checks;
 
   auto connType = findChild<QComboBox*>("connectionType");
 
-  checks.emplace_back("Необходимо выбрать тип подключения!",
+  checks.emplace_back(tr("Connection type required!"),
                       [connType]() -> bool {
                         return connType->currentIndex() !=
                                static_cast<int>(ConnectionType::UNDEF);
                       });
 
   if (connType->currentIndex() == static_cast<int>(ConnectionType::GMAIL)) {
-    checks.emplace_back("Необходимо заполнить поле 'Логин'", [this]() -> bool {
+    checks.emplace_back(tr("Field 'Login' should be completed"), [this]() -> bool {
       auto login = findChild<QLineEdit*>("login");
       return !login->text().trimmed().isEmpty();
     });
 
-    checks.emplace_back("Необходимо заполнить поле 'Пароль'", [this]() -> bool {
+    checks.emplace_back(tr("Field 'Password' should be completed"), [this]() -> bool {
       auto pass = findChild<QLineEdit*>("pass");
       return !pass->text().trimmed().isEmpty();
     });
   } else if (connType->currentIndex() == static_cast<int>(ConnectionType::VK)) {
-    checks.emplace_back("Необходимо заполнить поле 'URL'", [this]() -> bool {
+    checks.emplace_back(tr("Field 'URL' should be completed"), [this]() -> bool {
       auto login = findChild<QLineEdit*>("vkOauthUrl");
       return !login->text().trimmed().isEmpty();
     });
-    checks.emplace_back("Значение в поле 'URL' имеет не верный формат",
+    checks.emplace_back(tr("Field 'URL' contains wrond format"),
                         [this]() -> bool {
                           auto txt = findChild<QLineEdit*>("vkOauthUrl");
                           auto url = QUrl(txt->text().trimmed());
@@ -224,16 +224,16 @@ ConnectionHolder ConnectionInfoWidget::getElement() noexcept(false) {
                         });
   } else if (connType->currentIndex() ==
              static_cast<int>(ConnectionType::EMAIL)) {
-    checks.emplace_back("Поле 'Логин' не заполнено", [this]() -> bool {
+    checks.emplace_back(tr("Field 'Login' should be completed"), [this]() -> bool {
       return !findChild<QLineEdit*>("emailLogin")->text().trimmed().isEmpty();
     });
 
-    checks.emplace_back("Поле 'Пароль' не заполнено", [this]() -> bool {
+    checks.emplace_back(tr("Field 'Password' should be completed"), [this]() -> bool {
       return !findChild<QLineEdit*>("emailPass")->text().trimmed().isEmpty();
     });
 
     checks.emplace_back(
-        "Поле 'From' не заполнено или имеет не верный вормат",
+         tr("Field 'From' empty or contains wrong format"),
         [this]() -> bool {
           QRegExp re(
               "^(\\S+)@([a-z0-9-]+)(\\.)([a-z]{2,4})(\\.?)([a-z]{0,4})+$");
@@ -241,12 +241,12 @@ ConnectionHolder ConnectionInfoWidget::getElement() noexcept(false) {
           return !text.isEmpty() && re.indexIn(text) != -1;
         });
 
-    checks.emplace_back("'Алрес SMTP сервера' не заполнен", [this]() -> bool {
+    checks.emplace_back(tr("'Address of SMTP server' empty"), [this]() -> bool {
       return !findChild<QLineEdit*>("smtpUrl")->text().trimmed().isEmpty();
     });
 
     checks.emplace_back(
-        "'Порт SMTP сервера' не заполнен или имеет не верный формат",
+        tr("Field 'Port of SMTP server' empty or contains wrong format"),
         [this]() -> bool {
           auto port = findChild<QLineEdit*>("smtpPort")->text().trimmed();
           bool ok = false;
@@ -254,12 +254,12 @@ ConnectionHolder ConnectionInfoWidget::getElement() noexcept(false) {
           return !port.isEmpty() && ok;
         });
 
-    checks.emplace_back("'Алрес IMAP сервера' не заполнен", [this]() -> bool {
+    checks.emplace_back("'Address of IMAP server' empty", [this]() -> bool {
       return !findChild<QLineEdit*>("imapUrl")->text().trimmed().isEmpty();
     });
 
     checks.emplace_back(
-        "'Порт IMAP сервера' не заполнен или имеет не верный формат",
+        "'Port of IMAP server' empty or contains wrong format",
         [this]() -> bool {
           auto port = findChild<QLineEdit*>("imapPort")->text().trimmed();
           bool ok = false;
@@ -270,7 +270,7 @@ ConnectionHolder ConnectionInfoWidget::getElement() noexcept(false) {
 
   auto conn_name = findChild<QLineEdit*>("connectionName");
   checks.emplace_back(
-      "Необходимо заполнить поле 'Имя подключения'", [conn_name]() -> bool {
+      "Field 'Connection name' should be completed", [conn_name]() -> bool {
         return !conn_name->isEnabled() || !conn_name->text().isEmpty();
       });
   WigetUtils::test(checks);
@@ -353,12 +353,12 @@ void ConnectionInfoWidget::activatedConnectionType(int index) {
   if (index == static_cast<int>(ConnectionType::GMAIL)) {
     auto tokenUrl = findChild<QLabel*>("tokenUrl");
     auto oauth = makeFactory(AgentType::GMAIL)->makeOauthAgent()->getUserUrl();
-    QString href = "<a href='%1'>Открыть страницу получения Oauth2 кода</a>";
+    QString href = tr("<a href='%1'>Open web-page to get Oauth2 code</a>");
     tokenUrl->setText(href.arg(oauth.c_str()));
   } else if (index == static_cast<int>(ConnectionType::VK)) {
     auto tokenUrl = findChild<QLabel*>("vkTokenUrl");
     auto oauth = makeFactory(AgentType::VK)->makeOauthAgent()->getUserUrl();
-    QString href = "<a href='%1'>Открыть страницу получения Oauth2 кода</a>";
+    QString href = tr("<a href='%1'>Open web-page to get Oauth2 code</a>");
     tokenUrl->setText(href.arg(oauth.c_str()));
   }
 }
