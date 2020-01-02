@@ -4,39 +4,39 @@
 #include <QDialog>
 #include <memory>
 #include <optional>
+#include "ui_importdiscoveredcontactdialog.h"
+#include "utils/translatechangeeventhandler.h"
 
 class RecievedContactsStorageWrapper;
 class ContactWidget;
 
-namespace Ui {
-class ImportDiscoveredContactDialog;
-}
+class ImportDiscoveredContactDialog
+    : public TranslateChangeEventHandler<QDialog,
+                                         Ui::ImportDiscoveredContactDialog> {
+  Q_OBJECT
 
-class ImportDiscoveredContactDialog : public QDialog
-{
-    Q_OBJECT
+ public:
+  explicit ImportDiscoveredContactDialog(
+      std::shared_ptr<ContactWidget> widget,
+      std::shared_ptr<RecievedContactsStorageWrapper> wrapper,
+      QWidget* parent = nullptr);
+  ~ImportDiscoveredContactDialog();
 
-public:
-    explicit ImportDiscoveredContactDialog(std::shared_ptr<ContactWidget> widget,
-                                           std::shared_ptr<RecievedContactsStorageWrapper> wrapper,
-                                           QWidget *parent = nullptr);
-    ~ImportDiscoveredContactDialog();
+ public slots:
+  void onShowRecievedContact(std::string dialogId);
 
-public slots:
-    void onShowRecievedContact(std::string dialogId);
+ private slots:
+  void on_closeDialog_clicked();
 
-private slots:
-    void on_closeDialog_clicked();
+  void on_importButton_clicked();
 
-    void on_importButton_clicked();
+ private:
+  Ui::ImportDiscoveredContactDialog* ui;
 
-private:
-    Ui::ImportDiscoveredContactDialog *ui;
-
-private:
-    std::shared_ptr<ContactWidget> mWidget;
-    std::shared_ptr<RecievedContactsStorageWrapper> mWrapper;
-    std::optional<std::string> mDialogId;
+ private:
+  std::shared_ptr<ContactWidget> mWidget;
+  std::shared_ptr<RecievedContactsStorageWrapper> mWrapper;
+  std::optional<std::string> mDialogId;
 };
 
-#endif // IMPORTDISCOVEREDCONTACTDIALOG_H
+#endif  // IMPORTDISCOVEREDCONTACTDIALOG_H

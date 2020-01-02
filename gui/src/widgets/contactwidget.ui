@@ -17,29 +17,37 @@
    <item row="0" column="0">
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>Передать через</string>
+      <string>Pass through</string>
      </property>
     </widget>
    </item>
    <item row="1" column="0">
     <widget class="QLabel" name="label_2">
      <property name="text">
-      <string>Имя</string>
+      <string>Name</string>
      </property>
     </widget>
    </item>
    <item row="1" column="1">
-    <widget class="QLineEdit" name="contactName"/>
+    <widget class="QLineEdit" name="contactName">
+     <property name="toolTip">
+      <string>Your contact's name. </string>
+     </property>
+    </widget>
    </item>
    <item row="2" column="0">
     <widget class="QLabel" name="label_3">
      <property name="text">
-      <string>Адрес</string>
+      <string>Address</string>
      </property>
     </widget>
    </item>
    <item row="2" column="1">
-    <widget class="QLineEdit" name="contactAdress"/>
+    <widget class="QLineEdit" name="contactAdress">
+     <property name="toolTip">
+      <string>Your contact's address. This field format depends on selected channel.</string>
+     </property>
+    </widget>
    </item>
    <item row="0" column="1">
     <widget class="QComboBox" name="channelMonikers">
@@ -61,6 +69,9 @@
        <height>0</height>
       </size>
      </property>
+     <property name="toolTip">
+      <string>Channel that is used to send messages to contact</string>
+     </property>
     </widget>
    </item>
    <item row="4" column="1">
@@ -77,7 +88,11 @@
     </spacer>
    </item>
    <item row="3" column="1">
-    <widget class="QTextEdit" name="publicKey"/>
+    <widget class="QTextEdit" name="publicKey">
+     <property name="toolTip">
+      <string>This field should contains public key for your contact</string>
+     </property>
+    </widget>
    </item>
    <item row="3" column="0">
     <widget class="QLabel" name="label_4">
@@ -88,7 +103,7 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>Публичный ключ</string>
+      <string>Public key</string>
      </property>
     </widget>
    </item>

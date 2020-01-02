@@ -14,7 +14,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Выбор контакта для создания диалога</string>
+   <string>Contact selection for dialog creation</string>
   </property>
   <property name="windowIcon">
    <iconset>

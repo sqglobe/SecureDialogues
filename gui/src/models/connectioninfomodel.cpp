@@ -1,8 +1,8 @@
 #include "connectioninfomodel.h"
 #include <QBrush>
 #include <QColor>
-#include "gui_helpers.h"
 #include "primitives/connectionholder.h"
+#include "utils/gui_helpers.h"
 
 ConnectionInfoModel::ConnectionInfoModel(
     const std::vector<ChangeListener::element>& elements) {

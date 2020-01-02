@@ -37,22 +37,28 @@
        <item>
         <widget class="QPushButton" name="makeContact">
          <property name="toolTip">
-          <string>Отправить свои контактные данные другому пользователю</string>
+          <string>Send your contact information to other user</string>
          </property>
          <property name="text">
-          <string>Контакт</string>
+          <string>Contact</string>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="startNewDoalog">
+         <property name="toolTip">
+          <string>Create dialog with your contact</string>
+         </property>
          <property name="text">
-          <string>Начать диалог</string>
+          <string>Create dialog</string>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QListView" name="dialogsViews">
+         <property name="toolTip">
+          <string>Select one dialog from the list to send message</string>
+         </property>
          <property name="lineWidth">
           <number>0</number>
          </property>
@@ -104,8 +110,11 @@
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
+            <property name="toolTip">
+             <string>Send message in selected dialog</string>
+            </property>
             <property name="text">
-             <string>Отправить</string>
+             <string>Send</string>
             </property>
            </widget>
           </item>
@@ -157,7 +166,7 @@
     <set>Qt::LeftToolBarArea|Qt::RightToolBarArea</set>
    </property>
    <property name="orientation">
-    <enum>Qt::Horizontal</enum>
+    <enum>Qt::Vertical</enum>
    </property>
    <property name="toolButtonStyle">
     <enum>Qt::ToolButtonFollowStyle</enum>
@@ -173,26 +182,6 @@
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
-  <action name="actionContacts">
-   <property name="text">
-    <string>Контакты</string>
-   </property>
-  </action>
-  <action name="actionChannels">
-   <property name="text">
-    <string>Сервисы</string>
-   </property>
-  </action>
-  <action name="generatePublicKeyAction">
-   <property name="text">
-    <string>Сгенерировать</string>
-   </property>
-  </action>
-  <action name="showPublicKeyAction">
-   <property name="text">
-    <string>Показать</string>
-   </property>
-  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>

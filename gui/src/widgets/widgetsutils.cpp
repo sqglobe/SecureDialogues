@@ -4,16 +4,15 @@
 #include "correctnessinputerror.h"
 
 void WigetUtils::test(
-    const std::vector<std::pair<std::string, std::function<bool()> > >&
+    const std::vector<std::pair<QString, std::function<bool()> > >&
         checks) noexcept(false) {
   std::stringstream error;
   auto failedCnt = std::count_if(
       checks.cbegin(), checks.cend(),
-      [&error](
-          const std::pair<std::string, std::function<bool(void)> >& funcData)
+      [&error](const std::pair<QString, std::function<bool(void)> >& funcData)
           -> bool {
         if (!funcData.second()) {
-          error << funcData.first << std::endl;
+          error << funcData.first.toStdString() << std::endl;
           return true;
         }
         return false;

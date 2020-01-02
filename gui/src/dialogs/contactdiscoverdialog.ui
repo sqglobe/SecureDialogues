@@ -14,7 +14,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Отправить свои контактные данные</string>
+   <string>Share your contact info</string>
   </property>
   <property name="windowIcon">
    <iconset>
@@ -38,42 +38,42 @@
      <item row="0" column="0">
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>Соединение</string>
+        <string>Connection</string>
        </property>
       </widget>
      </item>
      <item row="0" column="1">
       <widget class="QComboBox" name="connectionType">
        <property name="toolTip">
-        <string>Укажите соединение, через которе будет отправлено сообщение</string>
+        <string>Select connection that will be used to send your contact information</string>
        </property>
       </widget>
      </item>
      <item row="1" column="0">
       <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>Адресат</string>
+        <string>Address</string>
        </property>
       </widget>
      </item>
      <item row="1" column="1">
       <widget class="QLineEdit" name="adressValue">
        <property name="toolTip">
-        <string>Укажите адрес собеседника, которому будут отправлены Ваши контактные данные</string>
+        <string>Specify address, that will reсieve your contact info</string>
        </property>
       </widget>
      </item>
      <item row="2" column="1">
       <widget class="QLineEdit" name="name">
        <property name="toolTip">
-        <string>Укажите имя, которое увидит получатель сообщение</string>
+        <string>Set name, that will be displayed to recipient of message</string>
        </property>
       </widget>
      </item>
      <item row="2" column="0">
       <widget class="QLabel" name="label_3">
        <property name="text">
-        <string>Как представить</string>
+        <string>Your name</string>
        </property>
       </widget>
      </item>
@@ -81,8 +81,11 @@
    </item>
    <item>
     <widget class="QPushButton" name="sendContactBtn">
+     <property name="toolTip">
+      <string>Send your contact data to specified address</string>
+     </property>
      <property name="text">
-      <string>Отправить контакт</string>
+      <string>Send the contact</string>
      </property>
     </widget>
    </item>

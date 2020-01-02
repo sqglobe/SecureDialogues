@@ -1,28 +1,65 @@
 #include "translationmaster.h"
 
-#include "applicationsettings.h"
+#include "utils/applicationsettings.h"
 
-#include <clocale>
 #include <libintl.h>
+#include <QApplication>
+#include <QTranslator>
+#include <clocale>
 
-TranslationMaster::TranslationMaster(std::shared_ptr<const ApplicationSettings> settings,
-                                     const std::string &folder,
-                                     QObject *parent) : QObject(parent),
-    mSettings(std::move(settings)),
-    mLang(mSettings->getLocale())
-{
-    bindtextdomain("secure-dialogues", folder.c_str());
-    textdomain("secure-dialogues");
+#include "spdlog/spdlog.h"
 
-    std::setlocale(LC_ALL, mLang.toStdString().c_str());
+std::string getStrLocale(Language lang) {
+  switch (lang) {
+    case Language::EN:
+      return "en_EN.UTF-8";
+    case Language::RU:
+      return "ru_RU.UTF-8";
+  }
 }
 
-void TranslationMaster::onSettingsChanged()
-{
-   if(const auto lang = mSettings->getLocale(); lang != mLang){
-       std::setlocale(LC_ALL, lang.toStdString().c_str());
-       mLang = lang;
-       emit langChanged();
-   }
+QString getFileName(Language lang) {
+  switch (lang) {
+    case Language::EN:
+      return "Gui_en_EN";
+    case Language::RU:
+      return "Gui_ru_RU";
+  }
+}
 
+TranslationMaster::TranslationMaster(
+    std::shared_ptr<const ApplicationSettings> settings,
+    const std::string& folder,
+    QObject* parent) :
+    QObject(parent),
+    mSettings(std::move(settings)), mLang(mSettings->getLocale()),
+    mFolder(folder) {
+  bindtextdomain("secure-dialogues", folder.c_str());
+  textdomain("secure-dialogues");
+
+  std::setlocale(LC_ALL, getStrLocale(mLang).c_str());
+
+  if (!mTranslator.load(getFileName(mLang), mFolder.c_str())) {
+    spdlog::get("root_logger")
+        ->error("Cant install translator for lang {0} in path {1}",
+                getFileName(mLang).toStdString(), mFolder);
+  }
+
+  QApplication::installTranslator(&mTranslator);
+}
+
+void TranslationMaster::onSettingsChanged() {
+  if (const auto lang = mSettings->getLocale(); lang != mLang) {
+    std::setlocale(LC_ALL, getStrLocale(mLang).c_str());
+    mLang = lang;
+    if (!mTranslator.load(getFileName(mLang), mFolder.c_str())) {
+      spdlog::get("root_logger")
+          ->error("Cant install translator for lang {0} in path {1}",
+                  getFileName(mLang).toStdString(), mFolder);
+    }
+
+    QApplication::installTranslator(&mTranslator);
+
+    emit langChanged();
+  }
 }

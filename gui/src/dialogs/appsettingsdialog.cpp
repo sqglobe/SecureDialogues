@@ -1,40 +1,42 @@
 #include "appsettingsdialog.h"
-#include "ui_appsettingsdialog.h"
 
-#include "applicationsettings.h"
 #include <QMessageBox>
+#include "utils/applicationsettings.h"
 
-AppSettingsDialog::AppSettingsDialog(const std::shared_ptr<ApplicationSettingsGuard> &guard,
-                                     QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::AppSettingsDialog),
-    mSettings(guard->getEditableSettings())
-{
-    ui->setupUi(this);
-    ui->languageSettings->addItem("English", "en_EN.utf8");
-    ui->languageSettings->addItem("Русский", "ru_RU.utf8");
-    const auto lang = mSettings->getLocale();
+AppSettingsDialog::AppSettingsDialog(
+    const std::shared_ptr<ApplicationSettingsGuard>& guard,
+    QWidget* parent) :
+    TranslateChangeEventHandler<QDialog, Ui::AppSettingsDialog>(parent),
+    ui(new Ui::AppSettingsDialog), mSettings(guard->getEditableSettings()) {
+  ui->setupUi(this);
+  ui->languageSettings->addItem(
+      "English", QVariant::fromValue(static_cast<int>(Language::EN)));
+  ui->languageSettings->addItem(
+      "Русский", QVariant::fromValue(static_cast<int>(Language::RU)));
+  const auto lang = static_cast<int>(mSettings->getLocale());
 
-    if(const auto index = ui->languageSettings->findData(lang); index != -1)
-    {
-        ui->languageSettings->setCurrentIndex(index);
-    }
+  if (const auto index =
+          ui->languageSettings->findData(QVariant::fromValue(lang));
+      index != -1) {
+    ui->languageSettings->setCurrentIndex(index);
+  }
 
+  this->setUI(ui);
 }
 
-AppSettingsDialog::~AppSettingsDialog()
-{
-    delete ui;
+AppSettingsDialog::~AppSettingsDialog() {
+  delete ui;
 }
 
-void AppSettingsDialog::on_saveButton_clicked()
-{
-   const auto lang = ui->languageSettings->currentData().value<QString>();
-   mSettings->setLocale(lang);
+void AppSettingsDialog::on_saveButton_clicked() {
+  const auto lang =
+      static_cast<Language>(ui->languageSettings->currentData().value<int>());
+  mSettings->setLocale(lang);
 
-   QMessageBox::information(this, "Успешно!", "Настройки успешно сохранены");
+  QMessageBox::information(this, tr("Success!"),
+                           tr("Settings saved successful"));
 
-   this->hide();
+  this->hide();
 
-   emit settingsChanged();
+  emit settingsChanged();
 }

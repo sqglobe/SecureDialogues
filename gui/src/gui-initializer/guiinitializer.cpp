@@ -35,11 +35,11 @@
 #include "wrappers/dialoguserviewwrapper.h"
 #include "wrappers/recievedcontactsstoragewrapper.h"
 
-#include "dialogs/importdiscoveredcontactdialog.h"
-#include "wrappers/toolboxwrapper.h"
 #include "dialogs/appsettingsdialog.h"
-#include "applicationsettings.h"
+#include "dialogs/importdiscoveredcontactdialog.h"
 #include "translation/translationmaster.h"
+#include "utils/applicationsettings.h"
+#include "wrappers/toolboxwrapper.h"
 
 /// dialogsViews
 GuiInitializer::GuiInitializer(
@@ -164,12 +164,11 @@ void GuiInitializer::initDialogWrapper(
 void GuiInitializer::initSimpleDialogs(
     MainWindow* parent,
     const std::shared_ptr<AbstractCoreInitializer>& coreInit,
-    const std::shared_ptr<AbstractUserAsk>& userAsk,
+    const std::shared_ptr<AbstractUserAsk>& /*userAsk*/,
     const std::shared_ptr<AbstractUserNotifier>& userNotifier,
     const std::shared_ptr<Channel::EventQueue>& eventQueue) {
   auto* toolBox = parent->getToolBoxWrapper();
-  auto* pubDialog = new PublicKeyDialog(coreInit->getCryptoSystem(),
-                                        userNotifier, userAsk, parent);
+  auto* pubDialog = new PublicKeyDialog(coreInit->getCryptoSystem(), parent);
   QObject::connect(toolBox, &ToolboxWrapper::connectionSettingsOpen,
                    mChannelSettingsDialog.get(), &BaseSettingsDialog::show);
 
@@ -208,7 +207,11 @@ void GuiInitializer::initSimpleDialogs(
                    importDialog,
                    &ImportDiscoveredContactDialog::onShowRecievedContact);
 
-  auto *appSettingsDialog = new AppSettingsDialog(mApplicationSettingsGuard,parent);
-  QObject::connect(toolBox, &ToolboxWrapper::appSettingsOpen,
-                   appSettingsDialog, &AppSettingsDialog::show);
+  auto* appSettingsDialog =
+      new AppSettingsDialog(mApplicationSettingsGuard, parent);
+  QObject::connect(toolBox, &ToolboxWrapper::appSettingsOpen, appSettingsDialog,
+                   &AppSettingsDialog::show);
+  QObject::connect(appSettingsDialog, &AppSettingsDialog::settingsChanged,
+                   mTranslatorMaster.get(),
+                   &TranslationMaster::onSettingsChanged);
 }

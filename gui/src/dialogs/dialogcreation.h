@@ -5,9 +5,8 @@
 #include <memory>
 #include "containers/storages.h"
 #include "primitives/contact.h"
-namespace Ui {
-class DialogCreation;
-}
+#include "ui_dialogcreation.h"
+#include "utils/translatechangeeventhandler.h"
 
 class ContactModel;
 class QSortFilterProxyModel;
@@ -16,7 +15,8 @@ class QSortFilterProxyModel;
  * @brief Отображает пользователю список контактов, чтобы он мог выбрать один из
  * них для создания диалога
  */
-class DialogCreation : public QDialog {
+class DialogCreation
+    : public TranslateChangeEventHandler<QDialog, Ui::DialogCreation> {
   Q_OBJECT
 
  public:

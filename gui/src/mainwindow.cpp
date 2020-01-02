@@ -6,18 +6,17 @@
 
 #include <QInputDialog>
 #include "dialogs/userinformator.h"
+#include "translation/translationmaster.h"
+#include "utils/applicationsettings.h"
 #include "wrappers/dialoguserviewwrapper.h"
 #include "wrappers/toolboxwrapper.h"
-#include "applicationsettings.h"
-#include "translation/translationmaster.h"
 
 enum MESSAGE_SWITCH_PAGES { OK_DIALOG_PAGE = 0, BAD_DIALOG_PAGE = 1 };
 
-MainWindow::MainWindow(
-        std::shared_ptr<ApplicationSettingsGuard> settingsGuard,
-        std::shared_ptr<TranslationMaster> translatorMaster,
-        std::unique_ptr<AbstractCoreInitializer>&& coreInit,
-        QWidget* parent) :
+MainWindow::MainWindow(std::shared_ptr<ApplicationSettingsGuard> settingsGuard,
+                       std::shared_ptr<TranslationMaster> translatorMaster,
+                       std::unique_ptr<AbstractCoreInitializer>&& coreInit,
+                       QWidget* parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     mUserInformator(std::make_shared<UserInformator>(this)),
@@ -34,13 +33,12 @@ MainWindow::MainWindow(
 
   mCore->init(mUserInformator);
 
-  mGui = std::make_shared<GuiInitializer>(this, mCore, mUserInformator,
-                                          mUserInformator,
-                                          mEventHolder.channelEventQueue(),
-                                          std::move(settingsGuard),
-                                          std::move(translatorMaster));
+  mGui = std::make_shared<GuiInitializer>(
+      this, mCore, mUserInformator, mUserInformator,
+      mEventHolder.channelEventQueue(), std::move(settingsGuard),
+      std::move(translatorMaster));
   on_badDialogSelected(
-      "Для начала отправки сообщений выберите один диалог из списка");
+      tr("Please, select one dialog from the list for texting").toStdString());
   mCore->startMessagesHandling(mUserInformator,
                                mEventHolder.channelEventQueue());
 }

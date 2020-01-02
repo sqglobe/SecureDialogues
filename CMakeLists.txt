@@ -35,6 +35,8 @@ SET (DOCUMENTS_OUTPUT_DIRECTORY
         "Single Directory for all"
     )
 
+set(LOCALE_FILES_DIR "${PROJECT_BINARY_DIR}/bin/locale")
+file(MAKE_DIRECTORY  "${LOCALE_FILES_DIR}")
 
 # As moc files are generated in the binary dir, tell CMake
 # to always look for includes there:

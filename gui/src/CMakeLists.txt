@@ -1,6 +1,7 @@
 project(gui)
 
 find_package(Qt5 COMPONENTS REQUIRED Core Gui Widgets)
+find_package(Qt5LinguistTools REQUIRED)
 find_package (Threads)
 
 set(GUI_MODULE_SOURCES
@@ -38,8 +39,7 @@ set(GUI_MODULE_SOURCES
     dialogs/importdiscoveredcontactdialog.cpp
     wrappers/toolboxwrapper.cpp
     dialogs/appsettingsdialog.cpp
-    applicationsettings.cpp
-    translation/gettexttranslator.cpp
+    utils/applicationsettings.cpp
     translation/translationmaster.cpp
 )
 
@@ -69,7 +69,7 @@ set(GUI_MODULE_HEADERS
     models/dialogs-list/dialogsortmodel.h
     models/active-dialog-messages/usermessagemodeldelegate.h
     models/active-dialog-messages/activedialogmessagemodel.h
-    gui_helpers.h
+    utils/gui_helpers.h
     dialogs/publickeydialog.h
     models/identifiedlistmodel.h
     wrappers/toolboxwrapper.h
@@ -85,9 +85,10 @@ set(GUI_MODULE_HEADERS
     dialogs/importdiscoveredcontactdialog.h
     wrappers/toolboxwrapper.h
     dialogs/appsettingsdialog.h
-    applicationsettings.h
-    translation/gettexttranslator.h
+    utils/applicationsettings.h
     translation/translationmaster.h
+    translation/languages.h
+    utils/translatechangeeventhandler.h
 
 )
 
@@ -136,7 +137,13 @@ qt5_wrap_cpp(WRAP_MOC_GUI ${GUI_MOC})
 
 qt5_wrap_ui(UI_WRAP ${GUI_UI})
 
-add_library(gui STATIC ${GUI_MODULE_SOURCES} ${GUI_MODULE_HEADERS} ${UI_WRAP} ${WRAP_MOC_GUI})
+qt5_create_translation(QM_FILES ${GUI_UI} ${GUI_MODULE_SOURCES} ${GUI_MODULE_HEADERS}  Gui_ru_RU.ts)
 
+
+
+add_library(gui STATIC ${GUI_MODULE_SOURCES} ${GUI_MODULE_HEADERS} ${UI_WRAP} ${WRAP_MOC_GUI} ${QM_FILES})
 target_include_directories(gui PUBLIC  ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries( gui messages Qt5::Core Qt5::Gui  Qt5::Widgets )
+
+add_custom_command(TARGET gui POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy "${QM_FILES}" "${LOCALE_FILES_DIR}")

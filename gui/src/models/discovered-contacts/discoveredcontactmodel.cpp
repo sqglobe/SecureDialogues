@@ -1,10 +1,12 @@
 #include "discoveredcontactmodel.h"
+#include <QApplication>
 #include <ctime>
 
 Q_DECLARE_METATYPE(std::string);
 
 QString convert(const DiscoveredContact& contact) {
-  static const QString arg("Получено от: %1, дата: %2\nАдрес: %3");
+  static const QString arg(
+      QApplication::tr("Recieved from: %1, date: %2\nAddress: %3"));
   std::time_t now_c = std::chrono::system_clock::to_time_t(contact.created());
   std::string data{50, '\0'};
   std::strftime(&data[0], 50, "%d %m %Y %H:%M:%S", std::localtime(&now_c));

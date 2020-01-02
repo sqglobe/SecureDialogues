@@ -1,8 +1,7 @@
 #include "contactdiscoverdialog.h"
-#include "ui_contactdiscoverdialog.h"
 
+#include <QMessageBox>
 #include "communication/discovercontactagent.h"
-#include "interfaces/abstractusernotifier.h"
 #include "models/channelslistmodel.h"
 
 Q_DECLARE_METATYPE(ChannelsListModel::ListItem);
@@ -10,14 +9,14 @@ Q_DECLARE_METATYPE(ChannelsListModel::ListItem);
 ContactDiscoverDialog::ContactDiscoverDialog(
     std::shared_ptr<ChannelsListModel> model,
     std::shared_ptr<DiscoverContactAgent> agent,
-    std::shared_ptr<AbstractUserNotifier> notifier,
     QWidget* parent) :
-    QDialog(parent),
+    TranslateChangeEventHandler<QDialog, Ui::ContactDiscoverDialog>(parent),
     ui(new Ui::ContactDiscoverDialog), mModel(std::move(model)),
-    mAgent(std::move(agent)), mNotifier(std::move(notifier)) {
+    mAgent(std::move(agent)) {
   ui->setupUi(this);
 
   ui->connectionType->setModel(mModel.get());
+  this->setUI(ui);
 }
 
 ContactDiscoverDialog::~ContactDiscoverDialog() {
@@ -27,8 +26,8 @@ ContactDiscoverDialog::~ContactDiscoverDialog() {
 void ContactDiscoverDialog::on_sendContactBtn_clicked() {
   auto connInfoVariant = ui->connectionType->currentData();
   if (!connInfoVariant.canConvert<ChannelsListModel::ListItem>()) {
-    mNotifier->notify(AbstractUserNotifier::Severity::ERROR,
-                      "Выбрано не допустимое значение");
+    QMessageBox::critical(this, tr("Error!"),
+                          tr("Unacceptable value selected"));
     return;
   }
 
@@ -37,33 +36,33 @@ void ContactDiscoverDialog::on_sendContactBtn_clicked() {
   auto name = ui->name->text();
 
   if (address.isEmpty()) {
-    mNotifier->notify(AbstractUserNotifier::Severity::ERROR,
-                      "Не заполнено поле 'Адресат'");
+    QMessageBox::critical(this, tr("Fill the field!"),
+                          tr("Empty field 'Address'"));
     return;
   }
 
   if (name.isEmpty()) {
-    mNotifier->notify(AbstractUserNotifier::Severity::ERROR,
-                      "Не заполнено поле 'Как представить'");
+    QMessageBox::critical(this, tr("Fill the field!"),
+                          tr("Empty field 'Your name'"));
     return;
   }
 
   if (!is_address_valid(address.toUtf8().constData(), item.connectionType)) {
-    mNotifier->notify(AbstractUserNotifier::Severity::ERROR,
-                      "В поле 'Адресат' введено не допустимое значение");
+    QMessageBox::critical(this, tr("Error!"),
+                          tr("Field 'Address' contains unsupported value"));
     return;
   }
 
   try {
     mAgent->discover(name.toStdString(), address.toStdString(),
                      item.name.toStdString());
-    mNotifier->notify(AbstractUserNotifier::Severity::SUCCESS,
-                      "Ваши контактные данные отправлены успешно");
+    QMessageBox::information(this, tr("Success"),
+                             tr("Your contact data sended successfull"));
     this->hide();
   } catch (std::exception&) {
-    mNotifier->notify(
-        AbstractUserNotifier::Severity::ERROR,
-        "Отправка сообщения завершилась с ошибкой, попытайтесь в другой раз");
+    QMessageBox::critical(
+        this, tr("Error!"),
+        tr("Error occured during message sending. Please, try later"));
   }
 }
 
@@ -73,4 +72,12 @@ void ContactDiscoverDialog::showEvent(QShowEvent* event) {
   ui->connectionType->setCurrentIndex(-1);
   ui->name->setText("");
   ui->adressValue->setText("");
+}
+
+void ContactDiscoverDialog::changeEvent(QEvent* event) {
+  if (event->type() == QEvent::LanguageChange) {
+    ui->retranslateUi(this);  // переведём окно заново
+  } else {
+    QDialog::changeEvent(event);
+  }
 }
