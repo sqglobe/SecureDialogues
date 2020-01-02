@@ -9,7 +9,7 @@ DialogActionMenu::DialogActionMenu(
     QObject* parent) :
     QObject(parent),
     mMenu(new QMenu()), mNotifier(std::move(notifier)) {
-  mMenu->setTitle("Укажите действие для диалога");
+  mMenu->setTitle(tr("Select dialog action"));
 }
 
 void DialogActionMenu::aboutToHide() {
@@ -34,11 +34,11 @@ void DialogActionMenu::showMenuAtPos(QPoint pos,
   mMenu->clear();
   QAction* act;
   mDialogId = dialogId;
-  act = mMenu->addAction("Закрыть");
+  act = mMenu->addAction(tr("Close"));
   auto res = connect(act, &QAction::triggered, this,
                      &DialogActionMenu::closeDialogAction);
 
-  act = mMenu->addAction("Удалить");
+  act = mMenu->addAction(tr("Remove"));
   connect(act, &QAction::triggered, this, &DialogActionMenu::removeAction);
 
   mMenu->popup(pos);

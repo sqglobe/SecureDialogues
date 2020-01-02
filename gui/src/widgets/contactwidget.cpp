@@ -9,7 +9,7 @@
 #include "primitives/contact.h"
 #include "widgetsutils.h"
 
-#include "gui_helpers.h"
+#include "utils/gui_helpers.h"
 
 Q_DECLARE_METATYPE(ChannelsListModel::ListItem);
 
@@ -62,7 +62,7 @@ void ContactWidget::setElement(const Contact& info) {
 }
 
 Contact ContactWidget::getElement() {
-  std::vector<std::pair<std::string, std::function<bool(void)> > > checks;
+  std::vector<std::pair<QString, std::function<bool(void)> > > checks;
 
   auto userAdress = findChild<QLineEdit*>("contactAdress");
   auto userName = findChild<QLineEdit*>("contactName");
@@ -73,28 +73,28 @@ Contact ContactWidget::getElement() {
   auto userAddressText = userAdress->text().trimmed();
 
   checks.emplace_back(
-      "Необходимо заполнить поле 'Адрес'",
+      tr("Field 'Address' should be completed"),
       [userAdress]() -> bool { return !userAdress->text().isEmpty(); });
 
-  checks.emplace_back("Необходимо указать имя контакта", [userName]() -> bool {
+  checks.emplace_back("Please, set contact name", [userName]() -> bool {
     return !userName->text().isEmpty();
   });
   checks.emplace_back(
-      "Необходимо заполнить публичный ключ для связи с контактом",
+      tr("Please declare public key for commnication with contact"),
       [pubKey]() -> bool { return !pubKey->toPlainText().isEmpty(); });
   if (connInfoVariant.canConvert<ChannelsListModel::ListItem>()) {
     auto item = qvariant_cast<ChannelsListModel::ListItem>(connInfoVariant);
     if (item.connectionType == ConnectionType::VK) {
       checks.emplace_back(
-          "Поле 'Адрес' должно содержать vk id (например 123451) или ссылку на "
-          "страницу пользователя",
+          tr("Field 'Address' has to contains vk id (for example 123451) or reference"
+          " to your contact page"),
           [userAddressText, type = item.connectionType]() -> bool {
             return is_address_valid(userAddressText.toUtf8().constData(), type);
           });
     } else if (item.connectionType == ConnectionType::GMAIL ||
                item.connectionType == ConnectionType::EMAIL) {
       checks.emplace_back(
-          "Поле 'Адрес' должно содержать e-mail",
+          tr("Please, fill 'Address' with e-mail"),
           [userAddressText, type = item.connectionType]() -> bool {
             return is_address_valid(userAddressText.toUtf8().constData(), type);
           });
@@ -147,20 +147,20 @@ void ContactWidget::connectionNameUpdated(int) {
     auto item = qvariant_cast<ChannelsListModel::ListItem>(connInfoVariant);
     auto userAdress = findChild<QLineEdit*>("contactAdress");
     if (item.connectionType == ConnectionType::VK) {
-      userAdress->setPlaceholderText("Ссылка на страницу пользователя/ВК id");
+      userAdress->setPlaceholderText(tr("Reference to VK user page or VK ID"));
       userAdress->setToolTip(
-          "Укажите ссылку на страницу пользователя (например "
-          "https://vk.com/id99900), либо просто ВК id (например id99900 или "
-          "99900 )");
+          tr("Specify reference to VK page (example "
+          "'https://vk.com/id99900'), or simple VK ID (example id99900 or "
+          "99900 )"));
     } else if (item.connectionType == ConnectionType::EMAIL) {
-      userAdress->setPlaceholderText("E-mail адрес");
-      userAdress->setToolTip("Укажите валидный e-mail адрес");
+      userAdress->setPlaceholderText(tr("E-mail address"));
+      userAdress->setToolTip(tr("Please, set valid e-mail address"));
     } else if (item.connectionType == ConnectionType::GMAIL) {
-      userAdress->setPlaceholderText("E-mail адрес Gmail");
-      userAdress->setToolTip("Укажите валидный e-mail адрес сервиса Gmail");
+      userAdress->setPlaceholderText(tr("E-mail address Gmail"));
+      userAdress->setToolTip(tr("Please, specify valid e-mail address Gmail service"));
     } else if (item.connectionType == ConnectionType::UDP) {
-      userAdress->setPlaceholderText("IP адрес");
-      userAdress->setToolTip("Укажите валидный IP адрес или имя хоста");
+      userAdress->setPlaceholderText(tr("IP address"));
+      userAdress->setToolTip(tr("Set valid IP address or host name"));
     } else {
       userAdress->setPlaceholderText("");
       userAdress->setToolTip("");

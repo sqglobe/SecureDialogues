@@ -1,5 +1,5 @@
 #include "contactmodel.h"
-#include "gui_helpers.h"
+#include "utils/gui_helpers.h"
 
 static QString format("%1 (%2)");
 

@@ -3,6 +3,7 @@
 #include "interfaces/abstractusernotifier.h"
 #include "primitives/contact.h"
 
+
 DialogActionHandlerWrapper::DialogActionHandlerWrapper(
     std::shared_ptr<DialogActionHandler> handler,
     std::shared_ptr<AbstractUserNotifier> notifier,
@@ -15,7 +16,7 @@ void DialogActionHandlerWrapper::createDialogAction(Contact contact) {
     mHandler->createDialog(contact);
   } catch (const std::exception&) {
     mNotifier->notify(AbstractUserNotifier::Severity::ERROR,
-                      "Не удалось создать диалог");
+                      tr("Failed to create dialog").toStdString());
   }
 }
 
@@ -25,10 +26,10 @@ void DialogActionHandlerWrapper::closeDialogAction(std::string dialogId) {
   } catch (const std::out_of_range&) {
     mNotifier->notify(
         AbstractUserNotifier::Severity::ERROR,
-        "Не удалось закрыть диалог. Причина - диалог не существует");
+        tr("Failed to close dialog. Reason - dialog not presented").toStdString());
   } catch (const std::exception&) {
     mNotifier->notify(AbstractUserNotifier::Severity::ERROR,
-                      "Ошибка при закрытии диалога.");
+                      tr("Error occured during dialog closing").toStdString());
   }
 }
 
@@ -38,10 +39,10 @@ void DialogActionHandlerWrapper::abortDialogAction(std::string dialogId) {
   } catch (const std::out_of_range&) {
     mNotifier->notify(
         AbstractUserNotifier::Severity::ERROR,
-        "Не удалось завершить диалог. Причина - диалог не существует");
+        tr("Failed to abort dialog. Reason - dialog not presented").toStdString());
   } catch (const std::exception&) {
     mNotifier->notify(AbstractUserNotifier::Severity::ERROR,
-                      "Ошибка при завершении диалога.");
+                      tr("Error occured during dialog aborting").toStdString());
   }
 }
 
@@ -51,9 +52,9 @@ void DialogActionHandlerWrapper::removeDialogAction(std::string dialogId) {
   } catch (const std::out_of_range&) {
     mNotifier->notify(
         AbstractUserNotifier::Severity::ERROR,
-        "Не удалось удалить диалог. Причина - диалог не существует");
+        tr("Failed to remove dialog. Reason - dialog not presented").toStdString());
   } catch (const std::exception&) {
     mNotifier->notify(AbstractUserNotifier::Severity::ERROR,
-                      "Ошибка при удалении диалога.");
+                      tr("Error occured during dialog removing").toStdString());
   }
 }

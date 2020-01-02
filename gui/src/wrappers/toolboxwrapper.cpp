@@ -5,20 +5,20 @@
 ToolboxWrapper::ToolboxWrapper(QToolBar* toolBar, QObject* parent) :
     QObject(parent) {
   toolBar->addAction(QIcon(":/icons/link-button.png"),
-                     "Открыть дилог для настройки соединений", this,
+                     tr("Open connection settings"), this,
                      &ToolboxWrapper::connectionsSettingsTriggered);
   toolBar->addAction(QIcon(":/icons/address-book.png"),
-                     "Добавить/редактировать контакты", this,
+                     tr("Add/edit or remove your contacts"), this,
                      &ToolboxWrapper::contactsSettingsTriggered);
   toolBar->addAction(QIcon(":/icons/old-key.png"),
-                     "Показать мой публичный ключ", this,
+                     tr("Show my public key"), this,
                      &ToolboxWrapper::publicKeySettingsTriggered);
   toolBar->addAction(QIcon(":/icons/document-with-folded-corner.png"),
-                     "Показать полученные контактные данные", this,
+                     tr("Show recieved contact information"), this,
                      &ToolboxWrapper::recievedContactsSettingsTriggered);
   toolBar->addSeparator();
   toolBar->addAction(QIcon(":/icons/ship-rudder.png"),
-                     "Показать общие настройки приложения", this,
+                     tr("Show general application settings"), this,
                      &ToolboxWrapper::appSettingsTriggered);
 }
 

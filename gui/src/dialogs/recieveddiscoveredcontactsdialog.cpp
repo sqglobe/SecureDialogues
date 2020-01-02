@@ -1,5 +1,5 @@
 #include "recieveddiscoveredcontactsdialog.h"
-#include "ui_recieveddiscoveredcontactsdialog.h"
+
 
 #include <QMessageBox>
 #include "models/discovered-contacts/discoveredcontactmodel.h"
@@ -11,7 +11,7 @@ RecievedDiscoveredContactsDialog::RecievedDiscoveredContactsDialog(
     DiscoveredContactModel* model,
     std::shared_ptr<RecievedContactsStorageWrapper> storageWrapper,
     QWidget* parent) :
-    QDialog(parent),
+    TranslateChangeEventHandler<QDialog, Ui::RecievedDiscoveredContactsDialog>(parent),
     ui(new Ui::RecievedDiscoveredContactsDialog),
     mStorageWrapper(std::move(storageWrapper)) {
   ui->setupUi(this);
@@ -20,6 +20,7 @@ RecievedDiscoveredContactsDialog::RecievedDiscoveredContactsDialog(
   ui->recievedContacts->setContextMenuPolicy(Qt::CustomContextMenu);
   connect(ui->recievedContacts, &QListView::customContextMenuRequested, this,
           &RecievedDiscoveredContactsDialog::requestToShowMenu);
+  this->setUI(ui);
 }
 
 RecievedDiscoveredContactsDialog::~RecievedDiscoveredContactsDialog() {
@@ -54,7 +55,7 @@ void RecievedDiscoveredContactsDialog::removeRecievedContact(
     } else {
       QMessageBox::warning(
           this, tr("Error!"),
-          tr("Error occured during removing, please try later!"));
+          tr("Error occured during removing. Please, try later!"));
     }
   }
 }

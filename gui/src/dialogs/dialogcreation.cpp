@@ -6,17 +6,18 @@
 #include <QMessageBox>
 #include <QSortFilterProxyModel>
 
-#include "gui_helpers.h"
+#include "utils/gui_helpers.h"
 
 DialogCreation::DialogCreation(std::shared_ptr<ContactModel> model,
                                std::shared_ptr<ContactStorage> storage,
                                QWidget* parent) :
-    QDialog(parent),
+    TranslateChangeEventHandler<QDialog, Ui::DialogCreation>(parent),
     ui(new Ui::DialogCreation), mModel(std::move(model)),
     mProxy(new QSortFilterProxyModel(this)), mStorage(std::move(storage)) {
   ui->setupUi(this);
   mProxy->setSourceModel(mModel.get());
   ui->contactsView->setModel(mProxy);
+  this->setUI(ui);
 }
 
 DialogCreation::~DialogCreation() {

@@ -1,5 +1,4 @@
 #include "contactdiscoverdialog.h"
-#include "ui_contactdiscoverdialog.h"
 
 #include <QMessageBox>
 #include "communication/discovercontactagent.h"
@@ -11,12 +10,13 @@ ContactDiscoverDialog::ContactDiscoverDialog(
     std::shared_ptr<ChannelsListModel> model,
     std::shared_ptr<DiscoverContactAgent> agent,
     QWidget* parent) :
-    QDialog(parent),
+    TranslateChangeEventHandler<QDialog, Ui::ContactDiscoverDialog>(parent),
     ui(new Ui::ContactDiscoverDialog), mModel(std::move(model)),
     mAgent(std::move(agent)) {
   ui->setupUi(this);
 
   ui->connectionType->setModel(mModel.get());
+  this->setUI(ui);
 }
 
 ContactDiscoverDialog::~ContactDiscoverDialog() {
@@ -62,7 +62,7 @@ void ContactDiscoverDialog::on_sendContactBtn_clicked() {
   } catch (std::exception&) {
     QMessageBox::critical(
         this, tr("Error!"),
-        tr("Error occured during message sending. Please try later"));
+        tr("Error occured during message sending. Please, try later"));
   }
 }
 
@@ -72,4 +72,13 @@ void ContactDiscoverDialog::showEvent(QShowEvent* event) {
   ui->connectionType->setCurrentIndex(-1);
   ui->name->setText("");
   ui->adressValue->setText("");
+}
+
+void ContactDiscoverDialog::changeEvent(QEvent *event)
+{
+    if (event->type() == QEvent::LanguageChange) {
+      ui->retranslateUi(this);  // переведём окно заново
+    } else {
+      QDialog::changeEvent(event);
+    }
 }

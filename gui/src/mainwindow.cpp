@@ -8,7 +8,7 @@
 #include "dialogs/userinformator.h"
 #include "wrappers/dialoguserviewwrapper.h"
 #include "wrappers/toolboxwrapper.h"
-#include "applicationsettings.h"
+#include "utils/applicationsettings.h"
 #include "translation/translationmaster.h"
 
 enum MESSAGE_SWITCH_PAGES { OK_DIALOG_PAGE = 0, BAD_DIALOG_PAGE = 1 };
@@ -40,7 +40,7 @@ MainWindow::MainWindow(
                                           std::move(settingsGuard),
                                           std::move(translatorMaster));
   on_badDialogSelected(
-      "Для начала отправки сообщений выберите один диалог из списка");
+      tr("Please, select one dialog from the list for texting").toStdString());
   mCore->startMessagesHandling(mUserInformator,
                                mEventHolder.channelEventQueue());
 }

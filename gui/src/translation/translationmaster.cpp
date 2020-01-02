@@ -1,6 +1,6 @@
 #include "translationmaster.h"
 
-#include "applicationsettings.h"
+#include "utils/applicationsettings.h"
 
 #include <libintl.h>
 #include <QApplication>

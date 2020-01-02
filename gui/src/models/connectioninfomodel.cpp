@@ -1,7 +1,7 @@
 #include "connectioninfomodel.h"
 #include <QBrush>
 #include <QColor>
-#include "gui_helpers.h"
+#include "utils/gui_helpers.h"
 #include "primitives/connectionholder.h"
 
 ConnectionInfoModel::ConnectionInfoModel(

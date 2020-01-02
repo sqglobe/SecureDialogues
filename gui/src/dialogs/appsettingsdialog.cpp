@@ -1,13 +1,12 @@
 #include "appsettingsdialog.h"
-#include "ui_appsettingsdialog.h"
 
 #include <QMessageBox>
-#include "applicationsettings.h"
+#include "utils/applicationsettings.h"
 
 AppSettingsDialog::AppSettingsDialog(
     const std::shared_ptr<ApplicationSettingsGuard>& guard,
     QWidget* parent) :
-    QDialog(parent),
+    TranslateChangeEventHandler<QDialog, Ui::AppSettingsDialog>(parent),
     ui(new Ui::AppSettingsDialog), mSettings(guard->getEditableSettings()) {
   ui->setupUi(this);
   ui->languageSettings->addItem(
@@ -21,19 +20,14 @@ AppSettingsDialog::AppSettingsDialog(
       index != -1) {
     ui->languageSettings->setCurrentIndex(index);
   }
+
+  this->setUI(ui);
 }
 
 AppSettingsDialog::~AppSettingsDialog() {
   delete ui;
 }
 
-void AppSettingsDialog::changeEvent(QEvent* event) {
-  if (event->type() == QEvent::LanguageChange) {
-    ui->retranslateUi(this);  // переведём окно заново
-  } else {
-    QDialog::changeEvent(event);
-  }
-}
 
 void AppSettingsDialog::on_saveButton_clicked() {
   const auto lang =

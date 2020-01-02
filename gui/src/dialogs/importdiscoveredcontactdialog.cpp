@@ -9,7 +9,7 @@
 ImportDiscoveredContactDialog::ImportDiscoveredContactDialog(std::shared_ptr<ContactWidget> widget,
                                                              std::shared_ptr<RecievedContactsStorageWrapper> wrapper,
                                                              QWidget *parent) :
-    QDialog(parent),
+    TranslateChangeEventHandler<QDialog, Ui::ImportDiscoveredContactDialog>(parent),
     ui(new Ui::ImportDiscoveredContactDialog),
     mWidget(std::move(widget)),
     mWrapper(std::move(wrapper))
@@ -17,6 +17,7 @@ ImportDiscoveredContactDialog::ImportDiscoveredContactDialog(std::shared_ptr<Con
     ui->setupUi(this);
     ui->contactWidget->addWidget(mWidget.get());
     mWidget->actionEnable();
+    this->setUI(ui);
 }
 
 ImportDiscoveredContactDialog::~ImportDiscoveredContactDialog()
@@ -45,7 +46,8 @@ void ImportDiscoveredContactDialog::on_importButton_clicked()
      const auto contact = mWidget->getElement();
      mWrapper->saveToContact(contact, mDialogId.value());
      mDialogId.reset();
-     QMessageBox::information(this, tr("Import successed"), tr("Contact imported successfl"));
+     QMessageBox::information(this, tr("Import successed"),
+                              tr("Contact imported successful"));
     } catch (const std::exception& ex) {
         QMessageBox::warning(this, tr("Import error!"), ex.what());
     }

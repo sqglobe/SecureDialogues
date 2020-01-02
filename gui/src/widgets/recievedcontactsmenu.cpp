@@ -6,16 +6,16 @@
 
 RecievedContactsMenu::RecievedContactsMenu(QObject* parent) :
     QObject(parent), mMenu(new QMenu) {
-  mMenu->setTitle("Укажите действие с полученным контактом");
-  QAction* act = mMenu->addAction("Просмотр/добавить");
+  mMenu->setTitle(tr("Select action for recieved contact information"));
+  QAction* act = mMenu->addAction(tr("View/Import"));
   QObject::connect(act, &QAction::triggered, this,
                    &RecievedContactsMenu::onShowRecievedContact);
   act->setToolTip(
-      "Щелкните для подробного просмотра полученных данных и добавления в "
-      "контакты");
+      tr("Click for detailed view recieved contact information and import to "
+      "your contacts"));
 
-  act = mMenu->addAction("Удалить");
-  act->setToolTip("Щелкните для удаления полученных данных");
+  act = mMenu->addAction(tr("Remove"));
+  act->setToolTip(tr("Click to remove selected item"));
   QObject::connect(act, &QAction::triggered, this,
                    &RecievedContactsMenu::onRemoveRecievedContact);
 }

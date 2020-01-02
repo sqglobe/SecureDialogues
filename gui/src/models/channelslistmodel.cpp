@@ -4,7 +4,7 @@
 
 #include <QBrush>
 #include <QColor>
-
+#include <QApplication>
 #include <iostream>
 Q_DECLARE_METATYPE(ChannelsListModel::ListItem);
 
@@ -14,7 +14,7 @@ ChannelsListModel::ChannelsListModel(
                  std::back_inserter(mChannelNames),
                  [](const ConnectionHolder& cInfo) -> ListItem {
                    return {cInfo.getConnectionName().c_str(),
-                           ChannelsListModel::tr("Connection not established yet"),
+                           QApplication::tr("Connection not established yet"),
                            Channel::ChannelStatus::UNDEFINED, cInfo.getType()};
                  });
 }
@@ -54,7 +54,7 @@ void ChannelsListModel::added(const ChangeListener::element& element) {
   [[maybe_unused]] std::lock_guard<std::recursive_mutex> guard(mMutex);
   beginInsertRows(QModelIndex(), mChannelNames.size(), mChannelNames.size());
   mChannelNames.append({element.getConnectionName().c_str(),
-                        tr("Connection not established yet"),
+                        QApplication::tr("Connection not established yet"),
                         Channel::ChannelStatus::UNDEFINED, element.getType()});
   endInsertRows();
 }

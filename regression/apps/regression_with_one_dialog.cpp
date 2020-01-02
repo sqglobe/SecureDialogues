@@ -13,7 +13,7 @@
 #include "stand/onechannelcoreinitializer.h"
 #include "utils/messagemarshaller.h"
 
-#include "applicationsettings.h"
+#include "utils/applicationsettings.h"
 #include "translation/translationmaster.h"
 
 #include <chrono>

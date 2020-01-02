@@ -10,7 +10,7 @@
 #include <db_cxx.h>
 #include <dbstl_common.h>
 
-#include "applicationsettings.h"
+#include "utils/applicationsettings.h"
 #include "core-initializer/coreinitializer.h"
 #include "translation/translationmaster.h"
 

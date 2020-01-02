@@ -4,14 +4,13 @@
 #include <QDialog>
 #include <memory>
 
-namespace Ui {
-class AppSettingsDialog;
-}
+#include "utils/translatechangeeventhandler.h"
+#include "ui_appsettingsdialog.h"
 
 class ApplicationSettingsGuard;
 class ApplicationSettings;
 
-class AppSettingsDialog : public QDialog {
+class AppSettingsDialog : public TranslateChangeEventHandler<QDialog, Ui::AppSettingsDialog> {
   Q_OBJECT
 
  public:
@@ -19,9 +18,6 @@ class AppSettingsDialog : public QDialog {
       const std::shared_ptr<ApplicationSettingsGuard>& guard,
       QWidget* parent = nullptr);
   ~AppSettingsDialog() override;
-
- protected:
-  void changeEvent(QEvent* event) override;
 
  signals:
   void settingsChanged();

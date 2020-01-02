@@ -1,5 +1,4 @@
 #include "publickeydialog.h"
-#include "ui_publickeydialog.h"
 
 #include "crypto/cryptosystemimpl.h"
 
@@ -7,12 +6,14 @@
 
 PublicKeyDialog::PublicKeyDialog(std::shared_ptr<CryptoSystemImpl> system,
                                  QWidget* parent) :
-    QDialog(parent),
+    TranslateChangeEventHandler<QDialog, Ui::PublicKeyDialog>(parent),
     ui(new Ui::PublicKeyDialog), mSystem(system) {
   ui->setupUi(this);
 
   connect(ui->generatePublickKey, &QPushButton::pressed, this,
           &PublicKeyDialog::generateKey);
+
+  this->setUI(ui);
 }
 
 PublicKeyDialog::~PublicKeyDialog() {
@@ -31,7 +32,7 @@ void PublicKeyDialog::generateKey() {
                                  tr("Asymmetric keys successful generated"));
     } else {
         QMessageBox::information(this, tr("Error!"),
-                                 tr("Failed to generate asymmetric keys, please try later"));
+                                 tr("Failed to generate asymmetric keys. Please, try later"));
     }
   }
 }

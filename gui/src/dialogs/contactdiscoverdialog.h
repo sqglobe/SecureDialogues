@@ -3,15 +3,15 @@
 
 #include <QDialog>
 #include <memory>
+#include "ui_contactdiscoverdialog.h"
+#include "utils/translatechangeeventhandler.h"
 
 class DiscoverContactAgent;
 class ChannelsListModel;
 
-namespace Ui {
-class ContactDiscoverDialog;
-}
 
-class ContactDiscoverDialog : public QDialog {
+class ContactDiscoverDialog :
+        public TranslateChangeEventHandler<QDialog,Ui::ContactDiscoverDialog>  {
   Q_OBJECT
 
  public:
@@ -22,6 +22,7 @@ class ContactDiscoverDialog : public QDialog {
 
  protected:
   void showEvent(QShowEvent* event) override;
+ void changeEvent(QEvent* event) override;
 
  private slots:
   void on_sendContactBtn_clicked();

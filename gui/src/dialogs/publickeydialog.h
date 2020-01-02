@@ -4,13 +4,12 @@
 #include <QDialog>
 
 #include <memory>
+#include "utils/translatechangeeventhandler.h"
+#include "ui_publickeydialog.h"
+
 class CryptoSystemImpl;
 
-namespace Ui {
-class PublicKeyDialog;
-}
-
-class PublicKeyDialog : public QDialog {
+class PublicKeyDialog : public TranslateChangeEventHandler<QDialog,Ui::PublicKeyDialog>  {
   Q_OBJECT
 
  public:

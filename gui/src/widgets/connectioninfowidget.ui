@@ -43,7 +43,7 @@
         </size>
        </property>
        <property name="text">
-        <string>Имя подключения</string>
+        <string>Connection name</string>
        </property>
       </widget>
      </item>
@@ -71,7 +71,7 @@
         </size>
        </property>
        <property name="text">
-        <string>Тип подключения</string>
+        <string>Connection type</string>
        </property>
       </widget>
      </item>
@@ -115,7 +115,7 @@
       </sizepolicy>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="empty_conn"/>
      <widget class="QWidget" name="udp_conn"/>
@@ -259,14 +259,14 @@
          <item row="1" column="0">
           <widget class="QLabel" name="label_5">
            <property name="text">
-            <string>Пароль</string>
+            <string>Password</string>
            </property>
           </widget>
          </item>
          <item row="0" column="0">
           <widget class="QLabel" name="label_3">
            <property name="text">
-            <string>Логин</string>
+            <string>Login</string>
            </property>
           </widget>
          </item>
@@ -337,7 +337,7 @@
        <item>
         <widget class="QCheckBox" name="useTls">
          <property name="text">
-          <string>Использовать  безопасное соединение</string>
+          <string>Use safe connection</string>
          </property>
          <property name="checked">
           <bool>true</bool>
@@ -388,7 +388,7 @@
            </font>
           </property>
           <property name="text">
-           <string>Статус</string>
+           <string>Status</string>
           </property>
           <property name="indent">
            <number>5</number>
