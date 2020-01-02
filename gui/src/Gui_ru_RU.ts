@@ -39,12 +39,12 @@
         <translation>Сохранить</translation>
     </message>
     <message>
-        <location filename="dialogs/appsettingsdialog.cpp" line="37"/>
+        <location filename="dialogs/appsettingsdialog.cpp" line="36"/>
         <source>Success!</source>
         <translation>Успешно!</translation>
     </message>
     <message>
-        <location filename="dialogs/appsettingsdialog.cpp" line="38"/>
+        <location filename="dialogs/appsettingsdialog.cpp" line="37"/>
         <source>Settings saved successful</source>
         <translation>Настройки сохранены успешно</translation>
     </message>
@@ -205,14 +205,14 @@
         <translation>Необходимо указать тип соединения</translation>
     </message>
     <message>
-        <location filename="widgets/connectioninfowidget.cpp" line="201"/>
-        <location filename="widgets/connectioninfowidget.cpp" line="227"/>
+        <location filename="widgets/connectioninfowidget.cpp" line="199"/>
+        <location filename="widgets/connectioninfowidget.cpp" line="228"/>
         <source>Field &apos;Login&apos; should be completed</source>
         <translation>Необходимо заполнить поле &apos;Логин&apos; </translation>
     </message>
     <message>
-        <location filename="widgets/connectioninfowidget.cpp" line="206"/>
-        <location filename="widgets/connectioninfowidget.cpp" line="231"/>
+        <location filename="widgets/connectioninfowidget.cpp" line="205"/>
+        <location filename="widgets/connectioninfowidget.cpp" line="236"/>
         <source>Field &apos;Password&apos; should be completed</source>
         <translation>Необходимо заполнить поле &apos;Пароль&apos;</translation>
     </message>
@@ -222,28 +222,28 @@
         <translation>Необходимо заполнить поле &apos;URL&apos;</translation>
     </message>
     <message>
-        <location filename="widgets/connectioninfowidget.cpp" line="215"/>
+        <location filename="widgets/connectioninfowidget.cpp" line="216"/>
         <source>Field &apos;URL&apos; contains wrond format</source>
         <translation>Значение в поле &apos;URL&apos; имеет неверный формат</translation>
     </message>
     <message>
-        <location filename="widgets/connectioninfowidget.cpp" line="236"/>
+        <location filename="widgets/connectioninfowidget.cpp" line="245"/>
         <source>Field &apos;From&apos; empty or contains wrong format</source>
         <translation>Поле &apos;От&apos; не заполнено или содержит не верный формат</translation>
     </message>
     <message>
-        <location filename="widgets/connectioninfowidget.cpp" line="244"/>
+        <location filename="widgets/connectioninfowidget.cpp" line="252"/>
         <source>&apos;Address of SMTP server&apos; empty</source>
         <translation>&apos;Адрес SMTP сервера&apos; не указан</translation>
     </message>
     <message>
-        <location filename="widgets/connectioninfowidget.cpp" line="249"/>
+        <location filename="widgets/connectioninfowidget.cpp" line="257"/>
         <source>Field &apos;Port of SMTP server&apos; empty or contains wrong format</source>
         <translation>Поле &apos;Порт SMTP сервера&apos; не заполнено или содержит не верный формат</translation>
     </message>
     <message>
-        <location filename="widgets/connectioninfowidget.cpp" line="356"/>
-        <location filename="widgets/connectioninfowidget.cpp" line="361"/>
+        <location filename="widgets/connectioninfowidget.cpp" line="364"/>
+        <location filename="widgets/connectioninfowidget.cpp" line="369"/>
         <source>&lt;a href=&apos;%1&apos;&gt;Open web-page to get Oauth2 code&lt;/a&gt;</source>
         <translation>&lt;a href=&apos;%1&apos;&gt;Открыть web-браузер для плучения кода Oauth2&lt;/a&gt;</translation>
     </message>
@@ -407,47 +407,47 @@
         <translation>Поле &apos;Адрес&apos; должно содержать ВК id (например 123451) или ссылке на страницу пользователя</translation>
     </message>
     <message>
-        <location filename="widgets/contactwidget.cpp" line="97"/>
+        <location filename="widgets/contactwidget.cpp" line="98"/>
         <source>Please, fill &apos;Address&apos; with e-mail</source>
         <translation>Пожалуйста, заполните поле &apos;Адрес&apos; валидным e-mail</translation>
     </message>
     <message>
-        <location filename="widgets/contactwidget.cpp" line="150"/>
+        <location filename="widgets/contactwidget.cpp" line="151"/>
         <source>Reference to VK user page or VK ID</source>
         <translation>Ссылка на страницу пользователя ВК или ВК ID</translation>
     </message>
     <message>
-        <location filename="widgets/contactwidget.cpp" line="152"/>
+        <location filename="widgets/contactwidget.cpp" line="153"/>
         <source>Specify reference to VK page (example &apos;https://vk.com/id99900&apos;), or simple VK ID (example id99900 or 99900 )</source>
         <translation>Введите ссылку на страницу пользователя ВК(например, &apos;https://vk.com/id99900&apos;), или просто ВК ID(например, id99900 или 99900)</translation>
     </message>
     <message>
-        <location filename="widgets/contactwidget.cpp" line="156"/>
+        <location filename="widgets/contactwidget.cpp" line="157"/>
         <source>E-mail address</source>
         <translation>Адрес E-mail</translation>
     </message>
     <message>
-        <location filename="widgets/contactwidget.cpp" line="157"/>
+        <location filename="widgets/contactwidget.cpp" line="158"/>
         <source>Please, set valid e-mail address</source>
         <translation>Пожалуйста, укажите корректный e-mail адрес</translation>
     </message>
     <message>
-        <location filename="widgets/contactwidget.cpp" line="159"/>
+        <location filename="widgets/contactwidget.cpp" line="160"/>
         <source>E-mail address Gmail</source>
         <translation>E-mail адрес сервиса Gmail</translation>
     </message>
     <message>
-        <location filename="widgets/contactwidget.cpp" line="160"/>
+        <location filename="widgets/contactwidget.cpp" line="162"/>
         <source>Please, specify valid e-mail address Gmail service</source>
         <translation>Пожалуйста, укажите корретный адрес для сервиса Gmail</translation>
     </message>
     <message>
-        <location filename="widgets/contactwidget.cpp" line="162"/>
+        <location filename="widgets/contactwidget.cpp" line="164"/>
         <source>IP address</source>
         <translation>IP адрес</translation>
     </message>
     <message>
-        <location filename="widgets/contactwidget.cpp" line="163"/>
+        <location filename="widgets/contactwidget.cpp" line="165"/>
         <source>Set valid IP address or host name</source>
         <translation>Необходимо указать корректный IP адрес или имя хоста</translation>
     </message>
@@ -455,12 +455,12 @@
 <context>
     <name>DialogActionHandlerWrapper</name>
     <message>
-        <location filename="wrappers/dialogactionhandlerwrapper.cpp" line="19"/>
+        <location filename="wrappers/dialogactionhandlerwrapper.cpp" line="18"/>
         <source>Failed to create dialog</source>
         <translation>Не удалось создать диалог</translation>
     </message>
     <message>
-        <location filename="wrappers/dialogactionhandlerwrapper.cpp" line="29"/>
+        <location filename="wrappers/dialogactionhandlerwrapper.cpp" line="28"/>
         <source>Failed to close dialog. Reason - dialog not presented</source>
         <translation>Не удалось закрыть диалог. Причина - диалог не существует</translation>
     </message>
@@ -475,17 +475,17 @@
         <translation>Не удалось принудительно закрыть диалог. Причина - диалог не существует</translation>
     </message>
     <message>
-        <location filename="wrappers/dialogactionhandlerwrapper.cpp" line="45"/>
+        <location filename="wrappers/dialogactionhandlerwrapper.cpp" line="46"/>
         <source>Error occured during dialog aborting</source>
         <translation>Возникла ошибка при принудительном завершении диалога</translation>
     </message>
     <message>
-        <location filename="wrappers/dialogactionhandlerwrapper.cpp" line="55"/>
+        <location filename="wrappers/dialogactionhandlerwrapper.cpp" line="56"/>
         <source>Failed to remove dialog. Reason - dialog not presented</source>
         <translation>Не удалось удалить диалог. Причина - диалог не существует</translation>
     </message>
     <message>
-        <location filename="wrappers/dialogactionhandlerwrapper.cpp" line="58"/>
+        <location filename="wrappers/dialogactionhandlerwrapper.cpp" line="60"/>
         <source>Error occured during dialog removing</source>
         <translation>Возникла ошибка при удалении диалога</translation>
     </message>
@@ -517,7 +517,7 @@
     </message>
     <message>
         <location filename="dialogs/dialogcreation.cpp" line="30"/>
-        <location filename="dialogs/dialogcreation.cpp" line="56"/>
+        <location filename="dialogs/dialogcreation.cpp" line="57"/>
         <source>Error!</source>
         <translation>Ошибка!</translation>
     </message>
@@ -527,17 +527,17 @@
         <translation>Необходимо выбрать одно из соединений для отправки своих контактных данных</translation>
     </message>
     <message>
-        <location filename="dialogs/dialogcreation.cpp" line="42"/>
+        <location filename="dialogs/dialogcreation.cpp" line="43"/>
         <source>Choice required</source>
         <translation>Необходим выбор</translation>
     </message>
     <message>
-        <location filename="dialogs/dialogcreation.cpp" line="43"/>
+        <location filename="dialogs/dialogcreation.cpp" line="44"/>
         <source>Do you want to start conversation with </source>
         <translation>Вы хотите начать диалог с </translation>
     </message>
     <message>
-        <location filename="dialogs/dialogcreation.cpp" line="57"/>
+        <location filename="dialogs/dialogcreation.cpp" line="58"/>
         <source>Error occured during dialog creation: </source>
         <translation>Ошибка возникла во время создания диалога</translation>
     </message>
@@ -570,17 +570,17 @@
         <translation>Импорт</translation>
     </message>
     <message>
-        <location filename="dialogs/importdiscoveredcontactdialog.cpp" line="49"/>
+        <location filename="dialogs/importdiscoveredcontactdialog.cpp" line="46"/>
         <source>Import successed</source>
         <translation>Импорт успешен</translation>
     </message>
     <message>
-        <location filename="dialogs/importdiscoveredcontactdialog.cpp" line="50"/>
+        <location filename="dialogs/importdiscoveredcontactdialog.cpp" line="47"/>
         <source>Contact imported successful</source>
         <translation>Импорт контакта выполнен успешно</translation>
     </message>
     <message>
-        <location filename="dialogs/importdiscoveredcontactdialog.cpp" line="52"/>
+        <location filename="dialogs/importdiscoveredcontactdialog.cpp" line="49"/>
         <source>Import error!</source>
         <translation>Ошибка импорта!</translation>
     </message>
@@ -628,7 +628,7 @@
         <translation>Отправить</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="43"/>
+        <location filename="mainwindow.cpp" line="41"/>
         <source>Please, select one dialog from the list for texting</source>
         <translation>Пожалуйста, укажите один диалог из списка для общения</translation>
     </message>
@@ -671,12 +671,12 @@
         <translation>Ассиметричный ключ успешно сгенерирован</translation>
     </message>
     <message>
-        <location filename="dialogs/publickeydialog.cpp" line="34"/>
+        <location filename="dialogs/publickeydialog.cpp" line="35"/>
         <source>Error!</source>
         <translation>Ошибка!</translation>
     </message>
     <message>
-        <location filename="dialogs/publickeydialog.cpp" line="35"/>
+        <location filename="dialogs/publickeydialog.cpp" line="36"/>
         <source>Failed to generate asymmetric keys. Please, try later</source>
         <translation>Не удалось выполнить генерацию ключа. Пожалуйста, повторите попытку позднее</translation>
     </message>
@@ -684,7 +684,7 @@
 <context>
     <name>QApplication</name>
     <message>
-        <location filename="models/discovered-contacts/discoveredcontactmodel.cpp" line="8"/>
+        <location filename="models/discovered-contacts/discoveredcontactmodel.cpp" line="9"/>
         <source>Recieved from: %1, date: %2
 Address: %3</source>
         <translation>Получено от: %1, дата: %2
@@ -781,17 +781,17 @@ Address: %3</source>
         <translation>Добавить/изменить или удалить контакты</translation>
     </message>
     <message>
-        <location filename="wrappers/toolboxwrapper.cpp" line="14"/>
+        <location filename="wrappers/toolboxwrapper.cpp" line="13"/>
         <source>Show my public key</source>
         <translation>Показать мой публичный ключ</translation>
     </message>
     <message>
-        <location filename="wrappers/toolboxwrapper.cpp" line="17"/>
+        <location filename="wrappers/toolboxwrapper.cpp" line="16"/>
         <source>Show recieved contact information</source>
         <translation>Показать полученные контактные данные</translation>
     </message>
     <message>
-        <location filename="wrappers/toolboxwrapper.cpp" line="21"/>
+        <location filename="wrappers/toolboxwrapper.cpp" line="20"/>
         <source>Show general application settings</source>
         <translation>Показать настройки приложения</translation>
     </message>
