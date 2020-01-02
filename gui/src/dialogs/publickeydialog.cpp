@@ -20,19 +20,20 @@ PublicKeyDialog::~PublicKeyDialog() {
   delete ui;
 }
 
-
 void PublicKeyDialog::generateKey() {
-  const auto res = QMessageBox::question(this, tr("Choise required"),
-                   tr("Are you sure to generate new keys?"
-                      "Your must notify your contacts about new keys."),
-                   QMessageBox::Apply | QMessageBox::Cancel);
+  const auto res = QMessageBox::question(
+      this, tr("Choise required"),
+      tr("Are you sure to generate new keys?"
+         "Your must notify your contacts about new keys."),
+      QMessageBox::Apply | QMessageBox::Cancel);
   if (QMessageBox::Apply == res) {
     if (mSystem->generateAsymetricKeys()) {
-        QMessageBox::information(this, tr("Successful!"),
-                                 tr("Asymmetric keys successful generated"));
+      QMessageBox::information(this, tr("Successful!"),
+                               tr("Asymmetric keys successful generated"));
     } else {
-        QMessageBox::information(this, tr("Error!"),
-                                 tr("Failed to generate asymmetric keys. Please, try later"));
+      QMessageBox::information(
+          this, tr("Error!"),
+          tr("Failed to generate asymmetric keys. Please, try later"));
     }
   }
 }

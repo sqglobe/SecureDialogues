@@ -12,7 +12,7 @@ RecievedContactsMenu::RecievedContactsMenu(QObject* parent) :
                    &RecievedContactsMenu::onShowRecievedContact);
   act->setToolTip(
       tr("Click for detailed view recieved contact information and import to "
-      "your contacts"));
+         "your contacts"));
 
   act = mMenu->addAction(tr("Remove"));
   act->setToolTip(tr("Click to remove selected item"));

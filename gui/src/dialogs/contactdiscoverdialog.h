@@ -9,9 +9,8 @@
 class DiscoverContactAgent;
 class ChannelsListModel;
 
-
-class ContactDiscoverDialog :
-        public TranslateChangeEventHandler<QDialog,Ui::ContactDiscoverDialog>  {
+class ContactDiscoverDialog
+    : public TranslateChangeEventHandler<QDialog, Ui::ContactDiscoverDialog> {
   Q_OBJECT
 
  public:
@@ -22,7 +21,7 @@ class ContactDiscoverDialog :
 
  protected:
   void showEvent(QShowEvent* event) override;
- void changeEvent(QEvent* event) override;
+  void changeEvent(QEvent* event) override;
 
  private slots:
   void on_sendContactBtn_clicked();

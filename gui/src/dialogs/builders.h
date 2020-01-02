@@ -58,11 +58,10 @@ ContactDiscoverDialog* make_discover_dialog(
     const std::shared_ptr<Channel::EventQueue>& queue,
     QWidget* parent);
 
-ImportDiscoveredContactDialog *make_import_contact_dialog(
-        std::shared_ptr<RecievedContactsStorageWrapper> wrapper,
-        const std::shared_ptr<ConnectionStorage> &connInfo,
-        const std::shared_ptr<Channel::EventQueue>& queue,
-        QWidget *parent);
-
+ImportDiscoveredContactDialog* make_import_contact_dialog(
+    std::shared_ptr<RecievedContactsStorageWrapper> wrapper,
+    const std::shared_ptr<ConnectionStorage>& connInfo,
+    const std::shared_ptr<Channel::EventQueue>& queue,
+    QWidget* parent);
 
 #endif  // BUILDERS_H

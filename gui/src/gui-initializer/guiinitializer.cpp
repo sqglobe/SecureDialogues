@@ -35,10 +35,10 @@
 #include "wrappers/dialoguserviewwrapper.h"
 #include "wrappers/recievedcontactsstoragewrapper.h"
 
-#include "utils/applicationsettings.h"
 #include "dialogs/appsettingsdialog.h"
 #include "dialogs/importdiscoveredcontactdialog.h"
 #include "translation/translationmaster.h"
+#include "utils/applicationsettings.h"
 #include "wrappers/toolboxwrapper.h"
 
 /// dialogsViews

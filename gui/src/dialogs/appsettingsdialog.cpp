@@ -28,7 +28,6 @@ AppSettingsDialog::~AppSettingsDialog() {
   delete ui;
 }
 
-
 void AppSettingsDialog::on_saveButton_clicked() {
   const auto lang =
       static_cast<Language>(ui->languageSettings->currentData().value<int>());

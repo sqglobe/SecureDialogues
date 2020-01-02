@@ -3,14 +3,15 @@
 
 #include <QDialog>
 #include <memory>
-#include "utils/translatechangeeventhandler.h"
 #include "ui_recieveddiscoveredcontactsdialog.h"
+#include "utils/translatechangeeventhandler.h"
 
 class RecievedContactsStorageWrapper;
 class DiscoveredContactModel;
 
-class RecievedDiscoveredContactsDialog :
-        public TranslateChangeEventHandler<QDialog, Ui::RecievedDiscoveredContactsDialog>  {
+class RecievedDiscoveredContactsDialog
+    : public TranslateChangeEventHandler<QDialog,
+                                         Ui::RecievedDiscoveredContactsDialog> {
   Q_OBJECT
 
  public:

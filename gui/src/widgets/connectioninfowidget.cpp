@@ -191,27 +191,28 @@ ConnectionHolder ConnectionInfoWidget::getElement() noexcept(false) {
 
   auto connType = findChild<QComboBox*>("connectionType");
 
-  checks.emplace_back(tr("Connection type required!"),
-                      [connType]() -> bool {
-                        return connType->currentIndex() !=
-                               static_cast<int>(ConnectionType::UNDEF);
-                      });
+  checks.emplace_back(tr("Connection type required!"), [connType]() -> bool {
+    return connType->currentIndex() != static_cast<int>(ConnectionType::UNDEF);
+  });
 
   if (connType->currentIndex() == static_cast<int>(ConnectionType::GMAIL)) {
-    checks.emplace_back(tr("Field 'Login' should be completed"), [this]() -> bool {
-      auto login = findChild<QLineEdit*>("login");
-      return !login->text().trimmed().isEmpty();
-    });
+    checks.emplace_back(tr("Field 'Login' should be completed"),
+                        [this]() -> bool {
+                          auto login = findChild<QLineEdit*>("login");
+                          return !login->text().trimmed().isEmpty();
+                        });
 
-    checks.emplace_back(tr("Field 'Password' should be completed"), [this]() -> bool {
-      auto pass = findChild<QLineEdit*>("pass");
-      return !pass->text().trimmed().isEmpty();
-    });
+    checks.emplace_back(tr("Field 'Password' should be completed"),
+                        [this]() -> bool {
+                          auto pass = findChild<QLineEdit*>("pass");
+                          return !pass->text().trimmed().isEmpty();
+                        });
   } else if (connType->currentIndex() == static_cast<int>(ConnectionType::VK)) {
-    checks.emplace_back(tr("Field 'URL' should be completed"), [this]() -> bool {
-      auto login = findChild<QLineEdit*>("vkOauthUrl");
-      return !login->text().trimmed().isEmpty();
-    });
+    checks.emplace_back(tr("Field 'URL' should be completed"),
+                        [this]() -> bool {
+                          auto login = findChild<QLineEdit*>("vkOauthUrl");
+                          return !login->text().trimmed().isEmpty();
+                        });
     checks.emplace_back(tr("Field 'URL' contains wrond format"),
                         [this]() -> bool {
                           auto txt = findChild<QLineEdit*>("vkOauthUrl");
@@ -224,17 +225,24 @@ ConnectionHolder ConnectionInfoWidget::getElement() noexcept(false) {
                         });
   } else if (connType->currentIndex() ==
              static_cast<int>(ConnectionType::EMAIL)) {
-    checks.emplace_back(tr("Field 'Login' should be completed"), [this]() -> bool {
-      return !findChild<QLineEdit*>("emailLogin")->text().trimmed().isEmpty();
-    });
+    checks.emplace_back(tr("Field 'Login' should be completed"),
+                        [this]() -> bool {
+                          return !findChild<QLineEdit*>("emailLogin")
+                                      ->text()
+                                      .trimmed()
+                                      .isEmpty();
+                        });
 
-    checks.emplace_back(tr("Field 'Password' should be completed"), [this]() -> bool {
-      return !findChild<QLineEdit*>("emailPass")->text().trimmed().isEmpty();
-    });
+    checks.emplace_back(tr("Field 'Password' should be completed"),
+                        [this]() -> bool {
+                          return !findChild<QLineEdit*>("emailPass")
+                                      ->text()
+                                      .trimmed()
+                                      .isEmpty();
+                        });
 
     checks.emplace_back(
-         tr("Field 'From' empty or contains wrong format"),
-        [this]() -> bool {
+        tr("Field 'From' empty or contains wrong format"), [this]() -> bool {
           QRegExp re(
               "^(\\S+)@([a-z0-9-]+)(\\.)([a-z]{2,4})(\\.?)([a-z]{0,4})+$");
           auto text = findChild<QLineEdit*>("emailFrom")->text().trimmed();

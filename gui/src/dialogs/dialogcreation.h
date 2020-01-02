@@ -15,7 +15,8 @@ class QSortFilterProxyModel;
  * @brief Отображает пользователю список контактов, чтобы он мог выбрать один из
  * них для создания диалога
  */
-class DialogCreation : public TranslateChangeEventHandler<QDialog, Ui::DialogCreation> {
+class DialogCreation
+    : public TranslateChangeEventHandler<QDialog, Ui::DialogCreation> {
   Q_OBJECT
 
  public:

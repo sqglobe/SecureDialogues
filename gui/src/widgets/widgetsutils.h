@@ -1,10 +1,10 @@
 #ifndef WIDGETSUTILS_H
 #define WIDGETSUTILS_H
 
+#include <QString>
 #include <functional>
 #include <utility>
 #include <vector>
-#include <QString>
 
 class QWidget;
 

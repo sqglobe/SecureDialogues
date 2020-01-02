@@ -6,27 +6,26 @@
 #include <cassert>
 
 template <typename W, typename UI>
-class TranslateChangeEventHandler: public W
-{
-public:
-    TranslateChangeEventHandler(QWidget* parent = nullptr): W(parent){}
+class TranslateChangeEventHandler : public W {
+ public:
+  TranslateChangeEventHandler(QWidget* parent = nullptr) : W(parent) {}
 
-public:
-    void setUI(UI *ui){
-        assert(ui != nullptr);
-        mUI = ui;
+ public:
+  void setUI(UI* ui) {
+    assert(ui != nullptr);
+    mUI = ui;
+  }
+
+ protected:
+  void changeEvent(QEvent* event) override {
+    if (event->type() == QEvent::LanguageChange) {
+      mUI->retranslateUi(this);  // переведём окно заново
+    } else {
+      W::changeEvent(event);
     }
+  }
 
-protected:
-    void changeEvent(QEvent* event) override{
-        if (event->type() == QEvent::LanguageChange) {
-          mUI->retranslateUi(this);  // переведём окно заново
-        } else {
-          W::changeEvent(event);
-        }
-    }
-
-private:
-    UI *mUI;
+ private:
+  UI* mUI;
 };
-#endif // TRANSLATECHANGEEVENTHANDLER_H
+#endif  // TRANSLATECHANGEEVENTHANDLER_H

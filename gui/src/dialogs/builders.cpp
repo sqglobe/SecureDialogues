@@ -174,7 +174,8 @@ ContactDiscoverDialog* make_discover_dialog(
 
   connInfo->appendListener(channelList);
 
-  return new ContactDiscoverDialog(std::move(channelList), std::move(agent),parent);
+  return new ContactDiscoverDialog(std::move(channelList), std::move(agent),
+                                   parent);
 }
 
 ImportDiscoveredContactDialog* make_import_contact_dialog(

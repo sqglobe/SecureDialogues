@@ -10,9 +10,8 @@ ToolboxWrapper::ToolboxWrapper(QToolBar* toolBar, QObject* parent) :
   toolBar->addAction(QIcon(":/icons/address-book.png"),
                      tr("Add/edit or remove your contacts"), this,
                      &ToolboxWrapper::contactsSettingsTriggered);
-  toolBar->addAction(QIcon(":/icons/old-key.png"),
-                     tr("Show my public key"), this,
-                     &ToolboxWrapper::publicKeySettingsTriggered);
+  toolBar->addAction(QIcon(":/icons/old-key.png"), tr("Show my public key"),
+                     this, &ToolboxWrapper::publicKeySettingsTriggered);
   toolBar->addAction(QIcon(":/icons/document-with-folded-corner.png"),
                      tr("Show recieved contact information"), this,
                      &ToolboxWrapper::recievedContactsSettingsTriggered);

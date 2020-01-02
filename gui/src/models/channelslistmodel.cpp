@@ -2,9 +2,9 @@
 #include <algorithm>
 #include <iterator>
 
+#include <QApplication>
 #include <QBrush>
 #include <QColor>
-#include <QApplication>
 #include <iostream>
 Q_DECLARE_METATYPE(ChannelsListModel::ListItem);
 

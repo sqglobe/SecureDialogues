@@ -19,7 +19,6 @@
  */
 class ChannelsListModel : public QAbstractListModel,
                           public ChangeListener<ConnectionHolder> {
-
  public:
   struct ListItem {
     QString name;

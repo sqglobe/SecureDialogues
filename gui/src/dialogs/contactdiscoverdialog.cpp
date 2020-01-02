@@ -74,11 +74,10 @@ void ContactDiscoverDialog::showEvent(QShowEvent* event) {
   ui->adressValue->setText("");
 }
 
-void ContactDiscoverDialog::changeEvent(QEvent *event)
-{
-    if (event->type() == QEvent::LanguageChange) {
-      ui->retranslateUi(this);  // переведём окно заново
-    } else {
-      QDialog::changeEvent(event);
-    }
+void ContactDiscoverDialog::changeEvent(QEvent* event) {
+  if (event->type() == QEvent::LanguageChange) {
+    ui->retranslateUi(this);  // переведём окно заново
+  } else {
+    QDialog::changeEvent(event);
+  }
 }

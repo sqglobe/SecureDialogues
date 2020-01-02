@@ -1,6 +1,5 @@
 #include "recieveddiscoveredcontactsdialog.h"
 
-
 #include <QMessageBox>
 #include "models/discovered-contacts/discoveredcontactmodel.h"
 #include "wrappers/recievedcontactsstoragewrapper.h"
@@ -11,7 +10,8 @@ RecievedDiscoveredContactsDialog::RecievedDiscoveredContactsDialog(
     DiscoveredContactModel* model,
     std::shared_ptr<RecievedContactsStorageWrapper> storageWrapper,
     QWidget* parent) :
-    TranslateChangeEventHandler<QDialog, Ui::RecievedDiscoveredContactsDialog>(parent),
+    TranslateChangeEventHandler<QDialog, Ui::RecievedDiscoveredContactsDialog>(
+        parent),
     ui(new Ui::RecievedDiscoveredContactsDialog),
     mStorageWrapper(std::move(storageWrapper)) {
   ui->setupUi(this);

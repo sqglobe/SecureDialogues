@@ -4,13 +4,14 @@
 #include <QDialog>
 #include <memory>
 
-#include "utils/translatechangeeventhandler.h"
 #include "ui_appsettingsdialog.h"
+#include "utils/translatechangeeventhandler.h"
 
 class ApplicationSettingsGuard;
 class ApplicationSettings;
 
-class AppSettingsDialog : public TranslateChangeEventHandler<QDialog, Ui::AppSettingsDialog> {
+class AppSettingsDialog
+    : public TranslateChangeEventHandler<QDialog, Ui::AppSettingsDialog> {
   Q_OBJECT
 
  public:

@@ -86,8 +86,9 @@ Contact ContactWidget::getElement() {
     auto item = qvariant_cast<ChannelsListModel::ListItem>(connInfoVariant);
     if (item.connectionType == ConnectionType::VK) {
       checks.emplace_back(
-          tr("Field 'Address' has to contains vk id (for example 123451) or reference"
-          " to your contact page"),
+          tr("Field 'Address' has to contains vk id (for example 123451) or "
+             "reference"
+             " to your contact page"),
           [userAddressText, type = item.connectionType]() -> bool {
             return is_address_valid(userAddressText.toUtf8().constData(), type);
           });
@@ -150,14 +151,15 @@ void ContactWidget::connectionNameUpdated(int) {
       userAdress->setPlaceholderText(tr("Reference to VK user page or VK ID"));
       userAdress->setToolTip(
           tr("Specify reference to VK page (example "
-          "'https://vk.com/id99900'), or simple VK ID (example id99900 or "
-          "99900 )"));
+             "'https://vk.com/id99900'), or simple VK ID (example id99900 or "
+             "99900 )"));
     } else if (item.connectionType == ConnectionType::EMAIL) {
       userAdress->setPlaceholderText(tr("E-mail address"));
       userAdress->setToolTip(tr("Please, set valid e-mail address"));
     } else if (item.connectionType == ConnectionType::GMAIL) {
       userAdress->setPlaceholderText(tr("E-mail address Gmail"));
-      userAdress->setToolTip(tr("Please, specify valid e-mail address Gmail service"));
+      userAdress->setToolTip(
+          tr("Please, specify valid e-mail address Gmail service"));
     } else if (item.connectionType == ConnectionType::UDP) {
       userAdress->setPlaceholderText(tr("IP address"));
       userAdress->setToolTip(tr("Set valid IP address or host name"));

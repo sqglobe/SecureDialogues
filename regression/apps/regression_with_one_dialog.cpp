@@ -13,8 +13,8 @@
 #include "stand/onechannelcoreinitializer.h"
 #include "utils/messagemarshaller.h"
 
-#include "utils/applicationsettings.h"
 #include "translation/translationmaster.h"
+#include "utils/applicationsettings.h"
 
 #include <chrono>
 
@@ -91,9 +91,13 @@ int main(int argc, char* argv[]) {
     auto ptr = std::make_unique<OneChannelCoreInitializer>(
         "regression_with_one_dialog_env");
     auto coreInit = ptr.get();
-    std::shared_ptr<ApplicationSettingsGuard> settingsGuard = std::make_shared<ApplicationSettingsGuard>();
-    std::shared_ptr<TranslationMaster> translatorMaster = std::make_shared<TranslationMaster>(settingsGuard->getSettings(), "locale");
-    MainWindow w(std::move(settingsGuard), std::move(translatorMaster), std::move(ptr));
+    std::shared_ptr<ApplicationSettingsGuard> settingsGuard =
+        std::make_shared<ApplicationSettingsGuard>();
+    std::shared_ptr<TranslationMaster> translatorMaster =
+        std::make_shared<TranslationMaster>(settingsGuard->getSettings(),
+                                            "locale");
+    MainWindow w(std::move(settingsGuard), std::move(translatorMaster),
+                 std::move(ptr));
     w.show();
     std::thread th(send_100_messages, coreInit);
 

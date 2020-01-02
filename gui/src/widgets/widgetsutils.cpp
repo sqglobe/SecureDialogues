@@ -9,8 +9,7 @@ void WigetUtils::test(
   std::stringstream error;
   auto failedCnt = std::count_if(
       checks.cbegin(), checks.cend(),
-      [&error](
-          const std::pair<QString, std::function<bool(void)> >& funcData)
+      [&error](const std::pair<QString, std::function<bool(void)> >& funcData)
           -> bool {
         if (!funcData.second()) {
           error << funcData.first.toStdString() << std::endl;

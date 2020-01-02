@@ -3,7 +3,6 @@
 #include "interfaces/abstractusernotifier.h"
 #include "primitives/contact.h"
 
-
 DialogActionHandlerWrapper::DialogActionHandlerWrapper(
     std::shared_ptr<DialogActionHandler> handler,
     std::shared_ptr<AbstractUserNotifier> notifier,
@@ -26,7 +25,8 @@ void DialogActionHandlerWrapper::closeDialogAction(std::string dialogId) {
   } catch (const std::out_of_range&) {
     mNotifier->notify(
         AbstractUserNotifier::Severity::ERROR,
-        tr("Failed to close dialog. Reason - dialog not presented").toStdString());
+        tr("Failed to close dialog. Reason - dialog not presented")
+            .toStdString());
   } catch (const std::exception&) {
     mNotifier->notify(AbstractUserNotifier::Severity::ERROR,
                       tr("Error occured during dialog closing").toStdString());
@@ -39,7 +39,8 @@ void DialogActionHandlerWrapper::abortDialogAction(std::string dialogId) {
   } catch (const std::out_of_range&) {
     mNotifier->notify(
         AbstractUserNotifier::Severity::ERROR,
-        tr("Failed to abort dialog. Reason - dialog not presented").toStdString());
+        tr("Failed to abort dialog. Reason - dialog not presented")
+            .toStdString());
   } catch (const std::exception&) {
     mNotifier->notify(AbstractUserNotifier::Severity::ERROR,
                       tr("Error occured during dialog aborting").toStdString());
@@ -52,7 +53,8 @@ void DialogActionHandlerWrapper::removeDialogAction(std::string dialogId) {
   } catch (const std::out_of_range&) {
     mNotifier->notify(
         AbstractUserNotifier::Severity::ERROR,
-        tr("Failed to remove dialog. Reason - dialog not presented").toStdString());
+        tr("Failed to remove dialog. Reason - dialog not presented")
+            .toStdString());
   } catch (const std::exception&) {
     mNotifier->notify(AbstractUserNotifier::Severity::ERROR,
                       tr("Error occured during dialog removing").toStdString());

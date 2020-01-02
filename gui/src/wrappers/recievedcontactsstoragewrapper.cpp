@@ -6,20 +6,18 @@ RecievedContactsStorageWrapper::RecievedContactsStorageWrapper(
     mDiscoveredContactStorage(std::move(discoveredContactStorage)),
     mContactStorage(std::move(contactStorage)) {}
 
-DiscoveredContact RecievedContactsStorageWrapper::getDiscoveredContact(const std::string &dialog_id) const
-{
-    return mDiscoveredContactStorage->get(dialog_id);
+DiscoveredContact RecievedContactsStorageWrapper::getDiscoveredContact(
+    const std::string& dialog_id) const {
+  return mDiscoveredContactStorage->get(dialog_id);
 }
 
-Contact RecievedContactsStorageWrapper::getContact(const std::string &dialog_id) const
-{
-   const auto discovered = mDiscoveredContactStorage->get(dialog_id);
-   return Contact(
-               std::string(discovered.channel_moniker()),
-               std::string(discovered.name()),
-               std::string(discovered.contact_adress()),
-               std::string(discovered.public_key())
-               );
+Contact RecievedContactsStorageWrapper::getContact(
+    const std::string& dialog_id) const {
+  const auto discovered = mDiscoveredContactStorage->get(dialog_id);
+  return Contact(std::string(discovered.channel_moniker()),
+                 std::string(discovered.name()),
+                 std::string(discovered.contact_adress()),
+                 std::string(discovered.public_key()));
 }
 
 bool RecievedContactsStorageWrapper::removeDiscoveredContact(

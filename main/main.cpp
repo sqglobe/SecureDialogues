@@ -10,9 +10,9 @@
 #include <db_cxx.h>
 #include <dbstl_common.h>
 
-#include "utils/applicationsettings.h"
 #include "core-initializer/coreinitializer.h"
 #include "translation/translationmaster.h"
+#include "utils/applicationsettings.h"
 
 static const std::string FILE_DIGEST = "conf/pass.digest";
 
