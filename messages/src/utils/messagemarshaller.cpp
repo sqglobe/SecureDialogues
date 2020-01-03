@@ -1,8 +1,10 @@
 #include "messagemarshaller.h"
 
+#include <libintl.h>
 #include <algorithm>
 #include <iostream>
 #include <sstream>
+#include "fmt/core.h"
 
 const std::string ACTION_MESSAGE = "MESSAGE";
 const std::string ACTION_CREATE_DIALOG = "CREATE_DIALOG";
@@ -24,14 +26,6 @@ const std::string BODY_DELITIMER =
 const std::string FIELD_SIGN = "SIGNATURE";
 const std::string FIELD_TIMESTAMP = "TIMESTAMP";
 
-// trim from end (in place)
-static inline void rtrim(std::string& s) {
-  s.erase(std::find_if(s.rbegin(), s.rend(),
-                       [](int ch) { return !std::isspace(ch); })
-              .base(),
-          s.end());
-}
-
 struct MessageFields {
   enum State { HEADER, SIGNATURE, BODY };
 
@@ -50,7 +44,7 @@ struct MessageFields {
 
 class bad_action : public std::invalid_argument {
  public:
-  bad_action(const std::string& mess) : std::invalid_argument(mess) {}
+  using std::invalid_argument::invalid_argument;
 };
 
 std::optional<DialogMessage> MessageMarshaller::unmarshall(
@@ -162,7 +156,8 @@ DialogMessage::Action MessageMarshaller::convertAction(
   } else if (action == ACTION_CONTACT_DISCOVER) {
     return DialogMessage::Action::CONTACT_DISCOVER;
   } else {
-    throw bad_action("Undefined action " + action);
+    throw bad_action(
+        fmt::format(dgettext("messages", "Undefined action {}"), action));
   }
 }
 
@@ -187,7 +182,7 @@ std::string MessageMarshaller::convertAction(DialogMessage::Action action) {
   } else if (Action::CONTACT_DISCOVER == action) {
     return ACTION_CONTACT_DISCOVER;
   }
-  throw(std::runtime_error("Invalid action"));
+  throw(std::runtime_error(dgettext("messages", "Invalid action")));
 }
 
 bool MessageMarshaller::prepareLine(const std::string& line,

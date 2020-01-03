@@ -1,0 +1,152 @@
+# Russian translations for PACKAGE package
+# Английские переводы для пакета PACKAGE.
+# Copyright (C) 2020 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Automatically generated, 2020.
+#
+msgid   ""
+msgstr  "Project-Id-Version: PACKAGE VERSION\n"
+        "Report-Msgid-Bugs-To: \n"
+        "POT-Creation-Date: 2020-01-04 01:11+0300\n"
+        "PO-Revision-Date: 2020-01-03 19:55+0300\n"
+        "Last-Translator: Automatically generated\n"
+        "Language-Team: none\n"
+        "Language: ru_RU.UTF-8\n"
+        "MIME-Version: 1.0\n"
+        "Content-Type: text/plain; charset=UTF-8\n"
+        "Content-Transfer-Encoding: 8bit\n"
+        "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 "
+        "&& n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: communication/dialogactionhandler.cpp:186
+msgid   "Address '{}' sent a request for dialog creation, but contact with "
+        "that address not found"
+msgstr  "Адресат '{}' отправил запрос на создание диалога, но контакт с таким "
+        "адресом не найден"
+
+#: communication/discovercontactagent.cpp:30
+msgid   "Cant find delitimer for name and public key for recieved contact "
+        "information"
+msgstr  "Не удалось найти разделитель имени и публичного ключа в полученных "
+        "контактных данных"
+
+#: crypto/cryptosystemimpl.cpp:116 crypto/cryptosystemimpl.cpp:128
+msgid   "Cant find dialog {}"
+msgstr  "Не удалось найти диалог {}"
+
+#: communication/dialogactionhandler.cpp:27
+msgid   "Closed"
+msgstr  "Закрыт"
+
+#: primitives/dialog.cpp:40
+msgid   "Dialog status transision from state {} to {} is not allowed"
+msgstr  "Изменение статуса диалога из {} в {} не разрешено"
+
+#: utils/systemmessagegenerator.cpp:16
+msgid   "Dialog was aborted"
+msgstr  "Диалог принудительно закрыт"
+
+#: utils/systemmessagegenerator.cpp:18
+msgid   "Dialog was closed"
+msgstr  "Диалог закрыт"
+
+#: delivery-handlers/dialogactiondeliveryhandler.cpp:77
+msgid   "Dialog with {} was removed because participant didn't respond"
+msgstr  "Диалог с {} удален, потому что собеседник не отвечает"
+
+#: communication/messageactionhandler.cpp:156
+msgid   "Error occured during message handling from user {}. Dialog removed."
+msgstr  "Произошла ошибка при обработке запроса от {}. Диалог удален"
+
+#: communication/messageactionhandler.cpp:131
+msgid   "Failed to send message"
+msgstr  "Не удалось отправить сообщение"
+
+#: communication/dialogactionhandler.cpp:212
+msgid   "Failed to send message for contact: {}"
+msgstr  "Не удалось отправить сообщение для контакта {}"
+
+#: communication/dialogactionhandler.cpp:163
+msgid   "Failed to send message for the contact: {}"
+msgstr  "Не удалось отправить сообщение для контакта {}"
+
+#: communication/messageactionhandler.cpp:138
+msgid   "Failed to send messsage, reason: {}"
+msgstr  "Не удалось отправить сообщение по причине: {}"
+
+#: communication/dialogactionhandler.cpp:262
+msgid   "Failed to verify seance key for contact {}. Dialog aborted"
+msgstr  "Не удалось проверить сеансовый ключ для контакта {}. Диалог "
+        "принудительно закрыт"
+
+#: utils/messagemarshaller.cpp:186
+msgid   "Invalid action"
+msgstr  "Неверное действие"
+
+#: communication/communication_helpers.cpp:20
+msgid   "Message with action {} cant be made for dialog state {}"
+msgstr  "Сообщение с типом {} не может быть создано для диалога в состоянии {}"
+
+#: containers/messagecontainer.cpp:48 containers/messagecontainer.cpp:68
+#: containers/messagecontainer.cpp:87
+msgid   "MessageConteiner not contains active dialog id: [{}]"
+msgstr  "Контейнер не содержит активный диалог [{}]"
+
+#: containers/messagecontainer.cpp:126
+msgid   "MessageConteiner not contains dialog id: {}"
+msgstr  "Контейнер сообщение не содержит диалог {}"
+
+#: communication/dialogactionhandler.cpp:25
+msgid   "New dialog"
+msgstr  "Новый диалог"
+
+#: communication/messageactionhandler.cpp:63
+msgid   "Recieved message from {}. With specified user has no opened dialogs"
+msgstr  "Получено сообщение от {}. С указаным пользователем отсутствуют "
+        "открытые диалоги"
+
+#: communication/messageactionhandler.cpp:112
+msgid   "Select one dialog for texting"
+msgstr  "Необходим выбор одного из диалога для отправки сообщений"
+
+#: communication/dialogactionhandler.cpp:23
+msgid   "The dialog was closed"
+msgstr  "Диалог был закрыт"
+
+#: utils/messagemarshaller.cpp:160
+msgid   "Undefined action {}"
+msgstr  "Не известный тип сообщений {}"
+
+#: adapters/oauthadapter.cpp:125 adapters/emailadapter.cpp:101
+msgid   "Undefined connection type: {}"
+msgstr  "Неизвестный тип соединения: {}"
+
+#: communication/dialogactionhandler.cpp:21
+msgid   "User confirmed dialog creation. Now you can send messages to him."
+msgstr  "Пользователь подтвердил создание диалога. Теперь Вы можете "
+        "отправлять сообщения ему"
+
+#: communication/dialogactionhandler.cpp:33
+msgid   "User requested the dialog creation"
+msgstr  "Пользователь запросил создание диалога"
+
+#: communication/dialogactionhandler.cpp:31
+msgid   "Waiting for confirmation of dialog creation"
+msgstr  "Ожидается подтверждение создания диалога"
+
+#: communication/dialogactionhandler.cpp:35
+msgid   "Waiting for key confirmation"
+msgstr  "Ожидается подтверждения сеансового ключа"
+
+#: communication/dialogactionhandler.cpp:29
+msgid   "Waiting for user's decision about confirmation or refusing in dialog "
+        "establishing"
+msgstr  "Ожидается подтверждение или отказ пользователя от создания диалога"
+
+#: crypto/cryptosystemimpl.cpp:181
+msgid   "not found contact with adress {}"
+msgstr  "Не найден контакт с адресом {}"
+
+#: communication/dialogactionhandler.cpp:44
+msgid   "{}. User: {}, channel: {}"
+msgstr  "{}. Пользователь {}, канал {}"

@@ -2,6 +2,9 @@
 #include "interfaces/messageconteinereventhandler.h"
 #include "usermessage.h"
 
+#include <libintl.h>
+#include "fmt/core.h"
+
 void MessageContainer::setActiveDialog(const std::string& dialogId) {
   std::lock_guard<std::recursive_mutex> lock(mMutex);
   if (dialogId.empty()) {
@@ -41,9 +44,10 @@ MessageContainer::addToActiveDialogWithWrapper(const std::string& message,
                                                bool isIncome) {
   std::lock_guard<std::recursive_mutex> lock(mMutex);
   if (mMessages.count(mActiveDialog) == 0) {
-    throw std::runtime_error(
-        "MessageConteiner not contains active dialog id: [" + mActiveDialog +
-        "]");
+    throw std::runtime_error(fmt::format(
+        dgettext("messages",
+                 "MessageConteiner not contains active dialog id: [{}]"),
+        mActiveDialog));
   }
   auto type = isIncome ? UserMessage::Type::IN : UserMessage::Type::OUT;
   auto status = isIncome ? UserMessage::Status::DELIVERIED
@@ -61,9 +65,10 @@ MessageContainer::addToActiveDialogWithWrapper(std::string&& message,
                                                bool isIncome) {
   std::lock_guard<std::recursive_mutex> lock(mMutex);
   if (mMessages.count(mActiveDialog) == 0) {
-    throw std::runtime_error(
-        "MessageConteiner not contains active dialog id: [" + mActiveDialog +
-        "]");
+    throw std::runtime_error(fmt::format(
+        dgettext("messages",
+                 "MessageConteiner not contains active dialog id: [{}]"),
+        mActiveDialog));
   }
   auto type = isIncome ? UserMessage::Type::IN : UserMessage::Type::OUT;
   auto status = isIncome ? UserMessage::Status::DELIVERIED
@@ -80,9 +85,10 @@ void MessageContainer::addMessageToActivedialog(const std::string& message,
                                                 bool isIncome) {
   std::lock_guard<std::recursive_mutex> lock(mMutex);
   if (mMessages.count(mActiveDialog) == 0) {
-    throw std::runtime_error(
-        "MessageConteiner not contains active dialog id: [" + mActiveDialog +
-        "]");
+    throw std::runtime_error(fmt::format(
+        dgettext("messages",
+                 "MessageConteiner not contains active dialog id: [{}]"),
+        mActiveDialog));
   }
 
   addMessage(mActiveDialog, message, isIncome);
@@ -119,8 +125,9 @@ void MessageContainer::list(
     const std::shared_ptr<MessageContainerEventHandler>& handler) const {
   std::lock_guard<std::recursive_mutex> lock(mMutex);
   if (mMessages.count(mActiveDialog) == 0) {
-    throw std::runtime_error("MessageConteiner not contains dialog id: " +
-                             dialogId);
+    throw std::runtime_error(fmt::format(
+        dgettext("messages", "MessageConteiner not contains dialog id: {}"),
+        dialogId));
   }
   const auto& messages = mMessages.at(dialogId);
   for (const auto& message : messages) {

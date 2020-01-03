@@ -8,7 +8,10 @@
 
 #include "dialogstatemachine.h"
 
+#include <libintl.h>
+#include <exception>
 #include <random>
+#include "fmt/core.h"
 
 static const DialogStateMachine DIALOG_STATE_MACHINE;
 
@@ -33,9 +36,10 @@ Dialog::Status Dialog::getStatus() const noexcept {
 
 void Dialog::setStatus(Dialog::Status status) noexcept(false) {
   if (!DIALOG_STATE_MACHINE.isStateTransitionAllowed(mStatus, status)) {
-    std::stringstream ss;
-    ss << "Dialog status transision from state " << static_cast<int>(mStatus)
-       << " to " << static_cast<int>(status) << " is not allowed";
+    throw std::runtime_error(fmt::format(
+        dgettext("messages",
+                 "Dialog status transision from state {} to {} is not allowed"),
+        static_cast<int>(mStatus), static_cast<int>(status)));
   }
   mStatus = status;
 }

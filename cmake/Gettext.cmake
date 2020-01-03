@@ -2,7 +2,9 @@ find_package(Gettext REQUIRED)
 find_program(GETTEXT_XGETTEXT_EXECUTABLE xgettext REQUIRED)
 find_program(GETTEXT_MSGINIT_EXECUTABLE msginit REQUIRED)
 
-function(add_internationals target lang lang_root sources_list )
+function(add_internationals target lang lang_root output_dir)
+
+    get_target_property(sources_list ${target} SOURCES)
 
     set(pot_file "${CMAKE_CURRENT_SOURCE_DIR}/${lang_root}/${target}.pot")
 
@@ -12,7 +14,7 @@ function(add_internationals target lang lang_root sources_list )
 
     if(NOT EXISTS "${pot_file}")
         execute_process(
-            COMMAND ${GETTEXT_XGETTEXT_EXECUTABLE} -C -o "${pot_file}" -D "${CMAKE_CURRENT_SOURCE_DIR}" ${sources_list} --qtq
+            COMMAND ${GETTEXT_XGETTEXT_EXECUTABLE} -C -o "${pot_file}" -D "${CMAKE_CURRENT_SOURCE_DIR}" ${sources_list}
             ERROR_VARIABLE creation_error
             RESULT_VARIABLE creation_res
           )
@@ -22,7 +24,7 @@ function(add_internationals target lang lang_root sources_list )
     endif()
 
     set(source_lang_dir "${CMAKE_CURRENT_SOURCE_DIR}/${lang_root}/${lang}")
-    set(dist_lang_dir "${CMAKE_CURRENT_BINARY_DIR}/${lang_root}/${lang}/LC_MESSAGES")
+    set(dist_lang_dir "${output_dir}/${lang}/LC_MESSAGES")
     set(po_file "${source_lang_dir}/${target}.po")
     set(mo_file "${dist_lang_dir}/${target}.mo")
 
@@ -47,7 +49,8 @@ function(add_internationals target lang lang_root sources_list )
 
     add_custom_target(
                "${target}_${lang}_po_files"
-                COMMAND ${GETTEXT_XGETTEXT_EXECUTABLE} -C -j -o "${pot_file}" -D "${CMAKE_CURRENT_SOURCE_DIR}" "${sources_list}"
+                COMMAND ${GETTEXT_XGETTEXT_EXECUTABLE} -C -j -o "${pot_file}" -D "${CMAKE_CURRENT_SOURCE_DIR}" ${sources_list}
+
                )
 
     add_custom_target(

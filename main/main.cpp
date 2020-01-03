@@ -14,6 +14,12 @@
 #include "translation/translationmaster.h"
 #include "utils/applicationsettings.h"
 
+#include "fmt/core.h"
+
+#include <libintl.h>
+#include <locale.h>
+#include <iostream>
+
 static const std::string FILE_DIGEST = "conf/pass.digest";
 
 int main(int argc, char* argv[]) {
@@ -25,22 +31,23 @@ int main(int argc, char* argv[]) {
 
   QDir curr;
 
+  std::shared_ptr<ApplicationSettingsGuard> settingsGuard =
+      std::make_shared<ApplicationSettingsGuard>();
+  std::shared_ptr<TranslationMaster> translatorMaster =
+      std::make_shared<TranslationMaster>(
+          settingsGuard->getSettings(),
+          curr.absoluteFilePath("locale").toStdString());
+
   if (!curr.mkpath("conf")) {
-    QMessageBox::critical(
-        nullptr, "Abort!",
-        QString("Выполнение приложение завершено из-за невозможности созать "
-                "папку для конфигурации"));
+    QMessageBox::critical(nullptr, "Abort!",
+                          dgettext("SecureDialogues",
+                                   "Application was aborted because of failed "
+                                   "creation of configuration folder"));
     return 1;
   }
 
   try {
     auto pass = getPassword(FILE_DIGEST);
-    std::shared_ptr<ApplicationSettingsGuard> settingsGuard =
-        std::make_shared<ApplicationSettingsGuard>();
-    std::shared_ptr<TranslationMaster> translatorMaster =
-        std::make_shared<TranslationMaster>(
-            settingsGuard->getSettings(),
-            curr.absoluteFilePath("locale").toStdString());
 
     MainWindow w(std::move(settingsGuard), std::move(translatorMaster),
                  std::make_unique<CoreInitializer>(pass));
@@ -54,8 +61,10 @@ int main(int argc, char* argv[]) {
   } catch (std::exception& ex) {
     QMessageBox::critical(
         nullptr, "Abort!",
-        QString("Выполнение приложение завершено с сообщением ")
-            .append(ex.what()));
+        fmt::format(dgettext("SecureDialogues",
+                             "Application was aborted with message {}"),
+                    ex.what())
+            .c_str());
     dbstl::dbstl_exit();
   }
   return 123;

@@ -19,6 +19,9 @@
 
 #include <sstream>
 
+#include <libintl.h>
+#include "fmt/core.h"
+
 CryptoSystemImpl::CryptoSystemImpl(
     std::shared_ptr<AsymetricalKeyStore> keys,
     std::shared_ptr<AbstractMessageMarshaller> marshaller) :
@@ -109,7 +112,8 @@ std::string CryptoSystemImpl::encryptMessageBody(std::string_view dialogId,
   if (auto iter = mCiphers.find(dialogId); iter != mCiphers.end()) {
     return iter->second.cipher->encrypt(message);
   }
-  throw std::runtime_error("Cant find dialog");
+  throw std::runtime_error(
+      fmt::format(dgettext("messages", "Cant find dialog {}"), dialogId));
 }
 
 std::string CryptoSystemImpl::decryptMessageBody(std::string_view dialogId,
@@ -119,7 +123,8 @@ std::string CryptoSystemImpl::decryptMessageBody(std::string_view dialogId,
   if (auto iter = mCiphers.find(dialogId); iter != mCiphers.end()) {
     return iter->second.cipher->decrypt(message);
   }
-  throw std::runtime_error("Cant find dialog");
+  throw std::runtime_error(
+      fmt::format(dgettext("messages", "Cant find dialog {}"), dialogId));
 }
 
 std::string CryptoSystemImpl::exportPublicKey() const noexcept(false) {
@@ -170,6 +175,6 @@ std::shared_ptr<RemotePeerOperations> CryptoSystemImpl::getRemoteByAdress(
     return it->second.mOperation;
   }
 
-  throw std::range_error("not found contact with adress " +
-                         std::string(adress));
+  throw std::range_error(fmt::format(
+      dgettext("messages", "not found contact with adress {}"), adress));
 }

@@ -4,6 +4,8 @@
 #include "containers/usermessage.h"
 #include "primitives/dialog.h"
 
+#include <libintl.h>
+
 // enum class Status{NEW = 0, CREATE_REQUEST, WAIT_CONFIRM, ACCEPTED_WAIT,
 // CANCEL_WAIT, ACTIVE, CLOSED, CANCELED, ABORTED};
 
@@ -11,9 +13,9 @@ std::string get_message(Dialog::Status status) {
   using S = Dialog::Status;
   switch (status) {
     case S::ABORTED:
-      return "Диалог сброшен";
+      return dgettext("messages", "Dialog was aborted");
     case S::CLOSED:
-      return "Диалог был закрыт";
+      return dgettext("messages", "Dialog was closed");
     default:
       assert(false);
   }

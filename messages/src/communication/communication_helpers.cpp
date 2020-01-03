@@ -1,4 +1,7 @@
 #include "communication_helpers.h"
+#include <libintl.h>
+#include "fmt/core.h"
+#include "fmt/format.h"
 
 MessageSendInfo make_text_message(DialogStorage::wrapper_type& dialog,
                                   const Contact& contact,
@@ -12,11 +15,10 @@ MessageSendInfo make_message(DialogMessage::Action action,
                              const Contact& contact,
                              std::string&& content) {
   if (!dialog->isMessageActionAllowed(action)) {
-    std::stringstream ss;
-    ss << "Message with action " << static_cast<int>(action)
-       << " cant be made for dialog state "
-       << static_cast<int>(dialog->getStatus());
-    throw invalid_dialog_action(ss.str());
+    throw invalid_dialog_action(fmt::format(
+        dgettext("messages",
+                 "Message with action {} cant be made for dialog state {}"),
+        static_cast<int>(action), static_cast<int>(dialog->getStatus())));
   }
   return {DialogMessage(
               action, std::move(content), std::string(dialog->getDialogId()),

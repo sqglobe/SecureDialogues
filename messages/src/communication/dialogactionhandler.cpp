@@ -7,8 +7,10 @@
 
 #include "spdlog/spdlog.h"
 
+#include <libintl.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include "communication_helpers.h"
+#include "fmt/core.h"
 #include "interfaces/cryptosystem.h"
 #undef ERROR
 
@@ -16,38 +18,36 @@ std::string get_dialog_status_description(Dialog::Status status) {
   using S = Dialog::Status;
   switch (status) {
     case S::ACTIVE:
-      return "Пользователь подтвердил создание диалога. Тперь возможно "
-             "пересылать ему сообщения";
+      return dgettext(
+          "messages",
+          "User confirmed dialog creation. Now you can send messages to him.");
     case S::CLOSED:
-      return "Диалог был закрыт";
+      return dgettext("messages", "The dialog was closed");
     case S::NEW:
-      return "Новый диалог";
+      return dgettext("messages", "New dialog");
     case S::ABORTED:
-      return "Закрыт";
+      return dgettext("messages", "Closed");
     case S::WAIT_CONFIRM:
-      return "Ожидает решение пользователя на подтверждение или отказ от "
-             "установления диалога";
+      return dgettext("messages",
+                      "Waiting for user's decision about confirmation or "
+                      "refusing in dialog establishing");
     case S::ACCEPTED_WAIT:
-      return "Ожидает подтверждения о получении согласия на создание диалога";
+      return dgettext("messages",
+                      "Waiting for confirmation of dialog creation");
     case S::CREATE_REQUEST:
-      return "Пользователь запросил создание диалога";
+      return dgettext("messages", "User requested the dialog creation");
     case S::WAIT_KEY_VERIFICAION:
-      return "Ожидается подтверждение сеансового ключа";
+      return dgettext("messages", "Waiting for key confirmation");
     default:
       assert(false);
   }
 }
 
 std::string dialog_to_string(const Dialog& dialog, const Contact& contact) {
-  std::string res;
-  auto status = dialog.getStatus();
-  res.reserve(500);
-  res.append(get_dialog_status_description(status));
-  res.append(". Пользователь: ");
-  res.append(contact.name());
-  res.append(", Канал: ");
-  res.append(contact.channelMoniker());
-  return res;
+  const auto status = dialog.getStatus();
+  return fmt::format(dgettext("messages", "{}. User: {}, channel: {}"),
+                     get_dialog_status_description(status), contact.name(),
+                     contact.channelMoniker());
 }
 
 DialogActionHandler::DialogActionHandler(
@@ -128,7 +128,7 @@ void DialogActionHandler::abortDialog(std::string_view dialogId) {
 
 void DialogActionHandler::closeDialog(std::string_view dialogId) {
   auto wrapper = mDialogStorage->wrapper(std::string(dialogId));
-  auto status = wrapper->getStatus();
+  const auto status = wrapper->getStatus();
   if (status == Dialog::Status::ACTIVE) {
     auto contact = mContactStorage->get(std::string(wrapper->getContactId()));
     auto handler = make_delivery_handler_for_close_dialog_request(
@@ -160,8 +160,9 @@ void DialogActionHandler::sendRequest(
     lock->sendMessage(std::move(msg), channel, std::move(handler));
     dialog.save();
   } else {
-    throw std::runtime_error("Не удалось отправить сообщение для контакта " +
-                             std::string(dialog->getDialogId()));
+    throw std::runtime_error(fmt::format(
+        dgettext("messages", "Failed to send message for the contact: {}"),
+        dialog->getDialogId()));
   }
 }
 
@@ -181,9 +182,11 @@ void DialogActionHandler::prepareNotFoundDialog(const DialogMessage& message,
     if (contacts.empty()) {
       mNotifier->notify(
           AbstractUserNotifier::Severity::ERROR,
-          "Адресат '" + std::string(message.adress()) +
-              "' прислал запрос на добавление диалога, но контакт "
-              "с таким адрсом не найден");
+          fmt::format(
+              dgettext("messages",
+                       "Address '{}' sent a request for dialog creation, but "
+                       "contact with that address not found"),
+              message.adress()));
     } else {
       auto contact = contacts.front();
       auto dialog =
@@ -204,9 +207,11 @@ void DialogActionHandler::prepareNotFoundDialog(const DialogMessage& message,
                 std::string(contact.channelMoniker()));
         lock->sendMessage(std::move(msg), channel, std::move(handler));
       } else {
-        mNotifier->notify(AbstractUserNotifier::Severity::ERROR,
-                          "Не удалось отправить сообщение для контакта " +
-                              std::string(dialog.getDialogId()));
+        mNotifier->notify(
+            AbstractUserNotifier::Severity::ERROR,
+            fmt::format(
+                dgettext("messages", "Failed to send message for contact: {}"),
+                dialog.getDialogId()));
       }
       return;
     }
@@ -253,8 +258,11 @@ void DialogActionHandler::prepareForFoundDialog(const DialogMessage& message,
       abortDialog(message.dialogId());
       mNotifier->notify(
           AbstractUserNotifier::Severity::INFO,
-          "Не удалось произвести верификацию сеансового ключа с контактом " +
-              std::string(message.adress()) + " диалог завершен");
+          fmt::format(
+              dgettext(
+                  "messages",
+                  "Failed to verify seance key for contact {}. Dialog aborted"),
+              message.adress()));
     }
 
   } else {

@@ -4,6 +4,7 @@
 #include "primitives/dialogmessage.h"
 #include "utils.h"
 
+#include <libintl.h>
 #include <random>
 
 const std::string ContentDelitimer = "\n------------------------------\n";
@@ -26,7 +27,9 @@ std::pair<std::string, std::string> DiscoverContactAgent::getNameAndPublickKey(
     const DialogMessage& message) noexcept(false) {
   auto pos = message.content().find_first_of(ContentDelitimer);
   if (pos == std::string_view::npos) {
-    throw std::runtime_error("Cant find delitimer");
+    throw std::runtime_error(dgettext("messages",
+                                      "Cant find delitimer for name and public "
+                                      "key for recieved contact information"));
   }
 
   std::string name(message.content().substr(0, pos));

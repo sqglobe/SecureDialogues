@@ -44,6 +44,7 @@
 * [spdlog](https://github.com/gabime/spdlog)
 * [nlohmann json] (https://github.com/nlohmann/json)
 * [eventpp] (https://github.com/wqking/eventpp)
+* [fmt] (https://github.com/fmtlib/fmt)
 
 Так же для успешного разбора **CMakeLists.txt**  может потребоваться задать переменную **CMake** - `CMAKE_PREFIX_PATH`.
 
@@ -116,4 +117,12 @@ docker run  --mount type=bind,source=/tmp/github/res,target=/app/res --mount typ
 
 ```
 xhost +local:
+```
+
+## Локализация
+
+В приложении доступна локализация для русского языка. Для Ubuntu может потребоваться выполнить команду:
+
+```
+sudo locale-gen ru_RU
 ```

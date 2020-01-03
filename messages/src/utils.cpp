@@ -5,8 +5,6 @@
 
 std::string make_uiid() {
   std::string result = xg::newGuid().str();
-  ;
-
   return std::string(base64_encode(
       reinterpret_cast<const unsigned char*>(result.c_str()), result.size()));
 }
