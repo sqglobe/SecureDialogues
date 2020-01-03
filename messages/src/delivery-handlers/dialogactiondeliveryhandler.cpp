@@ -8,6 +8,9 @@
 
 #undef ERROR
 
+#include <libintl.h>
+#include "fmt/core.h"
+
 class DialogActionDeliveryHandler : public DeliveryHandler {
  public:
   DialogActionDeliveryHandler(
@@ -70,9 +73,13 @@ void DialogActionDeliveryHandler::timeouted() {
           mChannel);
     }
   }
-  mNotifier->notify(AbstractUserNotifier::Severity::ERROR,
-                    "Диалог для " + mAddress +
-                        " удален, потому что удаленная сторона не отвечает");
+  mNotifier->notify(
+      AbstractUserNotifier::Severity::ERROR,
+      fmt::format(
+          dgettext(
+              "messages",
+              "Dialog with {} was removed because participant didn't respond"),
+          mAddress));
   mWrapper->setStatus(Dialog::Status::ABORTED);
   mWrapper.save();
 }

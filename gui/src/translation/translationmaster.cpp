@@ -34,10 +34,14 @@ TranslationMaster::TranslationMaster(
     QObject(parent),
     mSettings(std::move(settings)), mLang(mSettings->getLocale()),
     mFolder(folder) {
-  bindtextdomain("secure-dialogues", folder.c_str());
-  textdomain("secure-dialogues");
-
   std::setlocale(LC_ALL, getStrLocale(mLang).c_str());
+  bindtextdomain("SecureDialogues", folder.c_str());
+  bind_textdomain_codeset("SecureDialogues", "UTF-8");
+
+  bindtextdomain("messages", folder.c_str());
+  bind_textdomain_codeset("messages", "UTF-8");
+
+  textdomain("SecureDialogues");
 
   if (!mTranslator.load(getFileName(mLang), mFolder.c_str())) {
     spdlog::get("root_logger")

@@ -15,6 +15,7 @@
 #include "spdlog/spdlog.h"
 
 #include <limits>
+#include "fmt/core.h"
 
 #undef ERROR
 
@@ -59,9 +60,11 @@ void MessageActionHandler::handle(const DialogMessage& message,
                                   const std::string& channel) noexcept {
   try {
     if (!mDialogStorage->has(std::string(message.dialogId()))) {
-      std::string err("Получено сообщение от ");
-      err.append(message.adress())
-          .append(". С указанным пользователем отсутсвуют открытые диалоги");
+      const std::string err =
+          fmt::format(dgettext("messages",
+                               "Recieved message from {}. With specified user "
+                               "has no opened dialogs"),
+                      message.adress());
       mNotifier->notify(AbstractUserNotifier::Severity::ERROR, err);
       if (auto despatcher = mDespatcher.lock()) {
         spdlog::get("root_logger")
@@ -108,7 +111,7 @@ void MessageActionHandler::sendMessage(std::string&& message) {
   std::string dialogId = mMessageContainer->getActiveDialog();
   if (dialogId.empty()) {
     mNotifier->notify(AbstractUserNotifier::Severity::ERROR,
-                      "Выберите один диалог для отправки сообщения");
+                      dgettext("messages", "Select one dialog for texting"));
   }
   try {
     auto dialog = mDialogStorage->wrapper(dialogId);
@@ -127,14 +130,16 @@ void MessageActionHandler::sendMessage(std::string&& message) {
                   std::move(textMess), false)));
     } else {
       mNotifier->notify(AbstractUserNotifier::Severity::ERROR,
-                        "Не удалось отправить сообщение");
+                        dgettext("messages", "Failed to send message"));
     }
   } catch (const std::exception& ex) {
     mMessageContainer->addMessage(
         dialogId,
         std::make_shared<UserMessage>(
             UserMessage::Status::ERROR, UserMessage::Type::SYSTEM,
-            std::string("Не удалось отправить сообщение: ") + ex.what()));
+            fmt::format(
+                dgettext("messages", "Failed to send messsage, reason: {}"),
+                ex.what())));
   }
 }
 
@@ -150,9 +155,10 @@ void MessageActionHandler::abortOnException(
         std::string(message.dialogId()),
         std::make_shared<UserMessage>(
             UserMessage::Status::ERROR, UserMessage::Type::SYSTEM,
-            "При обработке сообщения от пользователя " +
-                std::string(message.adress()) +
-                " произошла ошибка. Диалог удален"));
+            fmt::format(dgettext("messages",
+                                 "Error occured during message handling from "
+                                 "user {}. Dialog removed."),
+                        message.adress())));
     if (mDialogStorage->has(std::string(message.dialogId()))) {
       auto wrapper = mDialogStorage->wrapper(std::string(message.dialogId()));
       auto contact = mContactStorage->get(std::string(wrapper->getContactId()));

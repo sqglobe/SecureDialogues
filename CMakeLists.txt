@@ -79,6 +79,7 @@ include(Gettext)
 add_subdirectory(submodules/crossguid)
 add_subdirectory(submodules/cryptopp)
 add_subdirectory(submodules/nlohmann_json)
+add_subdirectory(submodules/fmt)
 
 add_subdirectory( messages )
 add_subdirectory( gui )

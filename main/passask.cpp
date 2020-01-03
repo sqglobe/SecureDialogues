@@ -8,6 +8,8 @@
 #include <QInputDialog>
 #include <QMessageBox>
 
+#include <libintl.h>
+
 std::string makeDigest(const std::string& str) {
   using namespace CryptoPP;
   SHA256 hash;
@@ -35,12 +37,15 @@ bool isPassValid(const std::string& pass, const std::string& passFile) {
 std::string getPassword(const std::string& passFile) {
   while (true) {
     bool ok;
-    auto text = QInputDialog::getText(nullptr, "SecureDialogues",
-                                      "Введите пароль для достпа к программе",
-                                      QLineEdit::Normal, QString(), &ok);
+    auto text = QInputDialog::getText(
+        nullptr, "SecureDialogues",
+        dgettext("SecureDialogues",
+                 "Please, enter your password for application access"),
+        QLineEdit::Normal, QString(), &ok);
 
     if (!ok) {
-      throw std::runtime_error("Выполнение программы отклонено!");
+      throw std::runtime_error(
+          dgettext("SecureDialogues", "Application execution was canceled!"));
     }
 
     if (isPassValid(text.toStdString(), passFile)) {

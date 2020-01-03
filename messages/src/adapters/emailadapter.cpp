@@ -5,8 +5,11 @@
 #include "oauth-agents/utils/base64.h"
 #include "primitives/connectionholder.h"
 
+#include <libintl.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include "spdlog/spdlog.h"
+
+#include "fmt/core.h"
 
 void EmailAdapter::send(const std::string& message, const std::string& adress) {
   try {
@@ -95,6 +98,7 @@ bool EmailAdapter::connect() {
     }
   }
 
-  throw std::runtime_error("Undefined connection type: " +
-                           std::to_string(static_cast<int>(conn.getType())));
+  throw std::runtime_error(
+      fmt::format(dgettext("messages", "Undefined connection type: {}"),
+                  static_cast<int>(conn.getType())));
 }

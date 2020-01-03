@@ -8,3 +8,4 @@ CMakeLists.txt.user.4.8-pre1
 docker/conf/
 docker/img/
 secrets.txt
+*.pot

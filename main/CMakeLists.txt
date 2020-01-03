@@ -23,3 +23,5 @@ endif()
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
   set_property(TARGET SecureDialogues PROPERTY WIN32_EXECUTABLE true)
 endif()
+
+add_internationals(SecureDialogues ru_RU.UTF-8 "locale" "${LOCALE_FILES_DIR}" securedialogues 1.1)
