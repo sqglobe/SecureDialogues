@@ -12,13 +12,13 @@ const auto SYSTEM_MESSAGE_PADDING{20};
 
 QColor getColor(UserMessage::Status status) {
   switch (status) {
-    case UserMessage::Status::DELIVERIED:
+    case UserMessage::Status::Deliveried:
       return QColor(Qt::black);
-    case UserMessage::Status::NOT_DELIVERIED:
+    case UserMessage::Status::NotDeliveried:
       return QColor(Qt::red);
-    case UserMessage::Status::WAIT_DELIVERY:
+    case UserMessage::Status::WaitDelivery:
       return QColor(Qt::gray);
-    case UserMessage::Status::ERROR:
+    case UserMessage::Status::Error:
       return QColor(Qt::darkRed);
   }
   return QColor();
@@ -26,22 +26,22 @@ QColor getColor(UserMessage::Status status) {
 
 QColor getBackground(UserMessage::Type type) {
   switch (type) {
-    case UserMessage::Type::IN:
+    case UserMessage::Type::In:
       return QColor(135, 206, 235);
-    case UserMessage::Type::OUT:
+    case UserMessage::Type::Out:
       return QColor(152, 251, 152);
-    case UserMessage::Type::SYSTEM:
+    case UserMessage::Type::System:
       return QColor(255, 182, 193);
   }
 }
 
 auto getOptions(const std::shared_ptr<const UserMessage>& message) {
   switch (message->type()) {
-    case UserMessage::Type::IN:
+    case UserMessage::Type::In:
       return Qt::AlignLeft | Qt::AlignVCenter;
-    case UserMessage::Type::OUT:
+    case UserMessage::Type::Out:
       return Qt::AlignRight | Qt::AlignVCenter;
-    case UserMessage::Type::SYSTEM:
+    case UserMessage::Type::System:
       return Qt::AlignCenter | Qt::AlignVCenter;
   }
 }
@@ -52,12 +52,12 @@ auto getTextRect(const std::shared_ptr<const UserMessage>& message,
 
   newRect.setTop(newRect.top() - TEXT_PADDING);
   newRect.setBottom(newRect.bottom() + TEXT_PADDING);
-  if (message->type() == UserMessage::Type::SYSTEM) {
+  if (message->type() == UserMessage::Type::System) {
     newRect.setLeft(newRect.left() - SYSTEM_MESSAGE_PADDING);
     newRect.setRight(newRect.right() + SYSTEM_MESSAGE_PADDING);
-  } else if (message->type() == UserMessage::Type::IN) {
+  } else if (message->type() == UserMessage::Type::In) {
     newRect.setRight(newRect.right() + 2 * TEXT_PADDING);
-  } else if (message->type() == UserMessage::Type::OUT) {
+  } else if (message->type() == UserMessage::Type::Out) {
     newRect.setLeft(newRect.left() - 2 * TEXT_PADDING);
   }
   return newRect;
@@ -107,7 +107,7 @@ QSize UserMessageModelDelegate::sizeHint(const QStyleOptionViewItem& option,
 
   auto mainTextWidth = option.fontMetrics.width(messageText);
 
-  if (message->type() == UserMessage::Type::SYSTEM) {
+  if (message->type() == UserMessage::Type::System) {
     mainTextWidth += 2 * SYSTEM_MESSAGE_PADDING;
   }
 

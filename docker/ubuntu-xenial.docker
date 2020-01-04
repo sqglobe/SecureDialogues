@@ -4,6 +4,7 @@ FROM ubuntu:xenial
 RUN apt-get update \
  && apt-get install -y software-properties-common \
  && add-apt-repository -y ppa:ubuntu-toolchain-r/test \
+ && add-apt-repository -y ppa:kubuntu-ppa/backports \
  && apt-get install -y apt-utils 
 
 RUN  apt-get update \
@@ -28,6 +29,8 @@ RUN apt install -y pkg-config  libgnutls-dev libghc-gsasl-dev
 
 WORKDIR /build
 
+RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 20 --slave /usr/bin/g++ g++ /usr/bin/g++-7
+
 RUN git clone https://github.com/kisli/vmime.git && cd vmime && git checkout e2fc1911f17374ae5343c28ec52493f1dfdf09ab \
   && mkdir build && cd build \
   && cmake -G "Unix Makefiles" -DVMIME_HAVE_MESSAGING_PROTO_SENDMAIL=False \
@@ -38,15 +41,29 @@ RUN git clone https://github.com/kisli/vmime.git && cd vmime && git checkout e2f
     -DVMIME_CHARSETCONV_LIB=iconv \
     -D_RUN_RESULT_VAR=0 \
     -DVMIME_BUILD_SAMPLES=OFF ../ \
-  && cmake --build . && make install
+  && make -j4 JOBS=4 && make install
 
+RUN apt-get install -y gettext qttools5-dev qttools5-dev-tools
+
+RUN mkdir /3rdparty && wget -P /3rdparty http://download.oracle.com/berkeley-db/db-6.2.32.tar.gz && cd /3rdparty \
+ && tar -xzf db-6.2.32.tar.gz
+
+RUN cd /3rdparty/db-6.2.32/build_unix && ../dist/configure --enable-cxx --with-cryptography=yes --enable-stl --disable-replication --disable-shared --prefix=/usr/local && make -j8 && make install
+
+RUN  git clone https://github.com/sqglobe/persistent-storage.git && cd persistent-storage && git checkout c7147fb9020934c3e3e83fc053b06e24c8c527fd \
+     && git submodule init \ 
+     && git submodule update \
+     && mkdir build && cd build \
+     && cmake -DTHREADS_PREFER_PTHREAD_FLAG=ON -DCMAKE_INSTALL_PREFIX=/usr/local -DBerkeleyDB_ROOT_DIR=/usr/local ../ \
+     && make -j4 && make install
+     
 # Установим рабочую директорию нашего приложения
+
 WORKDIR /app/build
 
-RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 20 --slave /usr/bin/g++ g++ /usr/bin/g++-7
-
 # Установим точку входа 
-ENTRYPOINT cmake  -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF -DUSE_VMIME_SHARED=OFF -DJSON_BuildTests=OFF -DJSON_Install=OFF -DXG_TESTS=OFF /app/src \
+ENTRYPOINT cmake  -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF -DUSE_VMIME_SHARED=OFF -DJSON_BuildTests=OFF -DJSON_Install=OFF -DXG_TESTS=OFF  -DCMAKE_PREFIX_PATH=/usr/local/lib/CMake/persistent-storage  /app/src \
         && make -j4 JOBS=4 \
         && cp documents/architecture.pdf documents/user-guid.pdf /app/res \
-        && cp bin/SecureDialogues /app/res/SecureDialogues-ubuntu-16.04-x86_64
+        && cp bin/SecureDialogues /app/res/SecureDialogues-ubuntu-16.04-x86_64 \
+        && cp -R bin/locale  /app/res

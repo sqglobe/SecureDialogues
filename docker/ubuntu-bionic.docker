@@ -29,14 +29,28 @@ RUN git clone https://github.com/kisli/vmime.git && cd vmime && git checkout e2f
     -DVMIME_CHARSETCONV_LIB=iconv \
     -D_RUN_RESULT_VAR=0 \
     -DVMIME_BUILD_SAMPLES=OFF ../ \
-  && cmake --build . && make install
+  && make -j4 JOBS=4 && make install
 
+RUN apt-get install -y gettext wget qttools5-dev
+
+RUN mkdir /3rdparty && wget -P /3rdparty http://download.oracle.com/berkeley-db/db-6.2.32.tar.gz && cd /3rdparty \
+ && tar -xzf db-6.2.32.tar.gz
+
+RUN cd /3rdparty/db-6.2.32/build_unix && ../dist/configure --enable-cxx --with-cryptography=yes --enable-stl --disable-replication --disable-shared --prefix=/usr/local && make -j8 && make install
+
+RUN  git clone https://github.com/sqglobe/persistent-storage.git && cd persistent-storage && git checkout c7147fb9020934c3e3e83fc053b06e24c8c527fd \
+     && git submodule init \ 
+     && git submodule update \
+     && mkdir build && cd build \
+     && cmake -DTHREADS_PREFER_PTHREAD_FLAG=ON -DCMAKE_INSTALL_PREFIX=/usr/local -DBerkeleyDB_ROOT_DIR=/usr/local ../ \
+     && make -j4 && make install
 
 # Установим рабочую директорию нашего приложения
 WORKDIR /app/build
 
 # Установим точку входа 
-ENTRYPOINT cmake -DBUILD_TESTING=OFF -DJSON_BuildTests=OFF -DJSON_Install=OFF -DXG_TESTS=OFF   -DCMAKE_BUILD_TYPE=Release  -DUSE_VMIME_SHARED=OFF  /app/src \
+ENTRYPOINT cmake -DBUILD_TESTING=OFF -DJSON_BuildTests=OFF -DJSON_Install=OFF -DXG_TESTS=OFF   -DCMAKE_BUILD_TYPE=Release  -DUSE_VMIME_SHARED=OFF -DCMAKE_PREFIX_PATH=/usr/local/lib/CMake/persistent-storage  /app/src \
         && make -j4 JOBS=4 \
         && cp documents/architecture.pdf documents/user-guid.pdf /app/res \
-        && cp bin/SecureDialogues /app/res/SecureDialogues-ubuntu-18.04-x86_64
+        && cp bin/SecureDialogues /app/res/SecureDialogues-ubuntu-18.04-x86_64 \
+        && cp -R bin/locale  /app/res

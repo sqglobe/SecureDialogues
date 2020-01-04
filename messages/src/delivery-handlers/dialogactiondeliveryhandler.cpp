@@ -74,7 +74,7 @@ void DialogActionDeliveryHandler::timeouted() {
     }
   }
   mNotifier->notify(
-      AbstractUserNotifier::Severity::ERROR,
+      AbstractUserNotifier::Severity::Error,
       fmt::format(
           dgettext(
               "messages",

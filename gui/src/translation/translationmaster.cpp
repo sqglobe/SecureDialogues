@@ -34,7 +34,7 @@ TranslationMaster::TranslationMaster(
     QObject(parent),
     mSettings(std::move(settings)), mLang(mSettings->getLocale()),
     mFolder(folder) {
-  std::setlocale(LC_ALL, getStrLocale(mLang).c_str());
+  setlocale(LC_ALL, getStrLocale(mLang).c_str());
   bindtextdomain("SecureDialogues", folder.c_str());
   bind_textdomain_codeset("SecureDialogues", "UTF-8");
 
@@ -54,7 +54,7 @@ TranslationMaster::TranslationMaster(
 
 void TranslationMaster::onSettingsChanged() {
   if (const auto lang = mSettings->getLocale(); lang != mLang) {
-    std::setlocale(LC_ALL, getStrLocale(mLang).c_str());
+    setlocale(LC_ALL, getStrLocale(mLang).c_str());
     mLang = lang;
     if (!mTranslator.load(getFileName(mLang), mFolder.c_str())) {
       spdlog::get("root_logger")

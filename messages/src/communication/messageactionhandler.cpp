@@ -14,6 +14,7 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include "spdlog/spdlog.h"
 
+#include <libintl.h>
 #include <limits>
 #include "fmt/core.h"
 
@@ -34,12 +35,12 @@ class MessageNotDeliveriedHandler : public DeliveryHandler {
 };
 
 void MessageNotDeliveriedHandler::removed() {
-  mMessageWrapper->get()->updateStatus(UserMessage::Status::DELIVERIED);
+  mMessageWrapper->get()->updateStatus(UserMessage::Status::Deliveried);
   mMessageWrapper->save();
 }
 
 void MessageNotDeliveriedHandler::timeouted() {
-  mMessageWrapper->get()->updateStatus(UserMessage::Status::NOT_DELIVERIED);
+  mMessageWrapper->get()->updateStatus(UserMessage::Status::NotDeliveried);
   mMessageWrapper->save();
 }
 
@@ -65,7 +66,7 @@ void MessageActionHandler::handle(const DialogMessage& message,
                                "Recieved message from {}. With specified user "
                                "has no opened dialogs"),
                       message.adress());
-      mNotifier->notify(AbstractUserNotifier::Severity::ERROR, err);
+      mNotifier->notify(AbstractUserNotifier::Severity::Error, err);
       if (auto despatcher = mDespatcher.lock()) {
         spdlog::get("root_logger")
             ->warn(
@@ -110,7 +111,7 @@ bool MessageActionHandler::isItYouAction(DialogMessage::Action action) const
 void MessageActionHandler::sendMessage(std::string&& message) {
   std::string dialogId = mMessageContainer->getActiveDialog();
   if (dialogId.empty()) {
-    mNotifier->notify(AbstractUserNotifier::Severity::ERROR,
+    mNotifier->notify(AbstractUserNotifier::Severity::Error,
                       dgettext("messages", "Select one dialog for texting"));
   }
   try {
@@ -129,14 +130,14 @@ void MessageActionHandler::sendMessage(std::string&& message) {
               mMessageContainer->addToActiveDialogWithWrapper(
                   std::move(textMess), false)));
     } else {
-      mNotifier->notify(AbstractUserNotifier::Severity::ERROR,
+      mNotifier->notify(AbstractUserNotifier::Severity::Error,
                         dgettext("messages", "Failed to send message"));
     }
   } catch (const std::exception& ex) {
     mMessageContainer->addMessage(
         dialogId,
         std::make_shared<UserMessage>(
-            UserMessage::Status::ERROR, UserMessage::Type::SYSTEM,
+            UserMessage::Status::Error, UserMessage::Type::System,
             fmt::format(
                 dgettext("messages", "Failed to send messsage, reason: {}"),
                 ex.what())));
@@ -154,7 +155,7 @@ void MessageActionHandler::abortOnException(
     mMessageContainer->addMessage(
         std::string(message.dialogId()),
         std::make_shared<UserMessage>(
-            UserMessage::Status::ERROR, UserMessage::Type::SYSTEM,
+            UserMessage::Status::Error, UserMessage::Type::System,
             fmt::format(dgettext("messages",
                                  "Error occured during message handling from "
                                  "user {}. Dialog removed."),

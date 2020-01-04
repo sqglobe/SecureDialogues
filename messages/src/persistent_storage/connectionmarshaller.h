@@ -6,7 +6,7 @@
 class ConnectionMarshaller {
  public:
   static void restore(ConnectionHolder& elem, const void* src);
-  static u_int32_t size(const ConnectionHolder& element);
+  static uint32_t size(const ConnectionHolder& element);
   static void store(void* dest, const ConnectionHolder& elem);
 };
 

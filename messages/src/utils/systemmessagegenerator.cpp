@@ -38,8 +38,8 @@ void SystemMessageGenerator::changed(const ChangeListener::element& obj) {
     if (auto lock = mMessageContainer.lock()) {
       lock->addMessage(
           std::string(obj.getDialogId()),
-          std::make_shared<UserMessage>(UserMessage::Status::DELIVERIED,
-                                        UserMessage::Type::SYSTEM, text));
+          std::make_shared<UserMessage>(UserMessage::Status::Deliveried,
+                                        UserMessage::Type::System, text));
     }
   }
 }

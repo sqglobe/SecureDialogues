@@ -1,5 +1,6 @@
 #include "toolboxwrapper.h"
 
+#include <QIcon>
 #include <QToolBar>
 
 ToolboxWrapper::ToolboxWrapper(QToolBar* toolBar, QObject* parent) :

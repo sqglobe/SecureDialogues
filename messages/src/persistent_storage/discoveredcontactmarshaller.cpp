@@ -22,8 +22,8 @@ void DiscoveredContactMarshaller::restore(DiscoveredContact& elem,
       channel_moniker, contact_adress, public_key, name, dialog_id);
 }
 
-u_int32_t DiscoveredContactMarshaller::size(const DiscoveredContact& element) {
-  u_int32_t size = 0;
+uint32_t DiscoveredContactMarshaller::size(const DiscoveredContact& element) {
+  uint32_t size = 0;
   size += sizeof(std::chrono::time_point<std::chrono::system_clock>::duration);
   size += sizeof(std::string::size_type) + element.channel_moniker().length();
   size += sizeof(std::string::size_type) + element.contact_adress().length();

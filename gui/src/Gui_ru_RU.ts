@@ -771,27 +771,27 @@ Address: %3</source>
 <context>
     <name>ToolboxWrapper</name>
     <message>
-        <location filename="wrappers/toolboxwrapper.cpp" line="8"/>
+        <location filename="wrappers/toolboxwrapper.cpp" line="9"/>
         <source>Open connection settings</source>
         <translation>Открыть настройки соединений</translation>
     </message>
     <message>
-        <location filename="wrappers/toolboxwrapper.cpp" line="11"/>
+        <location filename="wrappers/toolboxwrapper.cpp" line="12"/>
         <source>Add/edit or remove your contacts</source>
         <translation>Добавить/изменить или удалить контакты</translation>
     </message>
     <message>
-        <location filename="wrappers/toolboxwrapper.cpp" line="13"/>
+        <location filename="wrappers/toolboxwrapper.cpp" line="14"/>
         <source>Show my public key</source>
         <translation>Показать мой публичный ключ</translation>
     </message>
     <message>
-        <location filename="wrappers/toolboxwrapper.cpp" line="16"/>
+        <location filename="wrappers/toolboxwrapper.cpp" line="17"/>
         <source>Show recieved contact information</source>
         <translation>Показать полученные контактные данные</translation>
     </message>
     <message>
-        <location filename="wrappers/toolboxwrapper.cpp" line="20"/>
+        <location filename="wrappers/toolboxwrapper.cpp" line="21"/>
         <source>Show general application settings</source>
         <translation>Показать настройки приложения</translation>
     </message>

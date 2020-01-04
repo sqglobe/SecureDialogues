@@ -7,7 +7,7 @@
 msgid   ""
 msgstr  "Project-Id-Version: PACKAGE VERSION\n"
         "Report-Msgid-Bugs-To: \n"
-        "POT-Creation-Date: 2020-01-04 00:52+0300\n"
+        "POT-Creation-Date: 2020-01-03 23:05+0000\n"
         "PO-Revision-Date: 2020-01-04 00:41+0300\n"
         "Last-Translator: Automatically generated\n"
         "Language-Team: none\n"
@@ -18,19 +18,20 @@ msgstr  "Project-Id-Version: PACKAGE VERSION\n"
         "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 "
         "&& n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: passask.cpp:45
+#: passask.cpp:45 passask.cpp:48
 msgid   "Application execution was canceled!"
 msgstr  "Выполнение приложения было отклонено"
 
-#: main.cpp:48
+#: main.cpp:48 main.cpp:44
 msgid   "Application was aborted because of failed creation of configuration "
         "folder"
-msgstr  "Приложение принудительно завершено из-за невозможности создать папку с конфигурацией"
+msgstr  "Приложение принудительно завершено из-за невозможности создать папку "
+        "с конфигурацией"
 
-#: main.cpp:67
+#: main.cpp:67 main.cpp:65
 msgid   "Application was aborted with message {}"
 msgstr  "Приложение завершено с сообщением {}"
 
-#: passask.cpp:41
+#: passask.cpp:41 passask.cpp:43
 msgid   "Please, enter your password for application access"
 msgstr  "Пожалуйста, введите пароль для доступа к приложению"

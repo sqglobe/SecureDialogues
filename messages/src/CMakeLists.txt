@@ -109,5 +109,6 @@ add_library(messages STATIC ${SOURCES} ${HEADERS})
 
 target_include_directories(messages PUBLIC   ${CMAKE_CURRENT_SOURCE_DIR} ${PERSISTENT-STORAGE_INCLUDE_DIRS})
 target_link_libraries( messages ${PROJ_CRYPTOPP_LIB} xg encryption oauth-agents email-agent Oracle::BerkeleyDB ${CMAKE_THREAD_LIBS_INIT} ${Boost_SYSTEM_LIBRARY} pthread persistent-storage fmt::fmt-header-only)
+target_compile_definitions(messages PRIVATE NO_MEMBER_FUNCTION_PARTIAL_SPECIALIZATION)
 add_internationals(messages ru_RU.UTF-8 "locale" "${LOCALE_FILES_DIR}" securedialogues 1.1)
 

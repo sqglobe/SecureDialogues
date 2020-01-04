@@ -16,7 +16,7 @@ class AbstractUserNotifier {
    * WARNING - сообщение о не критической ошибке
    * SUCCESS - уведомление об успехе, например об успешной операции
    */
-  enum class Severity { ERROR, INFO, WARNING, SUCCESS };
+  enum class Severity { Error, Info, Warning, Success };
 
   /**
    * @brief Выполняет уведомление пользователя о событии

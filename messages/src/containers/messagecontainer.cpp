@@ -22,9 +22,9 @@ void MessageContainer::setActiveDialog(const std::string& dialogId) {
 void MessageContainer::addMessage(const std::string& dialogId,
                                   const std::string& message,
                                   bool isIncome) {
-  auto type = isIncome ? UserMessage::Type::IN : UserMessage::Type::OUT;
-  auto status = isIncome ? UserMessage::Status::DELIVERIED
-                         : UserMessage::Status::WAIT_DELIVERY;
+  auto type = isIncome ? UserMessage::Type::In : UserMessage::Type::Out;
+  auto status = isIncome ? UserMessage::Status::Deliveried
+                         : UserMessage::Status::WaitDelivery;
   std::lock_guard<std::recursive_mutex> lock(mMutex);
   auto msg = std::make_shared<UserMessage>(status, type, message);
   mMessages[dialogId].push_back(msg);
@@ -49,9 +49,9 @@ MessageContainer::addToActiveDialogWithWrapper(const std::string& message,
                  "MessageConteiner not contains active dialog id: [{}]"),
         mActiveDialog));
   }
-  auto type = isIncome ? UserMessage::Type::IN : UserMessage::Type::OUT;
-  auto status = isIncome ? UserMessage::Status::DELIVERIED
-                         : UserMessage::Status::WAIT_DELIVERY;
+  auto type = isIncome ? UserMessage::Type::In : UserMessage::Type::Out;
+  auto status = isIncome ? UserMessage::Status::Deliveried
+                         : UserMessage::Status::WaitDelivery;
   auto msg = std::make_shared<UserMessage>(status, type, message);
   mMessages[mActiveDialog].push_back(msg);
   notifyAboutNewMessage(mActiveDialog, msg);
@@ -70,9 +70,9 @@ MessageContainer::addToActiveDialogWithWrapper(std::string&& message,
                  "MessageConteiner not contains active dialog id: [{}]"),
         mActiveDialog));
   }
-  auto type = isIncome ? UserMessage::Type::IN : UserMessage::Type::OUT;
-  auto status = isIncome ? UserMessage::Status::DELIVERIED
-                         : UserMessage::Status::WAIT_DELIVERY;
+  auto type = isIncome ? UserMessage::Type::In : UserMessage::Type::Out;
+  auto status = isIncome ? UserMessage::Status::Deliveried
+                         : UserMessage::Status::WaitDelivery;
   auto msg = std::make_shared<UserMessage>(status, type, std::move(message));
   mMessages[mActiveDialog].push_back(msg);
   notifyAboutNewMessage(mActiveDialog, msg);

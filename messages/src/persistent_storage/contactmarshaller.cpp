@@ -12,8 +12,8 @@ void ContactMarshaller::restore(Contact& elem, const void* src) {
   elem = {channelMoniker, name, adress, publicKey, contactId};
 }
 
-u_int32_t ContactMarshaller::size(const Contact& element) {
-  u_int32_t size = 0;
+uint32_t ContactMarshaller::size(const Contact& element) {
+  uint32_t size = 0;
   size += sizeof(std::string::size_type) + element.channelMoniker().length();
   size += sizeof(std::string::size_type) + element.name().length();
   size += sizeof(std::string::size_type) + element.adress().length();

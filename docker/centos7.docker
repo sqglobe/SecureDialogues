@@ -5,7 +5,7 @@ RUN yum install -y epel-release centos-release-scl
 
 RUN  yum install -y make ninja-build devtoolset-7-gcc-c++ wget
 
-RUN yum install -y git qt5-qtbase-devel plantuml libuuid-devel libcurl-devel openssl-devel
+RUN yum install -y git qtbase5-common-devel  gettext qt5-qtbase-devel plantuml libuuid-devel libcurl-devel openssl-devel
 
 RUN mkdir /opt/cmake \
  && wget -P / https://github.com/Kitware/CMake/releases/download/v3.13.4/cmake-3.13.4-Linux-x86_64.sh \
@@ -40,13 +40,46 @@ RUN scl enable devtoolset-7 "cmake \
     -DVMIME_CHARSETCONV_LIB=iconv \
     -D_RUN_RESULT_VAR=0 \
     -DVMIME_BUILD_SAMPLES=OFF /3rdparty/vmime \
-  && make && make install"
-  
+  && make -j4 JOBS=4 && make install"
+ 
+WORKDIR /3rdparty
+RUN wget -P /3rdparty http://download.oracle.com/berkeley-db/db-6.2.32.tar.gz && cd /3rdparty \
+ && tar -xzf db-6.2.32.tar.gz
+
+WORKDIR /3rdparty/db-6.2.32/build_unix
+
+RUN scl enable devtoolset-7 "../dist/configure \
+      --enable-cxx \
+      --with-cryptography=yes \
+      --enable-stl \
+      --disable-replication \
+      --disable-shared \
+      --prefix=/usr/local \
+      && make -j8 && make install"
+
+WORKDIR /3rdparty
+
+RUN  git clone https://github.com/sqglobe/persistent-storage.git && cd persistent-storage && git checkout c7147fb9020934c3e3e83fc053b06e24c8c527fd \
+     && git submodule init \ 
+     && git submodule update 
+     
+
+WORKDIR /3rdparty/persistent-storage-build
+
+RUN scl enable devtoolset-7 "cmake \
+     -DTHREADS_PREFER_PTHREAD_FLAG=ON \
+     -DCMAKE_INSTALL_PREFIX=/usr/local \
+     -DBerkeleyDB_ROOT_DIR=/usr/local /3rdparty/persistent-storage \
+     && make -j4 && make install"
+
+RUN yum install -y   qt5-linguist
+
 # Установим рабочую директорию нашего приложения
 WORKDIR /app/build
 
 # Установим точку входа 
 ENTRYPOINT  scl enable devtoolset-7 \
-      "cmake -DBUILD_TESTING=OFF -DJSON_BuildTests=OFF -DJSON_Install=OFF -DXG_TESTS=OFF -DUSE_VMIME_SHARED=OFF -DUSE_VMIME_SHARED=OFF /app/src && make -j4 JOBS=4" && \
-      cp bin/SecureDialogues /app/res/SecureDialogues-centos7-x86_64
+      "cmake -DBUILD_TESTING=OFF -DJSON_BuildTests=OFF -DJSON_Install=OFF -DXG_TESTS=OFF -DUSE_VMIME_SHARED=OFF -DUSE_VMIME_SHARED=OFF -DCMAKE_PREFIX_PATH=/usr/local/lib/CMake/persistent-storage /app/src && make -j4 JOBS=4" && \
+      cp bin/SecureDialogues /app/res/SecureDialogues-centos7-x86_64 \
+      && cp -R bin/locale  /app/res
 

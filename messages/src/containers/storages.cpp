@@ -24,7 +24,7 @@ int get_dialog_secondary_index(Db* /* secondary */,
     result->set_flags(DB_DBT_APPMALLOC);
     strncpy(chars, contactId.data(), contactId.size());
     result->set_data(chars);
-    result->set_size(static_cast<u_int32_t>(contactId.size()) + 1);
+    result->set_size(static_cast<uint32_t>(contactId.size()) + 1);
     return 0;
   }
   return 1;
@@ -42,7 +42,7 @@ int get_contact_secondary_index(Db* /* secondary */,
     result->set_flags(DB_DBT_APPMALLOC);
     strncpy(chars, connName.data(), connName.size());
     result->set_data(chars);
-    result->set_size(static_cast<u_int32_t>(connName.size()) + 1);
+    result->set_size(static_cast<uint32_t>(connName.size()) + 1);
     return 0;
   }
   return 1;

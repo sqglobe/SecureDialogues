@@ -22,9 +22,9 @@ bool UserInformator::ask(const std::string& question) const {
 void UserInformator::showMessage(AbstractUserNotifier::Severity sev,
                                  QString message) {
   using S = AbstractUserNotifier::Severity;
-  if (S::ERROR == sev) {
+  if (S::Error == sev) {
     QMessageBox::critical(mParentWidget, tr("Error!"), message);
-  } else if (S::WARNING == sev) {
+  } else if (S::Warning == sev) {
     QMessageBox::warning(mParentWidget, tr("Attention!"), message);
   } else {
     QMessageBox::information(mParentWidget, tr("Message"), message);

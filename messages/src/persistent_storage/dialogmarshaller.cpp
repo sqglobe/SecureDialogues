@@ -24,8 +24,8 @@ void DialogMarshaller::restore(Dialog& elem, const void* src) {
   elem = Dialog(contactId, dialogId, peerSequental, thisSequental, st);
 }
 
-u_int32_t DialogMarshaller::size(const Dialog& element) {
-  u_int32_t size = 0;
+uint32_t DialogMarshaller::size(const Dialog& element) {
+  uint32_t size = 0;
   size += sizeof(std::string::size_type) + element.getDialogId().length();
   size += sizeof(std::string::size_type) + element.getContactId().length();
   size += sizeof(Dialog::Status);

@@ -181,7 +181,7 @@ void DialogActionHandler::prepareNotFoundDialog(const DialogMessage& message,
         });
     if (contacts.empty()) {
       mNotifier->notify(
-          AbstractUserNotifier::Severity::ERROR,
+          AbstractUserNotifier::Severity::Error,
           fmt::format(
               dgettext("messages",
                        "Address '{}' sent a request for dialog creation, but "
@@ -208,7 +208,7 @@ void DialogActionHandler::prepareNotFoundDialog(const DialogMessage& message,
         lock->sendMessage(std::move(msg), channel, std::move(handler));
       } else {
         mNotifier->notify(
-            AbstractUserNotifier::Severity::ERROR,
+            AbstractUserNotifier::Severity::Error,
             fmt::format(
                 dgettext("messages", "Failed to send message for contact: {}"),
                 dialog.getDialogId()));
@@ -257,7 +257,7 @@ void DialogActionHandler::prepareForFoundDialog(const DialogMessage& message,
     } else {
       abortDialog(message.dialogId());
       mNotifier->notify(
-          AbstractUserNotifier::Severity::INFO,
+          AbstractUserNotifier::Severity::Info,
           fmt::format(
               dgettext(
                   "messages",
@@ -270,7 +270,7 @@ void DialogActionHandler::prepareForFoundDialog(const DialogMessage& message,
     auto contact = mContactStorage->get(std::string(dialog->getContactId()));
     dialog->setStatus(map(message.action()));
     dialog.save();
-    mNotifier->notify(AbstractUserNotifier::Severity::INFO,
+    mNotifier->notify(AbstractUserNotifier::Severity::Info,
                       dialog_to_string(dialog.get(), contact));
   }
 }

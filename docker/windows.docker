@@ -42,13 +42,14 @@ RUN mkdir /cross && cd /cross && git clone https://github.com/mxe/mxe.git
 WORKDIR /cross/mxe
 
 RUN make MXE_TARGETS=i686-w64-mingw32.shared MXE_PLUGIN_DIRS=plugins/gcc7 \
-        gcc qtbase boost libiconv gnutls libgcrypt libgpg_error libgsasl -j4 JOBS=4
+        gcc qtbase boost libiconv gnutls libgcrypt libgpg_error libgsasl gettext qttranslations -j4 JOBS=4
 
 ENV PATH="/cross/mxe/usr/bin:${PATH}"
 
-ADD curl.mk /cross/mxe/src
+ADD mxe-modules/curl.mk /cross/mxe/src
+ADD mxe-modules/db.mk /cross/mxe/src
 
-RUN cd  /cross/mxe && make MXE_TARGETS=i686-w64-mingw32.shared MXE_PLUGIN_DIRS=plugins/gcc7 curl
+RUN cd  /cross/mxe && make MXE_TARGETS=i686-w64-mingw32.shared MXE_PLUGIN_DIRS=plugins/gcc7 curl db  -j4 JOBS=4
 
 WORKDIR /submodules
 
@@ -66,7 +67,22 @@ RUN i686-w64-mingw32.shared-cmake \
     -DVMIME_CHARSETCONV_LIB=iconv \
     -D_RUN_RESULT_VAR=0 \
     -DVMIME_BUILD_SAMPLES=OFF /submodules/vmime \
-  && make && make install
+  && make -j4 JOBS=4 && make install
+
+WORKDIR /3rdparty
+
+RUN  git clone https://github.com/sqglobe/persistent-storage.git && cd persistent-storage && git checkout c7147fb9020934c3e3e83fc053b06e24c8c527fd \
+     && git submodule init \ 
+     && git submodule update 
+     
+
+WORKDIR /3rdparty/persistent-storage-build
+
+RUN i686-w64-mingw32.shared-cmake \
+     -DTHREADS_PREFER_PTHREAD_FLAG=ON \
+     /3rdparty/persistent-storage \
+     && make -j4 && make install
+     
 
 WORKDIR /app/build
 
@@ -79,11 +95,13 @@ ENTRYPOINT i686-w64-mingw32.shared-cmake \
      -DBUILD_SHARED_LIBS=OFF \
      -DUSE_VMIME_SHARED=OFF \
      -DVMIME_ROOT=/cross/mxe/usr/i686-w64-mingw32.shared \
+     -DCMAKE_PREFIX_PATH=/usr/local/lib/CMake/persistent-storage \
      /app/src \
   && make -j4 JOBS=4 \
   && mkdir -p /app/res/SecureDialogues-windows-i686 /app/res/SecureDialogues-windows-i686/platforms/ /app/res/SecureDialogues-windows-i686/styles \
   && cp bin/SecureDialogues.exe /app/res/SecureDialogues-windows-i686/SecureDialogues-windows-i686.exe \
   && /cross/mxe/tools/copydlldeps.sh -c -f bin/SecureDialogues.exe -d /app/res/SecureDialogues-windows-i686 -R /cross/mxe/usr/ \
   && cp /cross/mxe/usr/i686-w64-mingw32.shared/qt5/plugins/platforms/qwindows.dll /app/res/SecureDialogues-windows-i686/platforms/ \
-  && cp /cross/mxe/usr/i686-w64-mingw32.shared/qt5/plugins/styles/qwindowsvistastyle.dll /app/res/SecureDialogues-windows-i686/styles 
+  && cp /cross/mxe/usr/i686-w64-mingw32.shared/qt5/plugins/styles/qwindowsvistastyle.dll /app/res/SecureDialogues-windows-i686/styles \
+  && cp -R bin/locale /app/res/SecureDialogues-windows-i686
         

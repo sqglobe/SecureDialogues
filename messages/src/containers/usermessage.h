@@ -15,7 +15,7 @@ class UserMessage {
    * NOT_DELIVERIED - не доставлено
    * ERROR - сообщение об ошибке
    */
-  enum class Status { WAIT_DELIVERY, DELIVERIED, NOT_DELIVERIED, ERROR };
+  enum class Status { WaitDelivery, Deliveried, NotDeliveried, Error };
 
   /**
    * @brief Тип сообщения, описывает источник поступления
@@ -23,7 +23,7 @@ class UserMessage {
    * OUT - исходящее
    * SYSTEM - сообщение от системы
    */
-  enum class Type { IN, OUT, SYSTEM };
+  enum class Type { In, Out, System };
 
  public:
   /**

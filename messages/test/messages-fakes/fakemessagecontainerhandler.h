@@ -10,7 +10,7 @@ class FakeMessageContainerHandlerOnlyMesssageAdded
   void messageAdded(
       const std::string& dialogId,
       const std::shared_ptr<const UserMessage>& message) override {
-    mIsIncomming = message->type() == UserMessage::Type::IN;
+    mIsIncomming = message->type() == UserMessage::Type::In;
     mMessage = message->content();
     mDialogId = dialogId;
   }
@@ -37,7 +37,7 @@ class FakeMessageContainerHandlerUpdateActiveDialog
     mActiveDialogId = newActiveDialogId;
   }
   void peekMessage(const std::shared_ptr<const UserMessage>& message) override {
-    mIsIncomming = message->type() == UserMessage::Type::IN;
+    mIsIncomming = message->type() == UserMessage::Type::In;
     mMessage = message->content();
   }
   void invalidateData(const std::string&) override {}

@@ -64,7 +64,7 @@ void DialogWidgetGasket<Container, Widget>::viewAt(std::string id) {
     auto element = mContainer->get(id);
     mWidget->setElement(element);
   } catch (std::exception& ex) {
-    mUserNotifier->notify(AbstractUserNotifier::Severity::ERROR, ex.what());
+    mUserNotifier->notify(AbstractUserNotifier::Severity::Error, ex.what());
   }
 }
 
@@ -74,7 +74,7 @@ void DialogWidgetGasket<Container, Widget>::update() {
     auto element = mWidget->getElement();
     mContainer->update(element);
   } catch (const std::exception& ex) {
-    mUserNotifier->notify(AbstractUserNotifier::Severity::ERROR, ex.what());
+    mUserNotifier->notify(AbstractUserNotifier::Severity::Error, ex.what());
   }
 }
 
@@ -92,7 +92,7 @@ void DialogWidgetGasket<Container, Widget>::add() {
     mContainer->add(element);
   } catch (const std::exception& ex) {
     std::string err = ex.what();
-    mUserNotifier->notify(AbstractUserNotifier::Severity::ERROR, ex.what());
+    mUserNotifier->notify(AbstractUserNotifier::Severity::Error, ex.what());
   }
 }
 

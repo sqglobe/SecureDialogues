@@ -22,7 +22,7 @@ DbEnv* make_db_env(const std::string& path, const std::string& pass) {
 Db* make_db(const std::string& file,
             const std::string& name,
             DbEnv* penv,
-            u_int32_t flags) {
+            uint32_t flags) {
   auto db = new Db(penv, DB_CXX_NO_EXCEPTIONS);
   db->set_flags(flags | DB_ENCRYPT | DB_TXN_NOT_DURABLE);
   auto res = db->open(nullptr, file.c_str(), name.c_str(), DB_BTREE,
