@@ -107,34 +107,34 @@
     <message>
         <location filename="widgets/connectioninfowidget.ui" line="87"/>
         <source>UDP</source>
-        <translation type="unfinished"></translation>
+        <translation>UDP</translation>
     </message>
     <message>
         <location filename="widgets/connectioninfowidget.ui" line="92"/>
         <source>Gmail</source>
-        <translation type="unfinished"></translation>
+        <translation>Gmail</translation>
     </message>
     <message>
         <location filename="widgets/connectioninfowidget.ui" line="97"/>
         <source>VK</source>
-        <translation type="unfinished"></translation>
+        <translation>ВК</translation>
     </message>
     <message>
         <location filename="widgets/connectioninfowidget.ui" line="102"/>
         <location filename="widgets/connectioninfowidget.ui" line="139"/>
         <source>E-mail</source>
-        <translation type="unfinished"></translation>
+        <translation>E-mail</translation>
     </message>
     <message>
         <location filename="widgets/connectioninfowidget.ui" line="155"/>
         <source>Token</source>
-        <translation type="unfinished"></translation>
+        <translation>Код авторизации</translation>
     </message>
     <message>
         <location filename="widgets/connectioninfowidget.ui" line="171"/>
         <location filename="widgets/connectioninfowidget.ui" line="201"/>
         <source>Token URL</source>
-        <translation type="unfinished"></translation>
+        <translation>Ссылка для получения кода авторизации</translation>
     </message>
     <message>
         <location filename="widgets/connectioninfowidget.ui" line="178"/>
@@ -145,7 +145,7 @@
     <message>
         <location filename="widgets/connectioninfowidget.ui" line="236"/>
         <source>URL</source>
-        <translation type="unfinished"></translation>
+        <translation>Ссылка</translation>
     </message>
     <message>
         <location filename="widgets/connectioninfowidget.ui" line="262"/>
@@ -700,6 +700,11 @@ Address: %3</source>
         <location filename="models/channelslistmodel.cpp" line="57"/>
         <source>Connection not established yet</source>
         <translation>Соединение не установлено</translation>
+    </message>
+    <message>
+        <location filename="dialogwidgetgasket.h" line="85"/>
+        <source>Are you sure to remove selected element?</source>
+        <translation>Вы уверены, что хотите удалить выбранный элемент?</translation>
     </message>
 </context>
 <context>

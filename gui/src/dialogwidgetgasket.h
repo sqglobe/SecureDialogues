@@ -5,6 +5,8 @@
 #include "interfaces/abstractuserask.h"
 #include "interfaces/abstractusernotifier.h"
 
+#include <QApplication>
+
 /**
  * Прокладка между контейнером и виджетом, который отображает конкретный элемент
  * в диалоге управления.
@@ -80,7 +82,8 @@ void DialogWidgetGasket<Container, Widget>::update() {
 
 template <typename Container, typename Widget>
 void DialogWidgetGasket<Container, Widget>::removeAt(std::string id) {
-  if (mUserAsk->ask("Вы действительно хотите удалить текущий элемент?")) {
+  if (mUserAsk->ask(QApplication::tr("Are you sure to remove selected element?")
+                        .toStdString())) {
     mContainer->remove(id);
   }
 }
@@ -90,6 +93,7 @@ void DialogWidgetGasket<Container, Widget>::add() {
   try {
     auto element = mWidget->getElement();
     mContainer->add(element);
+    mWidget->actionCleare();
   } catch (const std::exception& ex) {
     std::string err = ex.what();
     mUserNotifier->notify(AbstractUserNotifier::Severity::Error, ex.what());

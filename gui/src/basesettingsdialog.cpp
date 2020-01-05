@@ -94,7 +94,6 @@ void BaseSettingsDialog::on_cancelAction_clicked() {
 void BaseSettingsDialog::on_saveAction_clicked() {
   if (State::ADD == mCurrentState) {
     emit actionAdd();
-    emit actionCleare();
   } else if (State::CHANGE == mCurrentState) {
     moveToState(State::VIEW);
     assert(mSelectedId);
