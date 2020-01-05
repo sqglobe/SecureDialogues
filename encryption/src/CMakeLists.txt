@@ -45,4 +45,8 @@ set(ENCRYPTION_HEADERS
 add_library(encryption STATIC ${ENCRYPTION_SOURCES} ${ENCRYPTION_HEADERS})
 
 target_include_directories(encryption PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${MCRYPTO_INCLUDE_DIR})
-target_link_libraries( encryption cryptopp-static utils)
+
+target_link_libraries(encryption PUBLIC utils-headers )
+
+add_library(encryption-headers INTERFACE)
+target_include_directories(encryption-headers INTERFACE ${CMAKE_CURRENT_SOURCE_DIR} ${MCRYPTO_INCLUDE_DIR})

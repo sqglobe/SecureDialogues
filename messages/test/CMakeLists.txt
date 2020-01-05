@@ -1,7 +1,8 @@
 project(tests)
 
 find_package(Qt5Test REQUIRED)
-
+find_package(BerkeleyDB REQUIRED)
+find_package(persistent-storage REQUIRED)
 
 
 SET(CMAKE_AUTOMOC ON)
@@ -9,11 +10,10 @@ SET(CMAKE_INCLUDE_CURRENT_DIR ON)
 SET(CMAKE_CXX_STANDARD 17)
 SET(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-SET(MY_TEST_LIBS Qt5::Test messages-fakes )
+SET(MY_TEST_LIBS messages Qt5::Test messages-fakes oauth-agents encryption  utils  pthread xg persistent-storage cryptopp-static)
 
 ENABLE_TESTING()
 
-target_link_libraries(messages)
 
 
 add_subdirectory(messages-fakes)
