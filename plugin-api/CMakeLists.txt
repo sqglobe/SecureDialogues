@@ -12,6 +12,7 @@ SET(PLUGIN_API_HEADERS
     export/pluginmessagecommunicator.h
     export/plaginfacade.h
     export/pluginapidefs.h
+    inner/plugininnerdefs.h
 )
 
 add_library(plugin-api STATIC ${PLUGIN_API_SOURCES} ${PLUGIN_API_HEADERS})
