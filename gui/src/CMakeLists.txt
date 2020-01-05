@@ -142,8 +142,10 @@ qt5_create_translation(QM_FILES ${GUI_UI} ${GUI_MODULE_SOURCES} ${GUI_MODULE_HEA
 
 
 add_library(gui STATIC ${GUI_MODULE_SOURCES} ${GUI_MODULE_HEADERS} ${UI_WRAP} ${WRAP_MOC_GUI} ${QM_FILES} Gui_ru_RU.ts)
-target_include_directories(gui PUBLIC  ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries( gui messages Qt5::Core Qt5::Gui  Qt5::Widgets )
+target_include_directories(gui PUBLIC  ${CMAKE_CURRENT_SOURCE_DIR} ${Qt5Widgets_INCLUDE_DIRS})
+target_link_libraries(gui PUBLIC messages-headers email-agent-headers oauth-agents-headers curl-wrapper-headers utils-headers )
+
 target_compile_definitions(gui PRIVATE NO_MEMBER_FUNCTION_PARTIAL_SPECIALIZATION)
 add_custom_command(TARGET gui POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy "${QM_FILES}" "${LOCALE_FILES_DIR}")
+set_property(TARGET gui PROPERTY POSITION_INDEPENDENT_CODE ON)

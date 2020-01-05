@@ -1,7 +1,8 @@
 project(stand)
 
 find_package(Qt5 COMPONENTS REQUIRED Core Gui Widgets)
-
+find_package(BerkeleyDB REQUIRED)
+find_package(persistent-storage REQUIRED)
 
 # We need add -DQT_WIDGETS_LIB when using QtWidgets in Qt 5.
 
@@ -27,4 +28,5 @@ set(HEADERS
 
 add_library(stand STATIC ${SOURCES} ${HEADERS})
 target_include_directories(stand PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(stand Qt5::Core Qt5::Gui  Qt5::Widgets gui messages-fakes)
+target_link_libraries(stand  gui messages-fakes encryption oauth-agents curl-wrapper utils
+    Qt5::Core Qt5::Gui  Qt5::Widgets ${CMAKE_THREAD_LIBS_INIT} persistent-storage pthread xg cryptopp-static  )

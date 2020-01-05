@@ -1,6 +1,9 @@
 project(main)
 
-find_package(Qt5Widgets REQUIRED)
+find_package(Qt5 COMPONENTS REQUIRED Core Gui Widgets)
+find_package(BerkeleyDB REQUIRED)
+find_package(Boost  REQUIRED system)
+find_package(persistent-storage REQUIRED)
 
 set(MAIN_SOURCE
     main.cpp
@@ -12,7 +15,9 @@ set(MAIN_SOURCE
 set(CMAKE_AUTORCC ON)
 
 add_executable(SecureDialogues ${MAIN_SOURCE} project_icons.qrc secure-dialogues.rc)
-target_link_libraries(SecureDialogues gui messages )
+target_link_libraries(SecureDialogues gui messages oauth-agents
+     encryption  email-agent curl-wrapper utils
+     Qt5::Core Qt5::Gui  Qt5::Widgets xg ${CMAKE_THREAD_LIBS_INIT} ${Boost_SYSTEM_LIBRARY} pthread persistent-storage  cryptopp-static )
 
 if(MSVC)
   target_compile_options(SecureDialogues PRIVATE /W4 /WX)

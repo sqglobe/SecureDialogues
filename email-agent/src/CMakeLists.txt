@@ -73,4 +73,6 @@ add_library(email-agent STATIC ${EMAIL_SRC} ${EMAIL_HEADER})
 target_include_directories(email-agent PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${MCRYPTO_INCLUDE_DIR} ${VMIME_INCLUDE_DIRS})
 target_link_libraries(email-agent PUBLIC  ${VMIME_LIBRARIES} ${EMAIL_WIN_LIBS})
 
+add_library(email-agent-headers INTERFACE)
+target_include_directories(email-agent-headers INTERFACE ${CMAKE_CURRENT_SOURCE_DIR} ${MCRYPTO_INCLUDE_DIR} ${VMIME_INCLUDE_DIRS})
 

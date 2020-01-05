@@ -16,6 +16,8 @@ set(HEADERS
 
 
 add_library(utils STATIC ${SOURCES} ${HEADERS})
-target_include_directories(utils PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} )
-target_link_libraries(utils Oracle::BerkeleyDB)
+target_include_directories(utils PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${BerkeleyDB_INCLUDE_DIRS})
+
+add_library(utils-headers INTERFACE)
+target_include_directories(utils-headers INTERFACE ${CMAKE_CURRENT_SOURCE_DIR} ${BerkeleyDB_INCLUDE_DIRS})
 

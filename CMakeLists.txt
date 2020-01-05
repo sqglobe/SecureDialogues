@@ -54,6 +54,7 @@ list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/submodules/cmake/FindBerkel
 
 set(MCRYPTO_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/submodules)
 set(TOP_DIR ${PROJECT_SOURCE_DIR})
+set(CROSSGUID_INCLUDE ${PROJECT_SOURCE_DIR}/submodules)
 
 ENABLE_TESTING()
 
@@ -90,6 +91,7 @@ add_subdirectory(oauth-agents)
 add_subdirectory(doc)
 add_subdirectory(curl-wrapper)
 add_subdirectory(email-agent)
+add_subdirectory(plugin-api)
 
 if (BUILD_TESTING)
   add_subdirectory( regression )

@@ -1,8 +1,6 @@
 project(messages)
 
 find_package (Threads)
-find_package(Boost  REQUIRED system)
-find_package(BerkeleyDB REQUIRED)
 find_package(persistent-storage REQUIRED)
 
 set(SOURCES 
@@ -107,8 +105,11 @@ communication/despatcherrorssink.h
 
 add_library(messages STATIC ${SOURCES} ${HEADERS})
 
-target_include_directories(messages PUBLIC   ${CMAKE_CURRENT_SOURCE_DIR} ${PERSISTENT-STORAGE_INCLUDE_DIRS})
-target_link_libraries( messages ${PROJ_CRYPTOPP_LIB} xg encryption oauth-agents email-agent Oracle::BerkeleyDB ${CMAKE_THREAD_LIBS_INIT} ${Boost_SYSTEM_LIBRARY} pthread persistent-storage fmt::fmt-header-only)
+target_include_directories(messages PUBLIC   ${CMAKE_CURRENT_SOURCE_DIR} ${PERSISTENT-STORAGE_INCLUDE_DIRS} ${CROSSGUID_INCLUDE})
 target_compile_definitions(messages PRIVATE NO_MEMBER_FUNCTION_PARTIAL_SPECIALIZATION)
+
+target_link_libraries(messages PUBLIC fmt::fmt-header-only curl-wrapper-headers oauth-agents-headers encryption-headers email-agent-headers utils-headers )
 add_internationals(messages ru_RU.UTF-8 "locale" "${LOCALE_FILES_DIR}" securedialogues 1.1)
 
+add_library(messages-headers INTERFACE)
+target_include_directories(messages-headers INTERFACE ${CMAKE_CURRENT_SOURCE_DIR} ${PERSISTENT-STORAGE_INCLUDE_DIRS} ${CROSSGUID_INCLUDE})

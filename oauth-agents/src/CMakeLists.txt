@@ -34,5 +34,7 @@ set(HEADERS
 add_library(oauth-agents STATIC ${SOURCES} ${HEADERS})
 
 target_include_directories(oauth-agents PUBLIC  ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(oauth-agents PUBLIC curl-wrapper nlohmann_json::nlohmann_json)
+target_link_libraries(oauth-agents PUBLIC curl-wrapper-headers nlohmann_json::nlohmann_json)
 
+add_library(oauth-agents-headers INTERFACE)
+target_include_directories(oauth-agents-headers INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
