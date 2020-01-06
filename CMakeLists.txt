@@ -93,6 +93,8 @@ add_subdirectory(curl-wrapper)
 add_subdirectory(email-agent)
 add_subdirectory(plugin-api)
 
+add_subdirectory(plugins/gmail-plugin)
+
 if (BUILD_TESTING)
   add_subdirectory( regression )
 endif()
