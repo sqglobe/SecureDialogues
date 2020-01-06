@@ -1,5 +1,5 @@
 #include "gmailrecievedmessagesiterator.h"
-#include "oauth-agents/utils/base64.h"
+#include "gmail-communication/base64.h"
 
 GmailRecievedMessagesIterator::GmailRecievedMessagesIterator(
     std::list<std::pair<std::string, std::string> >&& messages) :

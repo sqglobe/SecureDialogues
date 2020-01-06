@@ -1,10 +1,10 @@
 #include "gmailconnectionwidget.h"
 #include "ui_gmailconnectionwidget.h"
 
+#include "gmail-communication/gmailoauth.h"
 #include "gmailconnectioninfo.h"
 
-#include "oauth-agents/agents/gmailoauth.h"
-#include "oauth-agents/utils/factories.h"
+#include <memory>
 
 GmailConnectionWidget::GmailConnectionWidget(QWidget* parent) :
     PluginWidget(parent), ui(new Ui::GmailConnectionWidget) {
@@ -26,7 +26,8 @@ const char* GmailConnectionWidget::getErrorMessage() const noexcept {
 
   try {
     auto passText = pass->text().toStdString();
-    auto oauth = makeFactory(AgentType::GMAIL)->makeOauthAgent(passText);
+    auto oauth = std::make_unique<GmailOauth>(
+        GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, REDIRECT_URL, passText);
     oauth->loadAccessToken(passText);
     passText = oauth->getRefreshToken();
 
@@ -78,7 +79,8 @@ void GmailConnectionWidget::makeDisable() noexcept {
 
 void GmailConnectionWidget::makeActivated() noexcept {
   const auto oauth =
-      makeFactory(AgentType::GMAIL)->makeOauthAgent()->getUserUrl();
+      GmailOauth(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, REDIRECT_URL)
+          .getUserUrl();
   QString href = tr("<a href='%1'>Open web-page to get Oauth2 code</a>");
   findChild<QLabel*>("tokenUrl")->setText(href.arg(oauth.c_str()));
 }

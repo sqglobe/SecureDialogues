@@ -1,7 +1,7 @@
 #include "gmailmessagecommunicator.h"
+#include "gmail-communication/base64.h"
 #include "gmailconnectioninfo.h"
 #include "gmailrecievedmessagesiterator.h"
-#include "oauth-agents/utils/base64.h"
 
 #include <cassert>
 #include <cstring>
@@ -10,8 +10,6 @@
 #include "spdlog/spdlog.h"
 
 #include "curlexceptions.h"
-#include "oauth-agents/exceptions/oauth-exceptions.h"
-#include "oauth-agents/utils/factories.h"
 
 PluginApiErrorCodes GmailMessageCommunicator::send(
     const char* addressTo,
@@ -30,17 +28,6 @@ PluginApiErrorCodes GmailMessageCommunicator::send(
                       static_cast<unsigned int>(std::strlen(message)));
 
     mApiAgent->sendMessage(addressTo, encoded, headerName, token);
-
-  } catch (const AuthFailException& ex) {
-    auto logger = spdlog::get("gmail_logger");
-    logger->warn("AuthFailException {0} for message: {1}, address {2}",
-                 ex.what(), message, addressTo);
-    return PluginApiErrorCodes::NotAuthorized;
-  } catch (const HttpError& error) {
-    auto logger = spdlog::get("gmail_logger");
-    logger->warn("HttpError {0} for message: {1}, address {2}", error.what(),
-                 message, addressTo);
-    return PluginApiErrorCodes::Disconected;
   } catch (const CurlHttpSendError& ex) {
     auto logger = spdlog::get("gmail_logger");
     logger->warn("HttpError {0} for message: {1}, address {2}", ex.what(),
@@ -69,16 +56,6 @@ RecievedMessagesIterator* GmailMessageCommunicator::recieve() noexcept {
     auto [headerName, token] = mOauthAgent->getAuthParam();
     return new GmailRecievedMessagesIterator(
         mApiAgent->getMessages(headerName, token));
-  } catch (const AuthFailException& ex) {
-    auto logger = spdlog::get("root_logger");
-    logger->warn("AuthFailException {0} when try to recieve message",
-                 ex.what());
-    return new GmailRecievedMessagesIterator(
-        PluginApiErrorCodes::NotAuthorized);
-  } catch (const HttpError& error) {
-    auto logger = spdlog::get("root_logger");
-    logger->warn("HttpError {0} when try to recieve message", error.what());
-    return new GmailRecievedMessagesIterator(PluginApiErrorCodes::Disconected);
   } catch (const CurlHttpSendError& ex) {
     auto logger = spdlog::get("root_logger");
     logger->warn("CurlHttpSendError {0} when try to recieve message",
@@ -99,14 +76,10 @@ PluginApiErrorCodes GmailMessageCommunicator::connect(
     return PluginApiErrorCodes::Disconected;
   } else {
     try {
-      auto factory = makeFactory(AgentType::GMAIL);
-      mOauthAgent = factory->makeOauthAgent(conn->accessToken);
-      mApiAgent = factory->makeApiAgent(conn->email);
+      mOauthAgent = std::make_unique<GmailOauth>(
+          GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, REDIRECT_URL);
+      mApiAgent = std::make_unique<GmailApi>(conn->email);
       return PluginApiErrorCodes::NoError;
-    } catch (const HttpError& error) {
-      auto logger = spdlog::get("root_logger");
-      logger->warn("HttpError {0} when try to connect", error.what());
-      return PluginApiErrorCodes::Disconected;
     } catch (const std::exception& ex) {
       auto logger = spdlog::get("root_logger");
       logger->warn("std::exception {0} when try to connect", ex.what());

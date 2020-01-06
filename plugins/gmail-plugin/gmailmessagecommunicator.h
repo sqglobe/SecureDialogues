@@ -4,8 +4,8 @@
 #include <memory>
 #include "export/pluginmessagecommunicator.h"
 
-#include "oauth-agents/interfaces/apiagent.h"
-#include "oauth-agents/interfaces/oauthagent.h"
+#include "gmail-communication/gmailapi.h"
+#include "gmail-communication/gmailoauth.h"
 
 class GmailMessageCommunicator : public PluginMessageCommunicator {
  public:
@@ -16,8 +16,8 @@ class GmailMessageCommunicator : public PluginMessageCommunicator {
       const PluginConnectionInfo* connInfo) noexcept override;
 
  private:
-  std::unique_ptr<OAuthAgent> mOauthAgent;
-  std::unique_ptr<ApiAgent> mApiAgent;
+  std::unique_ptr<GmailOauth> mOauthAgent;
+  std::unique_ptr<GmailApi> mApiAgent;
 };
 
 #endif  // GMAILMESSAGECOMMUNICATOR_H
