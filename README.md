@@ -42,9 +42,10 @@
 * [CryptoPP](https://www.cryptopp.com/)
 * [crossguid](https://github.com/graeme-hill/crossguid)
 * [spdlog](https://github.com/gabime/spdlog)
-* [nlohmann json] (https://github.com/nlohmann/json)
-* [eventpp] (https://github.com/wqking/eventpp)
-* [fmt] (https://github.com/fmtlib/fmt)
+* [nlohmann json](https://github.com/nlohmann/json)
+* [eventpp](https://github.com/wqking/eventpp)
+* [fmt](https://github.com/fmtlib/fmt)
+* [Boost.DLL](https://github.com/apolukhin/Boost.DLL)
 
 Так же для успешного разбора **CMakeLists.txt**  может потребоваться задать переменную **CMake** - `CMAKE_PREFIX_PATH`.
 
