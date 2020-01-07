@@ -74,6 +74,7 @@ ENDIF()
 
 include_directories(${PROJECT_SOURCE_DIR}/submodules/spdlog/include)
 include_directories(${PROJECT_SOURCE_DIR}/submodules/eventpp/include)
+include_directories(${PROJECT_SOURCE_DIR}/submodules/boost-dll/include)
 
 include(Gettext)
 
@@ -92,6 +93,7 @@ add_subdirectory(doc)
 add_subdirectory(curl-wrapper)
 add_subdirectory(email-agent)
 add_subdirectory(plugin-api)
+add_subdirectory(plugins-support )
 
 add_subdirectory(plugins/gmail-plugin)
 
