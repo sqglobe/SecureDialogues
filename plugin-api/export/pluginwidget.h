@@ -9,8 +9,8 @@ class PluginWidget : public QWidget {
   using QWidget::QWidget;
 
  public:
-  virtual const char* getErrorMessage() const noexcept = 0;
-  virtual PluginConnectionInfo* makeConnectionInfo() noexcept = 0;
+  virtual const char* fillConnectionInfo(
+      PluginConnectionInfo* conninfo) noexcept = 0;
   virtual void setConnectionInfo(PluginConnectionInfo* connInfo) noexcept = 0;
 
  public:

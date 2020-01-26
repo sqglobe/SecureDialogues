@@ -6,22 +6,11 @@
 
 namespace plugin_support {
 
-class PluginInterface;
-
 class owned_deletor {
-  friend PluginInterface;
-
- private:
-  owned_deletor(std::shared_ptr<const PluginInterface> interface,
-                PlaginFacade* facade) :
-      mInterface(std::move(interface)),
-      mFacade(facade) {}
-
  public:
-  owned_deletor(owned_deletor&& obj) :
-      mInterface(std::move(obj.mInterface)), mFacade(std::move(obj.mFacade)) {}
+  owned_deletor(PlaginFacade* facade) : mFacade(facade) {}
+  owned_deletor(owned_deletor&& obj) : mFacade(std::move(obj.mFacade)) {}
   owned_deletor& operator=(owned_deletor&& obj) {
-    mInterface = std::move(obj.mInterface);
     mFacade = std::move(obj.mFacade);
     return *this;
   }
@@ -37,7 +26,6 @@ class owned_deletor {
   }
 
  private:
-  std::shared_ptr<const PluginInterface> mInterface;
   PlaginFacade* mFacade;
 };
 

@@ -16,10 +16,10 @@ class GmailConnectionWidget : public PluginWidget {
   ~GmailConnectionWidget() override;
 
  public:
-  virtual const char* getErrorMessage() const noexcept override;
-  virtual PluginConnectionInfo* makeConnectionInfo() noexcept override;
   virtual void setConnectionInfo(
       PluginConnectionInfo* connInfo) noexcept override;
+  virtual const char* fillConnectionInfo(
+      PluginConnectionInfo* conninfo) noexcept override;
 
  public:
   virtual void cleareWidget() noexcept override;
@@ -27,9 +27,6 @@ class GmailConnectionWidget : public PluginWidget {
 
  private:
   Ui::GmailConnectionWidget* ui;
-
- private:
-  mutable GmailConnectionInfo* mConnInfo{nullptr};
 };
 
 #endif  // GMAILCONNECTIONWIDGET_H

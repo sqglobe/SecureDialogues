@@ -7,8 +7,11 @@
 #include "owneddeletior.h"
 
 class PluginWidget;
-class PluginInterface;
 class PluginConnectionInfo;
+
+namespace plugin_support {
+
+class PluginInterface;
 
 class PluginWidgetWrapper {
  public:
@@ -16,8 +19,9 @@ class PluginWidgetWrapper {
                       std::shared_ptr<PluginInterface> interface);
 
  public:
-  std::string getErrorMessage() const noexcept;
-  std::shared_ptr<PluginConnectionInfo> makeConnectionInfo() noexcept;
+  std::shared_ptr<PluginConnectionInfo> makeConnection() noexcept(false);
+  void fillConnection(std::shared_ptr<PluginConnectionInfo> conn) noexcept(
+      false);
   void setConnectionInfo(
       std::shared_ptr<PluginConnectionInfo> connInfo) noexcept;
 
@@ -27,7 +31,7 @@ class PluginWidgetWrapper {
  private:
   PluginWidget* mWidget;
   std::shared_ptr<PluginInterface> mInterface;
-  std::shared_ptr<PluginConnectionInfo> mConn;
 };
 
+}  // namespace plugin_support
 #endif  // PLUGINWIDGETWRAPPER_H

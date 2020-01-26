@@ -16,17 +16,18 @@ class PluginConnectionInfo;
 
 namespace plugin_support {
 
+class PluginWidgetWrapper;
+class PluginMessageCommunicatorWrapper;
+
 class PluginInterface : public std::enable_shared_from_this<PluginInterface> {
  public:
   PluginInterface(boost::dll::shared_library&& lib, PlaginFacade* facade);
 
  public:
-  not_owned<PluginWidget> getWidget() const noexcept;
+  std::unique_ptr<PluginWidgetWrapper> getWidget() noexcept;
   const PluginConnectionSerializer* getSerializer() const noexcept;
-  std::unique_ptr<PluginMessageCommunicator, owned_deletor> getCommunicator()
-      const noexcept;
-  std::unique_ptr<PluginConnectionInfo, owned_deletor> wrap(
-      PluginConnectionInfo* conn) const noexcept;
+  std::unique_ptr<PluginMessageCommunicatorWrapper> getCommunicator() noexcept;
+  std::shared_ptr<PluginConnectionInfo> makeConnInfo() const noexcept;
 
  public:
   std::string getName() const noexcept;
