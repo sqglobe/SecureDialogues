@@ -7,24 +7,25 @@
 class GmailConnectionWidget;
 class GmailConnectionSerializer;
 
-class GmailFacade : public PlaginFacade {
+class GmailFacade final : public PlaginFacade {
  public:
   GmailFacade();
   ~GmailFacade() override;
 
  public:
-  virtual const char* getId() const noexcept override;
-  virtual const char* getPluginName() const noexcept override;
+  const char* getId() const noexcept override;
+  const char* getPluginName() const noexcept override;
 
  public:
-  virtual PluginWidget* getWidget() const noexcept override;
-  virtual const PluginConnectionSerializer* getSerializer() const
-      noexcept override;
-  virtual PluginMessageCommunicator* makeCommunicator() noexcept override;
+  PluginWidget* getWidget() const noexcept override;
+  const PluginConnectionSerializer* getSerializer() const noexcept override;
+  PluginMessageCommunicator* makeCommunicator() noexcept override;
+  PluginConnectionInfo* makeEmptyConn() noexcept override;
 
  public:
-  virtual void release(PluginMessageCommunicator* comm) noexcept override;
-  virtual void release(PluginConnectionInfo* connInfo) noexcept override;
+  void release(PluginMessageCommunicator* comm) noexcept override;
+  void release(PluginConnectionInfo* connInfo) noexcept override;
+  void release(RecievedMessagesIterator* iter) noexcept override;
 
  private:
   std::unique_ptr<GmailConnectionWidget> mWidget;

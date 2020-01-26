@@ -5,6 +5,7 @@
 #include "gmailconnectionwidget.h"
 #include "gmailmessagecommunicator.h"
 #include "gmailplugindefs.h"
+#include "gmailrecievedmessagesiterator.h"
 
 #include "spdlog/sinks/rotating_file_sink.h"
 #include "spdlog/spdlog.h"
@@ -38,10 +39,18 @@ PluginMessageCommunicator* GmailFacade::makeCommunicator() noexcept {
   return new GmailMessageCommunicator;
 }
 
+PluginConnectionInfo* GmailFacade::makeEmptyConn() noexcept {
+  return new GmailConnectionInfo;
+}
+
 void GmailFacade::release(PluginMessageCommunicator* comm) noexcept {
   delete comm;
 }
 
 void GmailFacade::release(PluginConnectionInfo* connInfo) noexcept {
   delete connInfo;
+}
+
+void GmailFacade::release(RecievedMessagesIterator* iter) noexcept {
+  delete iter;
 }

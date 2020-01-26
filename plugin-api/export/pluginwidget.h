@@ -15,8 +15,6 @@ class PluginWidget : public QWidget {
 
  public:
   virtual void cleareWidget() noexcept = 0;
-  virtual void makeEnable() noexcept = 0;
-  virtual void makeDisable() noexcept = 0;
   virtual void makeActivated() noexcept = 0;
 };
 

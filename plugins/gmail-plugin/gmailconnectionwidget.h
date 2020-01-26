@@ -23,8 +23,6 @@ class GmailConnectionWidget : public PluginWidget {
 
  public:
   virtual void cleareWidget() noexcept override;
-  virtual void makeEnable() noexcept override;
-  virtual void makeDisable() noexcept override;
   virtual void makeActivated() noexcept override;
 
  private:

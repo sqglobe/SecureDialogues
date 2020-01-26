@@ -67,16 +67,6 @@ void GmailConnectionWidget::cleareWidget() noexcept {
   findChild<QLineEdit*>("pass")->clear();
 }
 
-void GmailConnectionWidget::makeEnable() noexcept {
-  findChild<QLineEdit*>("login")->setEnabled(true);
-  findChild<QLineEdit*>("pass")->setEnabled(true);
-}
-
-void GmailConnectionWidget::makeDisable() noexcept {
-  findChild<QLineEdit*>("login")->setEnabled(false);
-  findChild<QLineEdit*>("pass")->setEnabled(false);
-}
-
 void GmailConnectionWidget::makeActivated() noexcept {
   const auto oauth =
       GmailOauth(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, REDIRECT_URL)

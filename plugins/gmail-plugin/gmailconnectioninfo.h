@@ -6,6 +6,7 @@
 
 class GmailConnectionInfo : public PluginConnectionInfo {
  public:
+  GmailConnectionInfo() = default;
   GmailConnectionInfo(const std::string& email, const std::string& token);
 
  public:
