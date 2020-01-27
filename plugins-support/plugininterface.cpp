@@ -5,6 +5,8 @@
 #include "export/pluginconnectionserializer.h"
 #include "export/pluginmessagecommunicator.h"
 #include "export/pluginwidget.h"
+#include "pluginmessagecommunicatorwrapper.h"
+#include "pluginwidgetwrapper.h"
 
 plugin_support::PluginInterface::PluginInterface(
     boost::dll::shared_library&& lib,
@@ -12,9 +14,10 @@ plugin_support::PluginInterface::PluginInterface(
     mLib(std::move(lib)),
     mFacade(facade) {}
 
-plugin_support::not_owned<PluginWidget>
-plugin_support::PluginInterface::getWidget() const noexcept {
-  return not_owned(this->shared_from_this(), mFacade->getWidget());
+std::unique_ptr<plugin_support::PluginWidgetWrapper>
+plugin_support::PluginInterface::getWidget() noexcept {
+  return std::make_unique<plugin_support::PluginWidgetWrapper>(
+      mFacade->getWidget(), shared_from_this());
 }
 
 const PluginConnectionSerializer*
@@ -22,19 +25,18 @@ plugin_support::PluginInterface::getSerializer() const noexcept {
   return mFacade->getSerializer();
 }
 
-std::unique_ptr<PluginMessageCommunicator, plugin_support::owned_deletor>
-plugin_support::PluginInterface::getCommunicator() const noexcept {
-  return std::unique_ptr<PluginMessageCommunicator,
-                         plugin_support::owned_deletor>(
-      mFacade->makeCommunicator(),
-      plugin_support::owned_deletor(shared_from_this(), mFacade));
+std::unique_ptr<plugin_support::PluginMessageCommunicatorWrapper>
+plugin_support::PluginInterface::getCommunicator() noexcept {
+  auto comm = std::unique_ptr<PluginMessageCommunicator, owned_deletor>(
+      mFacade->makeCommunicator(), owned_deletor(mFacade));
+  return std::make_unique<plugin_support::PluginMessageCommunicatorWrapper>(
+      std::move(comm), shared_from_this(), mFacade);
 }
 
-std::unique_ptr<PluginConnectionInfo, plugin_support::owned_deletor>
-plugin_support::PluginInterface::wrap(PluginConnectionInfo* conn) const
-    noexcept {
-  return std::unique_ptr<PluginConnectionInfo, plugin_support::owned_deletor>(
-      conn, plugin_support::owned_deletor(shared_from_this(), mFacade));
+std::shared_ptr<PluginConnectionInfo>
+plugin_support::PluginInterface::makeConnInfo() const noexcept {
+  return std::shared_ptr<PluginConnectionInfo>(
+      mFacade->makeEmptyConn(), plugin_support::owned_deletor(mFacade));
 }
 
 std::string plugin_support::PluginInterface::getName() const noexcept {

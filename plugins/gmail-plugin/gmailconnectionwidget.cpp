@@ -15,7 +15,17 @@ GmailConnectionWidget::~GmailConnectionWidget() {
   delete ui;
 }
 
-const char* GmailConnectionWidget::getErrorMessage() const noexcept {
+void GmailConnectionWidget::setConnectionInfo(
+    PluginConnectionInfo* connInfo) noexcept {
+  if (auto* conn = dynamic_cast<GmailConnectionInfo*>(connInfo);
+      conn != nullptr) {
+    auto* login = findChild<QLineEdit*>("login");
+    login->setText(conn->email.c_str());
+  }
+}
+
+const char* GmailConnectionWidget::fillConnectionInfo(
+    PluginConnectionInfo* conninfo) noexcept {
   const auto* login = findChild<QLineEdit*>("login");
   const auto* pass = findChild<QLineEdit*>("pass");
   if (login->text().trimmed().isEmpty()) {
@@ -31,12 +41,10 @@ const char* GmailConnectionWidget::getErrorMessage() const noexcept {
     oauth->loadAccessToken(passText);
     passText = oauth->getRefreshToken();
 
-    if (mConnInfo == nullptr) {
-      mConnInfo =
-          new GmailConnectionInfo{login->text().toStdString(), passText};
-    } else {
-      mConnInfo->email = login->text().toStdString();
-      mConnInfo->accessToken = passText;
+    if (auto* gmailConn = dynamic_cast<GmailConnectionInfo*>(conninfo);
+        gmailConn != nullptr) {
+      gmailConn->email = login->text().toStdString();
+      gmailConn->accessToken = passText;
     }
   } catch (const std::exception& ex) {
     return ex.what();
@@ -45,36 +53,9 @@ const char* GmailConnectionWidget::getErrorMessage() const noexcept {
   return nullptr;
 }
 
-PluginConnectionInfo* GmailConnectionWidget::makeConnectionInfo() noexcept {
-  auto* conn = mConnInfo;
-  mConnInfo = nullptr;
-
-  return conn;
-}
-
-void GmailConnectionWidget::setConnectionInfo(
-    PluginConnectionInfo* connInfo) noexcept {
-  if (auto* conn = dynamic_cast<GmailConnectionInfo*>(connInfo);
-      conn != nullptr) {
-    auto* login = findChild<QLineEdit*>("login");
-    login->setText(conn->email.c_str());
-    mConnInfo = conn;
-  }
-}
-
 void GmailConnectionWidget::cleareWidget() noexcept {
   findChild<QLineEdit*>("login")->clear();
   findChild<QLineEdit*>("pass")->clear();
-}
-
-void GmailConnectionWidget::makeEnable() noexcept {
-  findChild<QLineEdit*>("login")->setEnabled(true);
-  findChild<QLineEdit*>("pass")->setEnabled(true);
-}
-
-void GmailConnectionWidget::makeDisable() noexcept {
-  findChild<QLineEdit*>("login")->setEnabled(false);
-  findChild<QLineEdit*>("pass")->setEnabled(false);
 }
 
 void GmailConnectionWidget::makeActivated() noexcept {
