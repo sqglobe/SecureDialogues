@@ -1,8 +1,8 @@
 #include "plugininterface.h"
 
-#include "export/plaginfacade.h"
 #include "export/pluginconnectioninfo.h"
 #include "export/pluginconnectionserializer.h"
+#include "export/pluginfacade.h"
 #include "export/pluginmessagecommunicator.h"
 #include "export/pluginwidget.h"
 #include "pluginmessagecommunicatorwrapper.h"
@@ -10,7 +10,7 @@
 
 plugin_support::PluginInterface::PluginInterface(
     boost::dll::shared_library&& lib,
-    PlaginFacade* facade) :
+    PluginFacade* facade) :
     mLib(std::move(lib)),
     mFacade(facade) {}
 

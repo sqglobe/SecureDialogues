@@ -5,7 +5,7 @@
 
 static GmailFacade facade;
 
-extern "C" PlaginFacade* get_facade() {
+extern "C" PluginFacade* get_secure_dialogues_plugin_facade() {
   return &facade;
 }
 

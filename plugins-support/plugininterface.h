@@ -8,7 +8,7 @@
 
 #include <boost/dll/shared_library.hpp>
 
-class PlaginFacade;
+class PluginFacade;
 class PluginWidget;
 class PluginConnectionSerializer;
 class PluginMessageCommunicator;
@@ -21,7 +21,7 @@ class PluginMessageCommunicatorWrapper;
 
 class PluginInterface : public std::enable_shared_from_this<PluginInterface> {
  public:
-  PluginInterface(boost::dll::shared_library&& lib, PlaginFacade* facade);
+  PluginInterface(boost::dll::shared_library&& lib, PluginFacade* facade);
 
  public:
   std::unique_ptr<PluginWidgetWrapper> getWidget() noexcept;
@@ -35,7 +35,7 @@ class PluginInterface : public std::enable_shared_from_this<PluginInterface> {
 
  private:
   boost::dll::shared_library mLib;
-  PlaginFacade* mFacade;
+  PluginFacade* mFacade;
 };
 
 }  // namespace plugin_support

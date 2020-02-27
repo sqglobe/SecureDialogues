@@ -2,12 +2,12 @@
 #define GMAILFACADE_H
 
 #include <memory>
-#include "export/plaginfacade.h"
+#include "export/pluginfacade.h"
 
 class GmailConnectionWidget;
 class GmailConnectionSerializer;
 
-class GmailFacade final : public PlaginFacade {
+class GmailFacade final : public PluginFacade {
  public:
   GmailFacade();
   ~GmailFacade() override;

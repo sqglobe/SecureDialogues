@@ -8,7 +8,7 @@
 class PluginMessageCommunicator;
 class RecievedMessagesIterator;
 class PluginConnectionInfo;
-class PlaginFacade;
+class PluginFacade;
 
 namespace plugin_support {
 
@@ -19,7 +19,7 @@ class PluginMessageCommunicatorWrapper {
   PluginMessageCommunicatorWrapper(
       std::unique_ptr<PluginMessageCommunicator, owned_deletor>&& communicator,
       std::shared_ptr<PluginInterface> interface,
-      PlaginFacade* facade);
+      PluginFacade* facade);
 
  public:
   [[nodiscard]] PluginApiErrorCodes send(const std::string& addressTo,
@@ -32,7 +32,7 @@ class PluginMessageCommunicatorWrapper {
  private:
   std::unique_ptr<PluginMessageCommunicator, owned_deletor> mCommunicator;
   std::shared_ptr<PluginInterface> mInterface;
-  PlaginFacade* mFacade;
+  PluginFacade* mFacade;
 };
 
 }  // namespace plugin_support
