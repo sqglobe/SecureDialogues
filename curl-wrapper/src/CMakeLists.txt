@@ -2,12 +2,6 @@ project(curl-wrapper)
 
 find_package( CURL REQUIRED)
 
-set(WIN_REQUEST_LIB "")
-
-if(WIN32)
-    message("Used for windows build")
-    set(WIN_REQUEST_LIB  wldap32 ws2_32)
-endif()
 
 set(HEADERS
   uribuilder.h
@@ -23,10 +17,16 @@ set(SOURCES
 )
 
 
-add_library(${PROJECT_NAME} STATIC ${SOURCES} ${HEADERS})
+add_library(curl-wrapper STATIC ${SOURCES} ${HEADERS})
 link_directories( ${CURL_LIBRARIES} )
-target_include_directories(${PROJECT_NAME} PUBLIC  ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(${PROJECT_NAME} PUBLIC  curl ${WIN_REQUEST_LIB})
-set_target_properties(${PROJECT_NAME}  PROPERTIES POSITION_INDEPENDENT_CODE ON)
+target_include_directories(curl-wrapper PUBLIC  ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(curl-wrapper PUBLIC  curl)
+
+if(WIN32)
+    message("Used for windows build")
+    target_link_libraries(curl-wrapper PUBLIC wldap32 ws2_32)
+endif()
+
+set_target_properties(curl-wrapper PROPERTIES POSITION_INDEPENDENT_CODE ON)
 add_library(curl-wrapper-headers INTERFACE)
 target_include_directories(curl-wrapper-headers INTERFACE ${CMAKE_CURRENT_SOURCE_DIR} ${CURL_INCLUDE_DIR})
