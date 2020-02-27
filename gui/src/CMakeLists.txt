@@ -139,11 +139,12 @@ qt5_wrap_ui(UI_WRAP ${GUI_UI})
 
 qt5_create_translation(QM_FILES ${GUI_UI} ${GUI_MODULE_SOURCES} ${GUI_MODULE_HEADERS}  Gui_ru_RU.ts)
 
-
+add_library(gui-headers INTERFACE)
+target_include_directories(gui-headers INTERFACE ${CMAKE_CURRENT_SOURCE_DIR} ${Qt5Widgets_INCLUDE_DIRS})
+target_link_libraries(gui-headers INTERFACE messages-headers email-agent-headers oauth-agents-headers curl-wrapper-headers utils-headers )
 
 add_library(gui STATIC ${GUI_MODULE_SOURCES} ${GUI_MODULE_HEADERS} ${UI_WRAP} ${WRAP_MOC_GUI} ${QM_FILES} Gui_ru_RU.ts)
-target_include_directories(gui PUBLIC  ${CMAKE_CURRENT_SOURCE_DIR} ${Qt5Widgets_INCLUDE_DIRS})
-target_link_libraries(gui PUBLIC messages-headers email-agent-headers oauth-agents-headers curl-wrapper-headers utils-headers )
+target_link_libraries(gui PUBLIC gui-headers)
 
 target_compile_definitions(gui PRIVATE NO_MEMBER_FUNCTION_PARTIAL_SPECIALIZATION)
 add_custom_command(TARGET gui POST_BUILD
