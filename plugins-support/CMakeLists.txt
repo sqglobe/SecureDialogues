@@ -9,12 +9,14 @@ SET(PLUGIN_SUPPORT_HEADER
       plugininterface.h
       pluginwidgetwrapper.h
       pluginmessagecommunicatorwrapper.h
+      pluginscontainer.h
 )
 
 SET(PLUGIN_SUPPORT_SOURCES
       plugininterface.cpp
       pluginwidgetwrapper.cpp
       pluginmessagecommunicatorwrapper.cpp
+      pluginscontainer.cpp
 )
 
 add_library(plugins-support  STATIC ${PLUGIN_SUPPORT_SOURCES} ${PLUGIN_SUPPORT_HEADER})
