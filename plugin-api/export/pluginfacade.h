@@ -7,9 +7,9 @@ class PluginConnectionSerializer;
 class PluginMessageCommunicator;
 class RecievedMessagesIterator;
 
-class PlaginFacade {
+class PluginFacade {
  public:
-  virtual ~PlaginFacade() = default;
+  virtual ~PluginFacade() = default;
 
  public:
   virtual const char* getId() const noexcept = 0;

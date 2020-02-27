@@ -11,7 +11,7 @@ plugin_support::PluginMessageCommunicatorWrapper::
         std::unique_ptr<PluginMessageCommunicator, owned_deletor>&&
             communicator,
         std::shared_ptr<plugin_support::PluginInterface> interface,
-        PlaginFacade* facade) :
+        PluginFacade* facade) :
     mCommunicator(std::move(communicator)),
     mInterface(std::move(interface)), mFacade(facade) {}
 

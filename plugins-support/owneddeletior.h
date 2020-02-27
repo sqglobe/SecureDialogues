@@ -2,13 +2,13 @@
 #define OWNEDDELETIOR_H
 #include <memory>
 
-#include "export/plaginfacade.h"
+#include "export/pluginfacade.h"
 
 namespace plugin_support {
 
 class owned_deletor {
  public:
-  owned_deletor(PlaginFacade* facade) : mFacade(facade) {}
+  owned_deletor(PluginFacade* facade) : mFacade(facade) {}
   owned_deletor(owned_deletor&& obj) : mFacade(std::move(obj.mFacade)) {}
   owned_deletor& operator=(owned_deletor&& obj) {
     mFacade = std::move(obj.mFacade);
@@ -26,7 +26,7 @@ class owned_deletor {
   }
 
  private:
-  PlaginFacade* mFacade;
+  PluginFacade* mFacade;
 };
 
 }  // namespace plugin_support

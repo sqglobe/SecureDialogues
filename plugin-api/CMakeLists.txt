@@ -10,7 +10,7 @@ SET(PLUGIN_API_HEADERS
     export/pluginwidget.h
     export/recievedmessagesiterator.h
     export/pluginmessagecommunicator.h
-    export/plaginfacade.h
+    export/pluginfacade.h
     export/pluginapidefs.h
     inner/plugininnerdefs.h
 )

@@ -10,6 +10,7 @@ SET(PLUGIN_SUPPORT_HEADER
       pluginwidgetwrapper.h
       pluginmessagecommunicatorwrapper.h
       pluginscontainer.h
+      plugindiscovery.h
 )
 
 SET(PLUGIN_SUPPORT_SOURCES
@@ -17,6 +18,7 @@ SET(PLUGIN_SUPPORT_SOURCES
       pluginwidgetwrapper.cpp
       pluginmessagecommunicatorwrapper.cpp
       pluginscontainer.cpp
+      plugindiscovery.cpp
 )
 
 add_library(plugins-support  STATIC ${PLUGIN_SUPPORT_SOURCES} ${PLUGIN_SUPPORT_HEADER})
