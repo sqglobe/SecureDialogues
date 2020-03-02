@@ -11,8 +11,8 @@ plugin_support::PluginWidgetWrapper::PluginWidgetWrapper(
 std::shared_ptr<PluginConnectionInfo>
 plugin_support::PluginWidgetWrapper::makeConnection() noexcept(false) {
   auto conn = mInterface->makeConnInfo();
-  auto err = std::string(mWidget->fillConnectionInfo(conn.get()));
-  if (err.empty()) {
+  if (auto err = std::string(mWidget->fillConnectionInfo(conn.get()));
+      !err.empty()) {
     throw std::runtime_error(err);
   }
   return conn;
@@ -20,8 +20,8 @@ plugin_support::PluginWidgetWrapper::makeConnection() noexcept(false) {
 
 void plugin_support::PluginWidgetWrapper::fillConnection(
     std::shared_ptr<PluginConnectionInfo> conn) noexcept(false) {
-  auto err = std::string(mWidget->fillConnectionInfo(conn.get()));
-  if (err.empty()) {
+  if (auto err = std::string(mWidget->fillConnectionInfo(conn.get()));
+      !err.empty()) {
     throw std::runtime_error(err);
   }
 }

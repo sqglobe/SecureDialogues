@@ -4,6 +4,7 @@
 #include <memory>
 #include "containers/storages.h"
 #include "interfaces/abstractcoreinitializer.h"
+#include "pluginscontainer.h"
 
 // gui implementations
 class AbstractUserNotifier;
@@ -26,7 +27,8 @@ class AbstractDespatchErrorsSink;
 
 class CoreInitializer : public AbstractCoreInitializer {
  public:
-  CoreInitializer(const std::string& pass);
+  CoreInitializer(const std::string& pass,
+                  std::shared_ptr<plugin_support::PluginsContainer> container);
 
  public:
   void init(const std::shared_ptr<AbstractUserNotifier>& notifier) override;
@@ -68,6 +70,7 @@ class CoreInitializer : public AbstractCoreInitializer {
   std::shared_ptr<const SymetricalCipher> mPassCipher;
   std::shared_ptr<DiscoveredContactStorage> mDiscoveredContactStorage;
   std::shared_ptr<DiscoverContactAgent> mDiscoverContactAgent;
+  std::shared_ptr<plugin_support::PluginsContainer> mPluginContainer;
 };
 
 #endif  // COREINITIALIZER_H

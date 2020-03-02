@@ -105,7 +105,7 @@ communication/despatcherrorssink.h
 
 add_library(messages-headers INTERFACE)
 target_include_directories(messages-headers INTERFACE ${CMAKE_CURRENT_SOURCE_DIR} ${PERSISTENT-STORAGE_INCLUDE_DIRS} ${CROSSGUID_INCLUDE})
-target_link_libraries(messages-headers INTERFACE fmt::fmt-header-only curl-wrapper-headers oauth-agents-headers encryption-headers email-agent-headers utils-headers )
+target_link_libraries(messages-headers INTERFACE fmt::fmt-header-only curl-wrapper-headers oauth-agents-headers encryption-headers email-agent-headers utils-headers plugins-support-headers )
 
 add_library(messages STATIC ${SOURCES} ${HEADERS})
 

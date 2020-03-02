@@ -59,9 +59,12 @@ void saveKeys(const std::string& fileTempl,
   deserializer.serialize(*(keyStore.get()));
 }
 
-CoreInitializer::CoreInitializer(const std::string& pass) :
+CoreInitializer::CoreInitializer(
+    const std::string& pass,
+    std::shared_ptr<plugin_support::PluginsContainer> container) :
     mMessageContainer(std::make_shared<MessageContainer>()),
-    mPassCipher(makeForStringPass(pass)) {
+    mPassCipher(makeForStringPass(pass)),
+    mPluginContainer(std::move(container)) {
   initDatabases(pass);
 
   mAsymetricalKeyStore = loadKeys(FILE_KEY, mPassCipher);

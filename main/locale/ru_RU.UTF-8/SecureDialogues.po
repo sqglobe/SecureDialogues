@@ -7,7 +7,7 @@
 msgid   ""
 msgstr  "Project-Id-Version: PACKAGE VERSION\n"
         "Report-Msgid-Bugs-To: \n"
-        "POT-Creation-Date: 2020-01-05 12:37+0300\n"
+        "POT-Creation-Date: 2020-03-01 16:25+0300\n"
         "PO-Revision-Date: 2020-01-04 00:41+0300\n"
         "Last-Translator: Automatically generated\n"
         "Language-Team: none\n"
@@ -22,13 +22,13 @@ msgstr  "Project-Id-Version: PACKAGE VERSION\n"
 msgid   "Application execution was canceled!"
 msgstr  "Выполнение приложения было отклонено"
 
-#: main.cpp:44
+#: main.cpp:44 main.cpp:47
 msgid   "Application was aborted because of failed creation of configuration "
         "folder"
 msgstr  "Приложение принудительно завершено из-за невозможности создать папку "
         "с конфигурацией"
 
-#: main.cpp:65
+#: main.cpp:65 main.cpp:69
 msgid   "Application was aborted with message {}"
 msgstr  "Приложение завершено с сообщением {}"
 
