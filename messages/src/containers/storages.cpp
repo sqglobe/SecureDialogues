@@ -1,7 +1,7 @@
 #include "storages.h"
 
 std::string get_id(const ConnectionHolder& holder) {
-  return holder.getConnectionName();
+  return holder.connName();
 }
 
 std::string get_id(const Dialog& holder) {
@@ -69,7 +69,9 @@ std::shared_ptr<ContactStorage> make_contact_storage(
 std::shared_ptr<ConnectionStorage> make_connection_storage(
     Db* primary,
     DbEnv* penv,
-    std::shared_ptr<ContactStorage> contacts) {
+    std::shared_ptr<ContactStorage> contacts,
+    std::shared_ptr<plugin_support::PluginsContainer> container) {
+  ConnectionMarshaller::init(std::move(container));
   return std::make_shared<ConnectionStorage>(
       primary, penv, ConnectionDeleter(std::move(contacts)));
 }

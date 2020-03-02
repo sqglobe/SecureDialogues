@@ -6,16 +6,15 @@
 
 class ConnectionMarshaller {
  public:
-  ConnectionMarshaller(
-      std::shared_ptr<plugin_support::PluginsContainer> container);
+  static void init(std::shared_ptr<plugin_support::PluginsContainer> container);
 
  public:
-  void restore(ConnectionHolder& elem, const void* src);
-  uint32_t size(const ConnectionHolder& element);
-  void store(void* dest, const ConnectionHolder& elem);
+  static void restore(ConnectionHolder& elem, const void* src);
+  static uint32_t size(const ConnectionHolder& element);
+  static void store(void* dest, const ConnectionHolder& elem);
 
  private:
-  std::shared_ptr<plugin_support::PluginsContainer> mContainer;
+  static std::shared_ptr<plugin_support::PluginsContainer> mContainer;
 };
 
 #endif  // CONNECTIONMARSHALLER_H

@@ -16,6 +16,7 @@
 #include "persistent_storage/contactmarshaller.h"
 #include "persistent_storage/dialogmarshaller.h"
 #include "persistent_storage/discoveredcontactmarshaller.h"
+#include "pluginscontainer.h"
 #include "primitives/connectionholder.h"
 #include "primitives/contact.h"
 #include "primitives/dialog.h"
@@ -79,7 +80,8 @@ std::shared_ptr<ContactStorage> make_contact_storage(
 std::shared_ptr<ConnectionStorage> make_connection_storage(
     Db* primary,
     DbEnv* penv,
-    std::shared_ptr<ContactStorage> contacts);
+    std::shared_ptr<ContactStorage> contacts,
+    std::shared_ptr<plugin_support::PluginsContainer> container);
 
 std::shared_ptr<DiscoveredContactStorage> make_discovered_contact_storage(
     Db* primary,

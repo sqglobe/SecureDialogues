@@ -24,7 +24,6 @@ class ChannelsListModel : public QAbstractListModel,
     QString name;
     QString message;
     Channel::ChannelStatus status;
-    ConnectionType connectionType;
   };
 
  public:

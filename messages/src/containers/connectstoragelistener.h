@@ -1,6 +1,7 @@
 #ifndef CONNECTSTORAGELISTENER_H
 #define CONNECTSTORAGELISTENER_H
 
+#include "communication/channel.h"
 #include "interfaces/changelistener.h"
 #include "primitives/connectionholder.h"
 #include "storages.h"

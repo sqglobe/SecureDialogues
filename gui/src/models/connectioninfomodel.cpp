@@ -9,7 +9,7 @@ ConnectionInfoModel::ConnectionInfoModel(
   std::transform(std::cbegin(elements), std::cend(elements),
                  std::back_inserter(mData),
                  [](const ChangeListener::element& element) -> ConnData {
-                   return ConnData{QString(element.getConnectionName().c_str()),
+                   return ConnData{QString(element.connName().c_str()),
                                    Channel::ChannelStatus::UNDEFINED};
                  });
 }
@@ -50,8 +50,8 @@ std::optional<std::string> ConnectionInfoModel::getId(
 void ConnectionInfoModel::added(const ChangeListener::element& element) {
   [[maybe_unused]] std::lock_guard<std::recursive_mutex> lock(mMutex);
   beginInsertRows(QModelIndex(), simpleRowCount(), simpleRowCount());
-  mData.push_back({QString(element.getConnectionName().c_str()),
-                   Channel::ChannelStatus::UNDEFINED});
+  mData.push_back(
+      {QString(element.connName().c_str()), Channel::ChannelStatus::UNDEFINED});
   endInsertRows();
 }
 
@@ -59,7 +59,7 @@ void ConnectionInfoModel::changed(const ChangeListener::element&) {}
 
 void ConnectionInfoModel::removed(const ChangeListener::element& element) {
   [[maybe_unused]] std::lock_guard<std::recursive_mutex> lock(mMutex);
-  auto connName = QString(element.getConnectionName().c_str());
+  auto connName = QString(element.connName().c_str());
   auto it = std::find_if(
       std::begin(mData), std::end(mData),
       [&connName](const auto& conn) { return connName == conn.connName; });

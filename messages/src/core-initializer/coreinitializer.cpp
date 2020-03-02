@@ -167,8 +167,9 @@ void CoreInitializer::initDatabases(const std::string& pass) {
   mContactStorage = make_contact_storage(
       make_db("cotnacts.db", "primary", penv),
       make_db("contacts.db", "secondary", penv, DB_DUP), penv, mDialogStorage);
-  mConnectionStorage = make_connection_storage(
-      make_db("connections.db", "primary", penv), penv, mContactStorage);
+  mConnectionStorage =
+      make_connection_storage(make_db("connections.db", "primary", penv), penv,
+                              mContactStorage, mPluginContainer);
 
   mDiscoveredContactStorage = make_discovered_contact_storage(
       make_db("discover_contacts.db", "primary", penv), penv);

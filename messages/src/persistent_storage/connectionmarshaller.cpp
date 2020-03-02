@@ -13,9 +13,15 @@
   std::string from;
   */
 
-ConnectionMarshaller::ConnectionMarshaller(
-    std::shared_ptr<plugin_support::PluginsContainer> container) :
-    mContainer(std::move(container)) {}
+std::shared_ptr<plugin_support::PluginsContainer>
+    ConnectionMarshaller::mContainer;
+
+void ConnectionMarshaller::init(
+    std::shared_ptr<plugin_support::PluginsContainer> container) {
+  if (!mContainer) {
+    mContainer = std::move(container);
+  }
+}
 
 void ConnectionMarshaller::restore(ConnectionHolder& elem, const void* src) {
   std::string name;
