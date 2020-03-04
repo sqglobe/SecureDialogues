@@ -6,7 +6,8 @@
 
 class ConnectionMarshaller {
  public:
-  static void init(std::shared_ptr<plugin_support::PluginsContainer> container);
+  static void init(
+      std::shared_ptr<const plugin_support::PluginsContainer> container);
 
  public:
   static void restore(ConnectionHolder& elem, const void* src);
@@ -14,7 +15,7 @@ class ConnectionMarshaller {
   static void store(void* dest, const ConnectionHolder& elem);
 
  private:
-  static std::shared_ptr<plugin_support::PluginsContainer> mContainer;
+  static std::shared_ptr<const plugin_support::PluginsContainer> mContainer;
 };
 
 #endif  // CONNECTIONMARSHALLER_H

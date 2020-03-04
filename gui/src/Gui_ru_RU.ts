@@ -121,131 +121,99 @@
     </message>
     <message>
         <location filename="widgets/connectioninfowidget.ui" line="102"/>
-        <location filename="widgets/connectioninfowidget.ui" line="139"/>
         <source>E-mail</source>
         <translation>E-mail</translation>
     </message>
     <message>
-        <location filename="widgets/connectioninfowidget.ui" line="155"/>
         <source>Token</source>
-        <translation>Код авторизации</translation>
+        <translation type="vanished">Код авторизации</translation>
     </message>
     <message>
-        <location filename="widgets/connectioninfowidget.ui" line="171"/>
-        <location filename="widgets/connectioninfowidget.ui" line="201"/>
         <source>Token URL</source>
-        <translation>Ссылка для получения кода авторизации</translation>
+        <translation type="vanished">Ссылка для получения кода авторизации</translation>
     </message>
     <message>
-        <location filename="widgets/connectioninfowidget.ui" line="178"/>
-        <location filename="widgets/connectioninfowidget.ui" line="211"/>
-        <source>https://ru.cppreference.com/w/cpp/container/list/front</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="widgets/connectioninfowidget.ui" line="236"/>
         <source>URL</source>
-        <translation>Ссылка</translation>
+        <translation type="vanished">Ссылка</translation>
     </message>
     <message>
-        <location filename="widgets/connectioninfowidget.ui" line="262"/>
         <source>Password</source>
-        <translation>Пароль</translation>
+        <translation type="vanished">Пароль</translation>
     </message>
     <message>
-        <location filename="widgets/connectioninfowidget.ui" line="269"/>
         <source>Login</source>
-        <translation>Логин</translation>
+        <translation type="vanished">Логин</translation>
     </message>
     <message>
-        <location filename="widgets/connectioninfowidget.ui" line="340"/>
         <source>Use safe connection</source>
-        <translation>Использовать безопасное соединение</translation>
+        <translation type="vanished">Использовать безопасное соединение</translation>
     </message>
     <message>
-        <location filename="widgets/connectioninfowidget.ui" line="391"/>
+        <location filename="widgets/connectioninfowidget.ui" line="150"/>
         <source>Status</source>
         <translation>Статус</translation>
     </message>
     <message>
-        <location filename="widgets/connectioninfowidget.ui" line="282"/>
         <source>From</source>
-        <translation>От кого</translation>
+        <translation type="vanished">От кого</translation>
     </message>
     <message>
-        <location filename="widgets/connectioninfowidget.ui" line="296"/>
-        <location filename="widgets/connectioninfowidget.ui" line="331"/>
         <source>port</source>
-        <translation>Порт</translation>
+        <translation type="vanished">Порт</translation>
     </message>
     <message>
-        <location filename="widgets/connectioninfowidget.ui" line="303"/>
         <source>smtp</source>
-        <translation>smtp</translation>
+        <translation type="vanished">smtp</translation>
     </message>
     <message>
-        <location filename="widgets/connectioninfowidget.ui" line="310"/>
-        <location filename="widgets/connectioninfowidget.ui" line="324"/>
         <source>server URL/IP</source>
-        <translation>Адрес/IP сервера</translation>
+        <translation type="vanished">Адрес/IP сервера</translation>
     </message>
     <message>
-        <location filename="widgets/connectioninfowidget.ui" line="317"/>
         <source>imap</source>
-        <translation>imap</translation>
+        <translation type="vanished">imap</translation>
     </message>
     <message>
-        <location filename="widgets/connectioninfowidget.cpp" line="122"/>
+        <location filename="widgets/connectioninfowidget.cpp" line="74"/>
         <source>Connection not confirmed</source>
         <translation>Соединение не подтверждено</translation>
     </message>
     <message>
-        <location filename="widgets/connectioninfowidget.cpp" line="194"/>
+        <location filename="widgets/connectioninfowidget.cpp" line="139"/>
         <source>Connection type required!</source>
         <translation>Необходимо указать тип соединения</translation>
     </message>
     <message>
-        <location filename="widgets/connectioninfowidget.cpp" line="199"/>
-        <location filename="widgets/connectioninfowidget.cpp" line="228"/>
         <source>Field &apos;Login&apos; should be completed</source>
-        <translation>Необходимо заполнить поле &apos;Логин&apos; </translation>
+        <translation type="vanished">Необходимо заполнить поле &apos;Логин&apos; </translation>
     </message>
     <message>
-        <location filename="widgets/connectioninfowidget.cpp" line="205"/>
-        <location filename="widgets/connectioninfowidget.cpp" line="236"/>
         <source>Field &apos;Password&apos; should be completed</source>
-        <translation>Необходимо заполнить поле &apos;Пароль&apos;</translation>
+        <translation type="vanished">Необходимо заполнить поле &apos;Пароль&apos;</translation>
     </message>
     <message>
-        <location filename="widgets/connectioninfowidget.cpp" line="211"/>
         <source>Field &apos;URL&apos; should be completed</source>
-        <translation>Необходимо заполнить поле &apos;URL&apos;</translation>
+        <translation type="vanished">Необходимо заполнить поле &apos;URL&apos;</translation>
     </message>
     <message>
-        <location filename="widgets/connectioninfowidget.cpp" line="216"/>
         <source>Field &apos;URL&apos; contains wrond format</source>
-        <translation>Значение в поле &apos;URL&apos; имеет неверный формат</translation>
+        <translation type="vanished">Значение в поле &apos;URL&apos; имеет неверный формат</translation>
     </message>
     <message>
-        <location filename="widgets/connectioninfowidget.cpp" line="245"/>
         <source>Field &apos;From&apos; empty or contains wrong format</source>
-        <translation>Поле &apos;От&apos; не заполнено или содержит не верный формат</translation>
+        <translation type="vanished">Поле &apos;От&apos; не заполнено или содержит не верный формат</translation>
     </message>
     <message>
-        <location filename="widgets/connectioninfowidget.cpp" line="252"/>
         <source>&apos;Address of SMTP server&apos; empty</source>
-        <translation>&apos;Адрес SMTP сервера&apos; не указан</translation>
+        <translation type="vanished">&apos;Адрес SMTP сервера&apos; не указан</translation>
     </message>
     <message>
-        <location filename="widgets/connectioninfowidget.cpp" line="257"/>
         <source>Field &apos;Port of SMTP server&apos; empty or contains wrong format</source>
-        <translation>Поле &apos;Порт SMTP сервера&apos; не заполнено или содержит не верный формат</translation>
+        <translation type="vanished">Поле &apos;Порт SMTP сервера&apos; не заполнено или содержит не верный формат</translation>
     </message>
     <message>
-        <location filename="widgets/connectioninfowidget.cpp" line="364"/>
-        <location filename="widgets/connectioninfowidget.cpp" line="369"/>
         <source>&lt;a href=&apos;%1&apos;&gt;Open web-page to get Oauth2 code&lt;/a&gt;</source>
-        <translation>&lt;a href=&apos;%1&apos;&gt;Открыть web-браузер для плучения кода Oauth2&lt;/a&gt;</translation>
+        <translation type="vanished">&lt;a href=&apos;%1&apos;&gt;Открыть web-браузер для плучения кода Oauth2&lt;/a&gt;</translation>
     </message>
 </context>
 <context>

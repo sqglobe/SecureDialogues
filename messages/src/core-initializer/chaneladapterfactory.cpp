@@ -34,7 +34,7 @@ class FakeChannelAdapter : public AbstractChannelAdapter {
 
 ChanelAdapterFactory::ChanelAdapterFactory(
     std::shared_ptr<AbstractUserNotifier> notifier,
-    std::shared_ptr<plugin_support::PluginsContainer> container) :
+    std::shared_ptr<const plugin_support::PluginsContainer> container) :
     mNotifier(std::move(notifier)),
     mContainer(std::move(container)) {}
 

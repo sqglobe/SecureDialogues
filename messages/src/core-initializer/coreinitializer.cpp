@@ -61,7 +61,7 @@ void saveKeys(const std::string& fileTempl,
 
 CoreInitializer::CoreInitializer(
     const std::string& pass,
-    std::shared_ptr<plugin_support::PluginsContainer> container) :
+    std::shared_ptr<const plugin_support::PluginsContainer> container) :
     mMessageContainer(std::make_shared<MessageContainer>()),
     mPassCipher(makeForStringPass(pass)),
     mPluginContainer(std::move(container)) {

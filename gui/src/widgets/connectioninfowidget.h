@@ -3,7 +3,10 @@
 
 #include <QWidget>
 #include <optional>
+#include <vector>
 #include "communication/channel.h"
+#include "pluginscontainer.h"
+#include "pluginwidgetwrapper.h"
 #include "primitives/connectionholder.h"
 
 namespace Ui {
@@ -18,7 +21,9 @@ class ConnectionInfoWidget : public QWidget {
   Q_OBJECT
 
  public:
-  explicit ConnectionInfoWidget(QWidget* parent = nullptr);
+  explicit ConnectionInfoWidget(
+      std::shared_ptr<const plugin_support::PluginsContainer> container,
+      QWidget* parent = nullptr);
   ~ConnectionInfoWidget() override;
 
  public:
@@ -59,12 +64,6 @@ class ConnectionInfoWidget : public QWidget {
    */
   void actionDisable();
 
-  /**
-   * @brief Обработчик события выбора типа подключения
-   * @param index тип подключения
-   */
-  void activatedConnectionType(int index);
-
  signals:
   void cleareVal();
   void changeEnabled(bool isEnabled);
@@ -84,6 +83,7 @@ class ConnectionInfoWidget : public QWidget {
  private:
   std::optional<ConnectionHolder> mInfo;
   std::map<std::string, Element> mCachedElements;
+  std::vector<std::unique_ptr<plugin_support::PluginWidgetWrapper>> mWidgets;
 };
 
 #endif  // CONNECTIONINFOWIDGET_H

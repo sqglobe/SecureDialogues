@@ -38,3 +38,11 @@ void plugin_support::PluginWidgetWrapper::cleareWidget() noexcept {
 void plugin_support::PluginWidgetWrapper::makeActivated() noexcept {
   mWidget->makeActivated();
 }
+
+PluginWidget* plugin_support::PluginWidgetWrapper::getWidget() const noexcept {
+  return mWidget;
+}
+
+std::string plugin_support::PluginWidgetWrapper::getId() const noexcept {
+  return mInterface->getId();
+}

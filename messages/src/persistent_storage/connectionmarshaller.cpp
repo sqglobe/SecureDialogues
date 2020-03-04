@@ -13,11 +13,11 @@
   std::string from;
   */
 
-std::shared_ptr<plugin_support::PluginsContainer>
+std::shared_ptr<const plugin_support::PluginsContainer>
     ConnectionMarshaller::mContainer;
 
 void ConnectionMarshaller::init(
-    std::shared_ptr<plugin_support::PluginsContainer> container) {
+    std::shared_ptr<const plugin_support::PluginsContainer> container) {
   if (!mContainer) {
     mContainer = std::move(container);
   }
