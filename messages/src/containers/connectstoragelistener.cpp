@@ -44,13 +44,14 @@ void ConnectStorageListener::added(const ChangeListener::element& obj) {
   }
 
   try {
-    mDespatcher->add(std::make_shared<Channel>(
-                         mFabric(obj), mDespatcher, mMarshaller, obj.connName(),
-                         mEventQueue, obj.pluginConnInfo()->getWaitPeriod()),
-                     obj.connName());
+    mDespatcher->add(
+        std::make_shared<Channel>(
+            mFabric(obj), mDespatcher, mMarshaller, obj.connName(), mEventQueue,
+            std::chrono::seconds(obj.pluginConnInfo()->getWaitPeriod())),
+        obj.connName());
   } catch (const DisconectedException& ex) {
-    mEventQueue->enqueue(Channel::ChannelStatus::FAILED_CONNECT,
-                         obj.getConnectionName(), std::string(ex.what()));
+    mEventQueue->enqueue(Channel::ChannelStatus::FAILED_CONNECT, obj.connName(),
+                         std::string(ex.what()));
   } catch (const NotAuthorizedException& ex) {
     mEventQueue->enqueue(Channel::ChannelStatus::AUTHORIZATION_FAILED,
                          obj.connName(), std::string(ex.what()));
@@ -64,10 +65,11 @@ void ConnectStorageListener::changed(const ChangeListener::element& obj) {
 
   try {
     mDespatcher->removeChannel(obj.connName());
-    mDespatcher->add(std::make_shared<Channel>(
-                         mFabric(obj), mDespatcher, mMarshaller, obj.connName(),
-                         mEventQueue, obj.pluginConnInfo()->getWaitPeriod()),
-                     obj.connName());
+    mDespatcher->add(
+        std::make_shared<Channel>(
+            mFabric(obj), mDespatcher, mMarshaller, obj.connName(), mEventQueue,
+            std::chrono::seconds(obj.pluginConnInfo()->getWaitPeriod())),
+        obj.connName());
   } catch (const DisconectedException& ex) {
     mEventQueue->enqueue(Channel::ChannelStatus::FAILED_CONNECT, obj.connName(),
                          std::string(ex.what()));

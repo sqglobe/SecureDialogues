@@ -103,7 +103,7 @@ std::pair<std::string, std::string> OauthAdapter::receive() {
 }
 
 bool OauthAdapter::connect() {
-  auto conn = getHolder();
+  /*auto conn = getHolder();
   switch (conn.getType()) {
     case ConnectionType::GMAIL: {
       auto connInfo = conn.getConnection<GmailConnection>();
@@ -123,5 +123,5 @@ bool OauthAdapter::connect() {
       throw std::runtime_error(
           fmt::format(dgettext("messages", "Undefined connection type: {}"),
                       static_cast<int>(conn.getType())));
-  }
+  }*/
 }

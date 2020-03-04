@@ -1,6 +1,7 @@
 #ifndef ABSTRACTCHANNELADAPTER_H
 #define ABSTRACTCHANNELADAPTER_H
 
+#include <list>
 #include <memory>
 #include <string>
 #include <utility>
@@ -53,7 +54,8 @@ class AbstractChannelAdapter {
    * @return возвращает пару <адрес, текст сообщений>. Где адрес - от кого было
    * получено сообщение, "текст сообщения" - текст полученного сообщения
    */
-  virtual std::pair<std::string, std::string> receive() noexcept(false) = 0;
+  virtual std::list<std::pair<std::string, std::string>> receive() noexcept(
+      false) = 0;
 
   /**
    * @brief Выполняет подключение канала связи и возвращает успешность этого.

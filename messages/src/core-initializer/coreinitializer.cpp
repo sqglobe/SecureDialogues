@@ -138,7 +138,8 @@ void CoreInitializer::startMessagesHandling(
   auto connWatcher = std::make_shared<ConnectStorageListener>(
       mMessageDispatcher,
       std::function<std::unique_ptr<AbstractChannelAdapter>(
-          const ConnectionHolder&)>(ChanelAdapterFactory(notifier)),
+          const ConnectionHolder&)>(
+          ChanelAdapterFactory(notifier, mPluginContainer)),
       std::make_shared<MessageMarshaller>(), eventQueue,
       mConnectionStorage->getAllElements());
   mConnectionStorage->appendPermanentListener(connWatcher);

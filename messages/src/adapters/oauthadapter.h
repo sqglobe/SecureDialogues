@@ -7,15 +7,12 @@
 #include "oauth-agents/interfaces/apiagent.h"
 #include "oauth-agents/interfaces/oauthagent.h"
 
-class OauthAdapter : public AbstractChannelAdapter {
- public:
-  using AbstractChannelAdapter::AbstractChannelAdapter;
-
+class OauthAdapter {
  public:
   void send(const std::string& message,
-            const std::string& adress) noexcept(false) override;
-  std::pair<std::string, std::string> receive() noexcept(false) override;
-  bool connect() override;
+            const std::string& adress) noexcept(false);
+  std::pair<std::string, std::string> receive() noexcept(false);
+  bool connect();
 
  private:
   std::unique_ptr<OAuthAgent> mOauthAgent;

@@ -41,6 +41,7 @@ primitives/discoveredcontact.cpp
 persistent_storage/discoveredcontactmarshaller.cpp
 communication/discovercontactagent.cpp
 communication/despatcherrorssink.cpp
+adapters/pluginadapter.cpp
 )
 
 
@@ -101,6 +102,7 @@ persistent_storage/discoveredcontactmarshaller.h
 communication/discovercontactagent.h
 interfaces/abstractdespatcherrorssink.h
 communication/despatcherrorssink.h
+adapters/pluginadapter.h
 )
 
 add_library(messages-headers INTERFACE)

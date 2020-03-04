@@ -23,7 +23,7 @@ void UdpAdapter::send(const std::string& message, const std::string& adress) {
                  remote_endpoint);
 }
 
-std::pair<std::string, std::string> UdpAdapter::receive() {
+std::list<std::pair<std::string, std::string>> UdpAdapter::receive() {
   using boost::asio::ip::udp;
   std::string messg(2000, '\0');
   if (mSocket) {
@@ -31,11 +31,11 @@ std::pair<std::string, std::string> UdpAdapter::receive() {
     mSocket->receive_from(boost::asio::buffer(&messg[0], messg.size()),
                           remote_endpoint);
 
-    return std::make_pair(remote_endpoint.address().to_string(),
-                          std::string(messg));
+    return {std::make_pair(remote_endpoint.address().to_string(),
+                           std::string(messg))};
   }
 
-  return std::make_pair(std::string(), std::string());
+  return {std::make_pair(std::string(), std::string())};
 }
 
 bool UdpAdapter::connect() {
