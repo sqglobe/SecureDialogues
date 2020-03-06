@@ -52,6 +52,12 @@ ConnectionInfoWidget::ConnectionInfoWidget(
 }
 
 ConnectionInfoWidget::~ConnectionInfoWidget() {
+  auto stackedWidget = findChild<QStackedWidget*>("stackedWidget");
+  for (int i = 1; i < stackedWidget->count(); ++i) {
+    auto widget = stackedWidget->widget(i);
+    stackedWidget->removeWidget(widget);
+    widget->setParent(nullptr);
+  }
   delete ui;
 }
 
@@ -97,6 +103,13 @@ void ConnectionInfoWidget::displayStatus(
       connStatus->setText("Authorisation required");
       lastMessage->setText(element.message);
       palette.setColor(connStatus->backgroundRole(), QColor(250, 128, 114));
+      lastMessage->show();
+      break;
+    }
+    case Channel::ChannelStatus::BAD_CHANNEL: {
+      connStatus->setText("Plugin missed");
+      lastMessage->setText(element.message);
+      palette.setColor(connStatus->backgroundRole(), QColor(229, 128, 255));
       lastMessage->show();
     }
   }
@@ -147,7 +160,7 @@ ConnectionHolder ConnectionInfoWidget::getElement() noexcept(false) {
   WigetUtils::test(checks);
 
   const auto& widget =
-      mWidgets.at(static_cast<std::size_t>(connType->currentIndex()));
+      mWidgets.at(static_cast<std::size_t>(connType->currentIndex() - 1));
 
   auto connHolder = mInfo ? mInfo.value()
                           : ConnectionHolder(conn_name->text().toStdString(),
@@ -179,6 +192,8 @@ void ConnectionInfoWidget::actionCleare() {
   connType->setCurrentIndex(1);
   mInfo.reset();
   findChild<QWidget*>("satusWidget")->hide();
+  std::for_each(std::cbegin(mWidgets), std::cend(mWidgets),
+                [](const auto& widget) mutable { widget->cleareWidget(); });
 }
 
 void ConnectionInfoWidget::actionEnable() {
@@ -191,4 +206,11 @@ void ConnectionInfoWidget::actionEnable() {
 
 void ConnectionInfoWidget::actionDisable() {
   emit changeEnabled(false);
+}
+
+void ConnectionInfoWidget::activatedConnectionType(int index) {
+  const auto elIndex = static_cast<std::size_t>(index);
+  if (mWidgets.size() >= elIndex && elIndex > 0) {
+    mWidgets.at(elIndex - 1)->makeActivated();
+  }
 }

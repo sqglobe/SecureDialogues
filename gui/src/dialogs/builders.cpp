@@ -52,12 +52,13 @@ void contact_for_dialog(const std::shared_ptr<BaseSettingsDialog>& dialog,
 std::shared_ptr<BaseSettingsDialog> make_dialog(
     const std::shared_ptr<ContactStorage>& contact,
     const std::shared_ptr<ConnectionStorage>& connInfo,
-    const std::shared_ptr<Channel::EventQueue>& queue) {
+    const std::shared_ptr<Channel::EventQueue>& queue,
+    std::shared_ptr<const plugin_support::PluginsContainer> plugins) {
   auto contactModel = std::make_shared<ContactModel>(contact->getAllElements());
   contact->appendPermanentListener(contactModel);
 
-  auto channelList =
-      std::make_shared<ChannelsListModel>(connInfo->getAllElements());
+  auto channelList = std::make_shared<ChannelsListModel>(
+      connInfo->getAllElements(), std::move(plugins));
   auto channelEventListener = [channelList](
                                   Channel::ChannelStatus newStatus,
                                   const std::string& channelName,
@@ -70,6 +71,8 @@ std::shared_ptr<BaseSettingsDialog> make_dialog(
   queue->appendListener(Channel::ChannelStatus::FAILED_CONNECT,
                         channelEventListener);
   queue->appendListener(Channel::ChannelStatus::AUTHORIZATION_FAILED,
+                        channelEventListener);
+  queue->appendListener(Channel::ChannelStatus::BAD_CHANNEL,
                         channelEventListener);
 
   connInfo->appendListener(channelList);
@@ -94,7 +97,8 @@ std::shared_ptr<BaseSettingsDialog> make_dialog(
 
 std::shared_ptr<BaseSettingsDialog> make_dialog(
     const std::shared_ptr<ConnectionStorage>& connInfo,
-    const std::shared_ptr<Channel::EventQueue>& queue) {
+    const std::shared_ptr<Channel::EventQueue>& queue,
+    std::shared_ptr<const plugin_support::PluginsContainer> container) {
   auto mainModel =
       std::make_shared<ConnectionInfoModel>(connInfo->getAllElements());
   connInfo->appendPermanentListener(mainModel);
@@ -111,8 +115,10 @@ std::shared_ptr<BaseSettingsDialog> make_dialog(
                         channelEventListener);
   queue->appendListener(Channel::ChannelStatus::AUTHORIZATION_FAILED,
                         channelEventListener);
+  queue->appendListener(Channel::ChannelStatus::BAD_CHANNEL,
+                        channelEventListener);
 
-  auto widget = new ConnectionInfoWidget();
+  auto widget = new ConnectionInfoWidget(std::move(container));
 
   auto connInfoWidgetListener = [widget](Channel::ChannelStatus newStatus,
                                          const std::string& channelName,
@@ -153,11 +159,12 @@ std::shared_ptr<DialogCreation> make_creation_dialog(
 ContactDiscoverDialog* make_discover_dialog(
     const std::shared_ptr<ConnectionStorage>& connInfo,
     std::shared_ptr<DiscoverContactAgent> agent,
-    std::shared_ptr<AbstractUserNotifier> notifier,
+    std::shared_ptr<AbstractUserNotifier>,
     const std::shared_ptr<Channel::EventQueue>& queue,
-    QWidget* parent) {
-  auto channelList =
-      std::make_shared<ChannelsListModel>(connInfo->getAllElements());
+    QWidget* parent,
+    std::shared_ptr<const plugin_support::PluginsContainer> plugins) {
+  auto channelList = std::make_shared<ChannelsListModel>(
+      connInfo->getAllElements(), std::move(plugins));
   auto channelEventListener = [channelList](
                                   Channel::ChannelStatus newStatus,
                                   const std::string& channelName,
@@ -170,6 +177,8 @@ ContactDiscoverDialog* make_discover_dialog(
   queue->appendListener(Channel::ChannelStatus::FAILED_CONNECT,
                         channelEventListener);
   queue->appendListener(Channel::ChannelStatus::AUTHORIZATION_FAILED,
+                        channelEventListener);
+  queue->appendListener(Channel::ChannelStatus::BAD_CHANNEL,
                         channelEventListener);
 
   connInfo->appendListener(channelList);
@@ -182,9 +191,10 @@ ImportDiscoveredContactDialog* make_import_contact_dialog(
     std::shared_ptr<RecievedContactsStorageWrapper> wrapper,
     const std::shared_ptr<ConnectionStorage>& connInfo,
     const std::shared_ptr<Channel::EventQueue>& queue,
-    QWidget* parent) {
-  auto channelList =
-      std::make_shared<ChannelsListModel>(connInfo->getAllElements());
+    QWidget* parent,
+    std::shared_ptr<const plugin_support::PluginsContainer> plugins) {
+  auto channelList = std::make_shared<ChannelsListModel>(
+      connInfo->getAllElements(), std::move(plugins));
   auto channelEventListener = [channelList](
                                   Channel::ChannelStatus newStatus,
                                   const std::string& channelName,
@@ -197,6 +207,8 @@ ImportDiscoveredContactDialog* make_import_contact_dialog(
   queue->appendListener(Channel::ChannelStatus::FAILED_CONNECT,
                         channelEventListener);
   queue->appendListener(Channel::ChannelStatus::AUTHORIZATION_FAILED,
+                        channelEventListener);
+  queue->appendListener(Channel::ChannelStatus::BAD_CHANNEL,
                         channelEventListener);
 
   connInfo->appendListener(channelList);

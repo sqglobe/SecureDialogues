@@ -2,8 +2,9 @@
 
 #include <QMessageBox>
 #include "communication/discovercontactagent.h"
+#include "export/pluginaddressvalidator.h"
 #include "models/channelslistmodel.h"
-
+#include "support-functions.h"
 Q_DECLARE_METATYPE(ChannelsListModel::ListItem);
 
 ContactDiscoverDialog::ContactDiscoverDialog(
@@ -47,9 +48,18 @@ void ContactDiscoverDialog::on_sendContactBtn_clicked() {
     return;
   }
 
-  if (!is_address_valid(address.toUtf8().constData(), item.connectionType)) {
-    QMessageBox::critical(this, tr("Error!"),
-                          tr("Field 'Address' contains unsupported value"));
+  if (!item.validator) {
+    QMessageBox::critical(
+        this, tr("Error!"),
+        tr("You select channel without plugin. Please place plugin into "
+           "plugins folder and restart application"));
+    return;
+  }
+
+  if (std::string errMess = plugin_support::make_string(
+          item.validator->isValid(address.toUtf8().constData()));
+      !errMess.empty()) {
+    QMessageBox::critical(this, tr("Error!"), errMess.c_str());
     return;
   }
 

@@ -53,7 +53,7 @@ int main(int argc, char* argv[]) {
     auto container = std::make_shared<plugin_support::PluginsContainer>();
     plugin_support::discover_plugins("plugins", *container);
     MainWindow w(std::move(settingsGuard), std::move(translatorMaster),
-                 std::make_unique<CoreInitializer>(pass, std::move(container)));
+                 std::make_unique<CoreInitializer>(pass, container), container);
     w.show();
 
     auto res = a.exec();

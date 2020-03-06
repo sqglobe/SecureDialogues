@@ -13,6 +13,7 @@ class PluginWidget;
 class PluginConnectionSerializer;
 class PluginMessageCommunicator;
 class PluginConnectionInfo;
+class PluginAddressValidator;
 
 namespace plugin_support {
 
@@ -26,6 +27,8 @@ class PluginInterface : public std::enable_shared_from_this<PluginInterface> {
  public:
   std::unique_ptr<PluginWidgetWrapper> getWidget() noexcept;
   const PluginConnectionSerializer* getSerializer() const noexcept;
+  std::shared_ptr<const PluginAddressValidator> getAddressValidator() const
+      noexcept;
   std::unique_ptr<PluginMessageCommunicatorWrapper> getCommunicator() noexcept;
   std::shared_ptr<PluginConnectionInfo> makeConnInfo() const noexcept;
 

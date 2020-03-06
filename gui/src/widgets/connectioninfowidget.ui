@@ -82,26 +82,6 @@
          <string/>
         </property>
        </item>
-       <item>
-        <property name="text">
-         <string>UDP</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Gmail</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>VK</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>E-mail</string>
-        </property>
-       </item>
       </widget>
      </item>
     </layout>

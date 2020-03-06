@@ -7,12 +7,14 @@
 #include "gmailplugindefs.h"
 #include "gmailrecievedmessagesiterator.h"
 
+#include "gmailaddressvalidator.h"
 #include "spdlog/sinks/rotating_file_sink.h"
 #include "spdlog/spdlog.h"
 
 GmailFacade::GmailFacade() :
     mWidget(std::make_unique<GmailConnectionWidget>()),
-    mSerializer(std::make_unique<GmailConnectionSerializer>()) {
+    mSerializer(std::make_unique<GmailConnectionSerializer>()),
+    mValidator(std::make_unique<GmailAddressValidator>()) {
   spdlog::rotating_logger_mt("gmail_logger", "gmail-plugin.log", 1048576 * 5,
                              3);
 }
@@ -41,6 +43,11 @@ PluginMessageCommunicator* GmailFacade::makeCommunicator() noexcept {
 
 PluginConnectionInfo* GmailFacade::makeEmptyConn() noexcept {
   return new GmailConnectionInfo;
+}
+
+const PluginAddressValidator* GmailFacade::getAddressValidator() const
+    noexcept {
+  return mValidator.get();
 }
 
 void GmailFacade::release(PluginMessageCommunicator* comm) noexcept {

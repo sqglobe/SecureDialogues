@@ -29,7 +29,8 @@ class RecievedContactsStorageWrapper;
 std::shared_ptr<BaseSettingsDialog> make_dialog(
     const std::shared_ptr<ContactStorage>& contact,
     const std::shared_ptr<ConnectionStorage>& connInfo,
-    const std::shared_ptr<Channel::EventQueue>& queue);
+    const std::shared_ptr<Channel::EventQueue>& queue,
+    std::shared_ptr<const plugin_support::PluginsContainer> plugins);
 
 /**
  * @brief Создает диалог для управления информацией о подключениях для каналов
@@ -39,7 +40,8 @@ std::shared_ptr<BaseSettingsDialog> make_dialog(
  */
 std::shared_ptr<BaseSettingsDialog> make_dialog(
     const std::shared_ptr<ConnectionStorage>& connInfo,
-    const std::shared_ptr<Channel::EventQueue>& queue);
+    const std::shared_ptr<Channel::EventQueue>& queue,
+    std::shared_ptr<const plugin_support::PluginsContainer> container);
 
 /**
  * @brief Создает пользовательский диалог для начала общения с удаленным
@@ -56,12 +58,14 @@ ContactDiscoverDialog* make_discover_dialog(
     std::shared_ptr<DiscoverContactAgent> agent,
     std::shared_ptr<AbstractUserNotifier> notifier,
     const std::shared_ptr<Channel::EventQueue>& queue,
-    QWidget* parent);
+    QWidget* parent,
+    std::shared_ptr<const plugin_support::PluginsContainer> plugins);
 
 ImportDiscoveredContactDialog* make_import_contact_dialog(
     std::shared_ptr<RecievedContactsStorageWrapper> wrapper,
     const std::shared_ptr<ConnectionStorage>& connInfo,
     const std::shared_ptr<Channel::EventQueue>& queue,
-    QWidget* parent);
+    QWidget* parent,
+    std::shared_ptr<const plugin_support::PluginsContainer> plugins);
 
 #endif  // BUILDERS_H

@@ -6,17 +6,26 @@
 #include <QBrush>
 #include <QColor>
 #include <iostream>
+#include "export/pluginaddressvalidator.h"
+#include "export/pluginconnectioninfo.h"
+#include "plugininterface.h"
+
 Q_DECLARE_METATYPE(ChannelsListModel::ListItem);
 
 ChannelsListModel::ChannelsListModel(
-    const std::vector<ConnectionHolder>& elements) {
-  std::transform(elements.cbegin(), elements.cend(),
-                 std::back_inserter(mChannelNames),
-                 [](const ConnectionHolder& cInfo) -> ListItem {
-                   return {cInfo.connName().c_str(),
-                           QApplication::tr("Connection not established yet"),
-                           Channel::ChannelStatus::UNDEFINED};
-                 });
+    const std::vector<ConnectionHolder>& elements,
+    std::shared_ptr<const plugin_support::PluginsContainer> container) :
+    mContainer(std::move(container)) {
+  std::transform(
+      elements.cbegin(), elements.cend(), std::back_inserter(mChannelNames),
+      [& cont = this->mContainer](const ConnectionHolder& cInfo) -> ListItem {
+        const auto interface = cont->get(cInfo.pluginConnInfo()->getPluginId());
+        return {cInfo.connName().c_str(),
+                QApplication::tr("Connection not established yet"),
+                Channel::ChannelStatus::UNDEFINED,
+                interface ? interface->getAddressValidator()
+                          : std::shared_ptr<const PluginAddressValidator>{}};
+      });
 }
 
 int ChannelsListModel::rowCount(const QModelIndex&) const {
@@ -43,6 +52,8 @@ QVariant ChannelsListModel::data(const QModelIndex& index, int role) const {
         return QBrush(QColor(255, 192, 203));
       case S::AUTHORIZATION_FAILED:
         return QBrush(QColor(250, 128, 114));
+      case S::BAD_CHANNEL:
+        return QBrush(QColor(229, 128, 255));
     }
   } else if (Qt::UserRole == role) {
     return QVariant::fromValue(mChannelNames.at(index.row()));
@@ -53,9 +64,14 @@ QVariant ChannelsListModel::data(const QModelIndex& index, int role) const {
 void ChannelsListModel::added(const ChangeListener::element& element) {
   [[maybe_unused]] std::lock_guard<std::recursive_mutex> guard(mMutex);
   beginInsertRows(QModelIndex(), mChannelNames.size(), mChannelNames.size());
-  mChannelNames.append({element.connName().c_str(),
-                        QApplication::tr("Connection not established yet"),
-                        Channel::ChannelStatus::UNDEFINED});
+  const auto interface =
+      mContainer->get(element.pluginConnInfo()->getPluginId());
+  mChannelNames.append(
+      {element.connName().c_str(),
+       QApplication::tr("Connection not established yet"),
+       Channel::ChannelStatus::UNDEFINED,
+       interface ? interface->getAddressValidator()
+                 : std::shared_ptr<const PluginAddressValidator>{}});
   endInsertRows();
 }
 

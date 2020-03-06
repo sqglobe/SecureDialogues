@@ -63,6 +63,11 @@ class ConnectionInfoWidget : public QWidget {
    * @brief Поля виджета становятся не доступными для редактирования
    */
   void actionDisable();
+  /**
+   * @brief Обработчик события выбора типа подключения
+   * @param index тип подключения
+   */
+  void activatedConnectionType(int index);
 
  signals:
   void cleareVal();

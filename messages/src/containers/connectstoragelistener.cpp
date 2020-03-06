@@ -44,9 +44,16 @@ void ConnectStorageListener::added(const ChangeListener::element& obj) {
   }
 
   try {
+    auto conn = mFabric(obj);
+    if (!conn) {
+      mEventQueue->enqueue(Channel::ChannelStatus::BAD_CHANNEL, obj.connName(),
+                           "");
+      return;
+    }
     mDespatcher->add(
         std::make_shared<Channel>(
-            mFabric(obj), mDespatcher, mMarshaller, obj.connName(), mEventQueue,
+            std::move(conn), mDespatcher, mMarshaller, obj.connName(),
+            mEventQueue,
             std::chrono::seconds(obj.pluginConnInfo()->getWaitPeriod())),
         obj.connName());
   } catch (const DisconectedException& ex) {
@@ -65,6 +72,12 @@ void ConnectStorageListener::changed(const ChangeListener::element& obj) {
 
   try {
     mDespatcher->removeChannel(obj.connName());
+    auto conn = mFabric(obj);
+    if (!conn) {
+      mEventQueue->enqueue(Channel::ChannelStatus::BAD_CHANNEL, obj.connName(),
+                           "");
+      return;
+    }
     mDespatcher->add(
         std::make_shared<Channel>(
             mFabric(obj), mDespatcher, mMarshaller, obj.connName(), mEventQueue,

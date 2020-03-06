@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <memory>
+#include "pluginscontainer.h"
 #include "primitives/contact.h"
 
 class ChannelsListModel;

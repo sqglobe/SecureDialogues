@@ -11,6 +11,7 @@ SET(PLUGIN_SUPPORT_HEADER
       pluginmessagecommunicatorwrapper.h
       pluginscontainer.h
       plugindiscovery.h
+      support-functions.h
 )
 
 SET(PLUGIN_SUPPORT_SOURCES

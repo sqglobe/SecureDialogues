@@ -13,10 +13,12 @@
 
 enum MESSAGE_SWITCH_PAGES { OK_DIALOG_PAGE = 0, BAD_DIALOG_PAGE = 1 };
 
-MainWindow::MainWindow(std::shared_ptr<ApplicationSettingsGuard> settingsGuard,
-                       std::shared_ptr<TranslationMaster> translatorMaster,
-                       std::unique_ptr<AbstractCoreInitializer>&& coreInit,
-                       QWidget* parent) :
+MainWindow::MainWindow(
+    std::shared_ptr<ApplicationSettingsGuard> settingsGuard,
+    std::shared_ptr<TranslationMaster> translatorMaster,
+    std::unique_ptr<AbstractCoreInitializer>&& coreInit,
+    std::shared_ptr<const plugin_support::PluginsContainer> plugins,
+    QWidget* parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     mUserInformator(std::make_shared<UserInformator>(this)),
@@ -36,7 +38,7 @@ MainWindow::MainWindow(std::shared_ptr<ApplicationSettingsGuard> settingsGuard,
   mGui = std::make_shared<GuiInitializer>(
       this, mCore, mUserInformator, mUserInformator,
       mEventHolder.channelEventQueue(), std::move(settingsGuard),
-      std::move(translatorMaster));
+      std::move(translatorMaster), std::move(plugins));
   on_badDialogSelected(
       tr("Please, select one dialog from the list for texting").toStdString());
   mCore->startMessagesHandling(mUserInformator,

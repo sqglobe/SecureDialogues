@@ -35,7 +35,8 @@ class Channel : public std::enable_shared_from_this<Channel> {
     UNDEFINED,
     CONNECTED,
     FAILED_CONNECT,
-    AUTHORIZATION_FAILED
+    AUTHORIZATION_FAILED,
+    BAD_CHANNEL
   };
 
   using EventQueue = eventpp::EventQueue<

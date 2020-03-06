@@ -12,6 +12,7 @@ SET(PLUGIN_API_HEADERS
     export/pluginmessagecommunicator.h
     export/pluginfacade.h
     export/pluginapidefs.h
+    export/pluginaddressvalidator.h
     inner/plugininnerdefs.h
 )
 

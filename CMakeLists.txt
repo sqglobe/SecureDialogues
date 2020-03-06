@@ -36,6 +36,7 @@ SET (DOCUMENTS_OUTPUT_DIRECTORY
     )
 
 set(LOCALE_FILES_DIR "${PROJECT_BINARY_DIR}/bin/locale")
+set(PLUGINS_FOLDER "${PROJECT_BINARY_DIR}/bin/plugins")
 file(MAKE_DIRECTORY  "${LOCALE_FILES_DIR}")
 
 # As moc files are generated in the binary dir, tell CMake

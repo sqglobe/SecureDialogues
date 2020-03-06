@@ -34,6 +34,8 @@ QVariant ConnectionInfoModel::data(const QModelIndex& index, int role) const {
         return QBrush(QColor(255, 192, 203));
       case S::AUTHORIZATION_FAILED:
         return QBrush(QColor(250, 128, 114));
+      case S::BAD_CHANNEL:
+        return QBrush(QColor(229, 128, 255));
     }
   }
   return QVariant();

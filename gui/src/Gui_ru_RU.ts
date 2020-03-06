@@ -105,24 +105,20 @@
         <translation>Тип</translation>
     </message>
     <message>
-        <location filename="widgets/connectioninfowidget.ui" line="87"/>
         <source>UDP</source>
-        <translation>UDP</translation>
+        <translation type="vanished">UDP</translation>
     </message>
     <message>
-        <location filename="widgets/connectioninfowidget.ui" line="92"/>
         <source>Gmail</source>
-        <translation>Gmail</translation>
+        <translation type="vanished">Gmail</translation>
     </message>
     <message>
-        <location filename="widgets/connectioninfowidget.ui" line="97"/>
         <source>VK</source>
-        <translation>ВК</translation>
+        <translation type="vanished">ВК</translation>
     </message>
     <message>
-        <location filename="widgets/connectioninfowidget.ui" line="102"/>
         <source>E-mail</source>
-        <translation>E-mail</translation>
+        <translation type="vanished">E-mail</translation>
     </message>
     <message>
         <source>Token</source>
@@ -149,7 +145,7 @@
         <translation type="vanished">Использовать безопасное соединение</translation>
     </message>
     <message>
-        <location filename="widgets/connectioninfowidget.ui" line="150"/>
+        <location filename="widgets/connectioninfowidget.ui" line="130"/>
         <source>Status</source>
         <translation>Статус</translation>
     </message>
@@ -174,12 +170,12 @@
         <translation type="vanished">imap</translation>
     </message>
     <message>
-        <location filename="widgets/connectioninfowidget.cpp" line="74"/>
+        <location filename="widgets/connectioninfowidget.cpp" line="82"/>
         <source>Connection not confirmed</source>
         <translation>Соединение не подтверждено</translation>
     </message>
     <message>
-        <location filename="widgets/connectioninfowidget.cpp" line="139"/>
+        <location filename="widgets/connectioninfowidget.cpp" line="152"/>
         <source>Connection type required!</source>
         <translation>Необходимо указать тип соединения</translation>
     </message>
@@ -264,50 +260,55 @@
         <translation>Отправить мой контакт</translation>
     </message>
     <message>
-        <location filename="dialogs/contactdiscoverdialog.cpp" line="29"/>
-        <location filename="dialogs/contactdiscoverdialog.cpp" line="51"/>
-        <location filename="dialogs/contactdiscoverdialog.cpp" line="64"/>
+        <location filename="dialogs/contactdiscoverdialog.cpp" line="30"/>
+        <location filename="dialogs/contactdiscoverdialog.cpp" line="53"/>
+        <location filename="dialogs/contactdiscoverdialog.cpp" line="60"/>
+        <location filename="dialogs/contactdiscoverdialog.cpp" line="73"/>
         <source>Error!</source>
         <translation>Ошибка!</translation>
     </message>
     <message>
-        <location filename="dialogs/contactdiscoverdialog.cpp" line="30"/>
+        <location filename="dialogs/contactdiscoverdialog.cpp" line="31"/>
         <source>Unacceptable value selected</source>
         <translation>Недопустимое значение выбрано</translation>
     </message>
     <message>
-        <location filename="dialogs/contactdiscoverdialog.cpp" line="39"/>
-        <location filename="dialogs/contactdiscoverdialog.cpp" line="45"/>
+        <location filename="dialogs/contactdiscoverdialog.cpp" line="40"/>
+        <location filename="dialogs/contactdiscoverdialog.cpp" line="46"/>
         <source>Fill the field!</source>
         <translation>Необходимо заполнить поле</translation>
     </message>
     <message>
-        <location filename="dialogs/contactdiscoverdialog.cpp" line="40"/>
+        <location filename="dialogs/contactdiscoverdialog.cpp" line="41"/>
         <source>Empty field &apos;Address&apos;</source>
         <translation>Не заполнено поле &apos;Адрес&apos;</translation>
     </message>
     <message>
-        <location filename="dialogs/contactdiscoverdialog.cpp" line="46"/>
+        <location filename="dialogs/contactdiscoverdialog.cpp" line="47"/>
         <source>Empty field &apos;Your name&apos;</source>
         <translation>&apos;Ваше имя&apos; не заполнено</translation>
     </message>
     <message>
-        <location filename="dialogs/contactdiscoverdialog.cpp" line="52"/>
-        <source>Field &apos;Address&apos; contains unsupported value</source>
-        <translation>Поле &apos;Адрес&apos; содержит недопустимое значение</translation>
+        <location filename="dialogs/contactdiscoverdialog.cpp" line="54"/>
+        <source>You select channel without plugin. Please place plugin into plugins folder and restart application</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dialogs/contactdiscoverdialog.cpp" line="59"/>
+        <source>Field &apos;Address&apos; contains unsupported value</source>
+        <translation type="vanished">Поле &apos;Адрес&apos; содержит недопустимое значение</translation>
+    </message>
+    <message>
+        <location filename="dialogs/contactdiscoverdialog.cpp" line="68"/>
         <source>Success</source>
         <translation>Успешно</translation>
     </message>
     <message>
-        <location filename="dialogs/contactdiscoverdialog.cpp" line="60"/>
+        <location filename="dialogs/contactdiscoverdialog.cpp" line="69"/>
         <source>Your contact data sended successfull</source>
         <translation>Ваши контактные данные отправлены успешно</translation>
     </message>
     <message>
-        <location filename="dialogs/contactdiscoverdialog.cpp" line="65"/>
+        <location filename="dialogs/contactdiscoverdialog.cpp" line="74"/>
         <source>Error occured during message sending. Please, try later</source>
         <translation>Ошибка произошла при отправке сообщения. Пожалуйста, повторите попытку позже</translation>
     </message>
@@ -360,64 +361,59 @@
         <translation>Публичный ключ</translation>
     </message>
     <message>
-        <location filename="widgets/contactwidget.cpp" line="76"/>
+        <location filename="widgets/contactwidget.cpp" line="81"/>
         <source>Field &apos;Address&apos; should be completed</source>
         <translation>Необходимо заполнить поле &apos;Адрес&apos;</translation>
     </message>
     <message>
-        <location filename="widgets/contactwidget.cpp" line="83"/>
+        <location filename="widgets/contactwidget.cpp" line="88"/>
         <source>Please declare public key for commnication with contact</source>
         <translation>Пожалуйста, укажите публичный ключ для обмена сообщениями с контактом</translation>
     </message>
     <message>
-        <location filename="widgets/contactwidget.cpp" line="89"/>
+        <location filename="widgets/contactwidget.cpp" line="91"/>
+        <source>Selected connection without appropriative plugin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Field &apos;Address&apos; has to contains vk id (for example 123451) or reference to your contact page</source>
-        <translation>Поле &apos;Адрес&apos; должно содержать ВК id (например 123451) или ссылке на страницу пользователя</translation>
+        <translation type="vanished">Поле &apos;Адрес&apos; должно содержать ВК id (например 123451) или ссылке на страницу пользователя</translation>
     </message>
     <message>
-        <location filename="widgets/contactwidget.cpp" line="98"/>
         <source>Please, fill &apos;Address&apos; with e-mail</source>
-        <translation>Пожалуйста, заполните поле &apos;Адрес&apos; валидным e-mail</translation>
+        <translation type="vanished">Пожалуйста, заполните поле &apos;Адрес&apos; валидным e-mail</translation>
     </message>
     <message>
-        <location filename="widgets/contactwidget.cpp" line="151"/>
         <source>Reference to VK user page or VK ID</source>
-        <translation>Ссылка на страницу пользователя ВК или ВК ID</translation>
+        <translation type="vanished">Ссылка на страницу пользователя ВК или ВК ID</translation>
     </message>
     <message>
-        <location filename="widgets/contactwidget.cpp" line="153"/>
         <source>Specify reference to VK page (example &apos;https://vk.com/id99900&apos;), or simple VK ID (example id99900 or 99900 )</source>
-        <translation>Введите ссылку на страницу пользователя ВК(например, &apos;https://vk.com/id99900&apos;), или просто ВК ID(например, id99900 или 99900)</translation>
+        <translation type="vanished">Введите ссылку на страницу пользователя ВК(например, &apos;https://vk.com/id99900&apos;), или просто ВК ID(например, id99900 или 99900)</translation>
     </message>
     <message>
-        <location filename="widgets/contactwidget.cpp" line="157"/>
         <source>E-mail address</source>
-        <translation>Адрес E-mail</translation>
+        <translation type="vanished">Адрес E-mail</translation>
     </message>
     <message>
-        <location filename="widgets/contactwidget.cpp" line="158"/>
         <source>Please, set valid e-mail address</source>
-        <translation>Пожалуйста, укажите корректный e-mail адрес</translation>
+        <translation type="vanished">Пожалуйста, укажите корректный e-mail адрес</translation>
     </message>
     <message>
-        <location filename="widgets/contactwidget.cpp" line="160"/>
         <source>E-mail address Gmail</source>
-        <translation>E-mail адрес сервиса Gmail</translation>
+        <translation type="vanished">E-mail адрес сервиса Gmail</translation>
     </message>
     <message>
-        <location filename="widgets/contactwidget.cpp" line="162"/>
         <source>Please, specify valid e-mail address Gmail service</source>
-        <translation>Пожалуйста, укажите корретный адрес для сервиса Gmail</translation>
+        <translation type="vanished">Пожалуйста, укажите корретный адрес для сервиса Gmail</translation>
     </message>
     <message>
-        <location filename="widgets/contactwidget.cpp" line="164"/>
         <source>IP address</source>
-        <translation>IP адрес</translation>
+        <translation type="vanished">IP адрес</translation>
     </message>
     <message>
-        <location filename="widgets/contactwidget.cpp" line="165"/>
         <source>Set valid IP address or host name</source>
-        <translation>Необходимо указать корректный IP адрес или имя хоста</translation>
+        <translation type="vanished">Необходимо указать корректный IP адрес или имя хоста</translation>
     </message>
 </context>
 <context>
@@ -596,7 +592,7 @@
         <translation>Отправить</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="41"/>
+        <location filename="mainwindow.cpp" line="42"/>
         <source>Please, select one dialog from the list for texting</source>
         <translation>Пожалуйста, укажите один диалог из списка для общения</translation>
     </message>
@@ -659,13 +655,13 @@ Address: %3</source>
 Адрес: %3</translation>
     </message>
     <message>
-        <location filename="dialogs/builders.cpp" line="90"/>
+        <location filename="dialogs/builders.cpp" line="93"/>
         <source>Add/edit contact</source>
         <translation>Добавить/изменить контакт</translation>
     </message>
     <message>
-        <location filename="models/channelslistmodel.cpp" line="17"/>
-        <location filename="models/channelslistmodel.cpp" line="57"/>
+        <location filename="models/channelslistmodel.cpp" line="25"/>
+        <location filename="models/channelslistmodel.cpp" line="70"/>
         <source>Connection not established yet</source>
         <translation>Соединение не установлено</translation>
     </message>

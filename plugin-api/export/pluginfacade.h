@@ -6,6 +6,7 @@ class PluginConnectionInfo;
 class PluginConnectionSerializer;
 class PluginMessageCommunicator;
 class RecievedMessagesIterator;
+class PluginAddressValidator;
 
 class PluginFacade {
  public:
@@ -20,6 +21,8 @@ class PluginFacade {
   virtual const PluginConnectionSerializer* getSerializer() const noexcept = 0;
   virtual PluginMessageCommunicator* makeCommunicator() noexcept = 0;
   virtual PluginConnectionInfo* makeEmptyConn() noexcept = 0;
+  virtual const PluginAddressValidator* getAddressValidator() const
+      noexcept = 0;
 
  public:
   virtual void release(PluginMessageCommunicator* comm) noexcept = 0;

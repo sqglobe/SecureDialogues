@@ -41,6 +41,9 @@ ChanelAdapterFactory::ChanelAdapterFactory(
 std::unique_ptr<AbstractChannelAdapter> ChanelAdapterFactory::operator()(
     const ConnectionHolder& conn) {
   auto interface = mContainer->get(conn.pluginConnInfo()->getPluginId());
-  return std::make_unique<PluginAdapter>(interface->getCommunicator(),
-                                         mNotifier, conn);
+  if (interface) {
+    return std::make_unique<PluginAdapter>(interface->getCommunicator(),
+                                           mNotifier, conn);
+  }
+  return {};
 }

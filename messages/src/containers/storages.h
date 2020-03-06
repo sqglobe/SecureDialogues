@@ -81,7 +81,7 @@ std::shared_ptr<ConnectionStorage> make_connection_storage(
     Db* primary,
     DbEnv* penv,
     std::shared_ptr<ContactStorage> contacts,
-    std::shared_ptr<plugin_support::PluginsContainer> container);
+    std::shared_ptr<const plugin_support::PluginsContainer> container);
 
 std::shared_ptr<DiscoveredContactStorage> make_discovered_contact_storage(
     Db* primary,

@@ -3,6 +3,7 @@
 
 #include <memory>
 #include "communication/channel.h"
+#include "pluginscontainer.h"
 
 class MainWindow;
 class AbstractCoreInitializer;
@@ -19,13 +20,15 @@ class TranslationMaster;
 
 class GuiInitializer {
  public:
-  GuiInitializer(MainWindow* parent,
-                 const std::shared_ptr<AbstractCoreInitializer>& coreInit,
-                 const std::shared_ptr<AbstractUserAsk>& userAsk,
-                 const std::shared_ptr<AbstractUserNotifier>& userNotifier,
-                 const std::shared_ptr<Channel::EventQueue>& eventQueue,
-                 std::shared_ptr<ApplicationSettingsGuard> settingsGuard,
-                 std::shared_ptr<TranslationMaster> translatorMaster);
+  GuiInitializer(
+      MainWindow* parent,
+      const std::shared_ptr<AbstractCoreInitializer>& coreInit,
+      const std::shared_ptr<AbstractUserAsk>& userAsk,
+      const std::shared_ptr<AbstractUserNotifier>& userNotifier,
+      const std::shared_ptr<Channel::EventQueue>& eventQueue,
+      std::shared_ptr<ApplicationSettingsGuard> settingsGuard,
+      std::shared_ptr<TranslationMaster> translatorMaster,
+      std::shared_ptr<const plugin_support::PluginsContainer> plugins);
 
  private:
   void initMessageWrapper(
@@ -43,7 +46,8 @@ class GuiInitializer {
       const std::shared_ptr<AbstractCoreInitializer>& coreInit,
       const std::shared_ptr<AbstractUserAsk>& userAsk,
       const std::shared_ptr<AbstractUserNotifier>& userNotifier,
-      const std::shared_ptr<Channel::EventQueue>& eventQueue);
+      const std::shared_ptr<Channel::EventQueue>& eventQueue,
+      const std::shared_ptr<const plugin_support::PluginsContainer>& plugins);
 
  private:
   std::shared_ptr<BaseSettingsDialog> mChannelSettingsDialog;
