@@ -11,7 +11,9 @@
 #include "primitives/connectionholder.h"
 
 #include "interfaces/changelistener.h"
+#include "pluginscontainer.h"
 
+class PluginAddressValidator;
 /**
  * с Модель отображает список существующих подключений.
  * Используется в диалоге управления контактами для выбора подключения,
@@ -24,11 +26,13 @@ class ChannelsListModel : public QAbstractListModel,
     QString name;
     QString message;
     Channel::ChannelStatus status;
-    ConnectionType connectionType;
+    std::shared_ptr<const PluginAddressValidator> validator;
   };
 
  public:
-  explicit ChannelsListModel(const std::vector<ConnectionHolder>& elements);
+  explicit ChannelsListModel(
+      const std::vector<ConnectionHolder>& elements,
+      std::shared_ptr<const plugin_support::PluginsContainer> container);
 
  public:
   int rowCount(const QModelIndex& = QModelIndex()) const override;
@@ -48,6 +52,7 @@ class ChannelsListModel : public QAbstractListModel,
  private:
   QVector<ListItem> mChannelNames;
   mutable std::recursive_mutex mMutex;
+  std::shared_ptr<const plugin_support::PluginsContainer> mContainer;
 };
 
 #endif  // CHANNELSLISTMODEL_H

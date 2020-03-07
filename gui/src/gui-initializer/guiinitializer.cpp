@@ -49,12 +49,14 @@ GuiInitializer::GuiInitializer(
     const std::shared_ptr<AbstractUserNotifier>& userNotifier,
     const std::shared_ptr<Channel::EventQueue>& eventQueue,
     std::shared_ptr<ApplicationSettingsGuard> settingsGuard,
-    std::shared_ptr<TranslationMaster> translatorMaster) :
+    std::shared_ptr<TranslationMaster> translatorMaster,
+    std::shared_ptr<const plugin_support::PluginsContainer> plugins) :
     mChannelSettingsDialog(
-        make_dialog(coreInit->getConnectionStorage(), eventQueue)),
+        make_dialog(coreInit->getConnectionStorage(), eventQueue, plugins)),
     mContactsSettingsDialog(make_dialog(coreInit->getContactStorage(),
                                         coreInit->getConnectionStorage(),
-                                        eventQueue)),
+                                        eventQueue,
+                                        plugins)),
     mDialogCreation(make_creation_dialog(coreInit->getContactStorage())),
     mDiscoveredContactModel(std::make_shared<DiscoveredContactModel>(
         coreInit->getDiscoveredContactStorage()->getAllElements())),
@@ -68,7 +70,8 @@ GuiInitializer::GuiInitializer(
 {
   coreInit->getDiscoveredContactStorage()->appendPermanentListener(
       mDiscoveredContactModel);
-  initSimpleDialogs(parent, coreInit, userAsk, userNotifier, eventQueue);
+  initSimpleDialogs(parent, coreInit, userAsk, userNotifier, eventQueue,
+                    plugins);
 
   auto messageWorkThread = new QThread(parent);
 
@@ -166,7 +169,8 @@ void GuiInitializer::initSimpleDialogs(
     const std::shared_ptr<AbstractCoreInitializer>& coreInit,
     const std::shared_ptr<AbstractUserAsk>& /*userAsk*/,
     const std::shared_ptr<AbstractUserNotifier>& userNotifier,
-    const std::shared_ptr<Channel::EventQueue>& eventQueue) {
+    const std::shared_ptr<Channel::EventQueue>& eventQueue,
+    const std::shared_ptr<const plugin_support::PluginsContainer>& plugins) {
   auto* toolBox = parent->getToolBoxWrapper();
   auto* pubDialog = new PublicKeyDialog(coreInit->getCryptoSystem(), parent);
   QObject::connect(toolBox, &ToolboxWrapper::connectionSettingsOpen,
@@ -180,7 +184,7 @@ void GuiInitializer::initSimpleDialogs(
 
   auto discoverDialog = make_discover_dialog(
       coreInit->getConnectionStorage(), coreInit->getDiscoverContactAgent(),
-      userNotifier, eventQueue, parent);
+      userNotifier, eventQueue, parent, plugins);
   QObject::connect(parent->findChild<QPushButton*>("makeContact"),
                    &QCommandLinkButton::pressed, discoverDialog,
                    &PublicKeyDialog::show);
@@ -202,7 +206,7 @@ void GuiInitializer::initSimpleDialogs(
 
   auto* importDialog = make_import_contact_dialog(
       mRecievedContactsStorageWrapper, coreInit->getConnectionStorage(),
-      eventQueue, recievedDialog);
+      eventQueue, recievedDialog, plugins);
   QObject::connect(menu, &RecievedContactsMenu::showRecievedContact,
                    importDialog,
                    &ImportDiscoveredContactDialog::onShowRecievedContact);

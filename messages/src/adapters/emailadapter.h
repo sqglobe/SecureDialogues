@@ -11,15 +11,13 @@
 class SmtpSender;
 class ImapReciever;
 
-class EmailAdapter : public AbstractChannelAdapter {
+class EmailAdapter {
  public:
-  using AbstractChannelAdapter::AbstractChannelAdapter;
-
  public:
   void send(const std::string& message,
-            const std::string& adress) noexcept(false) override;
-  std::pair<std::string, std::string> receive() noexcept(false) override;
-  bool connect() override;
+            const std::string& adress) noexcept(false);
+  std::pair<std::string, std::string> receive() noexcept(false);
+  bool connect();
 
  private:
   std::list<std::pair<std::string, std::string> > mMessages;

@@ -9,6 +9,11 @@
 #include "primitives/contact.h"
 #include "widgetsutils.h"
 
+#include <memory>
+#include "correctnessinputerror.h"
+#include "export/pluginaddressvalidator.h"
+#include "plugininterface.h"
+#include "support-functions.h"
 #include "utils/gui_helpers.h"
 
 Q_DECLARE_METATYPE(ChannelsListModel::ListItem);
@@ -82,45 +87,34 @@ Contact ContactWidget::getElement() {
   checks.emplace_back(
       tr("Please declare public key for commnication with contact"),
       [pubKey]() -> bool { return !pubKey->toPlainText().isEmpty(); });
-  if (connInfoVariant.canConvert<ChannelsListModel::ListItem>()) {
-    auto item = qvariant_cast<ChannelsListModel::ListItem>(connInfoVariant);
-    if (item.connectionType == ConnectionType::VK) {
-      checks.emplace_back(
-          tr("Field 'Address' has to contains vk id (for example 123451) or "
-             "reference"
-             " to your contact page"),
-          [userAddressText, type = item.connectionType]() -> bool {
-            return is_address_valid(userAddressText.toUtf8().constData(), type);
-          });
-    } else if (item.connectionType == ConnectionType::GMAIL ||
-               item.connectionType == ConnectionType::EMAIL) {
-      checks.emplace_back(
-          tr("Please, fill 'Address' with e-mail"),
-          [userAddressText, type = item.connectionType]() -> bool {
-            return is_address_valid(userAddressText.toUtf8().constData(), type);
-          });
-    }
-  }
+  checks.emplace_back(
+      tr("Selected connection without appropriative plugin"),
+      [connInfoVariant]() -> bool {
+        return connInfoVariant.canConvert<ChannelsListModel::ListItem>() &&
+               qvariant_cast<ChannelsListModel::ListItem>(connInfoVariant)
+                   .validator;
+      });
 
   WigetUtils::test(checks);
-  if (connInfoVariant.canConvert<ChannelsListModel::ListItem>()) {
-    auto item = qvariant_cast<ChannelsListModel::ListItem>(connInfoVariant);
-    if (auto re = QRegExp("^\\D+(\\d+)$");
-        item.connectionType == ConnectionType::VK &&
-        re.indexIn(userAddressText) != -1) {
-      userAddressText = re.cap(1);
-    }
+
+  auto item = qvariant_cast<ChannelsListModel::ListItem>(connInfoVariant);
+  if (const auto mess = plugin_support::make_string(
+          item.validator->isValid(userAddressText.toUtf8().data()));
+      !mess.empty()) {
+    throw CorrectnessInputError(mess);
   }
 
   Contact res(mContact
                   ? Contact(connNames->currentText().toStdString(),
                             userName->text().trimmed().toStdString(),
-                            userAddressText.toStdString(),
+                            std::string(item.validator->peelAddress(
+                                userAddressText.toUtf8().data())),
                             pubKey->toPlainText().trimmed().toStdString(),
                             std::string(mContact->id()))
                   : Contact(connNames->currentText().toStdString(),
                             userName->text().trimmed().toStdString(),
-                            userAddressText.toStdString(),
+                            std::string(item.validator->peelAddress(
+                                userAddressText.toUtf8().data())),
                             pubKey->toPlainText().trimmed().toStdString()));
 
   mContact.reset();
@@ -147,22 +141,9 @@ void ContactWidget::connectionNameUpdated(int) {
   if (connInfoVariant.canConvert<ChannelsListModel::ListItem>()) {
     auto item = qvariant_cast<ChannelsListModel::ListItem>(connInfoVariant);
     auto userAdress = findChild<QLineEdit*>("contactAdress");
-    if (item.connectionType == ConnectionType::VK) {
-      userAdress->setPlaceholderText(tr("Reference to VK user page or VK ID"));
-      userAdress->setToolTip(
-          tr("Specify reference to VK page (example "
-             "'https://vk.com/id99900'), or simple VK ID (example id99900 or "
-             "99900 )"));
-    } else if (item.connectionType == ConnectionType::EMAIL) {
-      userAdress->setPlaceholderText(tr("E-mail address"));
-      userAdress->setToolTip(tr("Please, set valid e-mail address"));
-    } else if (item.connectionType == ConnectionType::GMAIL) {
-      userAdress->setPlaceholderText(tr("E-mail address Gmail"));
-      userAdress->setToolTip(
-          tr("Please, specify valid e-mail address Gmail service"));
-    } else if (item.connectionType == ConnectionType::UDP) {
-      userAdress->setPlaceholderText(tr("IP address"));
-      userAdress->setToolTip(tr("Set valid IP address or host name"));
+    if (item.validator) {
+      userAdress->setPlaceholderText(item.validator->getPlaceholder());
+      userAdress->setToolTip(item.validator->getToolTip());
     } else {
       userAdress->setPlaceholderText("");
       userAdress->setToolTip("");

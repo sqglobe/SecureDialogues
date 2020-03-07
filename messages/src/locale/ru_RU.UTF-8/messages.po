@@ -7,7 +7,7 @@
 msgid   ""
 msgstr  "Project-Id-Version: PACKAGE VERSION\n"
         "Report-Msgid-Bugs-To: \n"
-        "POT-Creation-Date: 2020-01-05 12:37+0300\n"
+        "POT-Creation-Date: 2020-03-05 19:26+0300\n"
         "PO-Revision-Date: 2020-01-03 19:55+0300\n"
         "Last-Translator: Automatically generated\n"
         "Language-Team: none\n"
@@ -54,9 +54,18 @@ msgstr  "Диалог закрыт"
 msgid   "Dialog with {} was removed because participant didn't respond"
 msgstr  "Диалог с {} удален, потому что собеседник не отвечает"
 
+#: adapters/pluginadapter.cpp:28 adapters/pluginadapter.cpp:31
+msgid   "Disconected from {}"
+msgstr  ""
+
 #: communication/messageactionhandler.cpp:160
 msgid   "Error occured during message handling from user {}. Dialog removed."
 msgstr  "Произошла ошибка при обработке запроса от {}. Диалог удален"
+
+#: adapters/pluginadapter.cpp:46 adapters/pluginadapter.cpp:48
+#, fuzzy
+msgid   "Failed to recieve message"
+msgstr  "Не удалось отправить сообщение"
 
 #: communication/messageactionhandler.cpp:134
 msgid   "Failed to send message"
@@ -70,6 +79,11 @@ msgstr  "Не удалось отправить сообщение для кон
 msgid   "Failed to send message for the contact: {}"
 msgstr  "Не удалось отправить сообщение для контакта {}"
 
+#: adapters/pluginadapter.cpp:25 adapters/pluginadapter.cpp:28
+#, fuzzy
+msgid   "Failed to send message to: {}"
+msgstr  "Не удалось отправить сообщение по причине: {}"
+
 #: communication/messageactionhandler.cpp:142
 msgid   "Failed to send messsage, reason: {}"
 msgstr  "Не удалось отправить сообщение по причине: {}"
@@ -82,6 +96,10 @@ msgstr  "Не удалось проверить сеансовый ключ дл
 #: utils/messagemarshaller.cpp:185
 msgid   "Invalid action"
 msgstr  "Неверное действие"
+
+#: adapters/pluginadapter.cpp:33 adapters/pluginadapter.cpp:36
+msgid   "Invalid address {}"
+msgstr  ""
 
 #: communication/communication_helpers.cpp:20
 msgid   "Message with action {} cant be made for dialog state {}"

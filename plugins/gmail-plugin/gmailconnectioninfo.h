@@ -11,6 +11,7 @@ class GmailConnectionInfo : public PluginConnectionInfo {
 
  public:
   virtual const char* getPluginId() const noexcept override;
+  int64_t getWaitPeriod() const noexcept override;
 
  public:
   std::string email;

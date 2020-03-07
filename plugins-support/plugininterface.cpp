@@ -25,6 +25,15 @@ plugin_support::PluginInterface::getSerializer() const noexcept {
   return mFacade->getSerializer();
 }
 
+std::shared_ptr<const PluginAddressValidator>
+plugin_support::PluginInterface::getAddressValidator() const noexcept {
+  return std::shared_ptr<const PluginAddressValidator>(
+      mFacade->getAddressValidator(),
+      [interface = this->shared_from_this()](const auto*) {
+
+      });
+}
+
 std::unique_ptr<plugin_support::PluginMessageCommunicatorWrapper>
 plugin_support::PluginInterface::getCommunicator() noexcept {
   auto comm = std::unique_ptr<PluginMessageCommunicator, owned_deletor>(

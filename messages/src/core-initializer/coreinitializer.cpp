@@ -59,9 +59,12 @@ void saveKeys(const std::string& fileTempl,
   deserializer.serialize(*(keyStore.get()));
 }
 
-CoreInitializer::CoreInitializer(const std::string& pass) :
+CoreInitializer::CoreInitializer(
+    const std::string& pass,
+    std::shared_ptr<const plugin_support::PluginsContainer> container) :
     mMessageContainer(std::make_shared<MessageContainer>()),
-    mPassCipher(makeForStringPass(pass)) {
+    mPassCipher(makeForStringPass(pass)),
+    mPluginContainer(std::move(container)) {
   initDatabases(pass);
 
   mAsymetricalKeyStore = loadKeys(FILE_KEY, mPassCipher);
@@ -135,7 +138,8 @@ void CoreInitializer::startMessagesHandling(
   auto connWatcher = std::make_shared<ConnectStorageListener>(
       mMessageDispatcher,
       std::function<std::unique_ptr<AbstractChannelAdapter>(
-          const ConnectionHolder&)>(ChanelAdapterFactory(notifier)),
+          const ConnectionHolder&)>(
+          ChanelAdapterFactory(notifier, mPluginContainer)),
       std::make_shared<MessageMarshaller>(), eventQueue,
       mConnectionStorage->getAllElements());
   mConnectionStorage->appendPermanentListener(connWatcher);
@@ -164,8 +168,9 @@ void CoreInitializer::initDatabases(const std::string& pass) {
   mContactStorage = make_contact_storage(
       make_db("cotnacts.db", "primary", penv),
       make_db("contacts.db", "secondary", penv, DB_DUP), penv, mDialogStorage);
-  mConnectionStorage = make_connection_storage(
-      make_db("connections.db", "primary", penv), penv, mContactStorage);
+  mConnectionStorage =
+      make_connection_storage(make_db("connections.db", "primary", penv), penv,
+                              mContactStorage, mPluginContainer);
 
   mDiscoveredContactStorage = make_discovered_contact_storage(
       make_db("discover_contacts.db", "primary", penv), penv);

@@ -6,7 +6,8 @@ enum class PluginApiErrorCodes {
   Disconected,
   NotAuthorized,
   SendFailed,
-  RecieveFailed
+  RecieveFailed,
+  InvalidAddress
 };
 
 #endif  // PLUGINAPIERRORCODES_H

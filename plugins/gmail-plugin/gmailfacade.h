@@ -6,6 +6,7 @@
 
 class GmailConnectionWidget;
 class GmailConnectionSerializer;
+class GmailAddressValidator;
 
 class GmailFacade final : public PluginFacade {
  public:
@@ -21,6 +22,7 @@ class GmailFacade final : public PluginFacade {
   const PluginConnectionSerializer* getSerializer() const noexcept override;
   PluginMessageCommunicator* makeCommunicator() noexcept override;
   PluginConnectionInfo* makeEmptyConn() noexcept override;
+  const PluginAddressValidator* getAddressValidator() const noexcept override;
 
  public:
   void release(PluginMessageCommunicator* comm) noexcept override;
@@ -30,6 +32,7 @@ class GmailFacade final : public PluginFacade {
  private:
   std::unique_ptr<GmailConnectionWidget> mWidget;
   std::unique_ptr<const GmailConnectionSerializer> mSerializer;
+  std::unique_ptr<const GmailAddressValidator> mValidator;
 };
 
 #endif  // GMAILFACADE_H

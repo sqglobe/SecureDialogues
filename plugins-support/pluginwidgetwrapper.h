@@ -27,6 +27,9 @@ class PluginWidgetWrapper {
 
   void cleareWidget() noexcept;
   void makeActivated() noexcept;
+  PluginWidget* getWidget() const noexcept;
+
+  std::string getId() const noexcept;
 
  private:
   PluginWidget* mWidget;

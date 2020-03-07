@@ -5,6 +5,7 @@
 #include <memory>
 
 #include "gui-initializer/eventqueueholder.h"
+#include "pluginscontainer.h"
 
 class GuiInitializer;
 class AbstractCoreInitializer;
@@ -22,10 +23,12 @@ class MainWindow : public QMainWindow {
   Q_OBJECT
 
  public:
-  explicit MainWindow(std::shared_ptr<ApplicationSettingsGuard> settingsGuard,
-                      std::shared_ptr<TranslationMaster> translatorMaster,
-                      std::unique_ptr<AbstractCoreInitializer>&& coreInit,
-                      QWidget* parent = nullptr);
+  explicit MainWindow(
+      std::shared_ptr<ApplicationSettingsGuard> settingsGuard,
+      std::shared_ptr<TranslationMaster> translatorMaster,
+      std::unique_ptr<AbstractCoreInitializer>&& coreInit,
+      std::shared_ptr<const plugin_support::PluginsContainer> plugins,
+      QWidget* parent = nullptr);
   ~MainWindow() override;
 
  public:

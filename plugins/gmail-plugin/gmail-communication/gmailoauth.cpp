@@ -1,5 +1,6 @@
 #include "gmailoauth.h"
 
+#include <spdlog/spdlog.h>
 #include <nlohmann/json.hpp>
 #include "uribuilder.h"
 
@@ -43,6 +44,11 @@ void GmailOauth::loadAccessToken(const std::string& userCode) {
       {{"Content-Type", "application/x-www-form-urlencoded"}});
 
   if (HttpCode::OK != code) {
+    auto logger = spdlog::get("gmail_logger");
+    logger->error(
+        "Failed to send message for loadAccessToken with code: {}, response: "
+        "{}",
+        static_cast<int>(code), res);
     throw std::runtime_error("Failed to send message");
   }
 
@@ -66,6 +72,11 @@ void GmailOauth::refreshAccessToken() {
       {{"Content-Type", "application/x-www-form-urlencoded"}});
 
   if (HttpCode::OK != code) {
+    auto logger = spdlog::get("gmail_logger");
+    logger->error(
+        "Failed to send message for refreshAccessToken with code: {}, "
+        "response: {}",
+        static_cast<int>(code), response);
     throw std::runtime_error("Failed to send message");
   }
 

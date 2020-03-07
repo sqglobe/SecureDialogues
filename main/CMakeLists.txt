@@ -17,7 +17,7 @@ set(CMAKE_AUTORCC ON)
 add_executable(SecureDialogues ${MAIN_SOURCE} project_icons.qrc secure-dialogues.rc)
 target_link_libraries(SecureDialogues gui messages oauth-agents
      encryption  email-agent curl-wrapper utils
-     Qt5::Core Qt5::Gui  Qt5::Widgets xg ${CMAKE_THREAD_LIBS_INIT} ${Boost_SYSTEM_LIBRARY} pthread persistent-storage  cryptopp-static )
+     Qt5::Core Qt5::Gui  Qt5::Widgets xg ${CMAKE_THREAD_LIBS_INIT} ${Boost_SYSTEM_LIBRARY} pthread persistent-storage  cryptopp-static plugins-support)
 
 if(MSVC)
   target_compile_options(SecureDialogues PRIVATE /W4 /WX)

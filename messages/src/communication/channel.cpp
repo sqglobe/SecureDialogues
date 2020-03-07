@@ -61,21 +61,24 @@ void Channel::messsageCycle() {
         mEventQueue->enqueue(ChannelStatus::CONNECTED, mName, "");
       }
 
-      auto msg = mAdapter->receive();
-      if (msg.first.empty() || msg.second.empty())
+      auto msgList = mAdapter->receive();
+      if (msgList.empty())
         continue;
 
-      if (auto dialogMessage = mMarshaller->unmarshall(msg.second, msg.first)) {
-        if (auto hLock = mHandler.lock()) {
-          try {
-            hLock->dispatch(std::move(dialogMessage).value(), mName);
-          } catch (std::exception& ex) {
-            spdlog::get("root_logger")
-                ->error(
-                    "Get Exception {0} when dispatch message {1} for chanel "
-                    "{2} "
-                    "from {3}",
-                    ex.what(), msg.first, mName, msg.first);
+      if (auto hLock = mHandler.lock()) {
+        for (const auto& msg : msgList) {
+          if (auto dialogMessage =
+                  mMarshaller->unmarshall(msg.second, msg.first)) {
+            try {
+              hLock->dispatch(std::move(dialogMessage).value(), mName);
+            } catch (std::exception& ex) {
+              spdlog::get("root_logger")
+                  ->error(
+                      "Get Exception {0} when dispatch message {1} for chanel "
+                      "{2} "
+                      "from {3}",
+                      ex.what(), msg.first, mName, msg.first);
+            }
           }
         }
       }

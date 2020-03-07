@@ -16,6 +16,7 @@ SET(GMAIL_PLUGIN_SOURCES
     gmail-communication/gmailapi.cpp
     gmail-communication/gmailoauth.cpp
     gmail-communication/base64.cpp
+    gmailaddressvalidator.h
     )
 
 SET(GMAIL_PLUGIN_HEADERS
@@ -30,6 +31,7 @@ SET(GMAIL_PLUGIN_HEADERS
     gmail-communication/gmailoauth.h
     gmail-communication/gmailexceptions.h
     gmail-communication/base64.h
+    gmailaddressvalidator.cpp
     )
 
 qt5_wrap_cpp(WRAP_MOC_GUI gmailconnectionwidget.h)
@@ -45,3 +47,7 @@ set_target_properties(gmail-plugin PROPERTIES
     POSITION_INDEPENDENT_CODE ON)
 
 add_compile_options(-fPIC)
+add_custom_command(TARGET gmail-plugin POST_BUILD
+    COMMAND cmake -E make_directory ${PLUGINS_FOLDER}
+    COMMAND cmake -E copy $<TARGET_FILE:gmail-plugin> ${PLUGINS_FOLDER}
+    )

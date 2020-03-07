@@ -16,6 +16,8 @@
 #include <nlohmann/json.hpp>
 #include "uribuilder.h"
 
+#include <spdlog/spdlog.h>
+
 const int MAX_SECONDS_OLD = 120;
 
 bool isMessageOld(long long messageTime) {
@@ -37,6 +39,10 @@ std::pair<std::string, std::string> GmailApi::getMail(
       mRequest.get(builder.getUri(), {{authHeaderName, authToken}});
 
   if (HttpCode::OK != code) {
+    auto logger = spdlog::get("gmail_logger");
+    logger->error(
+        "Failed to send message for getMail with code: {}, response: {}",
+        static_cast<int>(code), response);
     throw std::runtime_error("Failed to send message");
   }
 
@@ -103,6 +109,10 @@ void GmailApi::sendMessage(const std::string& to,
                      {authHeaderName, authToken},
                      {"Content-Length", std::to_string(messBody.size())}});
   if (HttpCode::OK != code) {
+    auto logger = spdlog::get("gmail_logger");
+    logger->error(
+        "Failed to send message for sendMessage with code: {}, response: {}",
+        static_cast<int>(code), response);
     throw std::runtime_error("Failed to send message");
   }
 }
@@ -127,6 +137,10 @@ std::string GmailApi::loadMessages(
       mRequest.get(builder.getUri(), {{authHeaderName, authToken}});
 
   if (HttpCode::OK != code) {
+    auto logger = spdlog::get("gmail_logger");
+    logger->error(
+        "Failed to send message for loadMessages with code: {}, response: {}",
+        static_cast<int>(code), response);
     throw std::runtime_error("Failed to send message");
   }
 

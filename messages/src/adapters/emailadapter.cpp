@@ -53,7 +53,7 @@ std::pair<std::string, std::string> EmailAdapter::receive() {
 }
 
 bool EmailAdapter::connect() {
-  auto conn = getHolder();
+  /*auto conn = getHolder();
   if (ConnectionType::EMAIL == conn.getType()) {
     try {
       auto emailConn = conn.getConnection<EmailConnection>();
@@ -101,4 +101,5 @@ bool EmailAdapter::connect() {
   throw std::runtime_error(
       fmt::format(dgettext("messages", "Undefined connection type: {}"),
                   static_cast<int>(conn.getType())));
+                  */
 }

@@ -9,3 +9,7 @@ GmailConnectionInfo::GmailConnectionInfo(const std::string& email,
 const char* GmailConnectionInfo::getPluginId() const noexcept {
   return ::getPluginId();
 }
+
+int64_t GmailConnectionInfo::getWaitPeriod() const noexcept {
+  return 40;
+}

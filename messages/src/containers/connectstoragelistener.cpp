@@ -5,8 +5,9 @@
 #include "exception/disconectedexception.h"
 #include "exception/notauthorizedexception.h"
 
+#include "export/pluginconnectioninfo.h"
 #include "interfaces/abstractchanneladapter.h"
-
+/*
 std::chrono::seconds waitAck(ConnectionType type) {
   switch (type) {
     case ConnectionType::VK:
@@ -21,7 +22,7 @@ std::chrono::seconds waitAck(ConnectionType type) {
       assert(false);
   }
 }
-
+*/
 ConnectStorageListener::ConnectStorageListener(
     std::shared_ptr<MessageDespatcher> dispatcher,
     std::function<std::unique_ptr<AbstractChannelAdapter>(
@@ -38,38 +39,59 @@ ConnectStorageListener::ConnectStorageListener(
 }
 
 void ConnectStorageListener::added(const ChangeListener::element& obj) {
+  if (!obj.pluginConnInfo()) {
+    return;
+  }
+
   try {
+    auto conn = mFabric(obj);
+    if (!conn) {
+      mEventQueue->enqueue(Channel::ChannelStatus::BAD_CHANNEL, obj.connName(),
+                           "");
+      return;
+    }
     mDespatcher->add(
-        std::make_shared<Channel>(mFabric(obj), mDespatcher, mMarshaller,
-                                  obj.getConnectionName(), mEventQueue,
-                                  waitAck(obj.getType())),
-        obj.getConnectionName());
+        std::make_shared<Channel>(
+            std::move(conn), mDespatcher, mMarshaller, obj.connName(),
+            mEventQueue,
+            std::chrono::seconds(obj.pluginConnInfo()->getWaitPeriod())),
+        obj.connName());
   } catch (const DisconectedException& ex) {
-    mEventQueue->enqueue(Channel::ChannelStatus::FAILED_CONNECT,
-                         obj.getConnectionName(), std::string(ex.what()));
+    mEventQueue->enqueue(Channel::ChannelStatus::FAILED_CONNECT, obj.connName(),
+                         std::string(ex.what()));
   } catch (const NotAuthorizedException& ex) {
     mEventQueue->enqueue(Channel::ChannelStatus::AUTHORIZATION_FAILED,
-                         obj.getConnectionName(), std::string(ex.what()));
+                         obj.connName(), std::string(ex.what()));
   }
 }
 
 void ConnectStorageListener::changed(const ChangeListener::element& obj) {
+  if (!obj.pluginConnInfo()) {
+    return;
+  }
+
   try {
-    mDespatcher->removeChannel(obj.getConnectionName());
+    mDespatcher->removeChannel(obj.connName());
+    auto conn = mFabric(obj);
+    if (!conn) {
+      mEventQueue->enqueue(Channel::ChannelStatus::BAD_CHANNEL, obj.connName(),
+                           "");
+      return;
+    }
     mDespatcher->add(
-        std::make_shared<Channel>(mFabric(obj), mDespatcher, mMarshaller,
-                                  obj.getConnectionName(), mEventQueue,
-                                  waitAck(obj.getType())),
-        obj.getConnectionName());
+        std::make_shared<Channel>(
+            mFabric(obj), mDespatcher, mMarshaller, obj.connName(), mEventQueue,
+            std::chrono::seconds(obj.pluginConnInfo()->getWaitPeriod())),
+        obj.connName());
   } catch (const DisconectedException& ex) {
-    mEventQueue->enqueue(Channel::ChannelStatus::FAILED_CONNECT,
-                         obj.getConnectionName(), std::string(ex.what()));
+    mEventQueue->enqueue(Channel::ChannelStatus::FAILED_CONNECT, obj.connName(),
+                         std::string(ex.what()));
   } catch (const NotAuthorizedException& ex) {
     mEventQueue->enqueue(Channel::ChannelStatus::AUTHORIZATION_FAILED,
-                         obj.getConnectionName(), std::string(ex.what()));
+                         obj.connName(), std::string(ex.what()));
   }
 }
 
 void ConnectStorageListener::removed(const ChangeListener::element& obj) {
-  mDespatcher->removeChannel(obj.getConnectionName());
+  mDespatcher->removeChannel(obj.connName());
 }

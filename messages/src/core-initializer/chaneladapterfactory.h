@@ -1,6 +1,7 @@
 #ifndef CHANELADAPTERFACTORY_H
 #define CHANELADAPTERFACTORY_H
 
+#include <pluginscontainer.h>
 #include <memory>
 
 class AbstractUserNotifier;
@@ -9,7 +10,9 @@ class ConnectionHolder;
 
 class ChanelAdapterFactory {
  public:
-  ChanelAdapterFactory(std::shared_ptr<AbstractUserNotifier> notifier);
+  ChanelAdapterFactory(
+      std::shared_ptr<AbstractUserNotifier> notifier,
+      std::shared_ptr<const plugin_support::PluginsContainer> container);
 
  public:
   std::unique_ptr<AbstractChannelAdapter> operator()(
@@ -17,6 +20,7 @@ class ChanelAdapterFactory {
 
  private:
   std::shared_ptr<AbstractUserNotifier> mNotifier;
+  std::shared_ptr<const plugin_support::PluginsContainer> mContainer;
 };
 
 #endif  // CHANELADAPTERFACTORY_H

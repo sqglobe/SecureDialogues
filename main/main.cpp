@@ -11,6 +11,8 @@
 #include <dbstl_common.h>
 
 #include "core-initializer/coreinitializer.h"
+#include "plugindiscovery.h"
+#include "pluginscontainer.h"
 #include "translation/translationmaster.h"
 #include "utils/applicationsettings.h"
 
@@ -48,9 +50,10 @@ int main(int argc, char* argv[]) {
 
   try {
     auto pass = getPassword(FILE_DIGEST);
-
+    auto container = std::make_shared<plugin_support::PluginsContainer>();
+    plugin_support::discover_plugins("plugins", *container);
     MainWindow w(std::move(settingsGuard), std::move(translatorMaster),
-                 std::make_unique<CoreInitializer>(pass));
+                 std::make_unique<CoreInitializer>(pass, container), container);
     w.show();
 
     auto res = a.exec();

@@ -1,7 +1,7 @@
 #include "pluginwidgetwrapper.h"
 #include "export/pluginwidget.h"
 #include "plugininterface.h"
-
+#include "support-functions.h"
 plugin_support::PluginWidgetWrapper::PluginWidgetWrapper(
     PluginWidget* widget,
     std::shared_ptr<PluginInterface> interface) :
@@ -11,8 +11,8 @@ plugin_support::PluginWidgetWrapper::PluginWidgetWrapper(
 std::shared_ptr<PluginConnectionInfo>
 plugin_support::PluginWidgetWrapper::makeConnection() noexcept(false) {
   auto conn = mInterface->makeConnInfo();
-  auto err = std::string(mWidget->fillConnectionInfo(conn.get()));
-  if (err.empty()) {
+  if (auto err = make_string(mWidget->fillConnectionInfo(conn.get()));
+      !err.empty()) {
     throw std::runtime_error(err);
   }
   return conn;
@@ -20,8 +20,8 @@ plugin_support::PluginWidgetWrapper::makeConnection() noexcept(false) {
 
 void plugin_support::PluginWidgetWrapper::fillConnection(
     std::shared_ptr<PluginConnectionInfo> conn) noexcept(false) {
-  auto err = std::string(mWidget->fillConnectionInfo(conn.get()));
-  if (err.empty()) {
+  if (auto err = make_string(mWidget->fillConnectionInfo(conn.get()));
+      !err.empty()) {
     throw std::runtime_error(err);
   }
 }
@@ -37,4 +37,12 @@ void plugin_support::PluginWidgetWrapper::cleareWidget() noexcept {
 
 void plugin_support::PluginWidgetWrapper::makeActivated() noexcept {
   mWidget->makeActivated();
+}
+
+PluginWidget* plugin_support::PluginWidgetWrapper::getWidget() const noexcept {
+  return mWidget;
+}
+
+std::string plugin_support::PluginWidgetWrapper::getId() const noexcept {
+  return mInterface->getId();
 }
