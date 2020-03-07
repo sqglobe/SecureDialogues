@@ -170,12 +170,12 @@
         <translation type="vanished">imap</translation>
     </message>
     <message>
-        <location filename="widgets/connectioninfowidget.cpp" line="82"/>
+        <location filename="widgets/connectioninfowidget.cpp" line="81"/>
         <source>Connection not confirmed</source>
         <translation>Соединение не подтверждено</translation>
     </message>
     <message>
-        <location filename="widgets/connectioninfowidget.cpp" line="152"/>
+        <location filename="widgets/connectioninfowidget.cpp" line="151"/>
         <source>Connection type required!</source>
         <translation>Необходимо указать тип соединения</translation>
     </message>
@@ -262,8 +262,8 @@
     <message>
         <location filename="dialogs/contactdiscoverdialog.cpp" line="30"/>
         <location filename="dialogs/contactdiscoverdialog.cpp" line="53"/>
-        <location filename="dialogs/contactdiscoverdialog.cpp" line="60"/>
-        <location filename="dialogs/contactdiscoverdialog.cpp" line="73"/>
+        <location filename="dialogs/contactdiscoverdialog.cpp" line="62"/>
+        <location filename="dialogs/contactdiscoverdialog.cpp" line="74"/>
         <source>Error!</source>
         <translation>Ошибка!</translation>
     </message>
@@ -298,17 +298,17 @@
         <translation type="vanished">Поле &apos;Адрес&apos; содержит недопустимое значение</translation>
     </message>
     <message>
-        <location filename="dialogs/contactdiscoverdialog.cpp" line="68"/>
+        <location filename="dialogs/contactdiscoverdialog.cpp" line="69"/>
         <source>Success</source>
         <translation>Успешно</translation>
     </message>
     <message>
-        <location filename="dialogs/contactdiscoverdialog.cpp" line="69"/>
+        <location filename="dialogs/contactdiscoverdialog.cpp" line="70"/>
         <source>Your contact data sended successfull</source>
         <translation>Ваши контактные данные отправлены успешно</translation>
     </message>
     <message>
-        <location filename="dialogs/contactdiscoverdialog.cpp" line="74"/>
+        <location filename="dialogs/contactdiscoverdialog.cpp" line="75"/>
         <source>Error occured during message sending. Please, try later</source>
         <translation>Ошибка произошла при отправке сообщения. Пожалуйста, повторите попытку позже</translation>
     </message>
@@ -592,7 +592,7 @@
         <translation>Отправить</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="42"/>
+        <location filename="mainwindow.cpp" line="43"/>
         <source>Please, select one dialog from the list for texting</source>
         <translation>Пожалуйста, укажите один диалог из списка для общения</translation>
     </message>
@@ -660,8 +660,8 @@ Address: %3</source>
         <translation>Добавить/изменить контакт</translation>
     </message>
     <message>
-        <location filename="models/channelslistmodel.cpp" line="25"/>
-        <location filename="models/channelslistmodel.cpp" line="70"/>
+        <location filename="models/channelslistmodel.cpp" line="24"/>
+        <location filename="models/channelslistmodel.cpp" line="71"/>
         <source>Connection not established yet</source>
         <translation>Соединение не установлено</translation>
     </message>
