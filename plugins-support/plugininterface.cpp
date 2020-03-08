@@ -55,3 +55,12 @@ std::string plugin_support::PluginInterface::getName() const noexcept {
 std::string plugin_support::PluginInterface::getId() const noexcept {
   return mFacade->getId();
 }
+
+std::string plugin_support::PluginInterface::getTranslationFileName(
+    Language lang) const noexcept {
+  return mFacade->getTranslationFileName(lang);
+}
+
+std::string plugin_support::PluginInterface::getGettextDomain() const noexcept {
+  return mFacade->getGettextDomain();
+}

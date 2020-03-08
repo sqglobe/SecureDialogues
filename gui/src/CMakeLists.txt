@@ -87,7 +87,6 @@ set(GUI_MODULE_HEADERS
     dialogs/appsettingsdialog.h
     utils/applicationsettings.h
     translation/translationmaster.h
-    translation/languages.h
     utils/translatechangeeventhandler.h
 
 )

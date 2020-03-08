@@ -3,7 +3,7 @@
 
 #include <QSettings>
 #include <memory>
-#include "translation/languages.h"
+#include "export/languages.h"
 class ApplicationSettings {
  public:
   ApplicationSettings();

@@ -7,6 +7,7 @@
 #include <QTranslator>
 #include <clocale>
 
+#include "plugininterface.h"
 #include "spdlog/spdlog.h"
 
 std::string getStrLocale(Language lang) {
@@ -30,10 +31,11 @@ QString getFileName(Language lang) {
 TranslationMaster::TranslationMaster(
     std::shared_ptr<const ApplicationSettings> settings,
     const std::string& folder,
+    std::shared_ptr<const plugin_support::PluginsContainer> plugins,
     QObject* parent) :
     QObject(parent),
     mSettings(std::move(settings)), mLang(mSettings->getLocale()),
-    mFolder(folder) {
+    mFolder(folder), mPlugins(std::move(plugins)) {
   setlocale(LC_ALL, getStrLocale(mLang).c_str());
   bindtextdomain("SecureDialogues", folder.c_str());
   bind_textdomain_codeset("SecureDialogues", "UTF-8");
@@ -49,6 +51,32 @@ TranslationMaster::TranslationMaster(
                 getFileName(mLang).toStdString(), mFolder);
   }
 
+  auto deleter = [](QTranslator* translator) {
+    QApplication::removeTranslator(translator);
+    delete translator;
+  };
+
+  std::for_each(
+      mPlugins->cbegin(), mPlugins->cend(),
+      [this, deleter](std::shared_ptr<plugin_support::PluginInterface> plugin) {
+        std::string domain = plugin->getGettextDomain();
+        bindtextdomain(domain.c_str(), mFolder.c_str());
+        bind_textdomain_codeset(domain.c_str(), "UTF-8");
+        TranslateUnit unit = {
+            std::unique_ptr<QTranslator, std::function<void(QTranslator*)>>(
+                new QTranslator, deleter),
+            plugin};
+        if (unit.translator->load(plugin->getTranslationFileName(mLang).c_str(),
+                                  mFolder.c_str())) {
+          QApplication::installTranslator(unit.translator.get());
+          mPluginTranslators.push_back(std::move(unit));
+        } else {
+          spdlog::get("root_logger")
+              ->error("Cant install translator for lang {0} in path {1}",
+                      plugin->getTranslationFileName(mLang).c_str(), mFolder);
+        }
+      });
+
   QApplication::installTranslator(&mTranslator);
 }
 
@@ -61,6 +89,19 @@ void TranslationMaster::onSettingsChanged() {
           ->error("Cant install translator for lang {0} in path {1}",
                   getFileName(mLang).toStdString(), mFolder);
     }
+
+    std::for_each(
+        mPluginTranslators.cbegin(), mPluginTranslators.cend(),
+        [this](const TranslateUnit& unit) {
+          if (!unit.translator->load(
+                  unit.interface->getTranslationFileName(mLang).c_str(),
+                  mFolder.c_str())) {
+            spdlog::get("root_logger")
+                ->error("Cant install translator for lang {0} in path {1}",
+                        unit.interface->getTranslationFileName(mLang).c_str(),
+                        mFolder);
+          }
+        });
 
     QApplication::installTranslator(&mTranslator);
 

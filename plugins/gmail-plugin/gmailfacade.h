@@ -16,6 +16,8 @@ class GmailFacade final : public PluginFacade {
  public:
   const char* getId() const noexcept override;
   const char* getPluginName() const noexcept override;
+  const char* getTranslationFileName(Language lang) const noexcept override;
+  const char* getGettextDomain() const noexcept override;
 
  public:
   PluginWidget* getWidget() const noexcept override;

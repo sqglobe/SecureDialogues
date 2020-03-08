@@ -29,6 +29,19 @@ const char* GmailFacade::getPluginName() const noexcept {
   return "Gmail";
 }
 
+const char* GmailFacade::getTranslationFileName(Language lang) const noexcept {
+  switch (lang) {
+    case Language::EN:
+      return "gmail_plugin_en_EN";
+    case Language::RU:
+      return "gmail_plugin_ru_RU";
+  }
+}
+
+const char* GmailFacade::getGettextDomain() const noexcept {
+  return "gmail-plugin";
+}
+
 PluginWidget* GmailFacade::getWidget() const noexcept {
   return mWidget.get();
 }

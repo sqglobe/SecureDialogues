@@ -56,7 +56,7 @@ msgstr  "Диалог с {} удален, потому что собеседни
 
 #: adapters/pluginadapter.cpp:28 adapters/pluginadapter.cpp:31
 msgid   "Disconected from {}"
-msgstr  ""
+msgstr  "Разъединение с {}"
 
 #: communication/messageactionhandler.cpp:160
 msgid   "Error occured during message handling from user {}. Dialog removed."
@@ -99,7 +99,7 @@ msgstr  "Неверное действие"
 
 #: adapters/pluginadapter.cpp:33 adapters/pluginadapter.cpp:36
 msgid   "Invalid address {}"
-msgstr  ""
+msgstr  "Некорректный адрес {}"
 
 #: communication/communication_helpers.cpp:20
 msgid   "Message with action {} cant be made for dialog state {}"

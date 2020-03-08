@@ -35,6 +35,8 @@ class PluginInterface : public std::enable_shared_from_this<PluginInterface> {
  public:
   std::string getName() const noexcept;
   std::string getId() const noexcept;
+  std::string getTranslationFileName(Language lang) const noexcept;
+  std::string getGettextDomain() const noexcept;
 
  private:
   boost::dll::shared_library mLib;
