@@ -1,0 +1,31 @@
+# Russian translations for PACKAGE package
+# Английские переводы для пакета PACKAGE.
+# Copyright (C) 2020 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Automatically generated, 2020.
+#
+msgid   ""
+msgstr  "Project-Id-Version: PACKAGE VERSION\n"
+        "Report-Msgid-Bugs-To: \n"
+        "POT-Creation-Date: 2020-03-08 00:01+0300\n"
+        "PO-Revision-Date: 2020-03-07 21:49+0300\n"
+        "Last-Translator: Automatically generated\n"
+        "Language-Team: none\n"
+        "Language: ru\n"
+        "MIME-Version: 1.0\n"
+        "Content-Type: text/plain; charset=UTF-8\n"
+        "Content-Transfer-Encoding: 8bit\n"
+        "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 "
+        "&& n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: gmailaddressvalidator.cpp:24
+msgid   "E-mail address Gmail"
+msgstr  "E-mail адрес для сервиса Gmail"
+
+#: gmailaddressvalidator.cpp:11
+msgid   "Please, fill 'Address' with e-mail"
+msgstr  "Пожалуйста заполните поле 'Адрес' валидным e-mail"
+
+#: gmailaddressvalidator.cpp:29
+msgid   "Please, specify valid e-mail address Gmail service"
+msgstr  "Пожалуйста, укажите валидный адрес e-mail для сервиса Gmail"

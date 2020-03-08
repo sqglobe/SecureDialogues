@@ -29,7 +29,7 @@ const char* GmailConnectionWidget::fillConnectionInfo(
   const auto* login = findChild<QLineEdit*>("login");
   const auto* pass = findChild<QLineEdit*>("pass");
   if (login->text().trimmed().isEmpty()) {
-    return tr("Field 'Login' should be completed").toUtf8().data();
+    return tr("Field 'E-mail' should be completed").toUtf8().data();
   } else if (pass->text().trimmed().isEmpty()) {
     return tr("Field 'Token' should be completed").toUtf8().data();
   }

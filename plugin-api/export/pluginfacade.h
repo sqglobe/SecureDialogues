@@ -1,6 +1,6 @@
 #ifndef PLAGINFACADE_H
 #define PLAGINFACADE_H
-
+#include "languages.h"
 class PluginWidget;
 class PluginConnectionInfo;
 class PluginConnectionSerializer;
@@ -15,6 +15,8 @@ class PluginFacade {
  public:
   virtual const char* getId() const noexcept = 0;
   virtual const char* getPluginName() const noexcept = 0;
+  virtual const char* getTranslationFileName(Language lang) const noexcept = 0;
+  virtual const char* getGettextDomain() const noexcept = 0;
 
  public:
   virtual PluginWidget* getWidget() const noexcept = 0;

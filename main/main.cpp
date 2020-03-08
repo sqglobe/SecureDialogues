@@ -35,10 +35,6 @@ int main(int argc, char* argv[]) {
 
   std::shared_ptr<ApplicationSettingsGuard> settingsGuard =
       std::make_shared<ApplicationSettingsGuard>();
-  std::shared_ptr<TranslationMaster> translatorMaster =
-      std::make_shared<TranslationMaster>(
-          settingsGuard->getSettings(),
-          curr.absoluteFilePath("locale").toStdString());
 
   if (!curr.mkpath("conf")) {
     QMessageBox::critical(nullptr, "Abort!",
@@ -52,6 +48,12 @@ int main(int argc, char* argv[]) {
     auto pass = getPassword(FILE_DIGEST);
     auto container = std::make_shared<plugin_support::PluginsContainer>();
     plugin_support::discover_plugins("plugins", *container);
+
+    std::shared_ptr<TranslationMaster> translatorMaster =
+        std::make_shared<TranslationMaster>(
+            settingsGuard->getSettings(),
+            curr.absoluteFilePath("locale").toStdString(), container);
+
     MainWindow w(std::move(settingsGuard), std::move(translatorMaster),
                  std::make_unique<CoreInitializer>(pass, container), container);
     w.show();
