@@ -16,6 +16,8 @@
 #include "support-functions.h"
 #include "utils/gui_helpers.h"
 
+#include <iostream>
+
 Q_DECLARE_METATYPE(ChannelsListModel::ListItem);
 
 ContactWidget::ContactWidget(std::shared_ptr<ChannelsListModel> model,
@@ -104,17 +106,19 @@ Contact ContactWidget::getElement() {
     throw CorrectnessInputError(mess);
   }
 
+  auto peeledAddress =
+      std::string(item.validator->peelAddress(userAddressText.toUtf8().data()));
+  std::cout << item.validator->peelAddress(userAddressText.toUtf8().data())
+            << std::endl;
   Contact res(mContact
                   ? Contact(connNames->currentText().toStdString(),
                             userName->text().trimmed().toStdString(),
-                            std::string(item.validator->peelAddress(
-                                userAddressText.toUtf8().data())),
+                            std::move(peeledAddress),
                             pubKey->toPlainText().trimmed().toStdString(),
                             std::string(mContact->id()))
                   : Contact(connNames->currentText().toStdString(),
                             userName->text().trimmed().toStdString(),
-                            std::string(item.validator->peelAddress(
-                                userAddressText.toUtf8().data())),
+                            std::move(peeledAddress),
                             pubKey->toPlainText().trimmed().toStdString()));
 
   mContact.reset();

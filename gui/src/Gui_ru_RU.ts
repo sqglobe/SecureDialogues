@@ -170,12 +170,12 @@
         <translation type="vanished">imap</translation>
     </message>
     <message>
-        <location filename="widgets/connectioninfowidget.cpp" line="81"/>
+        <location filename="widgets/connectioninfowidget.cpp" line="76"/>
         <source>Connection not confirmed</source>
         <translation>Соединение не подтверждено</translation>
     </message>
     <message>
-        <location filename="widgets/connectioninfowidget.cpp" line="151"/>
+        <location filename="widgets/connectioninfowidget.cpp" line="146"/>
         <source>Connection type required!</source>
         <translation>Необходимо указать тип соединения</translation>
     </message>
@@ -361,17 +361,17 @@
         <translation>Публичный ключ</translation>
     </message>
     <message>
-        <location filename="widgets/contactwidget.cpp" line="81"/>
+        <location filename="widgets/contactwidget.cpp" line="83"/>
         <source>Field &apos;Address&apos; should be completed</source>
         <translation>Необходимо заполнить поле &apos;Адрес&apos;</translation>
     </message>
     <message>
-        <location filename="widgets/contactwidget.cpp" line="88"/>
+        <location filename="widgets/contactwidget.cpp" line="90"/>
         <source>Please declare public key for commnication with contact</source>
         <translation>Пожалуйста, укажите публичный ключ для обмена сообщениями с контактом</translation>
     </message>
     <message>
-        <location filename="widgets/contactwidget.cpp" line="91"/>
+        <location filename="widgets/contactwidget.cpp" line="93"/>
         <source>Selected connection without appropriative plugin</source>
         <translation type="unfinished"></translation>
     </message>

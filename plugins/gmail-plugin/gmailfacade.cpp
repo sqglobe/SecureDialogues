@@ -5,7 +5,7 @@
 #include "gmailconnectionwidget.h"
 #include "gmailmessagecommunicator.h"
 #include "gmailplugindefs.h"
-#include "gmailrecievedmessagesiterator.h"
+#include "recievedmessagesiteratorimpl.h"
 
 #include "gmailaddressvalidator.h"
 #include "spdlog/sinks/rotating_file_sink.h"
