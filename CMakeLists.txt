@@ -97,6 +97,8 @@ add_subdirectory(plugin-api)
 add_subdirectory(plugins-support )
 
 add_subdirectory(plugins/gmail-plugin)
+add_subdirectory(plugins/vk-plugin)
+add_subdirectory(plugins/plugins-libs/plugin-utils)
 
 if (BUILD_TESTING)
   add_subdirectory( regression )

@@ -4,10 +4,13 @@
 #include <memory>
 #include "export/pluginmessagecommunicator.h"
 
-#include "gmail-communication/gmailapi.h"
-#include "gmail-communication/gmailoauth.h"
-
+class GmailOauth;
+class GmailApi;
 class GmailMessageCommunicator : public PluginMessageCommunicator {
+ public:
+  GmailMessageCommunicator();
+  ~GmailMessageCommunicator() override;
+
  public:
   virtual PluginApiErrorCodes send(const char* addressTo,
                                    const char* message) noexcept override;

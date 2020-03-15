@@ -1,24 +1,21 @@
-#include "gmailmessagecommunicator.h"
-#include "base64.h"
-#include "gmailconnectioninfo.h"
-#include "recievedmessagesiteratorimpl.h"
-
-#include <cassert>
-#include <cstring>
+#include "vkmessagecommunicator.h"
 
 #include <spdlog/sinks/stdout_color_sinks.h>
-#include "spdlog/spdlog.h"
-
+#include "base64.h"
 #include "curlexceptions.h"
-#include "gmail-communication/gmailapi.h"
-#include "gmail-communication/gmailoauth.h"
-GmailMessageCommunicator::GmailMessageCommunicator() {}
+#include "recievedmessagesiteratorimpl.h"
+#include "spdlog/spdlog.h"
+#include "vk-communication/vkapi.h"
+#include "vk-communication/vkoauth.h"
+#include "vkconnectioninfo.h"
 
-GmailMessageCommunicator::~GmailMessageCommunicator() {}
+const std::string VK_REDIRECT_URI = "https://oauth.vk.com/blank.html";
+VkMessageCommunicator::VkMessageCommunicator() {}
 
-PluginApiErrorCodes GmailMessageCommunicator::send(
-    const char* addressTo,
-    const char* message) noexcept {
+VkMessageCommunicator::~VkMessageCommunicator() {}
+
+PluginApiErrorCodes VkMessageCommunicator::send(const char* addressTo,
+                                                const char* message) noexcept {
   assert(mOauthAgent);
   assert(mApiAgent);
   try {
@@ -34,12 +31,12 @@ PluginApiErrorCodes GmailMessageCommunicator::send(
 
     mApiAgent->sendMessage(addressTo, encoded, headerName, token);
   } catch (const CurlHttpSendError& ex) {
-    auto logger = spdlog::get("gmail_logger");
+    auto logger = spdlog::get("vk_logger");
     logger->warn("HttpError {0} for message: {1}, address {2}", ex.what(),
                  message, addressTo);
     return PluginApiErrorCodes::Disconected;
   } catch (const std::exception& ex) {
-    auto logger = spdlog::get("gmail_logger");
+    auto logger = spdlog::get("vk_logger");
     logger->warn("std::exception {0} for message: {1}, address {2}", ex.what(),
                  message, addressTo);
     return PluginApiErrorCodes::SendFailed;
@@ -48,7 +45,7 @@ PluginApiErrorCodes GmailMessageCommunicator::send(
   return PluginApiErrorCodes::NoError;
 }
 
-RecievedMessagesIterator* GmailMessageCommunicator::recieve() noexcept {
+RecievedMessagesIterator* VkMessageCommunicator::recieve() noexcept {
   assert(mOauthAgent);
   assert(mApiAgent);
   try {
@@ -73,16 +70,16 @@ RecievedMessagesIterator* GmailMessageCommunicator::recieve() noexcept {
   }
 }
 
-PluginApiErrorCodes GmailMessageCommunicator::connect(
+PluginApiErrorCodes VkMessageCommunicator::connect(
     const PluginConnectionInfo* connInfo) noexcept {
-  if (auto* conn = dynamic_cast<const GmailConnectionInfo*>(connInfo);
+  if (auto* conn = dynamic_cast<const VkConnectionInfo*>(connInfo);
       conn == nullptr) {
     return PluginApiErrorCodes::Disconected;
   } else {
     try {
-      mOauthAgent = std::make_unique<GmailOauth>(
-          GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, REDIRECT_URL);
-      mApiAgent = std::make_unique<GmailApi>(conn->email);
+      mOauthAgent = std::make_unique<VkOauth>(VK_CLIENT_ID, VK_REDIRECT_URI,
+                                              conn->accessToken);
+      mApiAgent = std::make_unique<VkApi>(conn->vkId);
       return PluginApiErrorCodes::NoError;
     } catch (const std::exception& ex) {
       auto logger = spdlog::get("root_logger");

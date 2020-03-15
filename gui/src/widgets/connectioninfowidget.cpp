@@ -32,6 +32,7 @@ ConnectionInfoWidget::ConnectionInfoWidget(
   for (auto iter = container->cbegin(); iter != container->cend(); ++iter) {
     mWidgets.push_back((*iter)->getWidget());
     stackedWidget->addWidget(mWidgets.back()->getWidget());
+    mWidgets.back()->getWidget()->setParent(nullptr);
     connType->addItem((*iter)->getName().c_str());
   }
 
@@ -52,12 +53,6 @@ ConnectionInfoWidget::ConnectionInfoWidget(
 }
 
 ConnectionInfoWidget::~ConnectionInfoWidget() {
-  auto stackedWidget = findChild<QStackedWidget*>("stackedWidget");
-  for (int i = 1; i < stackedWidget->count(); ++i) {
-    auto widget = stackedWidget->widget(i);
-    stackedWidget->removeWidget(widget);
-    widget->setParent(nullptr);
-  }
   delete ui;
 }
 

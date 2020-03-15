@@ -1,22 +1,22 @@
-#ifndef GMAILRECIEVEDMESSAGESITERATOR_H
-#define GMAILRECIEVEDMESSAGESITERATOR_H
+#ifndef RECIEVEDMESSAGESITERATORIMPL_H
+#define RECIEVEDMESSAGESITERATORIMPL_H
 
 #include <list>
 #include <string>
 #include "export/recievedmessagesiterator.h"
 
-class GmailRecievedMessagesIterator : public RecievedMessagesIterator {
+class RecievedMessagesIteratorImpl : public RecievedMessagesIterator {
  public:
-  GmailRecievedMessagesIterator(
+  RecievedMessagesIteratorImpl(
       std::list<std::pair<std::string, std::string>>&& messages);
-  GmailRecievedMessagesIterator(PluginApiErrorCodes code);
+  RecievedMessagesIteratorImpl(PluginApiErrorCodes code);
 
  public:
-  GmailRecievedMessagesIterator(const GmailRecievedMessagesIterator&) = delete;
-  GmailRecievedMessagesIterator(GmailRecievedMessagesIterator&&) = delete;
-  GmailRecievedMessagesIterator& operator=(
-      const GmailRecievedMessagesIterator&) = delete;
-  GmailRecievedMessagesIterator& operator=(GmailRecievedMessagesIterator&&) =
+  RecievedMessagesIteratorImpl(const RecievedMessagesIteratorImpl&) = delete;
+  RecievedMessagesIteratorImpl(RecievedMessagesIteratorImpl&&) = delete;
+  RecievedMessagesIteratorImpl& operator=(const RecievedMessagesIteratorImpl&) =
+      delete;
+  RecievedMessagesIteratorImpl& operator=(RecievedMessagesIteratorImpl&&) =
       delete;
 
  public:
@@ -34,4 +34,4 @@ class GmailRecievedMessagesIterator : public RecievedMessagesIterator {
   PluginApiErrorCodes mCode{PluginApiErrorCodes::NoError};
 };
 
-#endif  // GMAILRECIEVEDMESSAGESITERATOR_H
+#endif  // RECIEVEDMESSAGESITERATORIMPL_H
