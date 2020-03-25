@@ -32,7 +32,6 @@ ConnectionInfoWidget::ConnectionInfoWidget(
   for (auto iter = container->cbegin(); iter != container->cend(); ++iter) {
     mWidgets.push_back((*iter)->getWidget());
     stackedWidget->addWidget(mWidgets.back()->getWidget());
-    mWidgets.back()->getWidget()->setParent(nullptr);
     connType->addItem((*iter)->getName().c_str());
   }
 
@@ -53,6 +52,10 @@ ConnectionInfoWidget::ConnectionInfoWidget(
 }
 
 ConnectionInfoWidget::~ConnectionInfoWidget() {
+  std::for_each(std::cbegin(mWidgets), std::cend(mWidgets),
+                [](const auto& widget) mutable {
+                  widget->getWidget()->setParent(nullptr);
+                });
   delete ui;
 }
 

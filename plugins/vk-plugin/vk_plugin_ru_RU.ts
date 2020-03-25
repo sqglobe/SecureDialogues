@@ -24,17 +24,17 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="vkconnectionwidget.cpp" line="31"/>
+        <location filename="vkconnectionwidget.cpp" line="24"/>
         <source>Field &apos;URL&apos; should be completed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="vkconnectionwidget.cpp" line="39"/>
+        <location filename="vkconnectionwidget.cpp" line="32"/>
         <source>Field &apos;URL&apos; contains wrond format</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="vkconnectionwidget.cpp" line="58"/>
+        <location filename="vkconnectionwidget.cpp" line="49"/>
         <source>&lt;a href=&apos;%1&apos;&gt;Open web-page to get Oauth2 code&lt;/a&gt;</source>
         <translation type="unfinished"></translation>
     </message>

@@ -30,7 +30,7 @@ add_library(vk-plugin MODULE
     vkplugindefs.h
     vkplugindefs.cpp
     )
-
+add_internationals(vk-plugin  ru_RU.UTF-8 "locale" "${LOCALE_FILES_DIR}")
 qt5_wrap_cpp(WRAP_MOC_GUI vkconnectionwidget.h)
 
 qt5_wrap_ui(UI_WRAP vkconnectionwidget.ui)
@@ -55,4 +55,4 @@ add_custom_command(TARGET vk-plugin POST_BUILD
 add_custom_command(TARGET vk-plugin POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy "${QM_FILES}" "${LOCALE_FILES_DIR}")
 
-add_internationals(vk-plugin  ru_RU.UTF-8 "locale" "${LOCALE_FILES_DIR}")
+
