@@ -14,13 +14,13 @@ class VkConnectionWidget : public PluginWidget {
   ~VkConnectionWidget() override;
 
  public:
-  virtual void setConnectionInfo(PluginConnectionInfo*) noexcept override;
-  virtual const char* fillConnectionInfo(
+  void setConnectionInfo(PluginConnectionInfo*) noexcept override;
+  const char* fillConnectionInfo(
       PluginConnectionInfo* conninfo) noexcept override;
 
  public:
-  virtual void cleareWidget() noexcept override;
-  virtual void makeActivated() noexcept override;
+  void cleareWidget() noexcept override;
+  void makeActivated() noexcept override;
 
  private:
   Ui::VkConnectionWidget* ui;

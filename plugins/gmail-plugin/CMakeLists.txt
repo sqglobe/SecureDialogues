@@ -6,7 +6,7 @@ find_package(Qt5LinguistTools REQUIRED)
 
 include(${TOP_DIR}/secrets.txt)
 
-SET(GMAIL_PLUGIN_SOURCES
+add_library(gmail-plugin MODULE
     gmailplugindefs.cpp
     gmailconnectioninfo.cpp
     gmailconnectionserializer.cpp
@@ -16,9 +16,7 @@ SET(GMAIL_PLUGIN_SOURCES
     gmail-communication/gmailapi.cpp
     gmail-communication/gmailoauth.cpp
     gmailaddressvalidator.h
-    )
 
-SET(GMAIL_PLUGIN_HEADERS
     gmailconnectioninfo.h
     gmailplugindefs.h
     gmailconnectionserializer.h
@@ -31,12 +29,14 @@ SET(GMAIL_PLUGIN_HEADERS
     gmailaddressvalidator.cpp
     )
 
+add_internationals(gmail-plugin  ru_RU.UTF-8 "locale" "${LOCALE_FILES_DIR}")
+
 qt5_wrap_cpp(WRAP_MOC_GUI gmailconnectionwidget.h)
 
 qt5_wrap_ui(UI_WRAP gmailconnectionwidget.ui)
 qt5_create_translation(QM_FILES gmailconnectionwidget.ui ${GMAIL_PLUGIN_HEADERS} ${GMAIL_PLUGIN_SOURCES} gmail_plugin_ru_RU.ts)
 
-add_library(gmail-plugin MODULE ${GMAIL_PLUGIN_SOURCES} ${GMAIL_PLUGIN_HEADERS} ${WRAP_MOC_GUI} ${UI_WRAP} ${QM_FILES})
+target_sources(gmail-plugin PRIVATE  ${WRAP_MOC_GUI} ${UI_WRAP} ${QM_FILES})
 set_target_properties(gmail-plugin PROPERTIES LINKER_LANGUAGE CXX)
 target_include_directories(gmail-plugin  PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/submodules/spdlog/include)
 target_link_libraries(gmail-plugin PUBLIC plugin-api curl-wrapper persistent-storage nlohmann_json::nlohmann_json plugins-utils)
@@ -53,4 +53,3 @@ add_custom_command(TARGET gmail-plugin POST_BUILD
 add_custom_command(TARGET gmail-plugin POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy "${QM_FILES}" "${LOCALE_FILES_DIR}")
 
-add_internationals(gmail-plugin  ru_RU.UTF-8 "locale" "${LOCALE_FILES_DIR}")
