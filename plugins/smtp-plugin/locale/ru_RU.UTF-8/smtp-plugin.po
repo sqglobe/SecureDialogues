@@ -4,29 +4,28 @@
 # This file is distributed under the same license as the PACKAGE package.
 # Automatically generated, 2020.
 #
-msgid ""
-msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-24 21:33+0300\n"
-"PO-Revision-Date: 2020-03-24 21:33+0300\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
-"Language: ru\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+msgid   ""
+msgstr  "Project-Id-Version: PACKAGE VERSION\n"
+        "Report-Msgid-Bugs-To: \n"
+        "POT-Creation-Date: 2020-03-28 15:07+0300\n"
+        "PO-Revision-Date: 2020-03-24 21:33+0300\n"
+        "Last-Translator: Automatically generated\n"
+        "Language-Team: none\n"
+        "Language: ru\n"
+        "MIME-Version: 1.0\n"
+        "Content-Type: text/plain; charset=UTF-8\n"
+        "Content-Transfer-Encoding: 8bit\n"
+        "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 "
+        "&& n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: smtpaddressvalidator.cpp:10
-msgid "Address has to be contained valid email like test@email.com"
-msgstr ""
+#: smtpaddressvalidator.cpp:10 smtpaddressvalidator.cpp:11
+msgid   "Address has to be contained valid email like test@email.com"
+msgstr  ""
 
 #: smtpaddressvalidator.cpp:22
-msgid "Set valid email address"
-msgstr ""
+msgid   "Set valid email address"
+msgstr  ""
 
-#: smtpaddressvalidator.cpp:28
-msgid "Your contact's email address"
-msgstr ""
+#: smtpaddressvalidator.cpp:28 smtpaddressvalidator.cpp:26
+msgid   "Your contact's email address"
+msgstr  ""

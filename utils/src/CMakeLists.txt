@@ -12,12 +12,14 @@ set(HEADERS
     utils/interfaces/objectdeserializer.h
     utils/eventqueue.h
     utils/dbfactory.h
+    utils/base64.h
+    utils/base64.cpp
 )
 
 
 add_library(utils STATIC ${SOURCES} ${HEADERS})
 target_include_directories(utils PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${BerkeleyDB_INCLUDE_DIRS})
-
+set_property(TARGET utils PROPERTY POSITION_INDEPENDENT_CODE ON)
 add_library(utils-headers INTERFACE)
 target_include_directories(utils-headers INTERFACE ${CMAKE_CURRENT_SOURCE_DIR} ${BerkeleyDB_INCLUDE_DIRS})
 

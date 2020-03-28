@@ -39,12 +39,12 @@ qt5_create_translation(QM_FILES gmailconnectionwidget.ui ${GMAIL_PLUGIN_HEADERS}
 target_sources(gmail-plugin PRIVATE  ${WRAP_MOC_GUI} ${UI_WRAP} ${QM_FILES})
 set_target_properties(gmail-plugin PROPERTIES LINKER_LANGUAGE CXX)
 target_include_directories(gmail-plugin  PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/submodules/spdlog/include)
-target_link_libraries(gmail-plugin PUBLIC plugin-api curl-wrapper persistent-storage nlohmann_json::nlohmann_json plugins-utils)
+target_link_libraries(gmail-plugin PUBLIC plugin-api curl-wrapper persistent-storage nlohmann_json::nlohmann_json plugins-utils utils)
 set_target_properties(gmail-plugin PROPERTIES
     PREFIX ""
     POSITION_INDEPENDENT_CODE ON)
 
-target_compile_options(gmail-plugin  PRIVATE -fPIC)
+set_property(TARGET gmail-plugin PROPERTY POSITION_INDEPENDENT_CODE ON)
 add_custom_command(TARGET gmail-plugin POST_BUILD
     COMMAND cmake -E make_directory ${PLUGINS_FOLDER}
     COMMAND cmake -E copy $<TARGET_FILE:gmail-plugin> ${PLUGINS_FOLDER}

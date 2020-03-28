@@ -10,9 +10,6 @@
 
 #include "widgetsutils.h"
 
-#include "oauth-agents/agents/gmailoauth.h"
-#include "oauth-agents/utils/factories.h"
-
 #include "export/pluginconnectioninfo.h"
 #include "export/pluginwidget.h"
 #include "plugininterface.h"

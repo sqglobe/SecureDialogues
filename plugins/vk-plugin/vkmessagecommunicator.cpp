@@ -1,10 +1,10 @@
 #include "vkmessagecommunicator.h"
 
 #include <spdlog/sinks/stdout_color_sinks.h>
-#include "base64.h"
 #include "curlexceptions.h"
 #include "recievedmessagesiteratorimpl.h"
 #include "spdlog/spdlog.h"
+#include "utils/base64.h"
 #include "vk-communication/vkapi.h"
 #include "vk-communication/vkoauth.h"
 #include "vkconnectioninfo.h"

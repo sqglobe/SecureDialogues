@@ -11,7 +11,7 @@
 #include <iomanip>
 #include <sstream>
 
-#include "base64.h"
+#include "utils/base64.h"
 
 #include <nlohmann/json.hpp>
 #include "uribuilder.h"

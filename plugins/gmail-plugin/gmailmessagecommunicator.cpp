@@ -1,7 +1,7 @@
 #include "gmailmessagecommunicator.h"
-#include "base64.h"
 #include "gmailconnectioninfo.h"
 #include "recievedmessagesiteratorimpl.h"
+#include "utils/base64.h"
 
 #include <cassert>
 #include <cstring>

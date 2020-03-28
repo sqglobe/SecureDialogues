@@ -170,12 +170,12 @@
         <translation type="vanished">imap</translation>
     </message>
     <message>
-        <location filename="widgets/connectioninfowidget.cpp" line="78"/>
+        <location filename="widgets/connectioninfowidget.cpp" line="76"/>
         <source>Connection not confirmed</source>
         <translation>Соединение не подтверждено</translation>
     </message>
     <message>
-        <location filename="widgets/connectioninfowidget.cpp" line="148"/>
+        <location filename="widgets/connectioninfowidget.cpp" line="146"/>
         <source>Connection type required!</source>
         <translation>Необходимо указать тип соединения</translation>
     </message>
