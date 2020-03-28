@@ -51,37 +51,37 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="smtpconnectionwidget.cpp" line="39"/>
+        <location filename="smtpconnectionwidget.cpp" line="34"/>
         <source>Field &apos;Login&apos; should be completed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="smtpconnectionwidget.cpp" line="44"/>
+        <location filename="smtpconnectionwidget.cpp" line="38"/>
         <source>Field &apos;Password&apos; should be completed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="smtpconnectionwidget.cpp" line="49"/>
+        <location filename="smtpconnectionwidget.cpp" line="43"/>
         <source>Field &apos;From&apos; empty or contains wrong format</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="smtpconnectionwidget.cpp" line="54"/>
+        <location filename="smtpconnectionwidget.cpp" line="47"/>
         <source>&apos;Address of SMTP server&apos; empty</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="smtpconnectionwidget.cpp" line="62"/>
+        <location filename="smtpconnectionwidget.cpp" line="54"/>
         <source>Field &apos;Port of SMTP server&apos; empty or contains wrong format</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="smtpconnectionwidget.cpp" line="68"/>
+        <location filename="smtpconnectionwidget.cpp" line="61"/>
         <source>&apos;Address of IMAP server&apos; empty</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="smtpconnectionwidget.cpp" line="76"/>
+        <location filename="smtpconnectionwidget.cpp" line="68"/>
         <source>&apos;Port of IMAP server&apos; empty or contains wrong format</source>
         <translation type="unfinished"></translation>
     </message>

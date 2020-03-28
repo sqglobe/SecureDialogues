@@ -79,7 +79,7 @@ target_sources(smtp-plugin PRIVATE ${UI_WRAP} ${QM_FILES} ${WRAP_MOC_GUI})
 set_target_properties(smtp-plugin PROPERTIES LINKER_LANGUAGE CXX)
 
 target_include_directories(smtp-plugin PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${VMIME_INCLUDE_DIRS})
-target_link_libraries(smtp-plugin PUBLIC  ${VMIME_LIBRARIES} plugin-api persistent-storage plugins-utils)
+target_link_libraries(smtp-plugin PUBLIC  ${VMIME_LIBRARIES} plugin-api persistent-storage plugins-utils utils)
 
 if(WIN32)
     target_link_libraries(smtp-plugin PRIVATE ws2_32 iconv)
@@ -98,7 +98,7 @@ set_target_properties(smtp-plugin PROPERTIES
     PREFIX ""
     POSITION_INDEPENDENT_CODE ON)
 
-target_compile_options(smtp-plugin  PRIVATE -fPIC)
+set_property(TARGET smtp-plugin PROPERTY POSITION_INDEPENDENT_CODE ON)
 add_custom_command(TARGET smtp-plugin POST_BUILD
     COMMAND cmake -E make_directory ${PLUGINS_FOLDER}
     COMMAND cmake -E copy $<TARGET_FILE:smtp-plugin> ${PLUGINS_FOLDER}

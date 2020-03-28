@@ -1,7 +1,7 @@
 #include "utils.h"
 #include <chrono>
 #include "crossguid/Guid.hpp"
-#include "oauth-agents/utils/base64.h"
+#include "utils/base64.h"
 
 std::string make_uiid() {
   std::string result = xg::newGuid().str();

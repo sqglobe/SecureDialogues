@@ -1,11 +1,11 @@
 #include "smtpmessagecommunication.h"
 #include <spdlog/spdlog.h>
 #include <cstring>
-#include "base64.h"
 #include "email-agent/imapreciever.h"
 #include "email-agent/smtpsender.h"
 #include "recievedmessagesiteratorimpl.h"
 #include "smtpconnectioninfo.h"
+#include "utils/base64.h"
 
 SmtpMessageCommunication::SmtpMessageCommunication() {}
 

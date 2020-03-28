@@ -1,5 +1,5 @@
 #include "recievedmessagesiteratorimpl.h"
-#include "base64.h"
+#include "utils/base64.h"
 
 RecievedMessagesIteratorImpl::RecievedMessagesIteratorImpl(
     std::list<std::pair<std::string, std::string> >&& messages) :

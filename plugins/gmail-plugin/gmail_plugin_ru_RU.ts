@@ -29,19 +29,16 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gmailconnectionwidget.cpp" line="32"/>
         <source>Field &apos;E-mail&apos; should be completed</source>
-        <translation>Поле &apos;E-mail&apos; должно быть заполнено</translation>
+        <translation type="vanished">Поле &apos;E-mail&apos; должно быть заполнено</translation>
     </message>
     <message>
-        <location filename="gmailconnectionwidget.cpp" line="34"/>
         <source>Field &apos;Token&apos; should be completed</source>
-        <translation>Необходимо заполнить поле &apos;Token&apos;</translation>
+        <translation type="vanished">Необходимо заполнить поле &apos;Token&apos;</translation>
     </message>
     <message>
-        <location filename="gmailconnectionwidget.cpp" line="65"/>
         <source>&lt;a href=&apos;%1&apos;&gt;Open web-page to get Oauth2 code&lt;/a&gt;</source>
-        <translation>&lt;a href=&apos;%1&apos;&gt;Открыть страницу получения кода Oauth2&lt;/a&gt;</translation>
+        <translation type="vanished">&lt;a href=&apos;%1&apos;&gt;Открыть страницу получения кода Oauth2&lt;/a&gt;</translation>
     </message>
 </context>
 </TS>

@@ -26,8 +26,6 @@ primitives/dialogstatemachine.cpp
 crypto/cryptosystemimpl.cpp
 crypto/cryptosystemcontactupdateinformator.cpp
 crypto/cryptosystemdialogremoveinformator.cpp
-adapters/oauthadapter.cpp
-adapters/emailadapter.cpp
 persistent_storage/contactmarshaller.cpp
 persistent_storage/dialogmarshaller.cpp
 persistent_storage/connectionmarshaller.cpp
@@ -80,10 +78,8 @@ crypto/cryptosystemimpl.h
 crypto/cryptosystemcontactupdateinformator.h
 crypto/cryptosystemdialogremoveinformator.h
 constants.h
-adapters/oauthadapter.h
 exception/notauthorizedexception.h
 exception/disconectedexception.h
-adapters/emailadapter.h
 persistent_storage/contactmarshaller.h
 persistent_storage/dialogmarshaller.h
 persistent_storage/connectionmarshaller.h
@@ -107,7 +103,7 @@ adapters/pluginadapter.h
 
 add_library(messages-headers INTERFACE)
 target_include_directories(messages-headers INTERFACE ${CMAKE_CURRENT_SOURCE_DIR} ${PERSISTENT-STORAGE_INCLUDE_DIRS} ${CROSSGUID_INCLUDE})
-target_link_libraries(messages-headers INTERFACE fmt::fmt-header-only curl-wrapper-headers oauth-agents-headers encryption-headers email-agent-headers utils-headers plugins-support-headers )
+target_link_libraries(messages-headers INTERFACE fmt::fmt-header-only encryption-headers utils-headers plugins-support-headers )
 
 add_library(messages STATIC ${SOURCES} ${HEADERS})
 
