@@ -63,9 +63,9 @@ class OneChannelCoreInitializer : public AbstractCoreInitializer {
 };
 
 void OneChannelCoreInitializer::fill() {
-  mConnectionStorage->add(ConnectionHolder(UdpConnection{}, "Test 1"));
-  mConnectionStorage->add(ConnectionHolder(UdpConnection{}, "Test 2"));
-  mConnectionStorage->add(ConnectionHolder(UdpConnection{}, "Test 3"));
+  mConnectionStorage->add(ConnectionHolder("Test 1"));
+  mConnectionStorage->add(ConnectionHolder("Test 2"));
+  mConnectionStorage->add(ConnectionHolder("Test 3"));
 
   mContactStorage->add(
       make_contact("Test 1", "name 1", "address 1", "no key", "contact 1"));

@@ -28,5 +28,5 @@ set(HEADERS
 
 add_library(stand STATIC ${SOURCES} ${HEADERS})
 target_include_directories(stand PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(stand  gui messages-fakes encryption oauth-agents curl-wrapper utils
-    Qt5::Core Qt5::Gui  Qt5::Widgets ${CMAKE_THREAD_LIBS_INIT} persistent-storage pthread xg cryptopp-static  )
+target_link_libraries(stand  gui messages-fakes encryption utils
+    Qt5::Core Qt5::Gui  Qt5::Widgets ${CMAKE_THREAD_LIBS_INIT} persistent-storage pthread xg cryptopp-static  plugins-support)

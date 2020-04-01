@@ -4,10 +4,6 @@ add_executable(ContactMarshallingTest contactmarshallingtest.cpp)
 add_test(NAME ContactMarshallingTest COMMAND ContactMarshallingTest)
 target_link_libraries(ContactMarshallingTest PRIVATE ${MY_TEST_LIBS} )
 
-add_executable(ConnectionMarshallingTest connectionmarshallingtest.cpp)
-add_test(NAME ConnectionMarshallingTest COMMAND ConnectionMarshallingTest)
-target_link_libraries(ConnectionMarshallingTest PRIVATE ${MY_TEST_LIBS} )
-
 add_executable(DiscoveredContactMarshallerTest discoveredcontactmarshallertest.cpp)
 add_test(NAME DiscoveredContactMarshallerTest COMMAND DiscoveredContactMarshallerTest)
 target_link_libraries(DiscoveredContactMarshallerTest PRIVATE ${MY_TEST_LIBS} )

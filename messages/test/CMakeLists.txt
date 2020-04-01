@@ -10,7 +10,7 @@ SET(CMAKE_INCLUDE_CURRENT_DIR ON)
 SET(CMAKE_CXX_STANDARD 17)
 SET(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-SET(MY_TEST_LIBS messages Qt5::Test messages-fakes oauth-agents encryption  utils  pthread xg persistent-storage cryptopp-static)
+SET(MY_TEST_LIBS messages Qt5::Test messages-fakes encryption  utils  pthread xg persistent-storage cryptopp-static plugins-support ${Boost_SYSTEM_LIBRARY})
 
 ENABLE_TESTING()
 

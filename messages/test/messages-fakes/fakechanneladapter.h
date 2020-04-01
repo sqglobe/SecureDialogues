@@ -13,14 +13,14 @@ class FakeChannelAdapter : public AbstractChannelAdapter {
     mMessage = message;
   }
   void send(const std::string&, const std::string&) override {}
-  std::pair<std::string, std::string> receive() override {
+  std::list<std::pair<std::string, std::string>> receive() override {
     if (isFirst) {
       isFirst = false;
     } else {
       std::this_thread::sleep_for(std::chrono::seconds(5));
     }
 
-    return std::make_pair("test", mMessage);
+    return {std::make_pair("test", mMessage)};
   }
   bool connect() override { return true; }
 

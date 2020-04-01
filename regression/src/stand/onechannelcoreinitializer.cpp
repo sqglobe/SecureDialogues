@@ -78,7 +78,8 @@ OneChannelCoreInitializer::OneChannelCoreInitializer(
       make_db("cotnacts.db", "primary", penv),
       make_db("contacts.db", "secondary", penv, DB_DUP), penv, mDialogStorage);
   mConnectionStorage = make_connection_storage(
-      make_db("connections.db", "primary", penv), penv, mContactStorage);
+      make_db("connections.db", "primary", penv), penv, mContactStorage,
+      std::shared_ptr<const plugin_support::PluginsContainer>{});
   mCryptoSystemImpl = std::make_shared<FakeCryptoSystemImpl>();
   mDiscoveredContactStorage = make_discovered_contact_storage(
       make_db("discover_contacts.db", "primary", penv), penv);

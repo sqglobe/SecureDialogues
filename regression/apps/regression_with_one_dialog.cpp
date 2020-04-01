@@ -91,13 +91,14 @@ int main(int argc, char* argv[]) {
     auto ptr = std::make_unique<OneChannelCoreInitializer>(
         "regression_with_one_dialog_env");
     auto coreInit = ptr.get();
+    auto pluginContainer = std::make_shared<plugin_support::PluginsContainer>();
     std::shared_ptr<ApplicationSettingsGuard> settingsGuard =
         std::make_shared<ApplicationSettingsGuard>();
     std::shared_ptr<TranslationMaster> translatorMaster =
         std::make_shared<TranslationMaster>(settingsGuard->getSettings(),
-                                            "locale");
+                                            "locale", pluginContainer);
     MainWindow w(std::move(settingsGuard), std::move(translatorMaster),
-                 std::move(ptr));
+                 std::move(ptr), pluginContainer);
     w.show();
     std::thread th(send_100_messages, coreInit);
 

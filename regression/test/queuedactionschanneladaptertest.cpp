@@ -1,4 +1,6 @@
 #include <QtTest>
+#include <future>
+#include <thread>
 #include "stand-helpers/queuedactionschanneladapter.h"
 
 Q_DECLARE_METATYPE(std::string);
@@ -65,8 +67,8 @@ void QueuedActionsChannelAdapterTest::testSendToApplication() {
 
   auto res = adapter.receive();
 
-  QCOMPARE(res.first, address);
-  QCOMPARE(res.second, message);
+  QCOMPARE(res.front().first, address);
+  QCOMPARE(res.front().second, message);
 }
 
 void QueuedActionsChannelAdapterTest::testSendToApplication_data() {

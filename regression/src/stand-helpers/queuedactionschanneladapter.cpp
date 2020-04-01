@@ -92,8 +92,9 @@ void QueuedActionsChannelAdapter::send(const std::string& message,
   mReciever->send(message, adress);
 }
 
-std::pair<std::string, std::string> QueuedActionsChannelAdapter::receive() {
-  return mSender->recieve();
+std::list<std::pair<std::string, std::string>>
+QueuedActionsChannelAdapter::receive() {
+  return std::list<std::pair<std::string, std::string>>{mSender->recieve()};
 }
 
 bool QueuedActionsChannelAdapter::connect() {

@@ -9,9 +9,9 @@
 #include "despatcherrorsinkfake.h"
 #include "fakenotifier.h"
 
-#include "utils/systemmessagegenerator.h"
-
 #include <QDir>
+#include "communication/channel.h"
+#include "utils/systemmessagegenerator.h"
 
 DialogCreationAndMessagesExchangeCoreStand::
     DialogCreationAndMessagesExchangeCoreStand(std::string folder) :
@@ -27,7 +27,8 @@ DialogCreationAndMessagesExchangeCoreStand::
       make_db("cotnacts.db", "primary", penv),
       make_db("contacts.db", "secondary", penv, DB_DUP), penv, mDialogStorage);
   mConnectionStorage = make_connection_storage(
-      make_db("connections.db", "primary", penv), penv, mContactStorage);
+      make_db("connections.db", "primary", penv), penv, mContactStorage,
+      std::shared_ptr<const plugin_support::PluginsContainer>{});
 
   auto cryptoSystem = std::make_shared<CryptoSystemFake>();
   auto notifier = std::make_shared<FakeNotifier>();

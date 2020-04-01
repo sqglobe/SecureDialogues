@@ -2,8 +2,8 @@
 #define QUEUEDACTIONSCHANNELADAPTER_H
 
 #include <memory>
+#include <optional>
 #include "interfaces/abstractchanneladapter.h"
-
 class QueuedActionsChannelAdapter : public AbstractChannelAdapter {
   class Sender;
   class Reciever;
@@ -21,7 +21,8 @@ class QueuedActionsChannelAdapter : public AbstractChannelAdapter {
  public:
   void send(const std::string& message,
             const std::string& adress) noexcept(false) override;
-  std::pair<std::string, std::string> receive() noexcept(false) override;
+  std::list<std::pair<std::string, std::string>> receive() noexcept(
+      false) override;
   bool connect() override;
 
  public:
