@@ -3,7 +3,7 @@ project(stand)
 find_package(Qt5 COMPONENTS REQUIRED Core Gui Widgets)
 find_package(BerkeleyDB REQUIRED)
 find_package(persistent-storage REQUIRED)
-
+find_package(cryptopp REQUIRED)
 # We need add -DQT_WIDGETS_LIB when using QtWidgets in Qt 5.
 
 # The Qt5Widgets_INCLUDES also includes the include directories for

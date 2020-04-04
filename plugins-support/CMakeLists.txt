@@ -27,6 +27,6 @@ target_link_libraries(plugins-support-headers INTERFACE plugin-api)
 
 add_library(plugins-support  STATIC ${PLUGIN_SUPPORT_SOURCES} ${PLUGIN_SUPPORT_HEADER})
 target_link_libraries(plugins-support PUBLIC plugins-support-headers)
-target_link_libraries(plugins-support PRIVATE  Boost::filesystem ${CMAKE_DL_LIBS})
+target_link_libraries(plugins-support PRIVATE  Boost::filesystem ${CMAKE_DL_LIBS} boost-dll-headers)
 
 set_property(TARGET plugins-support PROPERTY POSITION_INDEPENDENT_CODE ON)

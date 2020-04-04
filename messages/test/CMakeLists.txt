@@ -3,7 +3,7 @@ project(tests)
 find_package(Qt5Test REQUIRED)
 find_package(BerkeleyDB REQUIRED)
 find_package(persistent-storage REQUIRED)
-
+find_package(cryptopp REQUIRED)
 
 SET(CMAKE_AUTOMOC ON)
 SET(CMAKE_INCLUDE_CURRENT_DIR ON)

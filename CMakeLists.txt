@@ -11,28 +11,10 @@ OPTION(
 )
 
 
-SET (CMAKE_LIBRARY_OUTPUT_DIRECTORY
-        ${PROJECT_BINARY_DIR}/bin
+SET (PROJECT_OUTPUT_DIRECTORY
+        ${PROJECT_BINARY_DIR}/Product/SecureDialogues
         CACHE PATH
-        "Single Directory for all"
-    )
-
-SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY
-        ${PROJECT_BINARY_DIR}/bin
-        CACHE PATH
-        "Single Directory for all"
-    )
-
-SET (CMAKE_ARCHIVE_OUTPUT_DIRECTORY
-        ${PROJECT_BINARY_DIR}/lib
-        CACHE PATH
-        "Single Directory for all"
-    )
-
-SET (DOCUMENTS_OUTPUT_DIRECTORY
-        ${PROJECT_BINARY_DIR}/documents
-        CACHE PATH
-        "Single Directory for all"
+        "Directory for complete product"
     )
 
 set(LOCALE_FILES_DIR "${PROJECT_BINARY_DIR}/bin/locale")
@@ -53,7 +35,6 @@ SET(XG_TESTS OFF)
 
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/submodules/cmake/FindBerkeleyDB" "${PROJECT_SOURCE_DIR}/cmake")
 
-set(MCRYPTO_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/submodules)
 set(TOP_DIR ${PROJECT_SOURCE_DIR})
 set(CROSSGUID_INCLUDE ${PROJECT_SOURCE_DIR}/submodules)
 
@@ -73,16 +54,25 @@ IF (NOT USE_VMIME_SHARED)
   ADD_DEFINITIONS(-DVMIME_STATIC)
 ENDIF()
 
-include_directories(${PROJECT_SOURCE_DIR}/submodules/spdlog/include)
-include_directories(${PROJECT_SOURCE_DIR}/submodules/eventpp/include)
-include_directories(${PROJECT_SOURCE_DIR}/submodules/boost-dll/include)
+add_library(spdlog-headers INTERFACE)
+target_include_directories(spdlog-headers INTERFACE ${PROJECT_SOURCE_DIR}/submodules/spdlog/include)
+
+add_library(eventpp-headers INTERFACE)
+target_include_directories(eventpp-headers INTERFACE ${PROJECT_SOURCE_DIR}/submodules/eventpp/include)
+
+add_library(boost-dll-headers INTERFACE)
+target_include_directories(boost-dll-headers INTERFACE ${PROJECT_SOURCE_DIR}/submodules/boost-dll/include)
 
 include(Gettext)
 
 add_subdirectory(submodules/crossguid)
-add_subdirectory(submodules/cryptopp)
-add_subdirectory(submodules/nlohmann_json)
-add_subdirectory(submodules/fmt)
+#add_subdirectory(submodules/cryptopp)
+#add_subdirectory(submodules/nlohmann_json)
+#add_subdirectory(submodules/fmt)
+
+#add_library(json-hpp INTERFACE)
+#target_include_directories(json-hpp INTERFACE ${PROJECT_SOURCE_DIR}/submodules/nlohmann_json/single_include/)
+#add_subdirectory(submodules/json-schema-validator)
 
 add_subdirectory( messages )
 add_subdirectory( gui )

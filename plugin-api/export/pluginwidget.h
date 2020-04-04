@@ -9,7 +9,7 @@ class PluginWidget : public QWidget {
   using QWidget::QWidget;
 
  public:
-  virtual const char* fillConnectionInfo(
+  [[nodiscard]] virtual const char* fillConnectionInfo(
       PluginConnectionInfo* conninfo) noexcept = 0;
   virtual void setConnectionInfo(PluginConnectionInfo* connInfo) noexcept = 0;
 

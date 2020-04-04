@@ -8,13 +8,13 @@ class RecievedMessagesIterator {
   virtual ~RecievedMessagesIterator() = default;
 
  public:
-  virtual bool hasNext() const noexcept = 0;
+  [[nodiscard]] virtual bool hasNext() const noexcept = 0;
   virtual bool next() noexcept = 0;
 
-  virtual PluginApiErrorCodes error() const noexcept = 0;
+  [[nodiscard]] virtual PluginApiErrorCodes error() const noexcept = 0;
 
-  virtual const char* address() const noexcept = 0;
-  virtual const char* message() const noexcept = 0;
+  [[nodiscard]] virtual const char* address() const noexcept = 0;
+  [[nodiscard]] virtual const char* message() const noexcept = 0;
 };
 
 #endif  // RECIEVEDMESSAGESITERATOR_H

@@ -11,10 +11,11 @@ class PluginMessageCommunicator {
   virtual ~PluginMessageCommunicator() = default;
 
  public:
-  virtual PluginApiErrorCodes send(const char* addressTo,
-                                   const char* message) noexcept = 0;
-  virtual RecievedMessagesIterator* recieve() noexcept = 0;
-  virtual PluginApiErrorCodes connect(
+  [[nodiscard]] virtual PluginApiErrorCodes send(
+      const char* addressTo,
+      const char* message) noexcept = 0;
+  [[nodiscard]] virtual RecievedMessagesIterator* recieve() noexcept = 0;
+  [[nodiscard]] virtual PluginApiErrorCodes connect(
       const PluginConnectionInfo* connInfo) noexcept = 0;
 };
 

@@ -1,0 +1,28 @@
+{
+    "name": "Gmail Plugin",
+    "descripton": "Plugin allows to send and recieve messages through gmail api",
+    "root-module": "$<TARGET_FILE_NAME:gmail-plugin>",
+    "version":{
+        "major": 1,
+        "minor": 0,
+        "revision": 0
+    },
+    "api-version":{
+        "major": @PLUGIN_API_VERSION_MAJOR@,
+        "minor": @PLUGIN_API_VERSION_MINOR@,
+        "revision": @PLUGIN_API_VERSION_REVISION@
+    },
+    "language": {
+        "folder": "locale",
+        "translations": [
+            {
+                "name": "gmail_plugin_en_EN",
+                "lang": "en"
+            },
+            {
+                "name": "gmail_plugin_ru_RU",
+                "lang": "ru"
+            }
+        ]
+    }
+}

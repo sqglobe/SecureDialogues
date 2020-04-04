@@ -4,6 +4,7 @@ find_package(Qt5 COMPONENTS REQUIRED Core Gui Widgets)
 find_package(BerkeleyDB REQUIRED)
 find_package(Boost  REQUIRED system)
 find_package(persistent-storage REQUIRED)
+find_package(cryptopp REQUIRED)
 
 set(MAIN_SOURCE
     main.cpp
@@ -33,3 +34,4 @@ if(CMAKE_BUILD_TYPE STREQUAL "Release")
 endif()
 target_compile_definitions(SecureDialogues PRIVATE NO_MEMBER_FUNCTION_PARTIAL_SPECIALIZATION)
 add_internationals(SecureDialogues ru_RU.UTF-8 "locale" "${LOCALE_FILES_DIR}" securedialogues 1.1)
+install(TARGETS SecureDialogues RUNTIME DESTINATION ".")

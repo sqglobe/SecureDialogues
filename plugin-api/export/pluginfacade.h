@@ -13,18 +13,21 @@ class PluginFacade {
   virtual ~PluginFacade() = default;
 
  public:
-  virtual const char* getId() const noexcept = 0;
-  virtual const char* getPluginName() const noexcept = 0;
-  virtual const char* getTranslationFileName(Language lang) const noexcept = 0;
-  virtual const char* getGettextDomain() const noexcept = 0;
+  [[nodiscard]] virtual const char* getId() const noexcept = 0;
+  [[nodiscard]] virtual const char* getPluginName() const noexcept = 0;
+  [[nodiscard]] virtual const char* getTranslationFileName(Language lang) const
+      noexcept = 0;
+  [[nodiscard]] virtual const char* getGettextDomain() const noexcept = 0;
 
  public:
-  virtual PluginWidget* getWidget() const noexcept = 0;
-  virtual const PluginConnectionSerializer* getSerializer() const noexcept = 0;
-  virtual PluginMessageCommunicator* makeCommunicator() noexcept = 0;
-  virtual PluginConnectionInfo* makeEmptyConn() noexcept = 0;
-  virtual const PluginAddressValidator* getAddressValidator() const
+  [[nodiscard]] virtual PluginWidget* getWidget() const noexcept = 0;
+  [[nodiscard]] virtual const PluginConnectionSerializer* getSerializer() const
       noexcept = 0;
+  [[nodiscard]] virtual PluginMessageCommunicator*
+  makeCommunicator() noexcept = 0;
+  [[nodiscard]] virtual PluginConnectionInfo* makeEmptyConn() noexcept = 0;
+  [[nodiscard]] virtual const PluginAddressValidator* getAddressValidator()
+      const noexcept = 0;
 
  public:
   virtual void release(PluginMessageCommunicator* comm) noexcept = 0;

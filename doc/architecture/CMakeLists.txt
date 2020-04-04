@@ -33,10 +33,12 @@ add_custom_target(
 add_custom_target(
   create-architecture
   ALL
-  COMMAND ${ASCIIDOC_EXECUTABLE} -a generateddir='${DOCUMENTS_OUTPUT_DIRECTORY}/${UMLS_DIR}' -a staticdir='${CMAKE_CURRENT_SOURCE_DIR}/images'   -D '${DOCUMENTS_OUTPUT_DIRECTORY}' ${DOCS}
+  COMMAND ${ASCIIDOC_EXECUTABLE} -a generateddir='${DOCUMENTS_OUTPUT_DIRECTORY}/${UMLS_DIR}' -a staticdir='${CMAKE_CURRENT_SOURCE_DIR}/images' -D '${CMAKE_CURRENT_BINARY_DIR}' ${DOCS}
   SOURCES ${DOCS}
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
   DEPENDS  create-arch-diagrams
 )
+
+install(FILES  ${CMAKE_CURRENT_BINARY_DIR}/architecture.pdf DESTINATION documentation)
 
 

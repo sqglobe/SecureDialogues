@@ -10,8 +10,8 @@ class PluginConnectionSerializer {
   virtual ~PluginConnectionSerializer() = default;
 
  public:
-  virtual uint32_t get_size(const PluginConnectionInfo* connInfo) const
-      noexcept = 0;
+  [[nodiscard]] virtual uint32_t get_size(
+      const PluginConnectionInfo* connInfo) const noexcept = 0;
   virtual bool serialize(void* buffer,
                          const PluginConnectionInfo* connInfo) const
       noexcept = 0;
