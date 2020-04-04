@@ -1,6 +1,9 @@
 #ifndef PLAGINFACADE_H
 #define PLAGINFACADE_H
 #include "languages.h"
+
+#include <QtGlobal>
+
 class PluginWidget;
 class PluginConnectionInfo;
 class PluginConnectionSerializer;
@@ -8,7 +11,7 @@ class PluginMessageCommunicator;
 class RecievedMessagesIterator;
 class PluginAddressValidator;
 
-class PluginFacade {
+class Q_DECL_EXPORT PluginFacade {
  public:
   virtual ~PluginFacade() = default;
 

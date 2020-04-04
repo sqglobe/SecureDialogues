@@ -1,11 +1,11 @@
 #ifndef PLUGINCONNECTIONSERIALIZER_H
 #define PLUGINCONNECTIONSERIALIZER_H
 
+#include <QtGlobal>
 #include <cstdint>
-
 class PluginConnectionInfo;
 
-class PluginConnectionSerializer {
+class Q_DECL_EXPORT PluginConnectionSerializer {
  public:
   virtual ~PluginConnectionSerializer() = default;
 

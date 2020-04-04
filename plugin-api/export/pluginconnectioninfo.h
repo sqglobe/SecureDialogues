@@ -2,8 +2,9 @@
 #define PLUGINCONNECTIONINFO_H
 
 #include <stdint.h>
+#include <QtGlobal>
 
-class PluginConnectionInfo {
+class Q_DECL_EXPORT PluginConnectionInfo {
  public:
   virtual ~PluginConnectionInfo() = default;
 

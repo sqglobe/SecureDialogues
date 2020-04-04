@@ -1,5 +1,5 @@
 project(plugin-api LANGUAGES CXX)
-find_package(Qt5 COMPONENTS REQUIRED Widgets)
+find_package(Qt5 COMPONENTS REQUIRED Widgets Core)
 
 include(version-defs.cmake)
 
@@ -20,6 +20,6 @@ add_library(plugin-api STATIC
 )
 
 configure_file(api-version.h.in ${CMAKE_CURRENT_BINARY_DIR}/api-version.h @ONLY)
-target_include_directories(plugin-api PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${Qt5Widgets_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR} )
+target_include_directories(plugin-api PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${Qt5Core_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR} )
 set_target_properties(plugin-api PROPERTIES LINKER_LANGUAGE CXX)
 set_target_properties(plugin-api PROPERTIES SCHEMA_FILE ${CMAKE_CURRENT_SOURCE_DIR}/plugin.schema.json)

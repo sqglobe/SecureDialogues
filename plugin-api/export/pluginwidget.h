@@ -2,9 +2,11 @@
 #define PLUGINWIDGET_H
 
 #include <QWidget>
+#include <QtGlobal>
 
 class PluginConnectionInfo;
-class PluginWidget : public QWidget {
+
+class Q_DECL_EXPORT PluginWidget : public QWidget {
  public:
   using QWidget::QWidget;
 
