@@ -1,9 +1,9 @@
 #ifndef PLUGINAPIERRORCODES_H
 #define PLUGINAPIERRORCODES_H
 
-#include <QtGlobal>
+#include "export-definition.h"
 
-enum class Q_DECL_EXPORT PluginApiErrorCodes {
+enum class EXPORTED PluginApiErrorCodes {
   NoError,
   Disconected,
   NotAuthorized,

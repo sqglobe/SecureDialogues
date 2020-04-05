@@ -34,7 +34,10 @@ add_library(gmail-plugin MODULE
     description.json.in
     )
 
-
+file(MAKE_DIRECTORY  "${CMAKE_CURRENT_BINARY_DIR}/Gmail.plugin")
+configure_file(description.json.in "${CMAKE_CURRENT_BINARY_DIR}/description.json.pred")
+file(GENERATE OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/Gmail.plugin/description.json" INPUT "${CMAKE_CURRENT_BINARY_DIR}/description.json.pred" )
+add_internationals(gmail-plugin  ru_RU.UTF-8 "locale" "${CMAKE_CURRENT_BINARY_DIR}/Gmail.plugin/locale")
 
 qt5_wrap_cpp(WRAP_MOC_GUI gmailconnectionwidget.h)
 
@@ -51,14 +54,8 @@ set_target_properties(gmail-plugin PROPERTIES
 
 set_property(TARGET gmail-plugin PROPERTY POSITION_INDEPENDENT_CODE ON)
 
-file(MAKE_DIRECTORY  "${CMAKE_CURRENT_BINARY_DIR}/Gmail.plugin")
-configure_file(description.json.in "${CMAKE_CURRENT_BINARY_DIR}/description.json.pred")
-file(GENERATE OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/Gmail.plugin/description.json" INPUT "${CMAKE_CURRENT_BINARY_DIR}/description.json.pred" )
-add_internationals(gmail-plugin  ru_RU.UTF-8 "locale" "${CMAKE_CURRENT_BINARY_DIR}/Gmail.plugin/locale")
-
 add_custom_command(TARGET gmail-plugin POST_BUILD
     COMMAND cmake -E copy $<TARGET_FILE:gmail-plugin> "${CMAKE_CURRENT_BINARY_DIR}/Gmail.plugin"
     COMMAND ${CMAKE_COMMAND} -E copy "${QM_FILES}" "${CMAKE_CURRENT_BINARY_DIR}/Gmail.plugin/locale"
 )
-
 install(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/Gmail.plugin" DESTINATION "plugins")

@@ -1,10 +1,10 @@
 #ifndef RECIEVEDMESSAGESITERATOR_H
 #define RECIEVEDMESSAGESITERATOR_H
 
-#include <QtGlobal>
+#include "export-definition.h"
 #include "pluginapierrorcodes.h"
 
-class Q_DECL_EXPORT RecievedMessagesIterator {
+class EXPORTED RecievedMessagesIterator {
  public:
   virtual ~RecievedMessagesIterator() = default;
 

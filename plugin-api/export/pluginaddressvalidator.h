@@ -1,8 +1,9 @@
 #ifndef PLUGINADDRESSVALIDATOR_H
 #define PLUGINADDRESSVALIDATOR_H
-#include <QtGlobal>
 
-class Q_DECL_EXPORT PluginAddressValidator {
+#include "export-definition.h"
+
+class EXPORTED PluginAddressValidator {
  public:
   virtual ~PluginAddressValidator() = default;
 

@@ -1,7 +1,8 @@
 {
-    "name": "Emai Plugin",
-    "descripton": "Plugin allows to send and recieve messages through smtp and imap protocols",
+    "name": "VK",
+    "descripton": "Plugin allows to send and recieve messages through social network VK",
     "root-module": "$<TARGET_FILE_NAME:vk-plugin>",
+    "gettext-domain": "vk-plugin",
     "version":{
         "major": 1,
         "minor": 0,

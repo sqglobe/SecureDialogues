@@ -5,6 +5,7 @@
 		"name": {"type": "string"},
 		"descripton": {"type": "string"},
 		"root-module": {"type": "string"},
+                "gettext-domain": {"type": "string"},
 		"version":
 		{
 			"type": "object",

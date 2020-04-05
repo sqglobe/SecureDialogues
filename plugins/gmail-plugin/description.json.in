@@ -1,7 +1,8 @@
 {
-    "name": "Gmail Plugin",
+    "name": "Gmail",
     "descripton": "Plugin allows to send and recieve messages through gmail api",
     "root-module": "$<TARGET_FILE_NAME:gmail-plugin>",
+    "gettext-domain": "gmail-plugin",
     "version":{
         "major": 1,
         "minor": 0,

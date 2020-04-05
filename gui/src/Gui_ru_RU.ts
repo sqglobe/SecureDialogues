@@ -175,7 +175,7 @@
         <translation>Соединение не подтверждено</translation>
     </message>
     <message>
-        <location filename="widgets/connectioninfowidget.cpp" line="146"/>
+        <location filename="widgets/connectioninfowidget.cpp" line="149"/>
         <source>Connection type required!</source>
         <translation>Необходимо указать тип соединения</translation>
     </message>

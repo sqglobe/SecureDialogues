@@ -35,6 +35,12 @@ add_library(vk-plugin MODULE
 
     description.json.in
     )
+
+file(MAKE_DIRECTORY  "${CMAKE_CURRENT_BINARY_DIR}/VK.plugin")
+configure_file(description.json.in "${CMAKE_CURRENT_BINARY_DIR}/description.json.pred")
+file(GENERATE OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/VK.plugin/description.json" INPUT "${CMAKE_CURRENT_BINARY_DIR}/description.json.pred" )
+add_internationals(vk-plugin  ru_RU.UTF-8 "locale" "${CMAKE_CURRENT_BINARY_DIR}/VK.plugin/locale")
+
 qt5_wrap_cpp(WRAP_MOC_GUI vkconnectionwidget.h)
 
 qt5_wrap_ui(UI_WRAP vkconnectionwidget.ui)
@@ -50,14 +56,9 @@ set_target_properties(vk-plugin PROPERTIES
     PREFIX ""
     POSITION_INDEPENDENT_CODE ON)
 
-file(MAKE_DIRECTORY  "${CMAKE_CURRENT_BINARY_DIR}/VK.plugin")
-configure_file(description.json.in "${CMAKE_CURRENT_BINARY_DIR}/description.json.pred")
-file(GENERATE OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/VK.plugin/description.json" INPUT "${CMAKE_CURRENT_BINARY_DIR}/description.json.pred" )
-add_internationals(vk-plugin  ru_RU.UTF-8 "locale" "${CMAKE_CURRENT_BINARY_DIR}/VK.plugin/locale")
 
 add_custom_command(TARGET vk-plugin POST_BUILD
     COMMAND cmake -E copy $<TARGET_FILE:vk-plugin> "${CMAKE_CURRENT_BINARY_DIR}/VK.plugin"
     COMMAND ${CMAKE_COMMAND} -E copy "${QM_FILES}" "${CMAKE_CURRENT_BINARY_DIR}/VK.plugin/locale"
 )
-
 install(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/VK.plugin" DESTINATION "plugins")

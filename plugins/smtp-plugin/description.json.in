@@ -1,7 +1,8 @@
 {
-    "name": "Emai Plugin",
+    "name": "E-mail",
     "descripton": "Plugin allows to send and recieve messages through smtp and imap protocols",
     "root-module": "$<TARGET_FILE_NAME:smtp-plugin>",
+    "gettext-domain": "smtp-plugin",
     "version":{
         "major": 1,
         "minor": 0,

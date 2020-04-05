@@ -10,9 +10,10 @@
 
 plugin_support::PluginInterface::PluginInterface(
     boost::dll::shared_library&& lib,
-    PluginFacade* facade) :
+    PluginFacade* facade,
+    PlugingMetaInfo&& info) :
     mLib(std::move(lib)),
-    mFacade(facade) {}
+    mFacade(facade), mMetaInfo(std::move(info)) {}
 
 std::unique_ptr<plugin_support::PluginWidgetWrapper>
 plugin_support::PluginInterface::getWidget() noexcept {
@@ -49,7 +50,7 @@ plugin_support::PluginInterface::makeConnInfo() const noexcept {
 }
 
 std::string plugin_support::PluginInterface::getName() const noexcept {
-  return mFacade->getPluginName();
+  return mMetaInfo.name;
 }
 
 std::string plugin_support::PluginInterface::getId() const noexcept {
@@ -58,9 +59,14 @@ std::string plugin_support::PluginInterface::getId() const noexcept {
 
 std::string plugin_support::PluginInterface::getTranslationFileName(
     Language lang) const noexcept {
-  return mFacade->getTranslationFileName(lang);
+  auto iter = mMetaInfo.languages.find(lang);
+  return iter == mMetaInfo.languages.cend() ? "" : iter->second;
 }
 
 std::string plugin_support::PluginInterface::getGettextDomain() const noexcept {
-  return mFacade->getGettextDomain();
+  return mMetaInfo.gettextDomain;
+}
+
+std::string plugin_support::PluginInterface::getLocaleFolder() const noexcept {
+  return mMetaInfo.localeFolder;
 }

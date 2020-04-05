@@ -1,13 +1,13 @@
 #ifndef PLUGINMESSAGECOMMUNICATOR_H
 #define PLUGINMESSAGECOMMUNICATOR_H
 
-#include <QtGlobal>
+#include "export-definition.h"
 #include "pluginapierrorcodes.h"
 
 class RecievedMessagesIterator;
 class PluginConnectionInfo;
 
-class Q_DECL_EXPORT PluginMessageCommunicator {
+class EXPORTED PluginMessageCommunicator {
  public:
   virtual ~PluginMessageCommunicator() = default;
 

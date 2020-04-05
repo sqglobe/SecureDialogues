@@ -2,7 +2,7 @@
 #define PLAGINFACADE_H
 #include "languages.h"
 
-#include <QtGlobal>
+#include "export-definition.h"
 
 class PluginWidget;
 class PluginConnectionInfo;
@@ -11,16 +11,12 @@ class PluginMessageCommunicator;
 class RecievedMessagesIterator;
 class PluginAddressValidator;
 
-class Q_DECL_EXPORT PluginFacade {
+class EXPORTED PluginFacade {
  public:
   virtual ~PluginFacade() = default;
 
  public:
   [[nodiscard]] virtual const char* getId() const noexcept = 0;
-  [[nodiscard]] virtual const char* getPluginName() const noexcept = 0;
-  [[nodiscard]] virtual const char* getTranslationFileName(Language lang) const
-      noexcept = 0;
-  [[nodiscard]] virtual const char* getGettextDomain() const noexcept = 0;
 
  public:
   [[nodiscard]] virtual PluginWidget* getWidget() const noexcept = 0;

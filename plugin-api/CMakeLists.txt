@@ -13,6 +13,7 @@ add_library(plugin-api STATIC
     export/pluginfacade.h
     export/pluginapidefs.h
     export/pluginaddressvalidator.h
+    export/export-definition.h
     inner/plugininnerdefs.h
     export/languages.h
     api-version.h.in
