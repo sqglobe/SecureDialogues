@@ -10,6 +10,4 @@
 [submodule "submodules/cmake/FindBerkeleyDB"]
 	path = submodules/cmake/FindBerkeleyDB
 	url = https://gitlab.com/sum01/FindBerkeleyDB.git
-[submodule "submodules/boost-dll"]
-	path = submodules/boost-dll
-	url = https://github.com/apolukhin/Boost.DLL.git
+

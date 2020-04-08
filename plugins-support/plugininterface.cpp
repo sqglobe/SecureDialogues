@@ -8,11 +8,12 @@
 #include "pluginmessagecommunicatorwrapper.h"
 #include "pluginwidgetwrapper.h"
 
+#include <boost/dll/shared_library.hpp>
 plugin_support::PluginInterface::PluginInterface(
     boost::dll::shared_library&& lib,
     PluginFacade* facade,
     PlugingMetaInfo&& info) :
-    mLib(std::move(lib)),
+    mLib(std::make_unique<boost::dll::shared_library>(std::move(lib))),
     mFacade(facade), mMetaInfo(std::move(info)) {}
 
 std::unique_ptr<plugin_support::PluginWidgetWrapper>

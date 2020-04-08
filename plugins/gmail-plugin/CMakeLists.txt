@@ -1,6 +1,4 @@
 project(gmail-plugin)
-find_package(persistent-storage REQUIRED)
-find_package(BerkeleyDB REQUIRED)
 find_package(Qt5 COMPONENTS REQUIRED Core Gui Widgets)
 find_package(Qt5LinguistTools REQUIRED)
 find_package(nlohmann_json REQUIRED)
@@ -47,7 +45,7 @@ qt5_create_translation(QM_FILES gmailconnectionwidget.ui ${GMAIL_PLUGIN_HEADERS}
 target_sources(gmail-plugin PRIVATE  ${WRAP_MOC_GUI} ${UI_WRAP} ${QM_FILES})
 set_target_properties(gmail-plugin PROPERTIES LINKER_LANGUAGE CXX)
 target_include_directories(gmail-plugin  PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/submodules/spdlog/include)
-target_link_libraries(gmail-plugin PUBLIC plugin-api curl-wrapper persistent-storage nlohmann_json::nlohmann_json plugins-utils utils spdlog-headers)
+target_link_libraries(gmail-plugin PUBLIC plugin-api curl-wrapper nlohmann_json::nlohmann_json plugins-utils utils spdlog-headers)
 set_target_properties(gmail-plugin PROPERTIES
     PREFIX ""
     POSITION_INDEPENDENT_CODE ON)
@@ -59,3 +57,7 @@ add_custom_command(TARGET gmail-plugin POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy "${QM_FILES}" "${CMAKE_CURRENT_BINARY_DIR}/Gmail.plugin/locale"
 )
 install(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/Gmail.plugin" DESTINATION "plugins")
+
+if(WIN32)
+    target_compile_definitions(gmail-plugin PRIVATE WIN_EXPORT)
+endif()

@@ -4,10 +4,14 @@
 #include "not_owned.h"
 #include "owneddeletior.h"
 
+#include <map>
 #include <memory>
 
-#include <boost/dll/shared_library.hpp>
-#include <map>
+namespace boost {
+namespace dll {
+class shared_library;
+}
+}  // namespace boost
 
 class PluginFacade;
 class PluginWidget;
@@ -51,7 +55,7 @@ class PluginInterface : public std::enable_shared_from_this<PluginInterface> {
   std::string getLocaleFolder() const noexcept;
 
  private:
-  boost::dll::shared_library mLib;
+  std::unique_ptr<boost::dll::shared_library> mLib;
   PluginFacade* mFacade;
   PlugingMetaInfo mMetaInfo;
 };

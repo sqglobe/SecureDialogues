@@ -175,7 +175,7 @@
         <translation>Соединение не подтверждено</translation>
     </message>
     <message>
-        <location filename="widgets/connectioninfowidget.cpp" line="149"/>
+        <location filename="widgets/connectioninfowidget.cpp" line="147"/>
         <source>Connection type required!</source>
         <translation>Необходимо указать тип соединения</translation>
     </message>
@@ -660,8 +660,8 @@ Address: %3</source>
         <translation>Добавить/изменить контакт</translation>
     </message>
     <message>
-        <location filename="models/channelslistmodel.cpp" line="24"/>
-        <location filename="models/channelslistmodel.cpp" line="71"/>
+        <location filename="models/channelslistmodel.cpp" line="27"/>
+        <location filename="models/channelslistmodel.cpp" line="74"/>
         <source>Connection not established yet</source>
         <translation>Соединение не установлено</translation>
     </message>

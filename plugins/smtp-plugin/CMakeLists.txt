@@ -1,6 +1,4 @@
 project(smtp-plugin)
-find_package(persistent-storage REQUIRED)
-find_package(BerkeleyDB REQUIRED)
 find_package(Qt5 COMPONENTS REQUIRED Core Gui Widgets)
 find_package(Qt5LinguistTools REQUIRED)
 
@@ -88,7 +86,7 @@ target_sources(smtp-plugin PRIVATE ${UI_WRAP} ${QM_FILES} ${WRAP_MOC_GUI})
 set_target_properties(smtp-plugin PROPERTIES LINKER_LANGUAGE CXX)
 
 target_include_directories(smtp-plugin PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${VMIME_INCLUDE_DIRS})
-target_link_libraries(smtp-plugin PUBLIC  ${VMIME_LIBRARIES} plugin-api persistent-storage plugins-utils utils spdlog-headers)
+target_link_libraries(smtp-plugin PUBLIC  ${VMIME_LIBRARIES} plugin-api plugins-utils utils spdlog-headers)
 
 if(WIN32)
     target_link_libraries(smtp-plugin PRIVATE ws2_32 iconv)
@@ -117,3 +115,6 @@ add_custom_command(TARGET smtp-plugin POST_BUILD
 
 
 install(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/Email.plugin" DESTINATION "plugins")
+if(WIN32)
+    target_compile_definitions(smtp-plugin PRIVATE WIN_EXPORT)
+endif()

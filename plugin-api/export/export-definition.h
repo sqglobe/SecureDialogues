@@ -4,7 +4,7 @@
 #if defined _WIN32 || defined __CYGWIN__
 #ifdef WIN_EXPORT
 // Exporting...
-#ifdef __GNUC__
+#if defined(__GNUC__)
 #define EXPORTED __attribute__((dllexport))
 #else
 #define EXPORTED \
