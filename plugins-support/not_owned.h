@@ -12,8 +12,8 @@ class not_owned {
   friend PluginInterface;
 
  private:
-  not_owned(std::shared_ptr<const PluginInterface> interface, T* obj) :
-      mInterface(std::move(interface)), mObject(obj) {}
+  not_owned(std::shared_ptr<const PluginInterface> pInterface, T* obj) :
+      mInterface(std::move(pInterface)), mObject(obj) {}
 
  public:
   not_owned(not_owned&& obj) :

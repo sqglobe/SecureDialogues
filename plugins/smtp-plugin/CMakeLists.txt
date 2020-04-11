@@ -45,7 +45,7 @@ else()
     message(FATAL_ERROR "Cant file vmime")
 endif()
 
-add_library(smtp-plugin MODULE 
+add_library(smtp-plugin MODULE
     email-agent/imapreciever.cpp
     email-agent/imapreciever.h
     email-agent/skipcertverifier.cpp
@@ -86,10 +86,10 @@ target_sources(smtp-plugin PRIVATE ${UI_WRAP} ${QM_FILES} ${WRAP_MOC_GUI})
 set_target_properties(smtp-plugin PROPERTIES LINKER_LANGUAGE CXX)
 
 target_include_directories(smtp-plugin PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${VMIME_INCLUDE_DIRS})
-target_link_libraries(smtp-plugin PUBLIC  ${VMIME_LIBRARIES} plugin-api plugins-utils utils spdlog-headers)
+target_link_libraries(smtp-plugin PUBLIC  ${VMIME_LIBRARIES} plugin-api plugins-utils utils spdlog-headers  Qt5::Core Qt5::Gui  Qt5::Widgets)
 
 if(WIN32)
-    target_link_libraries(smtp-plugin PRIVATE ws2_32 iconv)
+    target_link_libraries(smtp-plugin PRIVATE ws2_32 iconv intl)
 endif()
 
 if(NOT USE_VMIME_SHARED)

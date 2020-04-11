@@ -3,7 +3,7 @@
 
 #include "export-definition.h"
 
-enum class EXPORTED PluginApiErrorCodes {
+enum class PluginApiErrorCodes {
   NoError,
   Disconected,
   NotAuthorized,

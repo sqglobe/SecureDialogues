@@ -45,7 +45,11 @@ qt5_create_translation(QM_FILES gmailconnectionwidget.ui ${GMAIL_PLUGIN_HEADERS}
 target_sources(gmail-plugin PRIVATE  ${WRAP_MOC_GUI} ${UI_WRAP} ${QM_FILES})
 set_target_properties(gmail-plugin PROPERTIES LINKER_LANGUAGE CXX)
 target_include_directories(gmail-plugin  PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/submodules/spdlog/include)
-target_link_libraries(gmail-plugin PUBLIC plugin-api curl-wrapper nlohmann_json::nlohmann_json plugins-utils utils spdlog-headers)
+target_link_libraries(gmail-plugin PUBLIC plugin-api curl-wrapper nlohmann_json::nlohmann_json plugins-utils utils spdlog-headers  Qt5::Core Qt5::Gui  Qt5::Widgets )
+
+if(WIN32)
+    target_link_libraries(gmail-plugin PUBLIC intl)
+endif()
 set_target_properties(gmail-plugin PROPERTIES
     PREFIX ""
     POSITION_INDEPENDENT_CODE ON)

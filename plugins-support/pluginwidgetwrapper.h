@@ -16,7 +16,7 @@ class PluginInterface;
 class PluginWidgetWrapper {
  public:
   PluginWidgetWrapper(PluginWidget* widget,
-                      std::shared_ptr<PluginInterface> interface);
+                      std::shared_ptr<PluginInterface> pInterface);
 
  public:
   std::shared_ptr<PluginConnectionInfo> makeConnection() noexcept(false);

@@ -7,11 +7,9 @@
 #include <map>
 #include <memory>
 
-namespace boost {
-namespace dll {
-class shared_library;
-}
-}  // namespace boost
+namespace dynalo {
+class library;
+}  // namespace dynalo
 
 class PluginFacade;
 class PluginWidget;
@@ -35,7 +33,7 @@ struct PlugingMetaInfo {
 
 class PluginInterface : public std::enable_shared_from_this<PluginInterface> {
  public:
-  PluginInterface(boost::dll::shared_library&& lib,
+  PluginInterface(dynalo::library&& lib,
                   PluginFacade* facade,
                   PlugingMetaInfo&& info);
 
@@ -55,7 +53,7 @@ class PluginInterface : public std::enable_shared_from_this<PluginInterface> {
   std::string getLocaleFolder() const noexcept;
 
  private:
-  std::unique_ptr<boost::dll::shared_library> mLib;
+  std::unique_ptr<dynalo::library> mLib;
   PluginFacade* mFacade;
   PlugingMetaInfo mMetaInfo;
 };

@@ -1,6 +1,7 @@
 add_library(plugins-utils STATIC
     recievedmessagesiteratorimpl.h
     recievedmessagesiteratorimpl.cpp
+    serialization-helpers.h
     )
 target_link_libraries(plugins-utils  PUBLIC plugin-api )
 target_link_libraries(plugins-utils PRIVATE utils-headers)

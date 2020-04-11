@@ -4,21 +4,13 @@
 #if defined _WIN32 || defined __CYGWIN__
 #ifdef WIN_EXPORT
 // Exporting...
-#if defined(__GNUC__)
-#define EXPORTED __attribute__((dllexport))
-#else
 #define EXPORTED \
   __declspec(    \
       dllexport)  // Note: actually gcc seems to also supports this syntax.
-#endif
-#else
-#ifdef __GNUC__
-#define EXPORTED __attribute__((dllimport))
 #else
 #define EXPORTED \
   __declspec(    \
       dllimport)  // Note: actually gcc seems to also supports this syntax.
-#endif
 #endif
 #define NOT_EXPORTED
 #else

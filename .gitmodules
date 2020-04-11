@@ -11,3 +11,6 @@
 	path = submodules/cmake/FindBerkeleyDB
 	url = https://gitlab.com/sum01/FindBerkeleyDB.git
 
+[submodule "submodules/dynalo"]
+	path = submodules/dynalo
+	url = https://github.com/sqglobe/dynalo.git

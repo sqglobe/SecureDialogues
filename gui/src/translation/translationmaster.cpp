@@ -95,12 +95,12 @@ void TranslationMaster::onSettingsChanged() {
         mPluginTranslators.cbegin(), mPluginTranslators.cend(),
         [this](const TranslateUnit& unit) {
           if (!unit.translator->load(
-                  unit.interface->getTranslationFileName(mLang).c_str(),
-                  unit.interface->getLocaleFolder().c_str())) {
+                  unit.pInterface->getTranslationFileName(mLang).c_str(),
+                  unit.pInterface->getLocaleFolder().c_str())) {
             spdlog::get("root_logger")
                 ->error("Cant install translator for lang {0} in path {1}",
-                        unit.interface->getTranslationFileName(mLang).c_str(),
-                        unit.interface->getLocaleFolder().c_str());
+                        unit.pInterface->getTranslationFileName(mLang).c_str(),
+                        unit.pInterface->getLocaleFolder().c_str());
           }
         });
 

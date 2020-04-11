@@ -1,5 +1,6 @@
 #include "plugininterface.h"
 
+#include <dynalo/dynalo.hpp>
 #include "export/pluginconnectioninfo.h"
 #include "export/pluginconnectionserializer.h"
 #include "export/pluginfacade.h"
@@ -8,12 +9,10 @@
 #include "pluginmessagecommunicatorwrapper.h"
 #include "pluginwidgetwrapper.h"
 
-#include <boost/dll/shared_library.hpp>
-plugin_support::PluginInterface::PluginInterface(
-    boost::dll::shared_library&& lib,
-    PluginFacade* facade,
-    PlugingMetaInfo&& info) :
-    mLib(std::make_unique<boost::dll::shared_library>(std::move(lib))),
+plugin_support::PluginInterface::PluginInterface(dynalo::library&& lib,
+                                                 PluginFacade* facade,
+                                                 PlugingMetaInfo&& info) :
+    mLib(std::make_unique<dynalo::library>(std::move(lib))),
     mFacade(facade), mMetaInfo(std::move(info)) {}
 
 std::unique_ptr<plugin_support::PluginWidgetWrapper>
@@ -31,7 +30,7 @@ std::shared_ptr<const PluginAddressValidator>
 plugin_support::PluginInterface::getAddressValidator() const noexcept {
   return std::shared_ptr<const PluginAddressValidator>(
       mFacade->getAddressValidator(),
-      [interface = this->shared_from_this()](const auto*) {
+      [_interface = this->shared_from_this()](const auto*) {
 
       });
 }

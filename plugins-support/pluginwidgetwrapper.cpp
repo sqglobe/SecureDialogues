@@ -4,9 +4,9 @@
 #include "support-functions.h"
 plugin_support::PluginWidgetWrapper::PluginWidgetWrapper(
     PluginWidget* widget,
-    std::shared_ptr<PluginInterface> interface) :
+    std::shared_ptr<PluginInterface> pInterface) :
     mWidget(widget),
-    mInterface(std::move(interface)) {}
+    mInterface(std::move(pInterface)) {}
 
 std::shared_ptr<PluginConnectionInfo>
 plugin_support::PluginWidgetWrapper::makeConnection() noexcept(false) {

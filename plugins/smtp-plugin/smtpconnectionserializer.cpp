@@ -1,19 +1,7 @@
 #include "smtpconnectionserializer.h"
 #include <cstring>
-#include "persistent-storage/utils/store_primitives.h"
+#include "serialization-helpers.h"
 #include "smtpconnectioninfo.h"
-template <typename T>
-const void* restore_simple_type(T& t, const void* src) {
-  memcpy(&t, src, sizeof(t));
-  return static_cast<const char*>(src) + sizeof(t);
-}
-
-template <typename T>
-void* store_simple_type(T t, void* src) {
-  memcpy(src, &t, sizeof(t));
-  return static_cast<char*>(src) + sizeof(t);
-}
-
 uint32_t SmtpConnectionSerializer::get_size(
     const PluginConnectionInfo* connInfo) const noexcept {
   if (const auto* conn = dynamic_cast<const SmtpConnectionInfo*>(connInfo);
@@ -44,17 +32,17 @@ bool SmtpConnectionSerializer::serialize(
       conn == nullptr) {
     return false;
   } else {
-    buffer = prstorage::save_str(conn->userName, buffer);
-    buffer = prstorage::save_str(conn->password, buffer);
+    buffer = serialization_helpers::save_str(conn->userName, buffer);
+    buffer = serialization_helpers::save_str(conn->password, buffer);
 
-    buffer = store_simple_type(conn->tlsUsed, buffer);
-    buffer = prstorage::save_str(conn->from, buffer);
+    buffer = serialization_helpers::store_simple_type(conn->tlsUsed, buffer);
+    buffer = serialization_helpers::save_str(conn->from, buffer);
 
-    buffer = prstorage::save_str(conn->imapAddr, buffer);
-    buffer = store_simple_type(conn->imapPort, buffer);
+    buffer = serialization_helpers::save_str(conn->imapAddr, buffer);
+    buffer = serialization_helpers::store_simple_type(conn->imapPort, buffer);
 
-    buffer = prstorage::save_str(conn->smtpAddr, buffer);
-    buffer = store_simple_type(conn->smtpPort, buffer);
+    buffer = serialization_helpers::save_str(conn->smtpAddr, buffer);
+    buffer = serialization_helpers::store_simple_type(conn->smtpPort, buffer);
     return true;
   }
 }
@@ -66,17 +54,17 @@ bool SmtpConnectionSerializer::deserialize(const void* buffer,
       conn == nullptr) {
     return false;
   } else {
-    buffer = prstorage::restore_str(conn->userName, buffer);
-    buffer = prstorage::restore_str(conn->password, buffer);
+    buffer = serialization_helpers::restore_str(conn->userName, buffer);
+    buffer = serialization_helpers::restore_str(conn->password, buffer);
 
-    buffer = restore_simple_type(conn->tlsUsed, buffer);
-    buffer = prstorage::restore_str(conn->from, buffer);
+    buffer = serialization_helpers::restore_simple_type(conn->tlsUsed, buffer);
+    buffer = serialization_helpers::restore_str(conn->from, buffer);
 
-    buffer = prstorage::restore_str(conn->imapAddr, buffer);
-    buffer = restore_simple_type(conn->imapPort, buffer);
+    buffer = serialization_helpers::restore_str(conn->imapAddr, buffer);
+    buffer = serialization_helpers::restore_simple_type(conn->imapPort, buffer);
 
-    buffer = prstorage::restore_str(conn->smtpAddr, buffer);
-    buffer = restore_simple_type(conn->smtpPort, buffer);
+    buffer = serialization_helpers::restore_str(conn->smtpAddr, buffer);
+    buffer = serialization_helpers::restore_simple_type(conn->smtpPort, buffer);
     return true;
   }
 }

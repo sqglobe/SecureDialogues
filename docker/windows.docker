@@ -61,8 +61,8 @@ RUN i686-w64-mingw32.shared-cmake \
     -DCMAKE_BUILD_TYPE=Release \
     -DVMIME_HAVE_MESSAGING_PROTO_SENDMAIL=False \
     -DVMIME_HAVE_MLANG_H=False \
-    -DVMIME_BUILD_STATIC_LIBRARY=OFF \
-    -DVMIME_BUILD_SHARED_LIBRARY=ON \
+    -DVMIME_BUILD_STATIC_LIBRARY=ON \
+    -DVMIME_BUILD_SHARED_LIBRARY=OFF \
     -DVMIME_BUILD_DOCUMENTATION=OFF \
     -DVMIME_CHARSETCONV_LIB=iconv \
     -D_RUN_RESULT_VAR=0 \
@@ -112,6 +112,12 @@ RUN cd  /3rdparty && git clone https://github.com/pboettch/json-schema-validator
     && i686-w64-mingw32.shared-cmake -DBUILD_TESTS=OFF -DBUILD_EXAMPLES=OFF -DBUILD_STATIC=ON -DBUILD_SHARED=OFF -DCMAKE_BUILD_TYPE=Release ../ \
     && make -j20 && make install
 
+RUN cd  /cross/mxe && make MXE_TARGETS=i686-w64-mingw32.shared MXE_PLUGIN_DIRS=plugins/gcc7 gettext -j4 JOBS=4
+
+RUN apt-get install -y cmake
+
+#RUN cp /submodules/vmime-build/build/bin/libvmime.dll /cross/mxe/usr/i686-w64-mingw32.shared/lib
+
 WORKDIR /app/build
 
 ENTRYPOINT i686-w64-mingw32.shared-cmake \
@@ -119,13 +125,13 @@ ENTRYPOINT i686-w64-mingw32.shared-cmake \
      -DXG_TESTS=OFF \
      -DBUILD_STATIC=ON \
      -DBUILD_SHARED_LIBS=OFF \
-     -DUSE_VMIME_SHARED=ON \
+     -DUSE_VMIME_SHARED=OFF \
      -DVMIME_ROOT=/cross/mxe/usr/i686-w64-mingw32.shared \
      -DCMAKE_INSTALL_PREFIX=/app/res/SecureDialogues-windows-i686 \
      -DCMAKE_PREFIX_PATH=/usr/local/lib/CMake/persistent-storage \
      /app/src \
   && make -j4 JOBS=4  && make install \
-  && /app/res/SecureDialogues-windows-i686/platforms/ /app/res/SecureDialogues-windows-i686/styles \
+  && mkdir -p /app/res/SecureDialogues-windows-i686/platforms/ /app/res/SecureDialogues-windows-i686/styles \
   && /cross/mxe/tools/copydlldeps.sh -c -f bin/SecureDialogues.exe -d /app/res/SecureDialogues-windows-i686 -R /cross/mxe/usr/ \
   && cp /cross/mxe/usr/i686-w64-mingw32.shared/qt5/plugins/platforms/qwindows.dll /app/res/SecureDialogues-windows-i686/platforms/ \
   && cp /cross/mxe/usr/i686-w64-mingw32.shared/qt5/plugins/styles/qwindowsvistastyle.dll /app/res/SecureDialogues-windows-i686/styles

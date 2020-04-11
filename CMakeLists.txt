@@ -39,8 +39,8 @@ target_include_directories(spdlog-headers INTERFACE ${PROJECT_SOURCE_DIR}/submod
 add_library(eventpp-headers INTERFACE)
 target_include_directories(eventpp-headers INTERFACE ${PROJECT_SOURCE_DIR}/submodules/eventpp/include)
 
-add_library(boost-dll-headers INTERFACE)
-target_include_directories(boost-dll-headers INTERFACE ${PROJECT_SOURCE_DIR}/submodules/boost-dll/include)
+add_library(dynalo-headers INTERFACE)
+target_include_directories(dynalo-headers INTERFACE ${PROJECT_SOURCE_DIR}/submodules/dynalo/include)
 
 
 

@@ -1,7 +1,7 @@
 #include "plugindiscovery.h"
 
-#include <boost/dll/shared_library.hpp>
 #include <boost/filesystem.hpp>
+#include <dynalo/dynalo.hpp>
 #include <fstream>
 
 #include "pluginscontainer.h"
@@ -99,7 +99,7 @@ plugin_support::PlugingMetaInfo get_meta(
       plugin.at("descripton").get<std::string>(),
       plugin.at("gettext-domain").get<std::string>(),
       (rootPath / plugin.at("language").at("folder").get<std::string>())
-          .native(),
+          .string(),
       {}};
 
   const auto transl = plugin.at("language").at("translations");
@@ -135,20 +135,22 @@ void plugin_support::discover_plugins(const std::string& path,
       if (auto [is_valid, description] =
               validator.isValid(descriptionPath.string());
           is_valid) {
-        boost::dll::fs::error_code code;
+        try {
+          dynalo::library lib(
+              (entery.path() / description.at("root-module").get<std::string>())
+                  .string());
 
-        boost::dll::shared_library lib(
-            entery.path() / description.at("root-module").get<std::string>(),
-            code,
-            boost::dll::load_mode::rtld_now |
-                boost::dll::load_mode::rtld_local |
-                boost::dll::load_mode::rtld_deepbind);
-
-        if (!code && lib.has("get_secure_dialogues_plugin_facade")) {
-          auto func =
-              lib.get<PluginFacade*()>("get_secure_dialogues_plugin_facade");
+          auto func = lib.get_function<PluginFacade*()>(
+              "get_secure_dialogues_plugin_facade");
           container.add(std::make_shared<PluginInterface>(
               std::move(lib), func(), get_meta(entery.path(), description)));
+        } catch (std::exception& ex) {
+          spdlog::get("root_logger")
+              ->warn("Failed to load plugin {0}, error {1}",
+                     (entery.path() /
+                      description.at("root-module").get<std::string>())
+                         .string(),
+                     ex.what());
         }
       }
     }

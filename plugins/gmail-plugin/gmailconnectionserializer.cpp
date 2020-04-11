@@ -1,6 +1,7 @@
 #include "gmailconnectionserializer.h"
 #include "gmailconnectioninfo.h"
-#include "persistent-storage/utils/store_primitives.h"
+#include "serialization-helpers.h"
+
 uint32_t GmailConnectionSerializer::get_size(
     const PluginConnectionInfo* connInfo) const noexcept {
   if (const auto* conn = dynamic_cast<const GmailConnectionInfo*>(connInfo);
@@ -21,8 +22,8 @@ bool GmailConnectionSerializer::serialize(
       conn == nullptr) {
     return false;
   } else {
-    buffer = prstorage::save_str(conn->email, buffer);
-    buffer = prstorage::save_str(conn->accessToken, buffer);
+    buffer = serialization_helpers::save_str(conn->email, buffer);
+    buffer = serialization_helpers::save_str(conn->accessToken, buffer);
     return true;
   }
 }
@@ -34,8 +35,8 @@ bool GmailConnectionSerializer::deserialize(
       conn == nullptr) {
     return false;
   } else {
-    buffer = prstorage::restore_str(conn->email, buffer);
-    buffer = prstorage::restore_str(conn->accessToken, buffer);
+    buffer = serialization_helpers::restore_str(conn->email, buffer);
+    buffer = serialization_helpers::restore_str(conn->accessToken, buffer);
     return true;
   }
 }
