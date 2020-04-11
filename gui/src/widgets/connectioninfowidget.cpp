@@ -116,18 +116,19 @@ void ConnectionInfoWidget::setElement(const ConnectionHolder& info) {
   auto conn_name = findChild<QLineEdit*>("connectionName");
 
   conn_name->setText(info.connName().c_str());
-  auto widget = std::find_if(
-      std::cbegin(mWidgets), std::cend(mWidgets),
-      [id = info.pluginConnInfo()->getPluginId()](const auto& widget) -> bool {
-        return id == widget->getId();
-      });
+  if (info.pluginConnInfo() != nullptr) {
+    auto widget = std::find_if(
+        std::cbegin(mWidgets), std::cend(mWidgets),
+        [id = info.pluginConnInfo()->getPluginId()](
+            const auto& widget) -> bool { return id == widget->getId(); });
 
-  if (widget != std::cend(mWidgets)) {
-    (*widget)->setConnectionInfo(info.pluginConnInfo());
-    auto connType = findChild<QComboBox*>("connectionType");
-    connType->setCurrentIndex(
-        static_cast<int>(std::distance(std::cbegin(mWidgets), widget)));
-    (*widget)->makeActivated();
+    if (widget != std::cend(mWidgets)) {
+      (*widget)->setConnectionInfo(info.pluginConnInfo());
+      auto connType = findChild<QComboBox*>("connectionType");
+      connType->setCurrentIndex(
+          static_cast<int>(std::distance(std::cbegin(mWidgets), widget)));
+      (*widget)->makeActivated();
+    }
   }
 
   auto statusInfo = getChannelInfo(info.connName());

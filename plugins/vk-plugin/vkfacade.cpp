@@ -25,23 +25,6 @@ const char* VkFacade::getId() const noexcept {
   return ::getPluginId();
 }
 
-const char* VkFacade::getPluginName() const noexcept {
-  return "VK";
-}
-
-const char* VkFacade::getTranslationFileName(Language lang) const noexcept {
-  switch (lang) {
-    case Language::EN:
-      return "vk_plugin_en_EN";
-    case Language::RU:
-      return "vk_plugin_ru_RU";
-  }
-}
-
-const char* VkFacade::getGettextDomain() const noexcept {
-  return "vk-plugin";
-}
-
 PluginWidget* VkFacade::getWidget() const noexcept {
   return mWidget.get();
 }

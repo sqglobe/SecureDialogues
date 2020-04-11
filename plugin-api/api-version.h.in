@@ -1,0 +1,11 @@
+#ifndef APIVERSION_H
+#define APIVERSION_H
+
+struct PluginApiVersion{
+    unsigned int major{@PLUGIN_API_VERSION_MAJOR@};
+    unsigned int minor{@PLUGIN_API_VERSION_MINOR@};
+    unsigned int revision{@PLUGIN_API_VERSION_REVISION@};
+};
+
+constexpr PluginApiVersion ApiVersion;
+#endif // APIVERSION_H

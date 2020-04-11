@@ -1,0 +1,61 @@
+{
+	"type": "object",
+	"properties": 
+	{
+		"name": {"type": "string"},
+		"descripton": {"type": "string"},
+		"root-module": {"type": "string"},
+                "gettext-domain": {"type": "string"},
+		"version":
+		{
+			"type": "object",
+			"properties":
+			{
+				"major": {"type": "number"},
+				"minor": {"type": "number"},
+				"revision": {"type": "number"}
+			},
+			"required": ["major", "minor", "revision"]
+		},
+		"api-version": 
+		{
+                        "type": "object",
+			"properties":
+			{
+				"major": {"type": "number"},
+				"minor": {"type": "number"},
+				"revision": {"type": "number"}
+			},
+			"required": ["major", "minor", "revision"]
+
+		},
+		"language": 
+		{
+			"type": "object",
+			"properties":
+			{
+				"folder": {"type": "string"},
+				"translations":
+				{
+					"type": "array",
+					"items":
+					{
+						"type": "object",
+						"properties": 
+						{
+							"name": {"type": "string"},
+							"lang": 
+							{
+								"enum": ["en", "ru"]
+							}
+						},
+						"required": ["name", "lang"]
+					},
+					"uniqueItems": true
+				}
+			},
+			"required": ["folder", "translations"]
+		}
+	},
+	"required": ["name", "descripton", "root-module", "version", "language"]
+}

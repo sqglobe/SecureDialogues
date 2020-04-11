@@ -1,5 +1,5 @@
 #include "vkconnectionserializer.h"
-#include "persistent-storage/utils/store_primitives.h"
+#include "serialization-helpers.h"
 #include "vkconnectioninfo.h"
 uint32_t VkConnectionSerializer::get_size(
     const PluginConnectionInfo* connInfo) const noexcept {
@@ -21,8 +21,8 @@ bool VkConnectionSerializer::serialize(
       conn == nullptr) {
     return false;
   } else {
-    buffer = prstorage::save_str(conn->vkId, buffer);
-    buffer = prstorage::save_str(conn->accessToken, buffer);
+    buffer = serialization_helpers::save_str(conn->vkId, buffer);
+    buffer = serialization_helpers::save_str(conn->accessToken, buffer);
     return true;
   }
 }
@@ -33,8 +33,8 @@ bool VkConnectionSerializer::deserialize(const void* buffer,
   if (auto* conn = dynamic_cast<VkConnectionInfo*>(connInfo); conn == nullptr) {
     return false;
   } else {
-    buffer = prstorage::restore_str(conn->vkId, buffer);
-    buffer = prstorage::restore_str(conn->accessToken, buffer);
+    buffer = serialization_helpers::restore_str(conn->vkId, buffer);
+    buffer = serialization_helpers::restore_str(conn->accessToken, buffer);
     return true;
   }
 }

@@ -18,7 +18,7 @@ class TranslationMaster : public QObject {
  private:
   struct TranslateUnit {
     std::unique_ptr<QTranslator, std::function<void(QTranslator*)>> translator;
-    std::shared_ptr<plugin_support::PluginInterface> interface;
+    std::shared_ptr<plugin_support::PluginInterface> pInterface;
   };
 
  public:

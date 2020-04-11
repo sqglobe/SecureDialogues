@@ -2,14 +2,15 @@
 #define PLUGINCONNECTIONINFO_H
 
 #include <stdint.h>
+#include "export-definition.h"
 
-class PluginConnectionInfo {
+class EXPORTED PluginConnectionInfo {
  public:
   virtual ~PluginConnectionInfo() = default;
 
  public:
-  virtual const char* getPluginId() const noexcept = 0;
-  virtual int64_t getWaitPeriod() const noexcept = 0;
+  [[nodiscard]] virtual const char* getPluginId() const noexcept = 0;
+  [[nodiscard]] virtual int64_t getWaitPeriod() const noexcept = 0;
 };
 
 #endif  // PLUGINCONNECTIONINFO_H

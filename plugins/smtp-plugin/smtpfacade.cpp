@@ -22,23 +22,6 @@ const char* SmtpFacade::getId() const noexcept {
   return ::getPluginId();
 }
 
-const char* SmtpFacade::getPluginName() const noexcept {
-  return "E-mail";
-}
-
-const char* SmtpFacade::getTranslationFileName(Language lang) const noexcept {
-  switch (lang) {
-    case Language::EN:
-      return "smtp_plugin_en_EN";
-    case Language::RU:
-      return "smtp_plugin_ru_RU";
-  }
-}
-
-const char* SmtpFacade::getGettextDomain() const noexcept {
-  return "smtp-plugin";
-}
-
 PluginWidget* SmtpFacade::getWidget() const noexcept {
   return mWidget.get();
 }

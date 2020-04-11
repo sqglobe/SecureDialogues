@@ -19,7 +19,10 @@ ChannelsListModel::ChannelsListModel(
   std::transform(
       elements.cbegin(), elements.cend(), std::back_inserter(mChannelNames),
       [& cont = this->mContainer](const ConnectionHolder& cInfo) -> ListItem {
-        const auto interface = cont->get(cInfo.pluginConnInfo()->getPluginId());
+        const auto interface =
+            cInfo.pluginConnInfo() == nullptr
+                ? nullptr
+                : cont->get(cInfo.pluginConnInfo()->getPluginId());
         return {cInfo.connName().c_str(),
                 QApplication::tr("Connection not established yet"),
                 Channel::ChannelStatus::UNDEFINED,

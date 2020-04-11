@@ -1,5 +1,5 @@
 project(asymetrical)
-
+find_package(cryptopp REQUIRED)
 
 add_executable(RemoteOperationsTest tst_remotepeeroperationstest.cpp)
 add_test(NAME RemoteOperationsTest COMMAND RemoteOperationsTest)

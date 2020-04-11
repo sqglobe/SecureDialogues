@@ -1,0 +1,29 @@
+{
+    "name": "E-mail",
+    "descripton": "Plugin allows to send and recieve messages through smtp and imap protocols",
+    "root-module": "$<TARGET_FILE_NAME:smtp-plugin>",
+    "gettext-domain": "smtp-plugin",
+    "version":{
+        "major": 1,
+        "minor": 0,
+        "revision": 0
+    },
+    "api-version":{
+        "major": @PLUGIN_API_VERSION_MAJOR@,
+        "minor": @PLUGIN_API_VERSION_MINOR@,
+        "revision": @PLUGIN_API_VERSION_REVISION@
+    },
+    "language": {
+        "folder": "locale",
+        "translations": [
+            {
+                "name": "smtp_plugin_en_EN",
+                "lang": "en"
+            },
+            {
+                "name": "smtp_plugin_ru_RU",
+                "lang": "ru"
+            }
+        ]
+    }
+}

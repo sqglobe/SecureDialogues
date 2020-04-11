@@ -2,7 +2,7 @@ project(messages)
 
 find_package (Threads)
 find_package(persistent-storage REQUIRED)
-
+find_package(fmt REQUIRED)
 set(SOURCES 
 primitives/dialogmessage.cpp
 communication/messagedespatcher.cpp
@@ -102,8 +102,8 @@ adapters/pluginadapter.h
 )
 
 add_library(messages-headers INTERFACE)
-target_include_directories(messages-headers INTERFACE ${CMAKE_CURRENT_SOURCE_DIR} ${PERSISTENT-STORAGE_INCLUDE_DIRS} ${CROSSGUID_INCLUDE})
-target_link_libraries(messages-headers INTERFACE fmt::fmt-header-only encryption-headers utils-headers plugins-support-headers )
+target_include_directories(messages-headers INTERFACE ${CMAKE_CURRENT_SOURCE_DIR} ${PERSISTENT-STORAGE_INCLUDE_DIRS})
+target_link_libraries(messages-headers INTERFACE fmt::fmt-header-only encryption-headers utils-headers plugins-support-headers spdlog-headers  eventpp-headers crossguid-headers )
 
 add_library(messages STATIC ${SOURCES} ${HEADERS})
 

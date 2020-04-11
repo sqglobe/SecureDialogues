@@ -47,7 +47,9 @@ int main(int argc, char* argv[]) {
   try {
     auto pass = getPassword(FILE_DIGEST);
     auto container = std::make_shared<plugin_support::PluginsContainer>();
-    plugin_support::discover_plugins("plugins", *container);
+    plugin_support::discover_plugins(
+        "plugins", curr.absoluteFilePath("plugin.schema.json").toStdString(),
+        *container);
 
     std::shared_ptr<TranslationMaster> translatorMaster =
         std::make_shared<TranslationMaster>(

@@ -31,21 +31,22 @@
 * Qt5
 * git
 * Boost (system) версии **1.58.0** и выше
-* [asio Boost](https://think-async.com/Asio/)
 * [libcurl] (https://github.com/curl/curl) версии **7.50.0** и выше
 * [vmime] (https://www.vmime.org/) начиная с коммита **e2fc191** и выше.
 * [persistent-storage](https://github.com/sqglobe/persistent-storage) версии **1.0.0** и выше.
+* [fmt](https://github.com/fmtlib/fmt)
+* [nlohmann json](https://github.com/nlohmann/json)
+* [CryptoPP](https://www.cryptopp.com/)
+* [json-schema-validator](https://github.com/pboettch/json-schema-validator)  версии 2.0.0 и выше
 
 Ниже перечислены модули, которые так же используются при сборке, но они либо добавлены в репозиторий,
 либо будут склонированы во время сборки:
 
-* [CryptoPP](https://www.cryptopp.com/)
+
 * [crossguid](https://github.com/graeme-hill/crossguid)
 * [spdlog](https://github.com/gabime/spdlog)
-* [nlohmann json](https://github.com/nlohmann/json)
 * [eventpp](https://github.com/wqking/eventpp)
-* [fmt](https://github.com/fmtlib/fmt)
-* [Boost.DLL](https://github.com/apolukhin/Boost.DLL)
+* [dynalo](https://github.com/maddouri/dynalo)
 
 Так же для успешного разбора **CMakeLists.txt**  может потребоваться задать переменную **CMake** - `CMAKE_PREFIX_PATH`.
 

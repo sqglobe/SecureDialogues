@@ -4,9 +4,12 @@
 #include "not_owned.h"
 #include "owneddeletior.h"
 
+#include <map>
 #include <memory>
 
-#include <boost/dll/shared_library.hpp>
+namespace dynalo {
+class library;
+}  // namespace dynalo
 
 class PluginFacade;
 class PluginWidget;
@@ -20,9 +23,19 @@ namespace plugin_support {
 class PluginWidgetWrapper;
 class PluginMessageCommunicatorWrapper;
 
+struct PlugingMetaInfo {
+  std::string name;
+  std::string description;
+  std::string gettextDomain;
+  std::string localeFolder;
+  std::map<Language, std::string> languages;
+};
+
 class PluginInterface : public std::enable_shared_from_this<PluginInterface> {
  public:
-  PluginInterface(boost::dll::shared_library&& lib, PluginFacade* facade);
+  PluginInterface(dynalo::library&& lib,
+                  PluginFacade* facade,
+                  PlugingMetaInfo&& info);
 
  public:
   std::unique_ptr<PluginWidgetWrapper> getWidget() noexcept;
@@ -37,10 +50,12 @@ class PluginInterface : public std::enable_shared_from_this<PluginInterface> {
   std::string getId() const noexcept;
   std::string getTranslationFileName(Language lang) const noexcept;
   std::string getGettextDomain() const noexcept;
+  std::string getLocaleFolder() const noexcept;
 
  private:
-  boost::dll::shared_library mLib;
+  std::unique_ptr<dynalo::library> mLib;
   PluginFacade* mFacade;
+  PlugingMetaInfo mMetaInfo;
 };
 
 }  // namespace plugin_support
