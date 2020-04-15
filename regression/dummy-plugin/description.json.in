@@ -1,0 +1,29 @@
+{
+    "name": "Dummy",
+    "descripton": "Dummy plugin for test purposes",
+    "root-module": "$<TARGET_FILE_NAME:dummy-plugin>",
+    "gettext-domain": "dummy-plugin",
+    "version":{
+        "major": 1,
+        "minor": 0,
+        "revision": 0
+    },
+    "api-version":{
+        "major": @PLUGIN_API_VERSION_MAJOR@,
+        "minor": @PLUGIN_API_VERSION_MINOR@,
+        "revision": @PLUGIN_API_VERSION_REVISION@
+    },
+    "language": {
+        "folder": "locale",
+        "translations": [
+            {
+                "name": "dummy_plugin_en_EN",
+                "lang": "en"
+            },
+            {
+                "name": "dummy_plugin_ru_RU",
+                "lang": "ru"
+            }
+        ]
+    }
+}
