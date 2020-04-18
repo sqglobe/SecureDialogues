@@ -1,11 +1,11 @@
 #include "usermessagemodeldelegate.h"
 #include <QLabel>
 #include <QPainter>
+#include <cassert>
+#include <memory>
 #include "containers/usermessage.h"
 
-#include <memory>
-
-Q_DECLARE_METATYPE(std::shared_ptr<const UserMessage>);
+Q_DECLARE_METATYPE(std::shared_ptr<const UserMessage>)
 
 const auto TEXT_PADDING{10};
 const auto SYSTEM_MESSAGE_PADDING{20};
@@ -32,6 +32,8 @@ QColor getBackground(UserMessage::Type type) {
       return QColor(152, 251, 152);
     case UserMessage::Type::System:
       return QColor(255, 182, 193);
+    default:
+      assert(false);
   }
 }
 
@@ -43,6 +45,8 @@ auto getOptions(const std::shared_ptr<const UserMessage>& message) {
       return Qt::AlignRight | Qt::AlignVCenter;
     case UserMessage::Type::System:
       return Qt::AlignCenter | Qt::AlignVCenter;
+    default:
+      assert(false);
   }
 }
 

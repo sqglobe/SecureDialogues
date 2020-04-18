@@ -6,7 +6,7 @@ namespace Ui {
 class VkConnectionWidget;
 }
 
-class VkConnectionWidget : public PluginWidget {
+class VkConnectionWidget final : public PluginWidget {
   Q_OBJECT
 
  public:

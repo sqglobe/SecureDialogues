@@ -25,6 +25,8 @@ SET(XG_TESTS OFF)
 
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/submodules/cmake/FindBerkeleyDB" "${PROJECT_SOURCE_DIR}/cmake")
 
+include(compilation-flags.target)
+
 set(TOP_DIR ${PROJECT_SOURCE_DIR})
 
 ENABLE_TESTING()

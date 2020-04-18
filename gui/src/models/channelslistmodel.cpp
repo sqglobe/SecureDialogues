@@ -10,7 +10,7 @@
 #include "export/pluginconnectioninfo.h"
 #include "plugininterface.h"
 
-Q_DECLARE_METATYPE(ChannelsListModel::ListItem);
+Q_DECLARE_METATYPE(ChannelsListModel::ListItem)
 
 ChannelsListModel::ChannelsListModel(
     const std::vector<ConnectionHolder>& elements,

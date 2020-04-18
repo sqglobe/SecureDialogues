@@ -4,7 +4,7 @@
 #include <string>
 #include "export/pluginconnectioninfo.h"
 
-class VkConnectionInfo : public PluginConnectionInfo {
+class VkConnectionInfo final : public PluginConnectionInfo {
  public:
   VkConnectionInfo() = default;
   VkConnectionInfo(const std::string& id, const std::string& token);

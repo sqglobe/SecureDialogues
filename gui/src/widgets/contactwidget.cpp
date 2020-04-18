@@ -18,7 +18,7 @@
 
 #include <iostream>
 
-Q_DECLARE_METATYPE(ChannelsListModel::ListItem);
+Q_DECLARE_METATYPE(ChannelsListModel::ListItem)
 
 ContactWidget::ContactWidget(std::shared_ptr<ChannelsListModel> model,
                              QWidget* parent) :

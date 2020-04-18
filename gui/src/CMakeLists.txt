@@ -144,6 +144,7 @@ target_link_libraries(gui-headers INTERFACE messages-headers utils-headers )
 
 add_library(gui STATIC ${GUI_MODULE_SOURCES} ${GUI_MODULE_HEADERS} ${UI_WRAP} ${WRAP_MOC_GUI} ${QM_FILES} Gui_ru_RU.ts)
 target_link_libraries(gui PUBLIC gui-headers)
+target_link_libraries(gui PRIVATE CompilationFlags)
 
 target_compile_definitions(gui PRIVATE NO_MEMBER_FUNCTION_PARTIAL_SPECIALIZATION)
 add_custom_command(TARGET gui POST_BUILD

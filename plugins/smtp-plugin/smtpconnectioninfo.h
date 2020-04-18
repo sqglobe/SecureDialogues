@@ -3,7 +3,7 @@
 #include <string>
 #include "export/pluginconnectioninfo.h"
 
-class SmtpConnectionInfo : public PluginConnectionInfo {
+class SmtpConnectionInfo final : public PluginConnectionInfo {
  public:
   SmtpConnectionInfo() = default;
   SmtpConnectionInfo(std::string userName,

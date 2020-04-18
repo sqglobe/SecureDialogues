@@ -4,7 +4,7 @@
 #include <QColor>
 #include <QString>
 
-Q_DECLARE_METATYPE(DialogInfo);
+Q_DECLARE_METATYPE(DialogInfo)
 
 DialogUserModel::DialogUserModel(std::shared_ptr<ContactStorage> contacts,
                                  const std::vector<Dialog>& dialogs) :

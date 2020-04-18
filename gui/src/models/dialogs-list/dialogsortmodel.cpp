@@ -1,7 +1,7 @@
 #include "dialogsortmodel.h"
 #include "dialoginfo.h"
 
-Q_DECLARE_METATYPE(DialogInfo);
+Q_DECLARE_METATYPE(DialogInfo)
 
 int getRating(Dialog::Status status) {
   using S = Dialog::Status;

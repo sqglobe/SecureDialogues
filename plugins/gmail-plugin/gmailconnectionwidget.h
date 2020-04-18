@@ -8,7 +8,7 @@ class GmailConnectionWidget;
 }
 class GmailConnectionInfo;
 
-class GmailConnectionWidget : public PluginWidget {
+class GmailConnectionWidget final : public PluginWidget {
   Q_OBJECT
 
  public:

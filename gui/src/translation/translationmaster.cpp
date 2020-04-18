@@ -16,6 +16,8 @@ std::string getStrLocale(Language lang) {
       return "en_EN.UTF-8";
     case Language::RU:
       return "ru_RU.UTF-8";
+    default:
+      assert(false);
   }
 }
 
@@ -25,6 +27,8 @@ QString getFileName(Language lang) {
       return "Gui_en_EN";
     case Language::RU:
       return "Gui_ru_RU";
+    default:
+      assert(false);
   }
 }
 

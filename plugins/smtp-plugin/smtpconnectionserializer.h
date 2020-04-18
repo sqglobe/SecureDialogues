@@ -3,7 +3,7 @@
 
 #include "export/pluginconnectionserializer.h"
 
-class SmtpConnectionSerializer : public PluginConnectionSerializer {
+class SmtpConnectionSerializer final : public PluginConnectionSerializer {
  public:
   virtual uint32_t get_size(const PluginConnectionInfo* connInfo) const
       noexcept override;

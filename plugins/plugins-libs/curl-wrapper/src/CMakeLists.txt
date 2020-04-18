@@ -21,9 +21,8 @@ add_library(curl-wrapper STATIC ${SOURCES} ${HEADERS})
 link_directories( ${CURL_LIBRARIES} )
 target_include_directories(curl-wrapper PUBLIC  ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(curl-wrapper PUBLIC  curl)
-
+target_link_libraries(curl-wrapper PRIVATE CompilationFlags)
 if(WIN32)
-    message("Used for windows build")
     target_link_libraries(curl-wrapper PUBLIC wldap32 ws2_32)
 endif()
 

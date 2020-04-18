@@ -2,7 +2,7 @@
 #include <QApplication>
 #include <ctime>
 
-Q_DECLARE_METATYPE(std::string);
+Q_DECLARE_METATYPE(std::string)
 
 QString convert(const DiscoveredContact& contact) {
   static const QString arg(

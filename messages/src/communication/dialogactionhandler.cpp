@@ -233,7 +233,7 @@ void DialogActionHandler::prepareNotFoundDialog(const DialogMessage& message,
 }
 
 void DialogActionHandler::prepareForFoundDialog(const DialogMessage& message,
-                                                const std::string& channel) {
+                                                const std::string&) {
   if (message.action() == DialogMessage::Action::VERIFY_KEY) {
     auto wrapper = mDialogStorage->wrapper(std::string(message.dialogId()));
     auto contact = mContactStorage->get(std::string(wrapper->getContactId()));

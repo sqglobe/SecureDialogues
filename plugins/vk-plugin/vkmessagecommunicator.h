@@ -4,7 +4,7 @@
 #include "export/pluginmessagecommunicator.h"
 class VkApi;
 class VkOauth;
-class VkMessageCommunicator : public PluginMessageCommunicator {
+class VkMessageCommunicator final : public PluginMessageCommunicator {
  public:
   VkMessageCommunicator();
   ~VkMessageCommunicator() override;

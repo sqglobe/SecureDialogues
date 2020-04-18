@@ -83,10 +83,8 @@ qt5_create_translation(QM_FILES smtpconnectionwidget.ui smtpconnectionwidget.h s
 
 target_sources(smtp-plugin PRIVATE ${UI_WRAP} ${QM_FILES} ${WRAP_MOC_GUI})
 
-set_target_properties(smtp-plugin PROPERTIES LINKER_LANGUAGE CXX)
-
-target_include_directories(smtp-plugin PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${VMIME_INCLUDE_DIRS})
-target_link_libraries(smtp-plugin PUBLIC  ${VMIME_LIBRARIES} plugin-api plugins-utils utils spdlog-headers  Qt5::Core Qt5::Gui  Qt5::Widgets)
+target_include_directories(smtp-plugin PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${VMIME_INCLUDE_DIRS})
+target_link_libraries(smtp-plugin PRIVATE  ${VMIME_LIBRARIES} plugin-api plugins-utils utils spdlog-headers  Qt5::Core Qt5::Gui  Qt5::Widgets CompilationFlags)
 
 if(WIN32)
     target_link_libraries(smtp-plugin PRIVATE ws2_32 iconv intl)
@@ -103,9 +101,8 @@ endif()
 
 set_target_properties(smtp-plugin PROPERTIES
     PREFIX ""
-    POSITION_INDEPENDENT_CODE ON)
-
-set_property(TARGET smtp-plugin PROPERTY POSITION_INDEPENDENT_CODE ON)
+    POSITION_INDEPENDENT_CODE ON
+    INTERPROCEDURAL_OPTIMIZATION_RELEASE ON)
 
 
 add_custom_command(TARGET smtp-plugin POST_BUILD

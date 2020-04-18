@@ -2,7 +2,7 @@
 #define VKCONNECTIONSERIALIZER_H
 #include "export/pluginconnectionserializer.h"
 
-class VkConnectionSerializer : public PluginConnectionSerializer {
+class VkConnectionSerializer final : public PluginConnectionSerializer {
  public:
   virtual uint32_t get_size(const PluginConnectionInfo* connInfo) const
       noexcept override;

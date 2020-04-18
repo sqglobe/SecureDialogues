@@ -4,7 +4,7 @@
 #include <string>
 #include "export/pluginconnectioninfo.h"
 
-class GmailConnectionInfo : public PluginConnectionInfo {
+class GmailConnectionInfo final : public PluginConnectionInfo {
  public:
   GmailConnectionInfo() = default;
   GmailConnectionInfo(const std::string& email, const std::string& token);

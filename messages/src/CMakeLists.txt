@@ -109,6 +109,7 @@ add_library(messages STATIC ${SOURCES} ${HEADERS})
 
 target_compile_definitions(messages PRIVATE NO_MEMBER_FUNCTION_PARTIAL_SPECIALIZATION)
 target_link_libraries(messages PUBLIC messages-headers)
+target_link_libraries(messages PRIVATE CompilationFlags)
 
 add_internationals(messages ru_RU.UTF-8 "locale" "${LOCALE_FILES_DIR}" securedialogues 1.1)
 

@@ -4,7 +4,7 @@
 #include "models/discovered-contacts/discoveredcontactmodel.h"
 #include "wrappers/recievedcontactsstoragewrapper.h"
 
-Q_DECLARE_METATYPE(std::string);
+Q_DECLARE_METATYPE(std::string)
 
 RecievedDiscoveredContactsDialog::RecievedDiscoveredContactsDialog(
     DiscoveredContactModel* model,

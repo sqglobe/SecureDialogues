@@ -7,7 +7,7 @@ namespace Ui {
 class SmtpConnectionWidget;
 }
 
-class SmtpConnectionWidget : public PluginWidget {
+class SmtpConnectionWidget final : public PluginWidget {
   Q_OBJECT
 
  public:

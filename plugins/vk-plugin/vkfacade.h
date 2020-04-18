@@ -8,7 +8,7 @@ class VkConnectionSerializer;
 class VkConnectionWidget;
 class VkAddressValidator;
 
-class VkFacade : public PluginFacade {
+class VkFacade final : public PluginFacade {
  public:
   VkFacade();
   ~VkFacade() override;

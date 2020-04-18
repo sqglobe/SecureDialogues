@@ -46,15 +46,16 @@ qt5_create_translation(QM_FILES vkconnectionwidget.ui vkconnectionwidget.h vkcon
 
 target_sources(vk-plugin PRIVATE ${UI_WRAP} ${QM_FILES} ${WRAP_MOC_GUI})
 
-target_include_directories(vk-plugin  PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/submodules/spdlog/include)
-target_link_libraries(vk-plugin PUBLIC plugin-api curl-wrapper nlohmann_json::nlohmann_json plugins-utils utils spdlog-headers  Qt5::Core Qt5::Gui  Qt5::Widgets)
+target_include_directories(vk-plugin  PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/submodules/spdlog/include)
+target_link_libraries(vk-plugin PRIVATE plugin-api curl-wrapper nlohmann_json::nlohmann_json plugins-utils utils spdlog-headers  Qt5::Core Qt5::Gui  Qt5::Widgets CompilationFlags)
 if(WIN32)
     target_link_libraries(vk-plugin PUBLIC intl)
 endif()
 
 set_target_properties(vk-plugin PROPERTIES
     PREFIX ""
-    POSITION_INDEPENDENT_CODE ON)
+    POSITION_INDEPENDENT_CODE ON
+    INTERPROCEDURAL_OPTIMIZATION_RELEASE ON)
 
 
 add_custom_command(TARGET vk-plugin POST_BUILD

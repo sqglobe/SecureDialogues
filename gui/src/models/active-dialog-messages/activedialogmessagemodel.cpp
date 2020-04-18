@@ -1,7 +1,7 @@
 #include "activedialogmessagemodel.h"
 #include <QColor>
 #include "containers/usermessage.h"
-Q_DECLARE_METATYPE(std::shared_ptr<const UserMessage>);
+Q_DECLARE_METATYPE(std::shared_ptr<const UserMessage>)
 
 int ActiveDialogMessageModel::rowCount(const QModelIndex&) const {
   std::lock_guard<std::recursive_mutex> guard(mMutex);

@@ -2,7 +2,7 @@
 #include <QPainter>
 #include "dialoginfo.h"
 
-Q_DECLARE_METATYPE(DialogInfo);
+Q_DECLARE_METATYPE(DialogInfo)
 
 QColor getColor(Dialog::Status status) {
   if (Dialog::Status::ACTIVE == status) {

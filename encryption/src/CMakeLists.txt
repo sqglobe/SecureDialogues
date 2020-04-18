@@ -47,7 +47,7 @@ add_library(encryption STATIC ${ENCRYPTION_SOURCES} ${ENCRYPTION_HEADERS})
 
 target_include_directories(encryption PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
-target_link_libraries(encryption PRIVATE utils-headers spdlog-headers cryptopp-static)
+target_link_libraries(encryption PRIVATE utils-headers spdlog-headers cryptopp-static CompilationFlags)
 target_link_libraries(encryption PUBLIC  cryptopp)
 
 add_library(encryption-headers INTERFACE)

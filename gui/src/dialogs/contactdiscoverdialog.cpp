@@ -5,7 +5,7 @@
 #include "export/pluginaddressvalidator.h"
 #include "models/channelslistmodel.h"
 #include "support-functions.h"
-Q_DECLARE_METATYPE(ChannelsListModel::ListItem);
+Q_DECLARE_METATYPE(ChannelsListModel::ListItem)
 
 ContactDiscoverDialog::ContactDiscoverDialog(
     std::shared_ptr<ChannelsListModel> model,

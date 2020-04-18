@@ -8,7 +8,7 @@
 class SmtpSender;
 class ImapReciever;
 
-class SmtpMessageCommunication : public PluginMessageCommunicator {
+class SmtpMessageCommunication final : public PluginMessageCommunicator {
  public:
   SmtpMessageCommunication();
   ~SmtpMessageCommunication() override;

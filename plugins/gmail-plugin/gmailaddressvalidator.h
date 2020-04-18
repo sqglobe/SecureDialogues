@@ -3,7 +3,7 @@
 
 #include "export/pluginaddressvalidator.h"
 
-class GmailAddressValidator : public PluginAddressValidator {
+class GmailAddressValidator final : public PluginAddressValidator {
  public:
   const char* isValid(const char* address) const noexcept override;
   const char* peelAddress(const char* address) const noexcept override;

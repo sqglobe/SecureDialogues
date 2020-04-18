@@ -81,4 +81,4 @@ WORKDIR /app/build
 ENTRYPOINT cmake -DBUILD_TESTING=OFF -DXG_TESTS=OFF -DCMAKE_BUILD_TYPE=Release -DUSE_VMIME_SHARED=ON \
                  -DCMAKE_PREFIX_PATH=/usr/local/lib/CMake/persistent-storage  -DCMAKE_INSTALL_PREFIX=/app/res/SecureDialogues-ubuntu-18.04-x86_64 /app/src \
         && make -j20 JOBS=20 && make install \
-        && cp /usr/local/lib/libvmime.so /app/res/SecureDialogues-ubuntu-18.04-x86_64
+        && cp /usr/local/lib/libvmime.so /app/res/SecureDialogues-ubuntu-18.04-x86_64/plugins/Email.plugin/

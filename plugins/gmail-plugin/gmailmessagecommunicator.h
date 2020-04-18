@@ -6,7 +6,7 @@
 
 class GmailOauth;
 class GmailApi;
-class GmailMessageCommunicator : public PluginMessageCommunicator {
+class GmailMessageCommunicator final : public PluginMessageCommunicator {
  public:
   GmailMessageCommunicator();
   ~GmailMessageCommunicator() override;
