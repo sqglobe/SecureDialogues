@@ -5,7 +5,6 @@ find_package(BerkeleyDB REQUIRED)
 find_package(Boost  REQUIRED system)
 find_package(persistent-storage REQUIRED)
 find_package(cryptopp REQUIRED)
-
 set(MAIN_SOURCE
     main.cpp
     passask.cpp
@@ -28,7 +27,9 @@ set_property(TARGET SecureDialogues PROPERTY WIN32_EXECUTABLE $<$<CONFIG:Release
 target_compile_definitions(SecureDialogues PRIVATE NO_MEMBER_FUNCTION_PARTIAL_SPECIALIZATION)
 add_internationals(SecureDialogues ru_RU.UTF-8 "locale" "${LOCALE_FILES_DIR}" securedialogues 1.1)
 target_link_libraries(SecureDialogues CompilationFlags)
-set_target_properties(SecureDialogues PROPERTIES INTERPROCEDURAL_OPTIMIZATION_RELEASE ON)
+
+enable_interprocedural_optimization(SecureDialogues)
+
 
 install(TARGETS SecureDialogues RUNTIME DESTINATION ".")
 install(FILES  $<TARGET_PROPERTY:plugin-api,SCHEMA_FILE> DESTINATION ".")

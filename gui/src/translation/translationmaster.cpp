@@ -18,6 +18,7 @@ std::string getStrLocale(Language lang) {
       return "ru_RU.UTF-8";
     default:
       assert(false);
+      return "";
   }
 }
 
@@ -29,6 +30,7 @@ QString getFileName(Language lang) {
       return "Gui_ru_RU";
     default:
       assert(false);
+      return "";
   }
 }
 

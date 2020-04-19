@@ -1,6 +1,5 @@
 #include "plugininterface.h"
 
-#include <dynalo/dynalo.hpp>
 #include "export/pluginconnectioninfo.h"
 #include "export/pluginconnectionserializer.h"
 #include "export/pluginfacade.h"
@@ -9,6 +8,7 @@
 #include "pluginmessagecommunicatorwrapper.h"
 #include "pluginwidgetwrapper.h"
 
+#include <dynalo/dynalo.hpp>
 plugin_support::PluginInterface::PluginInterface(dynalo::library&& lib,
                                                  PluginFacade* facade,
                                                  PlugingMetaInfo&& info) :

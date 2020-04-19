@@ -54,9 +54,9 @@ endif()
 
 set_target_properties(vk-plugin PROPERTIES
     PREFIX ""
-    POSITION_INDEPENDENT_CODE ON
-    INTERPROCEDURAL_OPTIMIZATION_RELEASE ON)
+    POSITION_INDEPENDENT_CODE ON)
 
+enable_interprocedural_optimization(vk-plugin)
 
 add_custom_command(TARGET vk-plugin POST_BUILD
     COMMAND cmake -E copy $<TARGET_FILE:vk-plugin> "${CMAKE_CURRENT_BINARY_DIR}/VK.plugin"

@@ -18,7 +18,7 @@ class PluginMessageCommunicatorWrapper {
  public:
   PluginMessageCommunicatorWrapper(
       std::unique_ptr<PluginMessageCommunicator, owned_deletor>&& communicator,
-      std::shared_ptr<PluginInterface> interface,
+      std::shared_ptr<PluginInterface> pInterface,
       PluginFacade* facade);
 
  public:

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.10)
 project(SecureDialogues)
 
 find_package(Git REQUIRED)
@@ -8,6 +8,12 @@ OPTION(
 	USE_VMIME_SHARED
 	"Use vmime as shared lib"
 	ON
+)
+
+OPTION(
+        ENABLE_INTERPROCEDURAL_OPTIMIZATION
+        "Enable INTERPROCEDURAL_OPTIMIZATION"
+        ON
 )
 
 set(LOCALE_FILES_DIR "${PROJECT_BINARY_DIR}/bin/locale")
@@ -26,6 +32,7 @@ SET(XG_TESTS OFF)
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/submodules/cmake/FindBerkeleyDB" "${PROJECT_SOURCE_DIR}/cmake")
 
 include(compilation-flags.target)
+include(project-helpers)
 
 set(TOP_DIR ${PROJECT_SOURCE_DIR})
 

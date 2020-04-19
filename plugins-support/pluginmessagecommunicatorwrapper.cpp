@@ -10,10 +10,10 @@ plugin_support::PluginMessageCommunicatorWrapper::
     PluginMessageCommunicatorWrapper(
         std::unique_ptr<PluginMessageCommunicator, owned_deletor>&&
             communicator,
-        std::shared_ptr<plugin_support::PluginInterface> interface,
+        std::shared_ptr<plugin_support::PluginInterface> pInterface,
         PluginFacade* facade) :
     mCommunicator(std::move(communicator)),
-    mInterface(std::move(interface)), mFacade(facade) {}
+    mInterface(std::move(pInterface)), mFacade(facade) {}
 
 PluginApiErrorCodes plugin_support::PluginMessageCommunicatorWrapper::send(
     const std::string& addressTo,

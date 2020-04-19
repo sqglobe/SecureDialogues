@@ -35,6 +35,7 @@ QColor getBackground(UserMessage::Type type) {
     default:
       assert(false);
   }
+  return QColor();
 }
 
 auto getOptions(const std::shared_ptr<const UserMessage>& message) {
@@ -48,6 +49,7 @@ auto getOptions(const std::shared_ptr<const UserMessage>& message) {
     default:
       assert(false);
   }
+  return Qt::AlignCenter | Qt::AlignVCenter;
 }
 
 auto getTextRect(const std::shared_ptr<const UserMessage>& message,

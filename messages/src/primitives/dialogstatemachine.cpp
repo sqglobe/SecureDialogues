@@ -25,8 +25,10 @@ bool DialogStateMachine::isStateTransitionAllowed(Dialog::Status currState,
       [[fallthrough]];
     case S::ABORTED:
       return false;
+    default:
+      assert(false);
   }
-  assert(false);
+  return false;
 }
 
 bool DialogStateMachine::isMessageActionAllowed(
@@ -53,6 +55,8 @@ bool DialogStateMachine::isMessageActionAllowed(
       [[fallthrough]];
     case S::ABORTED:
       return false;
+    default:
+      assert(false);
   }
-  assert(false);
+  return false;
 }

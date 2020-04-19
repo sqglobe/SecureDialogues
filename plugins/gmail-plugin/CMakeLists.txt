@@ -51,8 +51,9 @@ if(WIN32)
 endif()
 set_target_properties(gmail-plugin PROPERTIES
     PREFIX ""
-    POSITION_INDEPENDENT_CODE ON
-    INTERPROCEDURAL_OPTIMIZATION_RELEASE ON)
+    POSITION_INDEPENDENT_CODE ON)
+
+enable_interprocedural_optimization(gmail-plugin)
 
 add_custom_command(TARGET gmail-plugin POST_BUILD
     COMMAND cmake -E copy $<TARGET_FILE:gmail-plugin> "${CMAKE_CURRENT_BINARY_DIR}/Gmail.plugin"

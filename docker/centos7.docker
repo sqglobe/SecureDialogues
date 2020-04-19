@@ -108,8 +108,13 @@ WORKDIR /app/build
 
 # Установим точку входа 
 ENTRYPOINT  scl enable devtoolset-7 \
-      "cmake -DBUILD_TESTING=OFF -DXG_TESTS=OFF -DUSE_VMIME_SHARED=ON \
-      -DCMAKE_PREFIX_PATH=/usr/local/lib/CMake/persistent-storage -DCMAKE_INSTALL_PREFIX=/app/res/SecureDialogues-centos7-x86_64 /app/src \
-      && make -j20 JOBS=20 && make install" \
+      "cmake -DBUILD_TESTING=OFF \
+             -DXG_TESTS=OFF \
+             -DUSE_VMIME_SHARED=ON \
+             -DCMAKE_PREFIX_PATH=/usr/local/lib/CMake/persistent-storage \
+             -DCMAKE_BUILD_TYPE=Release \
+             -DENABLE_INTERPROCEDURAL_OPTIMIZATION=OFF \
+             -DCMAKE_INSTALL_PREFIX=/app/res/SecureDialogues-centos7-x86_64 /app/src \
+      && make -j20 && make install" \
       && cp /usr/local/lib/libvmime.so /app/res/SecureDialogues-centos7-x86_64/plugins/Email.plugin
 

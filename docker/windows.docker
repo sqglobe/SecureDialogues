@@ -123,14 +123,13 @@ WORKDIR /app/build
 ENTRYPOINT i686-w64-mingw32.shared-cmake \
      -DBUILD_TESTING=OFF \
      -DXG_TESTS=OFF \
-     -DBUILD_STATIC=ON \
-     -DBUILD_SHARED_LIBS=OFF \
+     -DCMAKE_BUILD_TYPE=Release \
      -DUSE_VMIME_SHARED=OFF \
      -DVMIME_ROOT=/cross/mxe/usr/i686-w64-mingw32.shared \
      -DCMAKE_INSTALL_PREFIX=/app/res/SecureDialogues-windows-i686 \
      -DCMAKE_PREFIX_PATH=/usr/local/lib/CMake/persistent-storage \
      /app/src \
-  && make -j4 JOBS=4  && make install \
+  && make -j20 && make install \
   && mkdir -p /app/res/SecureDialogues-windows-i686/platforms/ /app/res/SecureDialogues-windows-i686/styles \
   && /cross/mxe/tools/copydlldeps.sh -c -f bin/SecureDialogues.exe -d /app/res/SecureDialogues-windows-i686 -R /cross/mxe/usr/ \
   && cp /cross/mxe/usr/i686-w64-mingw32.shared/qt5/plugins/platforms/qwindows.dll /app/res/SecureDialogues-windows-i686/platforms/ \

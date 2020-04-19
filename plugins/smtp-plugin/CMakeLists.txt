@@ -101,9 +101,9 @@ endif()
 
 set_target_properties(smtp-plugin PROPERTIES
     PREFIX ""
-    POSITION_INDEPENDENT_CODE ON
-    INTERPROCEDURAL_OPTIMIZATION_RELEASE ON)
+    POSITION_INDEPENDENT_CODE ON)
 
+enable_interprocedural_optimization(smtp-plugin)
 
 add_custom_command(TARGET smtp-plugin POST_BUILD
     COMMAND cmake -E copy $<TARGET_FILE:smtp-plugin> "${CMAKE_CURRENT_BINARY_DIR}/Email.plugin"

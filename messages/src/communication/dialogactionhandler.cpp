@@ -41,6 +41,7 @@ std::string get_dialog_status_description(Dialog::Status status) {
     default:
       assert(false);
   }
+  return "";
 }
 
 std::string dialog_to_string(const Dialog& dialog, const Contact& contact) {
@@ -288,6 +289,7 @@ Dialog::Status DialogActionHandler::map(DialogMessage::Action action) const
     default:
       assert(false);
   }
+  return Dialog::Status::ABORTED;
 }
 
 bool DialogActionHandler::isRemoveDialogAction(
