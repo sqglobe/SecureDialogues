@@ -2,7 +2,7 @@
 FROM ubuntu:bionic
 
 RUN  apt-get update \
-  && apt-get install -y make gcc g++ cmake ninja-build
+  && apt-get install -y make gcc g++
   
 RUN apt-get update && apt-get install -y git qtdeclarative5-dev plantuml libboost-all-dev ruby plantuml \
   uuid-dev libcurl4-openssl-dev libssl-dev  libvmime-dev \
@@ -15,7 +15,12 @@ RUN apt-get update && apt-get install -y git qtdeclarative5-dev plantuml libboos
   && gem install pygments.rb \
   && gem install coderay
 
-RUN apt install -y pkg-config  libgnutls28-dev libghc-gsasl-dev
+RUN apt install -y pkg-config  libgnutls28-dev libghc-gsasl-dev wget
+
+RUN mkdir /opt/cmake \
+ && wget -P / https://github.com/Kitware/CMake/releases/download/v3.17.1/cmake-3.17.1-Linux-x86_64.sh \
+ && sh /cmake-3.17.1-Linux-x86_64.sh --prefix=/opt/cmake --skip-license \
+ && ln -s /opt/cmake/bin/cmake /usr/local/bin/cmake
 
 WORKDIR /build
 
@@ -73,6 +78,7 @@ RUN cd  /3rdparty && git clone https://github.com/pboettch/json-schema-validator
     && mkdir build && cd build \
     && cmake -DBUILD_TESTS=OFF -DBUILD_EXAMPLES=OFF -DBUILD_STATIC=ON -DBUILD_SHARED=OFF -DCMAKE_BUILD_TYPE=Release ../ \
     && make -j20 && make install
+
 
 # Установим рабочую директорию нашего приложения
 WORKDIR /app/build

@@ -11,8 +11,8 @@ RUN  apt-get update \
   && apt-get install -y make gcc-7 g++-7 ninja-build wget 
   
 RUN mkdir /opt/cmake \
- && wget -P / https://github.com/Kitware/CMake/releases/download/v3.13.4/cmake-3.13.4-Linux-x86_64.sh \
- && sh /cmake-3.13.4-Linux-x86_64.sh --prefix=/opt/cmake --skip-license \
+ && wget -P / https://github.com/Kitware/CMake/releases/download/v3.17.1/cmake-3.17.1-Linux-x86_64.sh \
+ && sh /cmake-3.17.1-Linux-x86_64.sh --prefix=/opt/cmake --skip-license \
  && ln -s /opt/cmake/bin/cmake /usr/local/bin/cmake
   
 RUN  apt-get install -y git qtdeclarative5-dev plantuml libboost-all-dev ruby plantuml uuid-dev libcurl4-openssl-dev libssl-dev \

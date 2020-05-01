@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.14)
 project(SecureDialogues)
 
 find_package(Git REQUIRED)
@@ -37,10 +37,6 @@ include(project-helpers)
 set(TOP_DIR ${PROJECT_SOURCE_DIR})
 
 ENABLE_TESTING()
-
-IF (NOT USE_VMIME_SHARED)
-  ADD_DEFINITIONS(-DVMIME_STATIC)
-ENDIF()
 
 add_library(spdlog-headers INTERFACE)
 target_include_directories(spdlog-headers INTERFACE ${PROJECT_SOURCE_DIR}/submodules/spdlog/include)

@@ -1,49 +1,11 @@
 project(smtp-plugin)
 find_package(Qt5 COMPONENTS REQUIRED Core Gui Widgets)
 find_package(Qt5LinguistTools REQUIRED)
+find_package(vmime REQUIRED)
 
 get_target_property(PLUGIN_API_SOURCE_DIR plugin-api SOURCE_DIR)
 include(${PLUGIN_API_SOURCE_DIR}/version-defs.cmake)
 
-if (NOT WIN32 AND NOT  VMIME_ROOT)
-   # try using pkg-config to get the directories and then use these values
-   # in the find_path() and find_library() calls
-   # also fills in VMIME_DEFINITIONS, although that isn't normally useful
-   find_package(PkgConfig QUIET)
-   PKG_CHECK_MODULES(PC_VMIME QUIET vmime)
-   set(VMIME_DEFINITIONS ${PC_VMIME_CFLAGS_OTHER})
-   set(VMIME_VERSION_STRING ${PC_VMIME_VERSION})
-endif ()
-
-find_path(VMIME_INCLUDE_DIR vmime/vmime.hpp
-   HINTS
-   ${VMIME_ROOT}/include/
-   ${PC_VMIME_INCLUDEDIR}
-   ${PC_VMIME_INCLUDE_DIRS}
-   )
-
-find_library(VMIME_LIBRARY NAMES vmime
-   HINTS
-   ${VMIME_ROOT}/lib/
-   ${PC_VMIME_LIBDIR}
-   ${PC_VMIME_LIBRARY_DIRS}
-   )
-
-mark_as_advanced(VMIME_INCLUDE_DIR VMIME_LIBRARY)
-
-# handle the QUIETLY and REQUIRED arguments and set Vmime_FOUND to TRUE if
-# all listed variables are TRUE
-include(FindPackageHandleStandardArgs)
-FIND_PACKAGE_HANDLE_STANDARD_ARGS(Vmime
-                                  REQUIRED_VARS VMIME_LIBRARY VMIME_INCLUDE_DIR
-                                  VERSION_VAR VMIME_VERSION_STRING)
-
-if(Vmime_FOUND)
-    set(VMIME_LIBRARIES    ${VMIME_LIBRARY})
-    set(VMIME_INCLUDE_DIRS ${VMIME_INCLUDE_DIR})
-else()
-    message(FATAL_ERROR "Cant file vmime")
-endif()
 
 add_library(smtp-plugin MODULE
     email-agent/imapreciever.cpp
@@ -83,20 +45,20 @@ qt5_create_translation(QM_FILES smtpconnectionwidget.ui smtpconnectionwidget.h s
 
 target_sources(smtp-plugin PRIVATE ${UI_WRAP} ${QM_FILES} ${WRAP_MOC_GUI})
 
-target_include_directories(smtp-plugin PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${VMIME_INCLUDE_DIRS})
-target_link_libraries(smtp-plugin PRIVATE  ${VMIME_LIBRARIES} plugin-api plugins-utils utils spdlog-headers  Qt5::Core Qt5::Gui  Qt5::Widgets CompilationFlags)
+target_include_directories(smtp-plugin PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(smtp-plugin PRIVATE plugin-api plugins-utils utils spdlog-headers  Qt5::Core Qt5::Gui  Qt5::Widgets CompilationFlags vmime)
 
 if(WIN32)
-    target_link_libraries(smtp-plugin PRIVATE ws2_32 iconv intl)
+    target_link_libraries(smtp-plugin PRIVATE intl)
+    target_compile_definitions(smtp-plugin PRIVATE WIN_EXPORT)
 endif()
 
-if(NOT USE_VMIME_SHARED)
-    find_package(GnuTLS REQUIRED)
-    target_link_libraries(smtp-plugin PRIVATE gsasl ${GNUTLS_LIBRARIES})
-endif()
-
-if(NOT USE_VMIME_SHARED AND NOT WIN32)
-    target_link_libraries(smtp-plugin PRIVATE anl)
+if(USE_VMIME_SHARED)
+    file(MAKE_DIRECTORY  "${CMAKE_CURRENT_BINARY_DIR}/Email.plugin/libs")
+    add_custom_command(TARGET smtp-plugin POST_BUILD
+        COMMAND cmake -E copy $<TARGET_FILE:vmime> "${CMAKE_CURRENT_BINARY_DIR}/Email.plugin/libs/"
+    )
+   target_link_libraries(smtp-plugin PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Wl,-rpath,\$ORIGIN/libs/>)
 endif()
 
 set_target_properties(smtp-plugin PROPERTIES
@@ -112,6 +74,3 @@ add_custom_command(TARGET smtp-plugin POST_BUILD
 
 
 install(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/Email.plugin" DESTINATION "plugins")
-if(WIN32)
-    target_compile_definitions(smtp-plugin PRIVATE WIN_EXPORT)
-endif()

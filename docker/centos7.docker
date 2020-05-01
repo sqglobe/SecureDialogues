@@ -8,8 +8,8 @@ RUN  yum install -y make ninja-build devtoolset-7-gcc-c++ wget
 RUN yum install -y git qtbase5-common-devel  gettext qt5-qtbase-devel plantuml libuuid-devel libcurl-devel openssl-devel
 
 RUN mkdir /opt/cmake \
- && wget -P / https://github.com/Kitware/CMake/releases/download/v3.13.4/cmake-3.13.4-Linux-x86_64.sh \
- && sh /cmake-3.13.4-Linux-x86_64.sh --prefix=/opt/cmake --skip-license \
+ && wget -P / https://github.com/Kitware/CMake/releases/download/v3.17.1/cmake-3.17.1-Linux-x86_64.sh \
+ && sh /cmake-3.17.1-Linux-x86_64.sh --prefix=/opt/cmake --skip-license \
  && ln -s /opt/cmake/bin/cmake /usr/local/bin/cmake
 
 RUN mkdir /3rdparty \
